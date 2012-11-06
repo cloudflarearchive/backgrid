@@ -1,0 +1,9 @@
+node_modules
+\#*\#
+.*~
+*~
+.\#*
+.DS_Store
+.localized
+Thumb.db
+*.ithmb
