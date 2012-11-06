@@ -11,38 +11,38 @@ var ExampleView = Backbone.View.extend({
     this.books = new Books([{
       title: "Alice in Wonderland",
       year: 1865,
-      price: "$19.95"
+      price: 19.95
     }, {
       title: "1984",
       year: 1934,
-      price: "£25.00"
-    },{
+      price: 25.00
+    }, {
       title: "Catcher in the Rye",
       year: 1951,
       price: 17.95
     }, {
       title: "Oliver Twist",
       year: 1839,
-      price: "¥3000"
+      price: 3000
     }]);
 
     this.columns = [{
       name: "title",
       label: "Title",
-      cell: Backgrid.StringCell
+      cell: "string"
     }, {
       name: "year",
       label: "Year",
-      cell: Backgrid.IntegerCell
+      cell: new Backgrid.IntegerCell({ orderSeparator: '' })
     }, {
       name: "price",
       label: "Price",
-      cell: Backgrid.CurrencyCell
+      cell: "number"
     }];
 
   },
 
-  example2: function() {
+  example2: function () {
     var bookGrid = new Backgrid.Grid({
       className: "table table-striped table-bordered table-condensed",
       columns: this.columns,

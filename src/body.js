@@ -1,8 +1,14 @@
-'use strict';
+/*
+  backgrid
+  http://github.com/wyuenho/backgrid
+
+  Copyright (c) 2012 Jimmy Yuen Ho Wong
+  Licensed under the MIT @license.
+*/
 
 var Body = Backgrid.Body = Backbone.View.extend({
 
-  tagName: 'tbody',
+  tagName: "tbody",
 
   initialize: function (options) {
     var self = this;
@@ -23,9 +29,9 @@ var Body = Backgrid.Body = Backbone.View.extend({
       return row;
     });
 
-    self.collection.on('add', self.insertRow, self);
-    self.collection.on('remove', self.removeRow, self);
-    self.collection.on('reset', self.refresh, self);
+    self.collection.on("add", self.insertRow, self);
+    self.collection.on("remove", self.removeRow, self);
+    self.collection.on("reset", self.refresh, self);
   },
 
   insertRow: function (model, collection, options) {
@@ -44,7 +50,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
 
     this.rows.splice(options.index, 0, row);
 
-    if (typeof options.render === 'undefined' || options.render) {
+    if (typeof options.render === "undefined" || options.render) {
       if (options.index >= this.$el.children().length) {
         this.$el.children().last().after(row.render().$el);
       }
@@ -62,7 +68,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
       return;
     }
 
-    if (typeof options.render === 'undefined' || options.render) {
+    if (typeof options.render === "undefined" || options.render) {
       this.rows[options.index].remove();
     }
 

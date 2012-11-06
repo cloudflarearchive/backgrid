@@ -1,8 +1,14 @@
-'use strict';
+/*
+  backgrid
+  http://github.com/wyuenho/backgrid
+
+  Copyright (c) 2012 Jimmy Yuen Ho Wong
+  Licensed under the MIT @license.
+*/
 
 var Grid = Backgrid.Grid = Backbone.View.extend({
 
-  tagName: 'table',
+  tagName: "table",
 
   initialize: function (options) {
     this.columns = options.columns;
@@ -35,7 +41,9 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
   },
 
   sort: function (comparator) {
-    this.collection.sort(comparator);
+    this.collection.comparator = comparator;
+    this.collection.sort();
+    this.collection.comparator = undefined;
   },
 
   render: function () {
@@ -49,7 +57,7 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
 
     this.$el.append(this.body.render().$el);
 
-    this.trigger('rendered');
+    this.trigger("rendered");
 
     return this;
   }

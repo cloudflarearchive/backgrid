@@ -16,7 +16,7 @@ var JST = {
 var aliceInWonderland = new Backbone.Model({\n\
   title: "Alice in Wonderland",\n\
   year: 1865,\n\
-  price: "$19.95"\n\
+  price: "19.95"\n\
 });\n\
 ...\n\
 var books = new Backbone.Collection([\n\
@@ -30,15 +30,15 @@ var books = new Backbone.Collection([\n\
 var columns = [{\n\
   name: "title",\n\
   label: "Title",\n\
-  cell: Backgrid.StringCell\n\
+  cell: "string"\n\
 }, {\n\
   name: "year",\n\
   label: "Year",\n\
-  cell: Backgrid.IntegerCell\n\
+  cell: "integer"\n\
 }, {\n\
   name: "price",\n\
   label: "Price",\n\
-  cell: Backgrid.CurrencyCell\n\
+  cell: "number"\n\
 }];\n\
 \n\
 // Create a new Grid object\n\

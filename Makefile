@@ -4,14 +4,16 @@ AUTHOR = Jimmy Yuen Ho Wong
 VERSION = 0.1
 
 SRC_FILES = src/preamble.js \
-			src/column.js \
 			src/formatter.js \
 			src/cell.js \
+			src/column.js \
 			src/row.js \
 			src/header.js \
 			src/body.js \
 			src/footer.js \
 			src/grid.js
+
+all: clean dist test
 
 %.js: FORCE
 	echo "/*\n\
@@ -24,7 +26,7 @@ SRC_FILES = src/preamble.js \
 FORCE:
 
 test: FORCE
-	phantomjs bin/qunit-runner.js test/qunit/index.html
+	phantomjs bin/qunit-runner.js test/index.html
 
 dist:
 	uglifyjs2 $(SRC_FILES)\
@@ -39,5 +41,3 @@ dist:
 
 clean:
 	rm -f lib/*.js lib/extensions/*.js
-
-all: clean dist test

@@ -1,0 +1,18 @@
+{
+  "camelcase": true,
+  "curly": true,
+  "eqeqeq": true,
+  "immed": true,
+  "indent": 2,
+  "latedef": true,
+  "noarg": true,
+  "trailing": true,
+  "expr": true,
+  "shadow": true,
+  "supernew": true,
+
+  "browser": false,
+  "devel": false,
+  "jquery": false,
+  "nonstandard": false
+}

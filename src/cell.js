@@ -1,56 +1,54 @@
-'use strict';
+/*
+  backgrid
+  http://github.com/wyuenho/backgrid
 
+  Copyright (c) 2012 Jimmy Yuen Ho Wong
+  Licensed under the MIT @license.
+*/
+
+/*global Backbone:false, Backgrid:false, Column:false, Formatter:false */
+
+// Cell are purely for rendering and should contain no state other than its
+// default settings because only one instance of a Cell will be used to render
+// all the cells in a column.
 var Cell = Backgrid.Cell = Backbone.View.extend({
 
-  tagName: 'td',
+  tagName: "td",
 
-  errorClassName: 'backgrid-error',
-
-  initialize: function (options) {
-    this.parent = options.parent;
-    this.column = options.column;
-    if (this.column && !(this.column instanceof Column)) {
-      this.column = new Column(this.column);
-    }
-
-    var formatter = this.column.get('formatter');
-    if (formatter) {
-      this.formatter = this.colume.get('formatter');
-    }
-
-    this.model.on('change:' + this.column.get('name'), this.render, this);
+  events: {
+    "click": "renderEditor"
   },
 
-  formatter: new Formatter(),
+  formatter: new Formatter,
 
-  render: function () {
+  initialize: function (options) {
+    Backbone.View.prototype.initialize.apply(this, arguments);
+    this.formatter = options && options.formatter || this.formatter;
+  },
+
+  // Given a column and a model instance, render() will output the formatted
+  // value from the model keyed with the column name.
+  render: function (column, model) {
+    this.setElement(this.$el.clone(true, true)[0]);
     this.$el.empty();
-    this.$el.text(this.formatter.fromRaw(this.model.get(this.column.get('name'))));
+    this.$el.text(this.formatter.fromRaw(model.get(column.get("name"))));
     return this;
   },
 
-  // By default this method only applies a .error class to the cell,
-  // subclasses are encouraged to override this method when neccessary.
-  renderError: function (message) {
-    this.$el.addClass(this.errorClassName);
-  },
-
-  clearError: function () {
-    this.$el.removeClass(this.errorClassName);
-  }
+  // no-op in the base class
+  renderEditor: function (column, model) {}
 
 });
 
+// StringCell displays HTML escaped data and accepts anything typed in.
 var StringCell = Backgrid.StringCell = Cell.extend({
 
-  className: 'backgrid-string-cell',
+  className: "backgrid-string-cell",
 
   formatter: {
-
     fromRaw: function (rawData) {
       return _.escape(rawData);
     },
-
     toRaw: function (formattedData) {
       return formattedData;
     }
@@ -58,44 +56,77 @@ var StringCell = Backgrid.StringCell = Cell.extend({
 
 });
 
-var RegexCell = Backgrid.RegexCell = StringCell.extend({
+var URICell = Backgrid.URICell = StringCell.extend({
 
-});
+  className: "backgrid-uri-cell",
 
-var EmailCell = Backgrid.EmailCell = RegexCell.extend({
-
-});
-
-var URICell = Backgrid.URICell = RegexCell.extend({
+  render: function (column, model) {
+    this.setElement(this.$el.clone(true, true)[0]);
+    this.$el.empty();
+    var formattedValue = this.formatter.fromRaw(model.get(column.get("name")));
+    this.$el.text(formattedValue).children().wrap("<a>", {
+      href: formattedValue
+    });
+    return this;
+  }
 
 });
 
 var NumberCell = Backgrid.NumberCell = Cell.extend({
 
-  className: 'backgrid-number-cell',
+  className: "backgrid-number-cell",
+
+  decimals: 2,
+  decimalSeparator: '.',
+  orderSeparator: ',',
+
+  initialize: function (options) {
+    var self = this;
+
+    Cell.prototype.initialize.apply(self, arguments);
+
+    if (options) {
+      self.decimals = typeof options.decimals !== "undefined" ? options.decimals : self.decimals;
+      self.decimalSeparator = options.decimalSeparator || self.decimalSeparator;
+      self.orderSeparator = typeof options.orderSeparator !== "undefined" ? options.orderSeparator : self.orderSeparator;
+    }
+
+    self.formatter = options && options.formatter || {
+      fromRaw: function (rawData) {
+        var result = _.str.numberFormat(rawData, self.decimals, self.decimalSeparator);
+        // underscore.string issue #154
+        return result.replace(',', self.orderSeparator);
+      },
+      toRaw: function (formattedData) {
+        return (formattedData.replace(self.orderSeparator, '').replace(self.decimalSeparator, '.') * 1 || 0).toFixed(~~self.decimals);
+      }
+    };
+  }
 
 });
 
-var IntegerCell = Backgrid.IntegerCell = NumberCell.extend({
+// An IntegerCell is just a NumberCell with 0 decimals. If a floating point
+// number is supplied, the number is simply rounded the usual way when
+// displayed.
+var IntegerCell = Backgrid.IntegerCell = NumberCell.extend({ decimals: 0 });
 
-});
+// DatetimeCell is a basic cell that accepts datetime string values in RFC-2822
+// or W3C's subset of ISO-8601 and displays them in ISO-8601 format. Only works
+// with EcmaScript 5 compliant browsers at the moment. For a much more
+// sophisticated date time cell, the recommended way is to use the bundled
+// kalendae-cell.js extension which supplies a KalendaeCell that renders a
+// Kalendae widget and uses moment.js to parse the datetime values.
+var DatetimeCell = Backgrid.DatetimeCell = Cell.extend({
 
-var FloatCell = Backgrid.FloatCell = NumberCell.extend({
+  className: "backgrid-datetime-cell",
 
-});
-
-var CurrencyCell = Backgrid.CurrencyCell = NumberCell.extend({
-
-});
-
-var DateTimeCell = Backgrid.DateTimeCell = Cell.extend({
-
-  className: 'backgrid-datetime-cell',
-
-});
-
-var TextCell = Backgrid.TextCell = StringCell.extend({
-
-  className: 'backgrid-text-cell',
+  formatter : {
+    fromRaw: function (rawData) {
+      return new Date(rawData).toISOString();
+    },
+    toRaw: function (formattedData) {
+      return new Date(rawData).toISOString();
+    }
+  }
 
 });
