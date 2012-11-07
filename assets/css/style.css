@@ -62,3 +62,31 @@ h1,h2,h3,h4,h5,h6 {
 body {
     padding-top: 40px;
 }
+
+.prettyprint {
+    overflow-x: scroll;
+    word-wrap: normal;
+    white-space: pre;
+}
+
+.visible-desktop {
+    display: initial !important;
+}
+
+@media (max-width: 767px) {
+
+    .visible-desktop {
+        display: none !important;
+    }
+
+    .navbar.navbar-fixed-top {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    .hero-unit h1 {
+        font-size: 40px;
+        margin-bottom: 40px;
+    }
+}
+
