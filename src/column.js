@@ -29,13 +29,11 @@ var Column = Backgrid.Column = Backbone.Model.extend({
 
     if (typeof attrs.cell === "string") {
       this.set({
-        cell: new Backgrid[_.str.capitalize(this.get("cell")) + "Cell"]
+        cell: Backgrid[_.str.capitalize(this.get("cell")) + "Cell"]
       }, { silent: true });
     }
-    else if (typeof attrs.cell === "function") {
-      this.set({
-        cell: new attrs.cell
-      }, { silent: true });
+    else {
+      this.set({ cell: attrs.cell }, { silent: true });
     }
   }
 

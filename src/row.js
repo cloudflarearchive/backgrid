@@ -24,7 +24,12 @@ var Row = Backgrid.Row = Backbone.View.extend({
     self.$el.empty();
     self.columns.each(function (column) {
       if (column.get("renderable")) {
-        self.$el.append(column.get("cell").render(column, self.model).$el);
+        var cell = column.get("cell");
+        cell = new cell({
+          column: column,
+          model: self.model
+        });
+        self.$el.append(cell.render(self.model).$el);
       }
     });
     return self;

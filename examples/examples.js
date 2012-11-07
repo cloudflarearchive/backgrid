@@ -33,7 +33,7 @@ var ExampleView = Backbone.View.extend({
     }, {
       name: "year",
       label: "Year",
-      cell: new Backgrid.IntegerCell({ orderSeparator: '' })
+      cell: Backgrid.IntegerCell.extend({ orderSeparator: '' })
     }, {
       name: "price",
       label: "Price",

@@ -8,35 +8,75 @@
 
 /*global Backbone:false, Backgrid:false, Column:false, Formatter:false */
 
-// Cell are purely for rendering and should contain no state other than its
-// default settings because only one instance of a Cell will be used to render
-// all the cells in a column.
 var Cell = Backgrid.Cell = Backbone.View.extend({
 
   tagName: "td",
 
-  events: {
-    "click": "renderEditor"
+  formatter: new Formatter,
+
+  viewModeEvents: {
+    "click": "enterEditMode"
   },
 
-  formatter: new Formatter,
+  editModeEvents: {
+    "blur": "undoAndExitEditMode",
+    "keydown": "saveAndExitEditMode"
+  },
+
+  echo: function (e) {
+    console.dir(e);
+  },
 
   initialize: function (options) {
     Backbone.View.prototype.initialize.apply(this, arguments);
     this.formatter = options && options.formatter || this.formatter;
+    this.column = options && options.column;
   },
 
   // Given a column and a model instance, render() will output the formatted
   // value from the model keyed with the column name.
-  render: function (column, model) {
-    this.setElement(this.$el.clone(true, true)[0]);
+  render: function () {
     this.$el.empty();
-    this.$el.text(this.formatter.fromRaw(model.get(column.get("name"))));
+    this.$el.text(this.formatter.fromRaw(this.model.get(this.column.get("name"))));
+    this.delegateEvents(this.viewModeEvents);
     return this;
   },
 
-  // no-op in the base class
-  renderEditor: function (column, model) {}
+  enterEditMode: function (e) {
+    if (this.column.get("editable")) {
+      e.preventDefault();
+      e.stopPropagation();
+      var $el = this.$el;
+      this.delegateEvents(this.editModeEvents);
+      $el.attr("contenteditable", true).focus();
+    }
+  },
+
+  saveAndExitEditMode: function (e) {
+    // enter
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      var valueToSet = this.formatter.toRaw(this.$el.text());
+      if (this.model.set(this.column.get("name"), valueToSet)) {
+        this.exitEditMode();
+      }
+    }
+    // esc
+    else if (e.keyCode === 27) {
+      // undo
+      this.$el.text(this.formatter.fromRaw(this.model.get(this.column.get("name"))));
+      this.exitEditMode();
+    }
+  },
+
+  undoAndExitEditMode: function (e) {
+    this.render();
+  },
+  
+  exitEditMode: function () {
+    this.$el.removeAttr("contenteditable");
+    this.delegateEvents(this.viewModeEvents);
+  }
 
 });
 
@@ -56,14 +96,15 @@ var StringCell = Backgrid.StringCell = Cell.extend({
 
 });
 
+// TODO: allow editing a uri cell
 var URICell = Backgrid.URICell = StringCell.extend({
 
   className: "backgrid-uri-cell",
 
-  render: function (column, model) {
+  render: function (model) {
     this.setElement(this.$el.clone(true, true)[0]);
     this.$el.empty();
-    var formattedValue = this.formatter.fromRaw(model.get(column.get("name")));
+    var formattedValue = this.formatter.fromRaw(model.get(this.column.get("name")));
     this.$el.text(formattedValue).children().wrap("<a>", {
       href: formattedValue
     });
