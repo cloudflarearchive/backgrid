@@ -6,8 +6,6 @@
   Licensed under the MIT @license.
 */
 
-'use strict';
-
 // Just a convenient class for interested parties to subclass.
 // The default Cell classes don't require the formatter to be a subclass of
 // Formatter as long as the fromRaw(rawData) and toRaw(formattedData) methods
