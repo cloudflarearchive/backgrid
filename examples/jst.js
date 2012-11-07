@@ -34,7 +34,7 @@ var columns = [{\n\
 }, {\n\
   name: "year",\n\
   label: "Year",\n\
-  cell: "integer"\n\
+  cell: Backgrid.IntegerCell.extend({ orderSeparator: \'\' })\n\
 }, {\n\
   name: "price",\n\
   label: "Price",\n\
