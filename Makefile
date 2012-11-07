@@ -32,7 +32,7 @@ dist:
 	uglifyjs2 $(SRC_FILES)\
 		--beautify indent-level=2,indent-start=2,bracketize=true\
 		--compress sequences=false,properties=false,dead-code=false,unsafe=false,conditionals=false,comparisons=false,evaluate=false,booleans=false,loops=false,unused=false,hoist-funs=false,hoist-vars=false,join-vars=false,cascade=false,warnings=true\
-		--comments '/^(?!jshint|globals)([.\s\S](?!@license))+$$/'\
+		--comments '/^(?!jshint|global)([.\s\S](?!@license))+$$/'\
 		--output lib/$(PROJECT_NAME).js
 	echo "(function (root) {\n" | cat - lib/$(PROJECT_NAME).js > /tmp/$(PROJECT_NAME).js && mv -f /tmp/$(PROJECT_NAME).js lib/$(PROJECT_NAME).js
 	echo "}(this));" >> lib/$(PROJECT_NAME).js
