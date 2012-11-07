@@ -70,15 +70,7 @@ body {
     white-space: pre;
 }
 
-.visible-desktop {
-    display: initial !important;
-}
-
 @media (max-width: 767px) {
-
-    .visible-desktop {
-        display: none !important;
-    }
 
     .navbar.navbar-fixed-top {
         margin-left: 0;
