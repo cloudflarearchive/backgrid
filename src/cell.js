@@ -19,7 +19,7 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
   },
 
   editModeEvents: {
-    "blur": "undoAndExitEditMode",
+    "blur": "exitEditMode",
     "keydown": "saveAndExitEditMode"
   },
 
@@ -48,7 +48,7 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
       e.stopPropagation();
       var $el = this.$el;
       this.delegateEvents(this.editModeEvents);
-      $el.attr("contenteditable", true).focus();
+      $el.attr("contenteditable", "true").focus();
     }
   },
 
@@ -69,10 +69,6 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
     }
   },
 
-  undoAndExitEditMode: function (e) {
-    this.render();
-  },
-  
   exitEditMode: function () {
     this.$el.removeAttr("contenteditable");
     this.delegateEvents(this.viewModeEvents);
