@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     
     <title>Backgrid.js</title>
@@ -13,8 +13,8 @@
     <link rel="stylesheet" href="assets/css/style.css" />
     <link rel="stylesheet" href="lib/backgrid.css" />
     <!--[if lt IE 9]>
-        <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
+        <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+    <![endif]-->
     <script src="assets/js/jquery.js"></script>
     <script src="assets/js/underscore.js"></script>
     <script src="assets/js/backbone.js"></script>
@@ -48,7 +48,7 @@
                       <li><a href="#introduction">Introduction</a></li>
                       <li><a href="#examples">Examples</a></li>
                       <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);">
                           API Reference
                           <b class="caret"></b>
                         </a>
@@ -67,7 +67,7 @@
                   </div>
                 </div>
                 <a class="visible-desktop" href="https://github.com/wyuenho/backgrid">
-                  <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub">
+                  <img style="position: absolute; top: 0; right: 0; border: 0;" src="assets/img/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub">
                 </a>
               </div>
             </div>
@@ -123,7 +123,7 @@
                   called <em>js</em> at the root, you can copy and paste
                   the following snippet:
                 </p>
-                <pre class="pre-scrollable prettyprint linenums" data-snippet="installation"></pre>
+                <pre class="prettyprint linenums" data-snippet="installation"></pre>
               </div>
             </div>
           </section>
@@ -143,7 +143,7 @@
                     <p>In the following examples, we&rsquo;ll suppose we have a collection of books:</p>
                   </div>
                   <div class="span6">
-                    <pre class="pre-scrollable prettyprint linenums" data-snippet="example1"></pre>
+                    <pre class="prettyprint linenums" data-snippet="example1"></pre>
                   </div>
                 </div>
                 <div class="row">
@@ -156,7 +156,7 @@
                       list of columns and the collection of data into the Grid
                       constructor like this:
                     </p>
-                    <pre class="pre-scrollable prettyprint linenums" data-snippet="example2">
+                    <pre class="prettyprint linenums" data-snippet="example2">
                     </pre>
                   </div>
                   <div class="span6">
@@ -170,12 +170,12 @@
         </div>
       </div>
     </div>
-    <footer id="footer">
-      <p>
-        Copyright &copy; 2012 Jimmy Yuen Ho Wong. Code licensed under the <a href="LICENSE-MIT">MIT license</a>.<br />
-        Documentation licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a>
-      </p>
-    </footer>
+    <div id="footer">
+      <div class="container">
+        <p>Copyright &copy; 2012 Jimmy Yuen Ho Wong. Code licensed under the <a href="LICENSE-MIT">MIT license</a>.<br />
+          Documentation licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a></p>
+      </div>
+    </div>
     <script src="assets/js/scale.fix.js"></script>
     <script>
       $(document).ready(function() {

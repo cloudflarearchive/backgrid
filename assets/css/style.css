@@ -29,8 +29,8 @@ html, body {
     margin-top: -40px; /* negative value of footer height */
     height: 40px;
     clear: both;
-    text-align: center;
     background-color: #EEE;
+    text-align: center;
 }
 
 /*Opera Fix*/
@@ -44,18 +44,6 @@ body:before {
 /* thank you Erik J -negate effect of float*/
 }
 
-
-
-/* IMPORTANT
-
-You also need to include this conditional style in the <head> of your HTML file
-to feed this style to IE 6 and lower and 8 and higher.
-
-<!--[if !IE 7]> <style type="text/css"> #wrap {display:table;height:100%}
-</style> <![endif]-->
-
-*/
-
 h1,h2,h3,h4,h5,h6 {
     font-family: Georgia, 'Times New Roman', Times, serif;
 }
@@ -65,6 +53,7 @@ body {
 }
 
 .prettyprint {
+    max-height: 340px;
     overflow-x: scroll;
     word-wrap: normal;
     white-space: pre;
