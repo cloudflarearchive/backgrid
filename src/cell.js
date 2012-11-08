@@ -12,6 +12,8 @@ var DivCellEditor = Backgrid.CellEditor = Backbone.View.extend({
 
   tagName: "div",
 
+  className: "editor",
+
   attributes: {
     contenteditable: "true"
   },
@@ -34,27 +36,63 @@ var DivCellEditor = Backgrid.CellEditor = Backbone.View.extend({
     return this;
   },
 
+  // MUST be called after the rendered *el* has been inserted into the DOM for
+  // things such as focusing and selecting the content of the editor
+  postRender: function () {
+    this.$el.focus();
+    if (typeof window.getSelection !== "undefined" && typeof document.createRange !== "undefined") {
+      var rng = document.createRange();
+      rng.selectNodeContents(this.el);
+      rng.collapse(false);
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(rng);
+    }
+    else if (typeof document.body.createTextRange !== "undefined") {
+      var txtRng = document.body.createTextRange();
+      txtRng.moveToElementText(this.el);
+      txtRng.collapse(false);
+      txtRng.select();
+    }
+  },
+
   saveOrCancel: function (e) {
-    // enter
-    if (e.keyCode === 13) {
-      e.preventDefault();
-      var valueToSet = this.formatter.toRaw(this.$el.text());
-      if (this.model.set(this.column.get("name"), valueToSet)) {
+    if (e.type === "keydown") {
+      // enter or tab
+      if (e.keyCode === 13 || e.keyCode === 9) {
+        e.preventDefault();
+        var valueToSet = this.formatter.toRaw(this.$el.text());
+        if (this.model.set(this.column.get("name"), valueToSet)) {
+          this.trigger("done");
+        }
+        else {
+          // TODO: handle error
+        }
+      }
+      // esc
+      else if (e.keyCode === 27) {
+        // undo
+        e.stopPropagation();
+        this.$el.text(this.formatter.fromRaw(this.model.get(this.column.get("name"))));
         this.trigger("done");
       }
-      else {
-        // TODO: handle error
-      }
     }
-    // esc
-    else if (e.keyCode === 27) {
-      // undo
-      e.stopPropagation();
+    else if (e.type === "blur") {
       this.$el.text(this.formatter.fromRaw(this.model.get(this.column.get("name"))));
       this.trigger("done");
     }
-  }
+  },
 
+  remove: function () {
+    Backbone.View.prototype.remove.apply(this, arguments);
+    // FF inexplicably still place a blanking caret at the beginning of the
+    // parent's text after this editor element has been removed from the DOM
+    if (typeof window.getSelection !== "undefined") {
+      var sel = window.getSelection();
+      sel.removeAllRanges();
+    }
+  }
+  
 });
 
 var Cell = Backgrid.Cell = Backbone.View.extend({
@@ -80,15 +118,12 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
   // value from the model keyed with the column name.
   render: function () {
     this.$el.empty()
-      .text(this.formatter.fromRaw(this.model.get(this.column.get("name"))))
-      .focus();
+      .text(this.formatter.fromRaw(this.model.get(this.column.get("name"))));
     return this;
   },
 
   enterEditMode: function (e) {
     if (this.column.get("editable")) {
-      e.preventDefault();
-      e.stopPropagation();
 
       var editor = new this.editor({
         column: this.column,
@@ -100,7 +135,8 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
 
       this.$el.empty();
       this.undelegateEvents();
-      this.$el.append(editor.render().$el.focus());
+      this.$el.append(editor.render().$el);
+      editor.postRender();
     }
   },
 
