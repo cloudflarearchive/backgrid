@@ -8,33 +8,80 @@
 
 /*global Backbone:false, Backgrid:false, Column:false, Formatter:false */
 
-var Cell = Backgrid.Cell = Backbone.View.extend({
+var DivCellEditor = Backgrid.CellEditor = Backbone.View.extend({
 
-  tagName: "td",
+  tagName: "div",
 
-  formatter: new Formatter,
-
-  viewModeEvents: {
-    "click": "enterEditMode"
+  attributes: {
+    contenteditable: "true"
   },
 
-  editModeEvents: {
-    "blur": "undoAndExitEditMode",
-    "keydown": "saveAndExitEditMode"
+  events: {
+    "blur": "saveOrCancel",
+    "keydown": "saveOrCancel"
   },
 
   initialize: function (options) {
     Backbone.View.prototype.initialize.apply(this, arguments);
     this.formatter = options && options.formatter || this.formatter;
     this.column = options && options.column;
+
+    this.on("done", this.remove, this);
+  },
+
+  render: function () {
+    this.$el.text(this.formatter.fromRaw(this.model.get(this.column.get("name"))));
+    return this;
+  },
+
+  saveOrCancel: function (e) {
+    // enter
+    if (e.keyCode === 13) {
+      e.preventDefault();
+      var valueToSet = this.formatter.toRaw(this.$el.text());
+      if (this.model.set(this.column.get("name"), valueToSet)) {
+        this.trigger("done");
+      }
+      else {
+        // TODO: handle error
+      }
+    }
+    // esc
+    else if (e.keyCode === 27) {
+      // undo
+      e.stopPropagation();
+      this.$el.text(this.formatter.fromRaw(this.model.get(this.column.get("name"))));
+      this.trigger("done");
+    }
+  }
+
+});
+
+var Cell = Backgrid.Cell = Backbone.View.extend({
+
+  tagName: "td",
+
+  formatter: new Formatter,
+
+  editor: DivCellEditor,
+
+  events: {
+    "click": "enterEditMode"
+  },
+
+  initialize: function (options) {
+    Backbone.View.prototype.initialize.apply(this, arguments);
+    this.formatter = options && options.formatter || this.formatter;
+    this.editor = options && options.editor || this.editor;
+    this.column = options && options.column;
   },
 
   // Given a column and a model instance, render() will output the formatted
   // value from the model keyed with the column name.
   render: function () {
-    this.$el.empty();
-    this.$el.text(this.formatter.fromRaw(this.model.get(this.column.get("name"))));
-    this.delegateEvents(this.viewModeEvents);
+    this.$el.empty()
+      .text(this.formatter.fromRaw(this.model.get(this.column.get("name"))))
+      .focus();
     return this;
   },
 
@@ -42,33 +89,24 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
     if (this.column.get("editable")) {
       e.preventDefault();
       e.stopPropagation();
-      var $el = this.$el;
-      this.delegateEvents(this.editModeEvents);
-      $el.attr("contenteditable", "true").focus();
+
+      var editor = new this.editor({
+        column: this.column,
+        model: this.model,
+        formatter: this.formatter
+      });
+
+      editor.on("done", this.exitEditMode, this);
+
+      this.$el.empty();
+      this.undelegateEvents();
+      this.$el.append(editor.render().$el.focus());
     }
   },
 
-  saveAndExitEditMode: function (e) {
-    // enter
-    if (e.keyCode === 13) {
-      e.preventDefault();
-      var valueToSet = this.formatter.toRaw(this.$el.text());
-      if (this.model.set(this.column.get("name"), valueToSet)) {
-        this.$el.removeAttr("contenteditable");
-        this.delegateEvents(this.viewModeEvents);
-      }
-    }
-    // esc
-    else if (e.keyCode === 27) {
-      // undo
-      this.undoAndExitEditMode();
-    }
-  },
-
-  undoAndExitEditMode: function () {
-    this.$el.text(this.formatter.fromRaw(this.model.get(this.column.get("name"))));
-    this.$el.removeAttr("contenteditable");
-    this.delegateEvents(this.viewModeEvents);
+  exitEditMode: function () {
+    this.render();
+    this.delegateEvents();
   }
 
 });
