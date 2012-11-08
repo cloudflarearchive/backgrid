@@ -10,6 +10,8 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
 
   tagName: "table",
 
+  className: "backgrid",
+
   initialize: function (options) {
     this.columns = options.columns;
 
@@ -41,9 +43,7 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
   },
 
   sort: function (comparator) {
-    this.collection.comparator = comparator;
-    this.collection.sort();
-    this.collection.comparator = undefined;
+    this.body.sort(comparator);
   },
 
   render: function () {

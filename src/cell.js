@@ -19,12 +19,8 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
   },
 
   editModeEvents: {
-    "blur": "exitEditMode",
+    "blur": "undoAndExitEditMode",
     "keydown": "saveAndExitEditMode"
-  },
-
-  echo: function (e) {
-    console.dir(e);
   },
 
   initialize: function (options) {
@@ -58,18 +54,19 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
       e.preventDefault();
       var valueToSet = this.formatter.toRaw(this.$el.text());
       if (this.model.set(this.column.get("name"), valueToSet)) {
-        this.exitEditMode();
+        this.$el.removeAttr("contenteditable");
+        this.delegateEvents(this.viewModeEvents);
       }
     }
     // esc
     else if (e.keyCode === 27) {
       // undo
-      this.$el.text(this.formatter.fromRaw(this.model.get(this.column.get("name"))));
-      this.exitEditMode();
+      this.undoAndExitEditMode();
     }
   },
 
-  exitEditMode: function () {
+  undoAndExitEditMode: function () {
+    this.$el.text(this.formatter.fromRaw(this.model.get(this.column.get("name"))));
     this.$el.removeAttr("contenteditable");
     this.delegateEvents(this.viewModeEvents);
   }
@@ -79,7 +76,7 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
 // StringCell displays HTML escaped data and accepts anything typed in.
 var StringCell = Backgrid.StringCell = Cell.extend({
 
-  className: "backgrid-string-cell",
+  className: "string-cell",
 
   formatter: {
     fromRaw: function (rawData) {
@@ -95,7 +92,7 @@ var StringCell = Backgrid.StringCell = Cell.extend({
 // TODO: allow editing a uri cell
 var URICell = Backgrid.URICell = StringCell.extend({
 
-  className: "backgrid-uri-cell",
+  className: "uri-cell",
 
   render: function (model) {
     this.setElement(this.$el.clone(true, true)[0]);
@@ -111,7 +108,7 @@ var URICell = Backgrid.URICell = StringCell.extend({
 
 var NumberCell = Backgrid.NumberCell = Cell.extend({
 
-  className: "backgrid-number-cell",
+  className: "number-cell",
 
   decimals: 2,
   decimalSeparator: '.',
@@ -145,7 +142,10 @@ var NumberCell = Backgrid.NumberCell = Cell.extend({
 // An IntegerCell is just a NumberCell with 0 decimals. If a floating point
 // number is supplied, the number is simply rounded the usual way when
 // displayed.
-var IntegerCell = Backgrid.IntegerCell = NumberCell.extend({ decimals: 0 });
+var IntegerCell = Backgrid.IntegerCell = NumberCell.extend({
+  className: "integer-cell",
+  decimals: 0
+});
 
 // DatetimeCell is a basic cell that accepts datetime string values in RFC-2822
 // or W3C's subset of ISO-8601 and displays them in ISO-8601 format. Only works
@@ -155,7 +155,7 @@ var IntegerCell = Backgrid.IntegerCell = NumberCell.extend({ decimals: 0 });
 // Kalendae widget and uses moment.js to parse the datetime values.
 var DatetimeCell = Backgrid.DatetimeCell = Cell.extend({
 
-  className: "backgrid-datetime-cell",
+  className: "datetime-cell",
 
   formatter : {
     fromRaw: function (rawData) {

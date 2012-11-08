@@ -11,8 +11,10 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
   tagName: "th",
 
   events: {
-    "click a": "toggleSorting"
+    "click a": "triggerSort"
   },
+
+  direction: null,
 
   initialize: function (options) {
     this.parent = options.parent;
@@ -22,19 +24,29 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
     }
   },
 
-  toggleSorting: function (e) {
+  toggle: function (columnName, direction) {
+    var $label = this.$el.find("a");
+    $label.removeClass("ascending descending");
+
+    if (columnName === this.column.get("name")) {
+      if (direction) {
+        $label.addClass(direction);
+      }
+      this.direction = direction;
+    }
+    else {
+      this.direction = null;
+    }
+  },
+
+  triggerSort: function (e) {
     e.preventDefault();
 
     var self = this;
 
     var columnName = self.column.get("name");
-    var $label = self.$el.find("a");
-
-    if ($label.hasClass("backgrid-ascending")) {
-
-      $label.removeClass("backgrid-ascending")
-        .addClass("backgrid-descending");
-
+    
+    if (this.direction === "ascending") {
       self.trigger("sort", function (left, right) {
         var leftVal = left.get(columnName);
         var rightVal = right.get(columnName);
@@ -43,13 +55,12 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
         }
         else if (leftVal > rightVal) { return -1; }
         return 1;
-      });
+      }, columnName, "descending");
+    }
+    else if (this.direction === "descending") {
+      self.trigger("sort", null, columnName, null);
     }
     else {
-
-      $label.removeClass("backgrid-descending")
-        .addClass("backgrid-ascending");
-
       self.trigger("sort", function (left, right) {
         var leftVal = left.get(columnName);
         var rightVal = right.get(columnName);
@@ -58,15 +69,13 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
         }
         else if (leftVal < rightVal) { return -1; }
         return 1;
-      });
+      }, columnName, "ascending");
     }
   },
 
   render: function () {
     this.$el.empty();
-    var $label = $("<a>")
-      .addClass("backgrid-column-label backgrid-ascending").text(
-        this.column.get("label"));
+    var $label = $("<a>").text(this.column.get("label")).append("<b class='sort-caret'></b>");
     this.$el.append($label);
     return this;
   }
@@ -91,11 +100,18 @@ var Header = Backgrid.Header = Backbone.View.extend({
         column: column
       });
 
-      cell.on("sort", self.parent.sort, self.parent);
-
+      cell.on("sort", self.dispatchSortEvent, self);
+      
       return cell;
     });
 
+  },
+
+  dispatchSortEvent: function (comparator, sortByColName, direction) {
+    this.parent.sort(comparator);
+    _.each(this.cells, function (cell) {
+      cell.toggle(sortByColName, direction);
+    });
   },
 
   render: function () {

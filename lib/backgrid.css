@@ -1,0 +1,47 @@
+/*
+  backgrid
+  http://github.com/wyuenho/backgrid
+
+  Copyright (c) 2012 Jimmy Yuen Ho Wong
+  Licensed under the MIT @license.
+*/
+
+.backgrid {
+    
+}
+
+.backgrid .sort-caret {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    content: "";
+    margin-left: 0.3em;
+    border: none;
+}
+
+.backgrid .ascending .sort-caret {
+    vertical-align: baseline;
+    border-top: none;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+    border-bottom: 4px solid #000000;
+}
+
+.backgrid .descending .sort-caret {
+    vertical-align: super;
+    border-top: 4px solid #000000;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+    border-bottom: none;
+}
+
+.backgrid .string-cell,
+.backgrid .uri-cell,
+.backgrid .datetime-cell {
+    text-align: left;
+}
+
+.backgrid .number-cell,
+.backgrid .integer-cell {
+    text-align: right;
+}

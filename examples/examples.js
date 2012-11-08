@@ -44,7 +44,7 @@ var ExampleView = Backbone.View.extend({
 
   example2: function () {
     var bookGrid = new Backgrid.Grid({
-      className: "table table-striped table-bordered table-condensed",
+      className: "backgrid table table-striped table-bordered table-condensed",
       columns: this.columns,
       collection: this.books
     });
