@@ -15,18 +15,12 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
   initialize: function (options) {
     this.columns = options.columns;
 
-    if (options.header) {
-      this.header = new options.header({
-        parent: this,
-        columns: this.columns
-      });
-    }
-    else {
-      this.header = new Header({
-        parent: this,
-        columns: this.columns
-      });
-    }
+    this.header = options.header || Header;
+    this.header = new this.header({
+      parent: this,
+      columns: this.columns,
+      collection: this.collection
+    });
 
     this.body = new Body({
       parent: this,
@@ -37,7 +31,8 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
     if (options.footer) {
       this.footer = new options.footer({
         parent: this,
-        columns: this.columns
+        columns: this.columns,
+        collection: this.collection
       });
     }
   },

@@ -12,8 +12,6 @@ var DivCellEditor = Backgrid.CellEditor = Backbone.View.extend({
 
   tagName: "div",
 
-  className: "editor",
-
   attributes: {
     contenteditable: "true"
   },
@@ -40,6 +38,7 @@ var DivCellEditor = Backgrid.CellEditor = Backbone.View.extend({
   // things such as focusing and selecting the content of the editor
   postRender: function () {
     this.$el.focus();
+
     if (typeof window.getSelection !== "undefined" && typeof document.createRange !== "undefined") {
       var rng = document.createRange();
       rng.selectNodeContents(this.el);
@@ -48,7 +47,7 @@ var DivCellEditor = Backgrid.CellEditor = Backbone.View.extend({
       sel.removeAllRanges();
       sel.addRange(rng);
     }
-    else if (typeof document.body.createTextRange !== "undefined") {
+    if (typeof document.body.createTextRange !== "undefined") {
       var txtRng = document.body.createTextRange();
       txtRng.moveToElementText(this.el);
       txtRng.collapse(false);
@@ -137,10 +136,12 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
       this.undelegateEvents();
       this.$el.append(editor.render().$el);
       editor.postRender();
+      this.$el.addClass("editor");
     }
   },
 
   exitEditMode: function () {
+    this.$el.removeClass("editor");
     this.render();
     this.delegateEvents();
   }
@@ -206,7 +207,9 @@ var NumberCell = Backgrid.NumberCell = Cell.extend({
         return result.replace(',', self.orderSeparator);
       },
       toRaw: function (formattedData) {
-        return (formattedData.replace(self.orderSeparator, '').replace(self.decimalSeparator, '.') * 1 || 0).toFixed(~~self.decimals);
+        var result = _.str.trim(formattedData).replace(self.orderSeparator, '').replace(self.decimalSeparator, '.') * 1 || 0;
+        result = result.toFixed(~~self.decimals) * 1;
+        return result;
       }
     };
   }

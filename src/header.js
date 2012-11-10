@@ -45,7 +45,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
     var self = this;
 
     var columnName = self.column.get("name");
-    
+
     if (this.direction === "ascending") {
       self.trigger("sort", function (left, right) {
         var leftVal = left.get(columnName);
@@ -94,16 +94,18 @@ var Header = Backgrid.Header = Backbone.View.extend({
     if (!(self.columns instanceof Backbone.Collection)) {
       self.columns = new Columns(self.columns);
     }
-    self.cells = self.columns.map(function (column) {
-      var cell = new HeaderCell({
-        parent: self,
-        column: column
-      });
-
-      cell.on("sort", self.dispatchSortEvent, self);
-      
-      return cell;
-    });
+    self.cells = [];
+    for (var i = 0; i < self.columns.length; i++) {
+      var column = self.columns.at(i);
+      if (column.get("renderable")) {
+        var cell = new HeaderCell({
+          parent: self,
+          column: column
+        });
+        cell.on("sort", self.dispatchSortEvent, self);
+        self.cells.push(cell);
+      }
+    }
 
   },
 
