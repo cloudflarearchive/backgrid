@@ -59,16 +59,23 @@ h1,h2,h3,h4,h5,h6,.brand {
 }
 
 .CodeMirror {
-  border: 1px solid #ddd;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
-  background-color: #eaeaea;
+    border: 1px solid #ddd;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    background-color: #eaeaea;
 }
 
 .CodeMirror-scroll {
     height: auto;
     max-height: 300px;
+}
+
+@media (max-width: 979px) {
+
+    body {
+        padding-top: 0;
+    }
 }
 
 @media (max-width: 767px) {
@@ -82,5 +89,11 @@ h1,h2,h3,h4,h5,h6,.brand {
         font-size: 48px;
         margin-top: 0;
         margin-bottom: 20px;
+    }
+}
+
+@media (max-width: 479px) {
+    .hero-unit {
+        padding: 10px;
     }
 }
