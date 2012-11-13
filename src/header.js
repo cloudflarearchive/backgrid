@@ -43,33 +43,34 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
     e.preventDefault();
 
     var self = this;
-
     var columnName = self.column.get("name");
 
-    if (this.direction === "ascending") {
-      self.trigger("sort", function (left, right) {
-        var leftVal = left.get(columnName);
-        var rightVal = right.get(columnName);
-        if (leftVal === rightVal) {
-          return 0;
-        }
-        else if (leftVal > rightVal) { return -1; }
-        return 1;
-      }, columnName, "descending");
-    }
-    else if (this.direction === "descending") {
-      self.trigger("sort", null, columnName, null);
-    }
-    else {
-      self.trigger("sort", function (left, right) {
-        var leftVal = left.get(columnName);
-        var rightVal = right.get(columnName);
-        if (leftVal === rightVal) {
-          return 0;
-        }
-        else if (leftVal < rightVal) { return -1; }
-        return 1;
-      }, columnName, "ascending");
+    if (self.column.get("sortable")) {
+      if (this.direction === "ascending") {
+        self.trigger("sort", function (left, right) {
+          var leftVal = left.get(columnName);
+          var rightVal = right.get(columnName);
+          if (leftVal === rightVal) {
+            return 0;
+          }
+          else if (leftVal > rightVal) { return -1; }
+          return 1;
+        }, columnName, "descending");
+      }
+      else if (this.direction === "descending") {
+        self.trigger("sort", null, columnName, null);
+      }
+      else {
+        self.trigger("sort", function (left, right) {
+          var leftVal = left.get(columnName);
+          var rightVal = right.get(columnName);
+          if (leftVal === rightVal) {
+            return 0;
+          }
+          else if (leftVal < rightVal) { return -1; }
+          return 1;
+        }, columnName, "ascending");
+      }
     }
   },
 
