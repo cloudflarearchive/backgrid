@@ -98,6 +98,8 @@ _.extend(NumberFormatter.prototype, {
 
 });
 
+// Only understands ISO-8601 formatted datetime strings. If a timezone is
+// specified, it must be an offset.
 var DatetimeFormatter = Backgrid.DatetimeFormatter = function (options) {
   options = options ? _.clone(options) : {};
   _.extend(this, this.defaults, options);
@@ -106,38 +108,98 @@ var DatetimeFormatter = Backgrid.DatetimeFormatter = function (options) {
 };
 DatetimeFormatter.prototype = new Formatter;
 _.extend(DatetimeFormatter.prototype, {
-  
+
   defaults: {
     includeDate: true,
-    includeTime: true
+    includeTime: true,
+    includeMilli: false
   },
 
+  DATE_RE: /([+\-]?\d{4})-(\d{2})-(\d{2})/,
+  TIME_RE: /(\d{2}):(\d{2}):(\d{2})(\.\d{3})?/,
+  ZONE_RE: /([+\-]\d{2}):?(\d{2})/,
+  ISO_SPLITTER_RE: /T|Z| +/,
+
+  // Assumes the input is in UTC if not supplied. Returns an ISO formatted
+  // string in local timezone
   fromRaw: function (rawData) {
-    var formattedData = new Date(rawData).toISOString();
-    
-    if (!this.includeTime) {
-      return formattedData.slice(0, formattedData.indexOf('T'));
+    rawData = trim(rawData);
+    var parts = rawData.split(this.ISO_SPLITTER_RE) || [];
+    var date = this.includeDate ? parts[0] : '';
+    var time = this.includeDate ? parts[1] : parts[0] || '';
+    var zone = this.includeDate ? parts[2] : parts[1] || '';
+    var YYYYMMDD = this.DATE_RE.exec(date) || [];
+    var HHmmssSSS = this.TIME_RE.exec(time) || [];
+    var zzZZ = this.ZONE_RE.exec(zone) || [];
+
+    zzZZ[1] = zzZZ[1] * 1 || 0;
+    zzZZ[2] = zzZZ[2] * 1 || 0;
+
+    var jsDate = new Date(Date.UTC(YYYYMMDD[1] * 1 || 0,
+                                   YYYYMMDD[2] * 1 - 1 || 0,
+                                   YYYYMMDD[3] * 1 || 0,
+                                   (HHmmssSSS[1] * 1 || null) + zzZZ[1],
+                                   (HHmmssSSS[2] * 1 || null) + zzZZ[2],
+                                   HHmmssSSS[3] * 1 || null,
+                                   HHmmssSSS[4] * 1 || null));
+
+    var result = '';
+
+    if (this.includeDate) {
+      result = lpad(jsDate.getFullYear(), 4, 0) + '-' + lpad(jsDate.getMonth() + 1, 2, 0) + '-' + lpad(jsDate.getDate(), 2, 0);
     }
 
-    return formattedData.slice(formattedData.indexOf('T') + 1);
+    if (this.includeTime) {
+      result = result + ' ' + lpad(jsDate.getHours(), 2, 0) + ':' + lpad(jsDate.getMinutes(), 2, 0) + ':' + lpad(jsDate.getSeconds(), 2, 0);
+
+      if (this.includeMilli) {
+        result = result + '.' + lpad(jsDate.getMilliseconds(), 3, 0);
+      }
+    }
+
+    return result;
   },
 
+  // Assumes the input is in local timezone if not supplied. Returns an ISO
+  // formatted string in UTC
   toRaw: function (formattedData) {
-    if (!this.includeTime) {
-      var tIndex = formattedData.indexOf("T");
-      if (tIndex !== -1) {
-        formattedData = formattedData.slice(0, tIndex);
+    formattedData = trim(formattedData);
+    var parts = formattedData.split(this.ISO_SPLITTER_RE) || [];
+    var date = this.includeDate ? parts[0] : '';
+    var time = this.includeDate ? parts[1] : parts[0] || '';
+    var zone = this.includeDate ? parts[2] : parts[1] || '';
+    var YYYYMMDD = this.DATE_RE.exec(date) || [];
+    var HHmmssSSS = this.TIME_RE.exec(time) || [];
+    var zzZZ = this.ZONE_RE.exec(zone) || [];
+
+    zzZZ[1] = zzZZ[1] * 1 || 0;
+    zzZZ[2] = zzZZ[2] * 1 || 0;
+
+    var jsDate = new Date(YYYYMMDD[1] * 1 || 0,
+                          YYYYMMDD[2] * 1 - 1 || 0,
+                          YYYYMMDD[3] * 1 || 0,
+                          (HHmmssSSS[1] * 1 || null),
+                          (HHmmssSSS[2] * 1 || null),
+                          HHmmssSSS[3] * 1 || null,
+                          HHmmssSSS[4] * 1 || null);
+
+    jsDate.setUTCHours(jsDate.getUTCHours() + zzZZ[1]);
+    jsDate.setUTCMinutes(jsDate.getUTCMinutes() + zzZZ[2]);
+
+    var result = '';
+
+    if (this.includeDate) {
+      result = lpad(jsDate.getFullYear(), 4, 0) + '-' + lpad(jsDate.getMonth() + 1, 2, 0) + '-' + lpad(jsDate.getDate(), 2, 0);
+    }
+
+    if (this.includeTime) {
+      result = result + ' ' + lpad(jsDate.getHours(), 2, 0) + ':' + lpad(jsDate.getMinutes(), 2, 0) + ':' + lpad(jsDate.getSeconds(), 2, 0);
+
+      if (this.includeMilli) {
+        result = result + '.' + lpad(jsDate.getMilliseconds(), 3, 0);
       }
-      return new Date(formattedData).toISOString();
     }
 
-    var hms = formattedData.split(":");
-    var ms = 0;
-    if (hms[3]) {
-      ms = hms[3].slice(hms[3].indexOf('.') + 1);
-      hms[3].replace('.' + ms, '');
-    }
-    return new Date(null, null, null, hms[0], hms[1], hms[2], ms);
+    return result;
   }
-
 });

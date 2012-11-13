@@ -27,4 +27,14 @@ function capitalize(s) {
   return String.fromCharCode(s.charCodeAt(0) - 32) + s.slice(1);
 }
 
+function lpad(str, length, padstr) {
+  var paddingLen = length - (str + '').length;
+  paddingLen =  paddingLen < 0 ? 0 : paddingLen;
+  var padding = '';
+  for (var i = 0; i < paddingLen; i++) {
+    padding = padding + padstr;
+  }
+  return padding + str;
+}
+
 var Backgrid = root.Backgrid = {};
