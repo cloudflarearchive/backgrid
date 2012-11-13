@@ -4,197 +4,344 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
-
+    
     <title>Backgrid.js</title>
-
+    
     <link rel="stylesheet" href="assets/css/bootstrap.css" />
-    <link rel="stylesheet" href="assets/css/prettify.css" />
     <link rel="stylesheet" href="assets/css/bootstrap-responsive.css" />
-    <link rel="stylesheet" href="assets/css/doc.css" />
+    <link rel="stylesheet" href="codemirror/lib/codemirror.css" />
     <link rel="stylesheet" href="lib/backgrid.css" />
+    <link rel="stylesheet" href="assets/css/doc.css" />
     <!--[if lt IE 9]>
         <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
-    <![endif]-->
-    <script src="assets/js/jquery.js"></script>
-    <script src="assets/js/underscore.js"></script>
-    <script src="assets/js/backbone.js"></script>
-    <script src="assets/js/underscore.string.js"></script>
-    <script src="lib/backgrid.all.js"></script>
-    <script src="assets/js/bootstrap.js"></script>
-    <script src="assets/js/prettify.js"></script>
-    <script src="assets/js/lang-css.js"></script>
-    <script src="examples/jst.js"></script>
-    <script src="examples/examples.js"></script>
+        <![endif]-->
   </head>
   <body>
-    <div id="wrapper">
-      <div id="main">
-        <header>
-          <div class="container">
-            <div class="navbar navbar-fixed-top">
-              <div class="navbar-inner">
-                <div class="container">
-                  <a href="http://wyuenho.github.com/backgrid"
-                     class="brand" title="Finally, an easily stylable HTML data
-                     grid widget with a JS API that doesn't
-                     suck.">Backgrid.js</a>
-                  <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                  </a>
-                  <div class="nav-collapse collapse">
-                    <ul class="nav nav-pills">
-                      <li><a href="#introduction">Introduction</a></li>
-                      <li><a href="#examples">Examples</a></li>
-                      <li class="dropdown">
-                        <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);">
-                          API Reference
-                          <b class="caret"></b>
-                        </a>
-                        <ul class="dropdown-menu">
-                          <li><a href="#api-grid">Grid</a></li>
-                          <li><a href="#api-column">Column</a></li>
-                          <li><a href="#api-cell">Cell</a></li>
-                          <li><a href="#api-header">Header</a></li>
-                          <li><a href="#api-footer">Footer</a></li>
-                          <li><a href="#api-formatter">Formatter</a></li>
-                          <li><a href="#api-row">Row</a></li>
-                          <li><a href="#api-body">Body</a></li>
-                        </ul>
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-                <a class="visible-desktop" href="https://github.com/wyuenho/backgrid">
-                  <img style="position: absolute; top: 0; right: 0; border: 0;" src="assets/img/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub">
+    <div id="main">
+      <header>
+        <div class="container">
+          <div class="navbar navbar-fixed-top">
+            <div class="navbar-inner">
+              <div class="container">
+                <a href="http://wyuenho.github.com/backgrid"
+                   class="brand" title="Finally, an easily stylable HTML data grid widget with a JS API that doesn't suck.">Backgrid.js</a>
+                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
                 </a>
+                <div class="nav-collapse collapse">
+                  <ul class="nav nav-pills">
+                    <li class="dropdown">
+                      <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);">
+                        Introduction
+                        <b class="caret"></b>
+                      </a>
+                      <ul class="dropdown-menu">
+                        <li><a href="#features">Features</a></li>
+                        <li><a href="#getting-started">Getting Started</a></li>
+                        <li><a href="#examples">Examples</a></li>
+                      </ul>
+                    </li>
+                    <li class="dropdown">
+                      <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);">
+                        API Reference
+                        <b class="caret"></b>
+                      </a>
+                      <ul class="dropdown-menu">
+                        <li><a href="#api-grid">Grid</a></li>
+                        <li><a href="#api-column">Column</a></li>
+                        <li><a href="#api-cell">Cells</a></li>
+                        <li><a href="#api-footer">Footer</a></li>
+                        <li><a href="#api-formatter">Formatter</a></li>
+                        <li><a href="#api-validator">Validator</a></li>
+                        <li><a href="#api-header">Header</a></li>
+                        <li><a href="#api-row">Row</a></li>
+                        <li><a href="#api-body">Body</a></li>
+                        <li class="divider"></li>
+                        <li>Extensions</li>
+                        <li><a href="#api-paginator">Paginator</a></li>
+                      </ul>
+                    </li>
+                    <li class="dropdown">
+                      <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);">
+                        More Info
+                        <b class="caret"></b>
+                      </a>
+                      <ul class="dropdown-menu">
+                        <li><a href="#styling">Styling</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#faq">FAQ</a></li>
+                        <li><a href="#changelog">Change Log</a></li>
+                        <li><a href="#contributors">Contributors</a></li>
+                        <li><a href="#footer">License</a></li>
+                      </ul>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <a class="visible-desktop" href="https://github.com/wyuenho/backgrid">
+                <img style="position: absolute; top: 0; right: 0; border: 0;" src="assets/img/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub">
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+      <div class="container">
+        <section class="hero-unit">
+          <h1>Backgrid.js</h1>
+          <p class="lead">
+            Backgrid.js is a set of components for
+            building <strong>semantic</strong> and <strong>easily
+            stylable</strong> tabular data <strong>grid</strong> widgets. <br />
+            It offers you a simple, intuitive and <strong>beautiful programming
+            interface</strong> that doesn't put any handcuffs on you.
+          </p>
+          <p>
+            <a class="btn btn-large btn-success" href="#examples">See Examples</a>
+            <a class="btn btn-large btn-primary hidden-phone hidden-tablet" href="https://github.com/wyuenho/backgrid/downloads" target="_blank">Download (v0.1)</a>
+          </p>
+        </section>
+        <section id="features">
+          <div class="page-header">
+            <h1>Features</h1>
+          </div>
+          <div class="row">
+            <div class="span6">
+              <h2>Advantages</h2>
+              <ul>
+                <li>No Hungarian notations.</li>
+                <li>Solid foundation. Based
+                on <a href="http://backbonejs.org">Backbone.js</a>.</li>
+                <li><a href="#styling">Easily stylable</a>. Just style with
+                plain CSS like you would a normal HTML table.</li>
+                <li>Low learning curve. Works with plain old Backbone models and
+                collections, no extra patterns or abstractions to learn.</li>
+                <li>Highly modular and customizable. Componenets are just simple
+                  Backbone View classes, customization is easy if you already
+                  know Backbone.</li>
+                <li>Lightweight. Extra features are separated
+                  into <a href="#extensions">extensions</a>, which keeps the
+                  bloat away.</li>
+                <li>Good documentation.</li>
+              </ul>
+            </div>
+            <div class="span6">
+              <h2>Supported browsers: <a href="#ref-1" title="See #note-1" style="font-size: 14px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">[1]</a></h2>
+              <ul>
+                <li>Internet Explorer 8+ <a href="#ref-2" title="See #note-2">[2]</a></li>
+                <li>Chrome 4+</li>
+                <li>Safari 4+</li>
+                <li>Firefox 4+</li>
+                <li>Opera 9+ <a href="#ref-3" title="See #note-3">[3]</a></li>
+              </ul>
+              <aside class="note">
+                <h3>Notes:</h3>
+                <div id="note-1">1. Both the desktop and mobile versions of the above browsers are supported.</div>
+                <div id="note-2">2. Backgrid uses some ES5 features, so a <a href="http://" title="">ES5 polyfill</a> is required for IE8.</div>
+                <div id="note-3">3. Currently needs to double click on a cell to gain focus.</div>
+              </aside>
+            </div>
+          </div>
+        </section>
+        <section id="getting-started">
+          <div class="page-header">
+            <h1>Getting Started</h1>
+          </div>
+          <div class="row">
+            <div class="span6">
+              <p>
+                <strong>Backgrid.js</strong> depends on 3 libraries to function:
+              </p>
+              <ul>
+                <li><a href="http://jquery.com">jquery &gt;= 1.7.0</a></li>
+                <li><a href="http://underscorejs.org">underscore.js &gt; 1.4.0</a></li>
+                <li><a href="http://backbonejs.org">backbone.js &gt;= 0.9.2</a></li>
+              </ul>
+              <aside class="note">
+                <h5>Note:</h5> If you don't care about having the latest
+                versions of the dependencies, you can use the bundled versions
+                that come with the downloaded package.
+              </aside>
+            </div>
+            <div class="span6">
+              <p>
+                Suppose you have extracted all the dependencies into a directory
+                <code>PROJECT_ROOT/js</code>, and you are serving an HTML
+                document from <code>PROJECT_ROOT</code>, similiar code like the
+                following will get <strong>Backgrid.js</strong> loaded:
+              </p>
+              <textarea class="code-snippet" data-mode="htmlmixed">&lt;head&gt;
+                &lt;script src="/js/jquery.js"&gt;&lt;/script&gt;
+                &lt;script src="/js/underscore.js"&gt;&lt;/script&gt;
+                &lt;script src="/js/backbone.js"&gt;&lt;/script&gt;
+                &lt;script src="/js/backgrid.core.js"&gt;&lt;/script&gt;
+                &lt;/head&gt;</textarea>
+            </div>
+          </div>
+        </section>
+        <section id="examples">
+          <div class="page-header">
+            <h1>Examples</h1>
+          </div>
+          <div class="row">
+            <div class="span12">
+              <div class="row">
+                <div class="span6">
+                  <h2>Collection and Model</h2>
+                  <p>Before you can display any tabular data in a grid, you must first obtain them.</p>
+                  <p>At the most basic level, Backgrid pretends that every row
+                    is a model object and the whole table is backed by a simple
+                    Backbone collection.</p>
+                  <p>In the following examples, we&rsquo;ll use a list of country data:</p>
+                </div>
+                <div class="span6">
+                  <textarea class="code-snippet" data-mode="javascript">
+                    var Territory = Backbone.Model.extend({});
+                    
+                    var Territories = Backbone.Collection.extend({
+                      model: Territory,
+                      url: "examples/territories.json"
+                    });
+                    
+                    var territories = new Territories();
+                    
+                    // Fetch some countries from the server
+                    territories.fetch();</textarea>
+                </div>
+              </div>
+              <div class="row">
+                <div class="span6">
+                  <h2>Grid</h2>
+                  <p>
+                    The main entry point of the Backgrid package is
+                    the Backgrid.Grid class. You can create a default
+                    Backgrid by first defining some columns, and then put that
+                    list of columns and the collection of data into the Grid
+                    constructor like this:
+                  </p>
+                  <textarea class="code-snippet" data-mode="javascript">
+                    var columns = [{
+                      name: "id",
+                      label: "ID",
+                      cell: Backgrid.IntegerCell.extend({
+                        orderSeparator: ''
+                      })
+                    }, {
+                      name: "name",
+                      label: "Name",
+                      cell: "string"
+                    }, {
+                      name: "pop",
+                      label: "Population",
+                      cell: "integer"
+                    }, {
+                      name: "percentage",
+                      label: "% of World Population",
+                      cell: "number"
+                    }, {
+                      name: "date",
+                      label: "Date",
+                      cell: "date",
+                    }, {
+                      name: "url",
+                      label: "URL",
+                      cell: "uri"
+                    }];
+
+                    var grid = new Backgrid.Grid({
+                      columns: columns,
+                      collection: territories
+                    });
+
+                    $("#example-1-result").append(grid.render().$el);
+                  </textarea>
+                </div>
+                <div class="span6">
+                  <h2>Result:</h2>
+                  <div id="example-1-result" class="backgrid-container"></div>
+                </div>
               </div>
             </div>
           </div>
-        </header>
-        <div class="container">
-          <section class="hero-unit">
-            <h1>Backgrid.js</h1>
-            <p class="lead">
-              Backgrid.js is a set of components for
-              building <strong>semantic</strong> and <strong>easily
-              stylable</strong> tabular data <strong>grid</strong> widgets while
-              offering a simple, intuitive and <strong>beautiful programming
-              interface</strong> that doesn't put any handcuffs on you.
-            </p>
-            <p>
-              <a class="btn btn-large btn-success" href="#examples">See Examples</a>
-              <a class="btn btn-large btn-primary hidden-phone hidden-tablet" href="https://github.com/wyuenho/backgrid/downloads" target="_blank">Download (v0.1)</a>
-            </p>
-          </section>
-          <section id="introduction">
-            <div class="page-header">
-              <h1>Installation</h1>
-            </div>
-            <div class="row">
-              <div class="span6">
-                <p>
-                  Since <strong>Backgrid.js</strong> is built on <strong>Backbone.js</strong>, there are a
-                  number of dependencies you have to satisfy before you can start
-                  using it.
-                </p>
-                <p>
-                  At the mininum, you have to get the following libraries first
-                  and put them into the <code>&lt;head&gt;</code> section of your
-                  HTML page.
-                </p>
-                <ul>
-                  <li><a href="http://jquery.com">jquery &gt;= 1.7.0</a></li>
-                  <li><a href="http://underscorejs.org">underscore.js &gt; 1.4.0</a></li>
-                  <li><a href="http://backbonejs.org">backbone.js &gt;= 0.9.2</a></li>
-                  <li><a href="http://epeli.github.com/underscore.string/">underscore.string.js &gt;= 2.3.0</a></li>
-                </ul>
-                <p>
-                  If you don't care about getting the latest version of the
-                  dependencies, you can use the bundled version of the libraries
-                  in the downloaded package.
-                </p>
-              </div>
-
-              <div class="span6">
-                <p>
-                  Suppose you have put all the dependencies into a directory
-                  called <em>js</em> at the root, you can copy and paste
-                  the following snippet:
-                </p>
-                <pre class="prettyprint linenums" data-snippet="installation"></pre>
-              </div>
-            </div>
-          </section>
-          <section id="examples">
-            <div class="page-header">
-              <h1>Examples</h1>
-            </div>
-            <div class="row">
-              <div class="span12">
-                <div class="row">
-                  <div class="span6">
-                    <h2>Getting Started</h2>
-                    <p>Before you can display any tabular data in a grid, you must first obtain them.</p>
-                    <p>At the most basic level, Backgrid pretends that
-                      every row is a model object and the whole table is backed by a
-                      simple Backbone collection.</p>
-                    <p>In the following examples, we&rsquo;ll suppose we have a collection of books:</p>
-                  </div>
-                  <div class="span6">
-                    <pre class="prettyprint linenums" data-snippet="example1"></pre>
-                  </div>
+        </section>
+        <section id="faq">
+          <div class="page-header">
+            <h1>Frequently Asked Questions</h1>
+          </div>
+          <div class="row">
+            <div class="span12">
+              <div class="row">
+                <div class="span6">
                 </div>
-                <div class="row">
-                  <div class="span6">
-                    <h2>Grid</h2>
-                    <p>
-                      The main entry point of the Backgrid package is
-                      the Backgrid.Grid class. You can create a default
-                      Backgrid by first defining some columns, and then put that
-                      list of columns and the collection of data into the Grid
-                      constructor like this:
-                    </p>
-                    <pre class="prettyprint linenums" data-snippet="example2">
-                    </pre>
-                  </div>
-                  <div class="span6">
-                    <h3>Result:</h3>
-                    <div id="example2-result" data-example=""></div>
-                  </div>
+                <div class="span6">
                 </div>
               </div>
             </div>
-          </section>
-        </div>
+          </div>
+        </section>
       </div>
     </div>
     <div id="footer">
       <div class="container">
-        <p>Copyright &copy; 2012 Jimmy Yuen Ho Wong. Code licensed under the <a href="LICENSE-MIT">MIT license</a>.<br />
-          Documentation licensed under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY 3.0</a></p>
+        <p>Copyright &copy; 2012 Jimmy Yuen Ho Wong. Code licensed under
+          the <a href="LICENSE-MIT">MIT license</a>.<br /> Documentation
+          licensed
+          under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY
+          3.0</a></p>
       </div>
     </div>
     <script src="assets/js/scale.fix.js"></script>
+    <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/underscore.js"></script>
+    <script src="assets/js/backbone.js"></script>
+    <script src="lib/backgrid.all.js"></script>
+    <script src="assets/js/bootstrap.js"></script>
+    <script src="codemirror/lib/codemirror.js"></script>
+    <script src="codemirror/lib/util/formatting.js"></script>
+    <script src="codemirror/mode/xml/xml.js"></script>
+    <script src="codemirror/mode/css/css.js"></script>
+    <script src="codemirror/mode/javascript/javascript.js"></script>
+    <script src="codemirror/mode/htmlmixed/htmlmixed.js"></script>
     <script>
-      $(document).ready(function() {
+      (function () {
+        function unescape (s) {
+          var result = s.replace("&lt;", '<');
+          result = result.replace("&gt;", '>');
+          result = result.replace("&amp;", "&");
+          return result;
+        }
+        
+        $(document).ready(function () {
 
-        $("pre.prettyprint").each(function() {
-          var $pre = $(this);
-          var tmpl = JST[$pre.data("snippet")];
-          $pre.text(tmpl($pre.data()));
+          var codestr = '';
+          
+          $("textarea.code-snippet").each(function (index, elm) {
+            var $elm = $(elm);
+            var codemirror = CodeMirror.fromTextArea(elm, {
+              mode: $elm.data("mode"),
+              readOnly: true,
+              lineNumbers: true
+            });
+            
+            var start = { line: 0, ch: 0 };
+            var end = codemirror.posFromIndex(codemirror.getValue().length - 1);
+            
+            codemirror.autoIndentRange(start, end);
+            
+            if ($elm.data("mode") === "javascript") {
+              codestr = codestr + "\n" + codemirror.getValue();
+            }
+            
+            $elm.data("codemirror", codemirror);
+          });
+
+          var scriptTag = document.createElement("script");
+          scriptTag.innerHTML = codestr;
+          document.body.appendChild(scriptTag);
         });
 
-        prettyPrint();
-
-        var exampleView = new ExampleView();
-        $("div[id$='result']").each(function() {
-          var $resultDiv = $(this);
-          var exampleId = $resultDiv.attr("id").replace("-result", "");
-          $resultDiv.append(exampleView.render(exampleId).$el);
-        });
-      });
+      }());
     </script>
   </body>
 </html>

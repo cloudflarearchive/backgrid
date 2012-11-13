@@ -164,18 +164,26 @@ var StringCell = Backgrid.StringCell = Cell.extend({
 
 });
 
-// TODO: allow editing a uri cell
-var URICell = Backgrid.URICell = StringCell.extend({
+var UriCell = Backgrid.UriCell = StringCell.extend({
 
   className: "uri-cell",
 
-  render: function (model) {
-    this.setElement(this.$el.clone(true, true)[0]);
+  formatter: {
+    fromRaw: function (rawData) {
+      return rawData;
+    },
+    toRaw: function (formattedData) {
+      return encodeURI(formattedData);
+    }
+  },
+  
+  render: function () {
     this.$el.empty();
-    var formattedValue = this.formatter.fromRaw(model.get(this.column.get("name")));
-    this.$el.text(formattedValue).children().wrap("<a>", {
-      href: formattedValue
-    });
+    var formattedValue = this.formatter.fromRaw(this.model.get(this.column.get("name")));
+    this.$el.append($("<a>", {
+      href: formattedValue,
+      title: formattedValue
+    }).text(formattedValue));
     return this;
   }
 
@@ -185,33 +193,24 @@ var NumberCell = Backgrid.NumberCell = Cell.extend({
 
   className: "number-cell",
 
-  decimals: 2,
-  decimalSeparator: '.',
-  orderSeparator: ',',
-
+  decimals: NumberFormatter.prototype.defaults.decimals,
+  decimalSeparator: NumberFormatter.prototype.defaults.decimalSeparator,
+  orderSeparator: NumberFormatter.prototype.defaults.orderSeparator,
+  
   initialize: function (options) {
-    var self = this;
-
-    Cell.prototype.initialize.apply(self, arguments);
+    Cell.prototype.initialize.apply(this, arguments);
 
     if (options) {
-      self.decimals = typeof options.decimals !== "undefined" ? options.decimals : self.decimals;
-      self.decimalSeparator = options.decimalSeparator || self.decimalSeparator;
-      self.orderSeparator = typeof options.orderSeparator !== "undefined" ? options.orderSeparator : self.orderSeparator;
+      this.decimals = typeof options.decimals !== "undefined" ? options.decimals : this.decimals;
+      this.decimalSeparator = typeof options.decimalSeparator !== "undefined" ? options.decimalSeparator : this.decimalSeparator;
+      this.orderSeparator = typeof options.orderSeparator !== "undefined" ? options.orderSeparator : this.orderSeparator;
     }
 
-    self.formatter = options && options.formatter || {
-      fromRaw: function (rawData) {
-        var result = _.str.numberFormat(rawData, self.decimals, self.decimalSeparator);
-        // underscore.string issue #154
-        return result.replace(',', self.orderSeparator);
-      },
-      toRaw: function (formattedData) {
-        var result = _.str.trim(formattedData).replace(self.orderSeparator, '').replace(self.decimalSeparator, '.') * 1 || 0;
-        result = result.toFixed(~~self.decimals) * 1;
-        return result;
-      }
-    };
+    this.formatter = options && options.formatter || new NumberFormatter({
+      decimals: this.decimals,
+      decimalSeparator: this.decimalSeparator,
+      orderSeparator: this.orderSeparator
+    });
   }
 
 });
@@ -226,21 +225,37 @@ var IntegerCell = Backgrid.IntegerCell = NumberCell.extend({
 
 // DatetimeCell is a basic cell that accepts datetime string values in RFC-2822
 // or W3C's subset of ISO-8601 and displays them in ISO-8601 format. Only works
-// with EcmaScript 5 compliant browsers at the moment. For a much more
-// sophisticated date time cell, the recommended way is to use the bundled
-// kalendae-cell.js extension which supplies a KalendaeCell that renders a
-// Kalendae widget and uses moment.js to parse the datetime values.
+// with browsers that have a Ecmascript 5 compliant Date class at the
+// moment. For a much more sophisticated date time cell, take a look at the
+// kalendae-cell.js extension.
 var DatetimeCell = Backgrid.DatetimeCell = Cell.extend({
 
   className: "datetime-cell",
 
-  formatter : {
-    fromRaw: function (rawData) {
-      return new Date(rawData).toISOString();
-    },
-    toRaw: function (formattedData) {
-      return new Date(rawData).toISOString();
+  includeDate: DatetimeFormatter.prototype.defaults.includeDate,
+  includeTime: DatetimeFormatter.prototype.defaults.includeTime,
+
+  initialize: function (options) {
+    Cell.prototype.initialize.apply(this, arguments);
+    if (options) {
+      this.includeDate = typeof options.includeDate !== "undefined" ? options.includeDate : this.includeDate;
+      this.includeTime = typeof options.includeTime !== "undefined" ? options.includeTime : this.includeTime;
     }
+
+    this.formatter = options && options.formatter || new DatetimeFormatter({
+      includeDate: this.includeDate,
+      includeTime: this.includeTime
+    });
   }
 
+});
+
+var DateCell = Backgrid.DateCell = DatetimeCell.extend({
+  className: "date-cell",
+  includeTime: false
+});
+
+var TimeCell = Backgrid.TimeCell = DatetimeCell.extend({
+  className: "date-cell",
+  includeDate: false
 });

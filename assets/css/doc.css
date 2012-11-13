@@ -1,55 +1,74 @@
-/* Sticky Footer Solution by Steve Hatcher http://stever.ca
-   http://www.cssstickyfooter.com */
-
-/* * { */
-/*     margin: 0; */
-/*     padding: 0; */
-/* } */
-
-/* must declare 0 margins on everything, also for main layout components use
-   padding, not vertical margins (top and bottom) to add spacing, else those
-   margins get added to total height and your footer gets pushed down a bit
-   more, creating vertical scroll bars in the browser */
-
-html, body {
+html{
     height: 100%;
+    overflow: auto;
 }
 
-#wrapper {
+body {
+    height: auto !important;
+    height: 100%;
     min-height: 100%;
+    overflow: hidden;
+    position: relative;
+    padding-top: 40px;
 }
 
 #main {
     overflow: auto;
-    padding-bottom: 40px; /* must be same height as the footer */
+    margn-bottom: 40px;
 }
 
 #footer {
-    position: relative;
-    margin-top: -40px; /* negative value of footer height */
+    position: absolute;
+    botton: 0;
+    left: 0;
+    right: 0;
     height: 40px;
-    clear: both;
     background-color: #EEE;
     text-align: center;
 }
 
-/*Opera Fix*/
-body:before {
-    /* thanks to Maleika (Kohoutec)*/
-    content: "";
-    height: 100%;
-    float: left;
-    width: 0;
-    margin-top: -32767px;
-/* thank you Erik J -negate effect of float*/
+h1,h2,h3,h4,h5,h6,.brand {
+    font-family: 'Hoefler Text', Baskerville, Times, Georgia, 'Times New Roman', serif;
+    font-weight: normal;
 }
 
-h1,h2,h3,h4,h5,h6 {
-    font-family: Georgia, 'Times New Roman', Times, serif;
+.note {
+    color: #777;
+    font-style: italic;
+    font-family: Baskerville, serif;
+    font-size: 15px;
 }
 
-body {
-    padding-top: 40px;
+.note h1,
+.note h2,
+.note h3,
+.note h4,
+.note h5,
+.note h6 {
+    font-size: 15px;
+    margin: 20px 0 0;
+}
+
+.hero-unit h1 {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.backgrid-container {
+    height: 300px;
+}
+
+.CodeMirror {
+  border: 1px solid #ddd;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  background-color: #eaeaea;
+}
+
+.CodeMirror-scroll {
+    height: auto;
+    max-height: 300px;
 }
 
 @media (max-width: 767px) {
@@ -60,7 +79,8 @@ body {
     }
 
     .hero-unit h1 {
-        font-size: 40px;
-        margin-bottom: 40px;
+        font-size: 48px;
+        margin-top: 0;
+        margin-bottom: 20px;
     }
 }

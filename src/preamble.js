@@ -15,8 +15,16 @@ var require = require || function (packageName) {
 var _ = root._ || require("underscore");
 var Backbone = root.Backbone || require("backbone");
 
-if (!_.string && !_.str) {
-  _.string = _.str = require("underscore.string");
+function trim(s) {
+  if (String.prototype.trim) {
+    return String.prototype.trim.call(s, s);
+  }
+
+  return s.replace(/^\s+|\s+$/g, "");
+}
+
+function capitalize(s) {
+  return String.fromCharCode(s.charCodeAt(0) - 32) + s.slice(1);
 }
 
 var Backgrid = root.Backgrid = {};

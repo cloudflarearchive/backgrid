@@ -6,13 +6,18 @@ Copyright (c) 2012 Jimmy Yuen Ho Wong
 Licensed under the MIT @license.
 */
 
+.backgrid-container {
+    position: relative;
+    overflow: scroll;
+    max-height: 500px;
+}
+
 .backgrid {
     max-width: 100%;
     background-color: transparent;
     width: 100%;
     margin-bottom: 20px;
-    border-collapse: separate;
-    *border-collapse: collapse;
+    border-collapse: collapse;
     border-spacing: 0;
     border-left: 0;
     border: 1px solid #DDD;;
@@ -29,10 +34,15 @@ Licensed under the MIT @license.
     vertical-align: top;
     border-top: 1px solid #DDD;
     border-left: 1px solid #DDD;
+    white-space: nowrap;
 }
 
 .backgrid th {
     font-weight: bold;
+}
+
+.backgrid th a {
+/* white-space: nowrap; */
 }
 
 .backgrid thead th {
@@ -111,14 +121,16 @@ Licensed under the MIT @license.
     background-color: #f9f9f9;
 }
 
-.backgrid .editor {
+.backgrid tbody tr td.editor,
+.backgrid tbody tr th.editor {
     border: 0 \9;
     outline: 1px solid rgba(82, 168, 236, 0.8);
     outline: thin dotted \9;
     background-color: rgba(82, 168, 236, 0.1);
 }
 
-.backgrid .editor :focus {
+.backgrid tbody tr td.editor :focus,
+.backgrid tbody tr th.editor :focus {
     outline: 0;
 }
 
@@ -148,11 +160,12 @@ Licensed under the MIT @license.
 }
 
 .backgrid .string-cell,
-.backgrid .uri-cell,
-.backgrid .datetime-cell {
+.backgrid .uri-cell {
     text-align: left;
 }
-
+.backgrid .date-cell,
+.backgrid .time-cell,
+.backgrid .datetime-cell,
 .backgrid .number-cell,
 .backgrid .integer-cell {
     text-align: right;
