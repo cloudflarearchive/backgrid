@@ -147,11 +147,11 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
         formatter: this.formatter
       });
 
-      this.curentEditor.on("done", this.exitEditMode, this);
+      this.currentEditor.on("done", this.exitEditMode, this);
 
       this.$el.empty();
       this.undelegateEvents();
-      this.$el.append(editor.render().$el);
+      this.$el.append(this.currentEditor.render().$el);
       this.currentEditor.postRender();
       this.$el.addClass("editor");
     }
