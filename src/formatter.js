@@ -74,7 +74,8 @@ _.extend(NumberFormatter.prototype, {
       rawData = rawData.slice(0, rawData.length - 1);
     }
 
-    return (rawData * 1).toFixed(~~this.decimals) * 1;
+    var result = (rawData * 1).toFixed(~~this.decimals) * 1;
+    if (_.isNumber(result) && !_.isNaN(result)) return result;
   }
 
 });
@@ -155,6 +156,18 @@ _.extend(DatetimeFormatter.prototype, {
 
     zzZZ[1] = zzZZ[1] * 1 || 0;
     zzZZ[2] = zzZZ[2] * 1 || 0;
+
+    if (this.includeDate && _.isUndefined(YYYYMMDD[1]) || _.isUndefined(YYYYMMDD[2]) || _.isUndefined(YYYYMMDD[3])) {
+      return;
+    }
+
+    if (!this.includeDate && (YYYYMMDD[1] || YYYYMMDD[2] || YYYYMMDD[3])) {
+      return;
+    }
+
+    if (!this.includeTime && (HHmmssSSS[1] || HHmmssSSS[2] || HHmmssSSS[3] || HHmmssSSS[4])) {
+      return;
+    }
 
     var jsDate = new Date(YYYYMMDD[1] * 1 || 0,
                           YYYYMMDD[2] * 1 - 1 || 0,

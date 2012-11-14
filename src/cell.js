@@ -73,16 +73,23 @@ var DivCellEditor = Backgrid.DivCellEditor = CellEditor.extend({
   },
 
   saveOrCancel: function (e) {
+
     if (e.type === "keydown") {
       // enter or tab
       if (e.keyCode === 13 || e.keyCode === 9) {
         e.preventDefault();
         var valueToSet = this.formatter.toRaw(this.$el.text());
+
+        if (typeof valueToSet === "undefined") {
+          this.trigger("error");
+          return;
+        }
+
         if (this.model.set(this.column.get("name"), valueToSet)) {
           this.trigger("done");
         }
         else {
-          // TODO: handle error
+          this.trigger("error");
         }
       }
       // esc
@@ -148,6 +155,7 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
       });
 
       this.currentEditor.on("done", this.exitEditMode, this);
+      this.currentEditor.on("error", this.renderError, this);
 
       this.$el.empty();
       this.undelegateEvents();
@@ -157,7 +165,12 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
     }
   },
 
+  renderError: function () {
+    this.$el.addClass("error");
+  },
+
   exitEditMode: function () {
+    this.$el.removeClass("error");
     this.currentEditor.remove();
     delete this.currentEditor;
     this.$el.removeClass("editor");

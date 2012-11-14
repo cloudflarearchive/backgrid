@@ -129,6 +129,11 @@
     background-color: rgba(82, 168, 236, 0.1);
 }
 
+.backgrid tbody tr td.error,
+.backgrid tbody tr th.error {
+    outline: 1px solid yellow;
+}
+
 .backgrid tbody tr td.editor :focus,
 .backgrid tbody tr th.editor :focus {
     outline: 0;
