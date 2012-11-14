@@ -7,9 +7,7 @@ body {
     height: auto !important;
     height: 100%;
     min-height: 100%;
-    overflow: hidden;
     position: relative;
-    padding-top: 40px;
 }
 
 #main {
@@ -68,14 +66,6 @@ h1,h2,h3,h4,h5,h6,.brand {
 
 .CodeMirror-scroll {
     height: auto;
-    max-height: 300px;
-}
-
-@media (max-width: 979px) {
-
-    body {
-        padding-top: 0;
-    }
 }
 
 @media (max-width: 767px) {
