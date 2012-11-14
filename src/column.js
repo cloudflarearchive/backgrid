@@ -24,8 +24,8 @@ var Column = Backgrid.Column = Backbone.Model.extend({
       this.set({ label: this.get("name") }, { silent: true });
     }
 
-    if (!attrs.cell) { throw new Error("Column.cell is required"); }
-    if (!attrs.name) { throw new Error("Column.name is required"); }
+    if (!attrs.cell) { throw new Error("cell is required"); }
+    if (!attrs.name) { throw new Error("name is required"); }
 
     if (typeof attrs.cell === "string") {
       var cell = Backgrid[capitalize(this.get("cell")) + "Cell"];

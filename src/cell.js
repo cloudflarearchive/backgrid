@@ -8,7 +8,25 @@
 
 /*global Backbone:false, Backgrid:false, Column:false, Formatter:false */
 
-var DivCellEditor = Backgrid.CellEditor = Backbone.View.extend({
+var CellEditor = Backgrid.CellEditor = Backbone.View.extend({
+
+  initialize: function (options) {
+    Backbone.View.prototype.initialize.apply(this, arguments);
+    this.formatter = options.formatter;
+    this.column = options.column;
+
+    if (!this.formatter) throw new Error("formatter is required");
+    if (!this.column) throw new Error("column is required");
+  },
+
+  postRender: function () {
+    this.$el.focus();
+    return this;
+  }
+
+});
+
+var DivCellEditor = Backgrid.DivCellEditor = CellEditor.extend({
 
   tagName: "div",
 
@@ -22,10 +40,7 @@ var DivCellEditor = Backgrid.CellEditor = Backbone.View.extend({
   },
 
   initialize: function (options) {
-    Backbone.View.prototype.initialize.apply(this, arguments);
-    this.formatter = options && options.formatter || this.formatter;
-    this.column = options && options.column;
-
+    CellEditor.prototype.initialize.apply(this, arguments);
     this.on("done", this.remove, this);
   },
 
@@ -53,6 +68,8 @@ var DivCellEditor = Backgrid.CellEditor = Backbone.View.extend({
       txtRng.collapse(false);
       txtRng.select();
     }
+
+    return this;
   },
 
   saveOrCancel: function (e) {
@@ -90,8 +107,9 @@ var DivCellEditor = Backgrid.CellEditor = Backbone.View.extend({
       var sel = window.getSelection();
       sel.removeAllRanges();
     }
+    return this;
   }
-  
+
 });
 
 var Cell = Backgrid.Cell = Backbone.View.extend({
@@ -114,36 +132,45 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
   },
 
   // Given a column and a model instance, render() will output the formatted
-  // value from the model keyed with the column name.
+  // value from the model keyed by the column name.
   render: function () {
-    this.$el.empty()
-      .text(this.formatter.fromRaw(this.model.get(this.column.get("name"))));
+    this.$el.empty().text(this.formatter.fromRaw(this.model.get(this.column.get("name"))));
     return this;
   },
 
   enterEditMode: function (e) {
     if (this.column.get("editable")) {
 
-      var editor = new this.editor({
+      this.currentEditor = new this.editor({
         column: this.column,
         model: this.model,
         formatter: this.formatter
       });
 
-      editor.on("done", this.exitEditMode, this);
+      this.curentEditor.on("done", this.exitEditMode, this);
 
       this.$el.empty();
       this.undelegateEvents();
       this.$el.append(editor.render().$el);
-      editor.postRender();
+      this.currentEditor.postRender();
       this.$el.addClass("editor");
     }
   },
 
   exitEditMode: function () {
+    this.currentEditor.remove();
+    delete this.currentEditor;
     this.$el.removeClass("editor");
     this.render();
     this.delegateEvents();
+  },
+
+  remove: function () {
+    Backbone.View.prototype.remove.apply(this, arguments);
+    if (this.currentEditor) {
+      this.currentEditor.remove();
+      delete this.currentEditor;
+    }
   }
 
 });
@@ -176,13 +203,14 @@ var UriCell = Backgrid.UriCell = StringCell.extend({
       return encodeURI(formattedData);
     }
   },
-  
+
   render: function () {
     this.$el.empty();
     var formattedValue = this.formatter.fromRaw(this.model.get(this.column.get("name")));
     this.$el.append($("<a>", {
       href: formattedValue,
-      title: formattedValue
+      title: formattedValue,
+      target: "_blank"
     }).text(formattedValue));
     return this;
   }
@@ -196,7 +224,7 @@ var NumberCell = Backgrid.NumberCell = Cell.extend({
   decimals: NumberFormatter.prototype.defaults.decimals,
   decimalSeparator: NumberFormatter.prototype.defaults.decimalSeparator,
   orderSeparator: NumberFormatter.prototype.defaults.orderSeparator,
-  
+
   initialize: function (options) {
     Cell.prototype.initialize.apply(this, arguments);
 
@@ -224,10 +252,9 @@ var IntegerCell = Backgrid.IntegerCell = NumberCell.extend({
 });
 
 // DatetimeCell is a basic cell that accepts datetime string values in RFC-2822
-// or W3C's subset of ISO-8601 and displays them in ISO-8601 format. Only works
-// with browsers that have a Ecmascript 5 compliant Date class at the
-// moment. For a much more sophisticated date time cell, take a look at the
-// kalendae-cell.js extension.
+// or W3C's subset of ISO-8601 and displays them in ISO-8601 format. For a much
+// more sophisticated date time cell with better datetime formatted and a
+// datepicker for an editor, take a look at the kalendae-cell.js extension.
 var DatetimeCell = Backgrid.DatetimeCell = Cell.extend({
 
   className: "datetime-cell",
@@ -256,6 +283,142 @@ var DateCell = Backgrid.DateCell = DatetimeCell.extend({
 });
 
 var TimeCell = Backgrid.TimeCell = DatetimeCell.extend({
-  className: "date-cell",
+  className: "time-cell",
   includeDate: false
+});
+
+// BooleanCell is a different kind of cell in that there's no difference between
+// display mode and edit mode and this cell type always renders a checkbox for
+// selection.
+var BooleanCell = Backgrid.BooleanCell = Cell.extend({
+
+  className: "boolean-cell",
+
+  editor: _.template("<input type='checkbox value='<%= checked %>' />'"),
+
+  events: {
+    "click": "enterEditMode",
+    "blur input[type=checkbox]": "exitEditMode",
+    "change input[type=checkbox]": "save"
+  },
+
+  render: function () {
+    this.currentEditor = $(this.editor({
+      checked: this.formatter.fromRaw(this.model.get(this.column.get("name")))
+    }));
+    this.$el.append(this.currentEditor);
+    return this;
+  },
+
+  enterEditMode: function (e) {
+    this.$el.addClass("editor");
+    this.currentEditor.focus();
+  },
+
+  exitEditMode: function (e) {
+    this.$el.removeClass("editor");
+  },
+
+  save: function (e) {
+    var val = this.formatter.toRaw(this.curentEditor.val());
+    this.model.set(this.column.get("name"), val);
+  }
+
+});
+
+var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
+
+  tagName: "select",
+
+  events: {
+    "change": "save",
+    "blur": "save"
+  },
+
+  initialize: function (options) {
+    CellEditor.prototype.initialize.apply(this, arguments);
+    this.optionValues = options.optionValues;
+  },
+
+  _renderOptions: function (nvps) {
+    var options = '';
+    for (var i = 0; i < nvps.length; i++) {
+      options = options + "<option value='" + nvps[i][0]  + "'>" + nvps[i][1]  + "</option>";
+    }
+    return options;
+  },
+
+  render: function () {
+    var optionValues = _.result(this, "optionValues");
+
+    if (!_.isArray(optionValues)) throw TypeError("optionValues must be an array");
+
+    var optionValue = null;
+    var optionText = null;
+    var optionValue = null;
+    var optgroupName = null;
+    for (var i = 0; i < optionValues.length; i++) {
+      var optionValue = optionValues[i];
+
+      if (_.isArray(optionValue)) {
+        optionText  = optionValue[0];
+        optionValue = optionValue[1];
+        this.$el.append($("<option value='" + optionValue  + "'>" + optionText + "</option>"));
+      }
+      else if (_.isObject(optionValue)) {
+        optgroupName = optionValue.name;
+        optgroup = $("<optgroup></optgroup>", { label: optgroupName });
+        optgroup.append(this._renderOptions(optionValue.value));
+        this.$el.append(optgroup);
+      }
+      else {
+        throw TypeError("optionValues elements must be a name-value pair or an object hash of { name: 'optgroup label', value: [option name-value pairs] }");
+      }
+    }
+
+    return this;
+  },
+
+  save: function (e) {
+    this.model.set(this.colume.get("name"), this.$el.val());
+    this.trigger("done");
+  }
+
+});
+
+// SelectCell is also a different kind of cell in that upon going into edit mode
+// the cell renders a list of options for to pick from, as opposed to
+// a contenteditable div.
+var SelectCell = Backgrid.SelectCell = Cell.extend({
+
+  className: "select-cell",
+
+  editor: SelectCellEditor,
+
+  // Besides the usual Cell constructor parameter, SelectCell also requires an
+  // optionValues parameter which can either be a list of name-value pairs, to
+  // be rendered as options, or a list of objects hashes which consist of a key
+  // *name* which is the option group name, and a key *value* which is a list of
+  // name-value pairs to be rendered as options under that option group.
+  //
+  // In addition, optionValues can also be a parameter-less function that
+  // returns one of the above. If the options are static, it is recommended the
+  // returned values to be memoized. _.memoize() is a good function to help with
+  // that.
+  initialize: function (options) {
+    Cell.prototype.initialize.apply(this, arguments);
+    this.optionValues = options.optionValues;
+    if (!optionValues) throw new Error("optionValues is required");
+  },
+
+  enterEditMode: function (e) {
+    Cell.prototype.enterEditMode.apply(this, arguments);
+    this.currentEditor.initialize({
+      formatter: this.formatter,
+      column: this.column,
+      model: this.model,
+      optionValues: this.optionValues
+    });
+  }
+
 });

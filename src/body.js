@@ -38,6 +38,19 @@ var Body = Backgrid.Body = Backbone.View.extend({
     }
   },
 
+  dispose: function () {
+    Backbone.View.prototype.dispose.apply(this, arguments);
+    this.columns.off(null, null, this);
+    if (this.parent && this.parent.off) this.parent.off(null, null, this);
+    var row = null;
+    for (var i = 0; i < this.rows.length; i++) {
+      row = this.rows[i];
+      row.off(null, null, this);
+      row.dispose();
+    }
+    return this;
+  },
+  
   sort: function (comparator) {
     this.collection.comparator = comparator || this._idCidComparator;
     this.collection.sort();

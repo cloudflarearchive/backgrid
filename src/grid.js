@@ -37,6 +37,20 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
     }
   },
 
+  dispose: function () {
+    Backbone.View.prototype.dispose.apply(this, arguments);
+    this.columns.off(null, null, this);
+    this.header.off(null, null, this);
+    this.header.dispose();
+    this.body.off(null, null, this);
+    this.body.dispose();
+    if (this.footer) {
+      this.footer.off(null, null, this);
+      this.footer.dispose();
+    }
+    return this;
+  },
+
   sort: function (comparator) {
     this.body.sort(comparator);
   },

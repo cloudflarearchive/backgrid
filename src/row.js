@@ -17,11 +17,7 @@ var Row = Backgrid.Row = Backbone.View.extend({
     if (!(self.columns instanceof Backbone.Collection)) {
       self.columns = new Columns(self.columns);
     }
-  },
-
-  render: function () {
-    var self = this;
-    self.$el.empty();
+    self.cells = [];
     self.columns.each(function (column) {
       if (column.get("renderable")) {
         var cell = column.get("cell");
@@ -29,9 +25,30 @@ var Row = Backgrid.Row = Backbone.View.extend({
           column: column,
           model: self.model
         });
-        self.$el.append(cell.render(self.model).$el);
+        self.cells.push(cell);
       }
     });
-    return self;
+  },
+
+  dispose: function () {
+    Backbone.View.prototype.dispose.apply(this, arguments);
+    this.columns.off(null, null, this);
+    if (this.parent && this.parent.off) this.parent.off(null, null, this);
+    var cell = null;
+    for (var i = 0; i < this.cells.length; i++) {
+      cell = this.cells[i];
+      cell.off(null, null, this);
+      cell.dispose();
+    }
+    return this;
+  },
+
+  render: function () {
+    this.$el.empty();
+    for (var i = 0; i < this.cells.length; i++) {
+      this.$el.append(this.cells[i].render().$el);
+    }
+    return this;
   }
+
 });

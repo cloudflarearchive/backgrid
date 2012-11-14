@@ -170,3 +170,7 @@
 .backgrid .integer-cell {
     text-align: right;
 }
+
+.backgrid .boolean-cell {
+    text-align: center;
+}

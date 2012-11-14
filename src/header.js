@@ -24,6 +24,13 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
     }
   },
 
+  dispose: function () {
+    Backbone.View.prototype.dispose.apply(this, arguments);
+    if (this.parent && this.parent.off) this.parent.off(null, null, this);
+    this.column.off(null, null, this);
+    return this;
+  },
+
   toggle: function (columnName, direction) {
     var $label = this.$el.find("a");
     $label.removeClass("ascending descending");
@@ -108,6 +115,19 @@ var Header = Backgrid.Header = Backbone.View.extend({
       }
     }
 
+  },
+
+  dispose: function () {
+    Backbone.View.prototype.dispose.apply(this, arguments);
+    this.columns.off(null, null, this);
+    if (this.parent && this.parent.off) this.parent.off(null, null, this);
+    var cell = null;
+    for (var i = 0; i < this.cells.length; i++) {
+      cell = this.cells[i];
+      cell.off(null, null, this);
+      cell.dispose();
+    }
+    return this;
   },
 
   dispatchSortEvent: function (comparator, sortByColName, direction) {

@@ -6,6 +6,7 @@
   Licensed under the MIT @license.
 */
 
+// TODO: Make this work when prepopulated and/or empty
 var PageableCollection = Backgrid.PageableCollection = Backbone.Collection.extend({
 
   perPage: 30,
@@ -108,23 +109,49 @@ var Paginator = Backgrid.Paginator = Footer.extend({
 
   initialize: function (options) {
     Footer.prototype.initialize.apply(this, arguments);
-    this.collection.on("fetched", this.refresh, this);
     options = options ? _.clone(options) : {};
+    this.parent = options.parent;
+    this.columns = options.columns;
+    if (!(this.columns instanceof Backbone.Collection)) {
+      this.columns = new Columns(this.columns);
+    }
+    this.collection.on("fetched", this.refresh, this);
     this.windowSize = options.windowSize || this.windowSize;
+    this.items = [];
+  },
+
+  dispose: function () {
+    Backbone.View.prototype.dispose.apply(this, arguments);
+    if (this.parent && this.parent.off) this.parent.off(null, null, this);
+    this.columns.off(null, null, this);
+    var item = null;
+    for (var i = 0; i < this.items.length; i++) {
+      item = this.items[i];
+      item.off(null, null, this);
+      item.dispose();
+    }
+    return this;
   },
 
   refresh: function () {
     var $ul = this.$el.find("ul");
+
+    for (var i = 0; i < this.items.length; i++) {
+      this.items[i].remove();
+    }
+    this.items = [];
+    
     var collection = this.collection;
 
     // render prev handle if not at first page
     if (collection.page > 0) {
-      var pi = new PaginatorItem({
+      var item = new PaginatorItem({
         label: ">",
         page: collection.page
       });
-      pi.on("clicked", collection.getPage, collection);
-      $ul.append(pi.render().$el);
+      item.on("clicked", collection.getPage, collection);
+      this.items.push(item);
+      $ul.append(item.render().$el);
     }
 
     var lastPage = Math.ceil(collection.pageCount / collection.pageSize) - 1;
@@ -133,29 +160,31 @@ var Paginator = Backgrid.Paginator = Footer.extend({
     windowEnd = windowEnd <= lastPage ? windowEnd : lastPage;
     for (var i = windowStart; i < windowEnd; i++) {
       // render link if not at current page
-      var pi = new PaginatorItem({
+      var item = new PaginatorItem({
         label: i + 1,
         page: i,
         hasAnchor: i !== collection.page
       });
-      pi.on("clicked", collection.getPage, collection);
-      $ul.append(pi.render().$el);
+      item.on("clicked", collection.getPage, collection);
+      this.items.push(item);
+      $ul.append(item.render().$el);
     }
 
     // render last handle if not at last page
     if (collection.page < collection.pageCount - 1) {
-      var pi = new PaginatorItem({
+      var item = new PaginatorItem({
         label: "<",
         page: collection.page
       });
-      pi.on("clicked", collection.getPage, collection);
-      $ul.append(pi.render().$el);
+      item.on("clicked", collection.getPage, collection);
+      this.items.push(item);
+      $ul.append(item.render().$el);
     }
   },
 
   render: function () {
     var renderableColCount = _.reduce(
-      self.columns.pluck("renderable"),
+      this.columns.pluck("renderable"),
       function (accum, renderable) {
         return renderable ? accum + 1 : 0;
       }, 0);

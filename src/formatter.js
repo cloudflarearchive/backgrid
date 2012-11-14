@@ -12,11 +12,12 @@
 // are defined.
 var Formatter = Backgrid.Formatter = function () {};
 _.extend(Formatter.prototype, {
-  // Takes raw data from a model to its formatted form and return it
+  // Takes a raw value from a model and returns a formatted string for display.
   fromRaw: function (rawData) {
     return rawData;
   },
-  // Takes formatted data from a cell editor to its raw form for the model and return it
+  // Takes a formatted string, usually from user input, and returns a
+  // appropriately typed value for persistence in the model.
   toRaw: function (formattedData) {
     return formattedData;
   }
