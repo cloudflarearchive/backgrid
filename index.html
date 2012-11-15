@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="assets/css/bootstrap.css" />
     <link rel="stylesheet" href="assets/css/bootstrap-responsive.css" />
     <link rel="stylesheet" href="codemirror/lib/codemirror.css" />
+    <link rel="stylesheet" href="codemirror/theme/ambiance.css" />
+    <link rel="stylesheet" href="codemirror/theme/ambiance-light.css" />
     <link rel="stylesheet" href="lib/backgrid.css" />
     <link rel="stylesheet" href="assets/css/doc.css" />
     <!--[if lt IE 9]>
@@ -52,15 +54,18 @@
                         <li><a href="#api-grid">Grid</a></li>
                         <li><a href="#api-column">Column</a></li>
                         <li><a href="#api-cell">Cells</a></li>
-                        <li><a href="#api-footer">Footer</a></li>
                         <li><a href="#api-formatter">Formatter</a></li>
-                        <li><a href="#api-validator">Validator</a></li>
                         <li><a href="#api-header">Header</a></li>
                         <li><a href="#api-row">Row</a></li>
                         <li><a href="#api-body">Body</a></li>
+                        <li><a href="#api-footer">Footer</a></li>
                         <li class="divider"></li>
                         <li>Extensions</li>
                         <li><a href="#api-paginator">Paginator</a></li>
+                        <li><a href="#api-text-cell">TextCell</a></li>
+                        <li><a href="#api-kalendae-cell">KalendaeCell</a></li>
+                        <li><a href="#api-select2-cell">Select2Cell</a></li>
+                        <li><a href="#api-latlng-cell">LatLngCell</a></li>
                       </ul>
                     </li>
                     <li class="dropdown">
@@ -93,9 +98,10 @@
           <p class="lead">
             Backgrid.js is a set of components for
             building <strong>semantic</strong> and <strong>easily
-            stylable</strong> tabular data <strong>grid</strong> widgets.</p>
-          <p class="lead">It offers you a simple, intuitive and <strong>beautiful programming
-              interface</strong> that doesn't put any handcuffs on you.</p>
+            stylable</strong> data <strong>grid</strong> widgets.</p>
+          <p class="lead">It offers you a simple, intuitive and beautiful
+              programming interface that make easy things easy, but hard things
+              possible when dealing with tabular data.</p>
           <p>
             <a class="btn btn-large btn-success" href="#examples">See Examples</a>
             <a class="btn btn-large btn-primary hidden-phone hidden-tablet" href="https://github.com/wyuenho/backgrid/downloads" target="_blank">Download (v0.1)</a>
@@ -104,6 +110,11 @@
         <section id="features">
           <div class="page-header">
             <h1>Features</h1>
+            <p>The goal of Backgrid.js is to produce a set of simple, and stable
+            core of Backbone UI elements that offer you all the basic
+            displaying, sorting and editing functionality you'd expect, and
+            create an elegant API that makes extending Backgrid.js with extra
+            functionalities easy.</p>
           </div>
           <div class="row">
             <div class="span6">
@@ -112,10 +123,10 @@
                 <li>No Hungarian notations.</li>
                 <li>Solid foundation. Based
                 on <a href="http://backbonejs.org">Backbone.js</a>.</li>
-                <li><a href="#styling">Easily stylable</a>. Just style with
-                plain CSS like you would a normal HTML table.</li>
+                <li>Semantic and <a href="#styling">Easily stylable</a>. Just
+                style with plain CSS like you would a normal HTML table.</li>
                 <li>Low learning curve. Works with plain old Backbone models and
-                collections, no extra patterns or abstractions to learn.</li>
+                collections. Easy things are easy, hards things possible.</li>
                 <li>Highly modular and customizable. Componenets are just simple
                   Backbone View classes, customization is easy if you already
                   know Backbone.</li>
@@ -149,7 +160,7 @@
           <div class="row">
             <div class="span6">
               <p>
-                <strong>Backgrid.js</strong> depends on 3 libraries to function:
+                Backgrid.js depends on 3 libraries to function:
               </p>
               <ul>
                 <li><a href="http://jquery.com">jquery &gt;= 1.7.0</a></li>
@@ -158,8 +169,8 @@
               </ul>
               <aside class="note">
                 <h5>Note:</h5> If you don't care about having the latest
-                versions of the dependencies, you can use the bundled versions
-                that come with the downloaded package.
+                versions of the dependencies, you can use the bundled libraries
+                in the download package.
               </aside>
             </div>
             <div class="span6">
@@ -167,7 +178,7 @@
                 Suppose you have extracted all the dependencies into a directory
                 <code>PROJECT_ROOT/js</code>, and you are serving an HTML
                 document from <code>PROJECT_ROOT</code>, similiar code like the
-                following will get <strong>Backgrid.js</strong> loaded:
+                following will get the <strong>Backgrid.js</strong> core loaded:
               </p>
               <textarea class="code-snippet" data-mode="htmlmixed">&lt;head&gt;
                 &lt;script src="/js/jquery.js"&gt;&lt;/script&gt;
@@ -191,7 +202,7 @@
                   <p>At the most basic level, Backgrid pretends that every row
                     is a model object and the whole table is backed by a simple
                     Backbone collection.</p>
-                  <p>In the following examples, we&rsquo;ll use a list of country data:</p>
+                  <p>Suppose we have a list of territory info objects:</p>
                 </div>
                 <div class="span6">
                   <textarea class="code-snippet" data-mode="javascript">
@@ -204,12 +215,12 @@
                     
                     var territories = new Territories();
                     
-                    // Fetch some countries from the server
+                    // Fetch some countries from the url
                     territories.fetch();</textarea>
                 </div>
               </div>
               <div class="row">
-                <div class="span6">
+                <div class="span12">
                   <h2>Grid</h2>
                   <p>
                     The main entry point of the Backgrid package is
@@ -220,23 +231,26 @@
                   </p>
                   <textarea class="code-snippet" data-mode="javascript">
                     var columns = [{
-                      name: "id",
-                      label: "ID",
+                      name: "id", // The key of the model attribute
+                      label: "ID", // The name to display in the header
+                      editable: false, // By default every cell in a column is editable, but *ID* shouldn't be
+                      // Defines a cell type, and ID is displayed with as an integer without thousands separators
                       cell: Backgrid.IntegerCell.extend({
                         orderSeparator: ''
                       })
                     }, {
                       name: "name",
                       label: "Name",
-                      cell: "string"
+                      // The cell type can be a reference of a Backgrid.Cell subclass, any Backgrid.Cell subclass instances like *id* above, or a string
+                      cell: "string" // This is converted to "StringCell" and a corresponding class in the Backgrid package namespace is looked up
                     }, {
                       name: "pop",
                       label: "Population",
-                      cell: "integer"
+                      cell: "integer" // An integer cell is a number cell that displays humanized integers
                     }, {
                       name: "percentage",
                       label: "% of World Population",
-                      cell: "number"
+                      cell: "number" // A cell type for floating point value, defaults to have a precision 2 decimal numbers
                     }, {
                       name: "date",
                       label: "Date",
@@ -244,20 +258,88 @@
                     }, {
                       name: "url",
                       label: "URL",
-                      cell: "uri"
+                      cell: "uri" // Renders the value in an HTML &lt;a&gt; element
                     }];
 
+                    // Initialize a new Grid instance
                     var grid = new Backgrid.Grid({
                       columns: columns,
                       collection: territories
                     });
 
-                    $("#example-1-result").append(grid.render().$el);
-                  </textarea>
+                    // Render the grid and attach the root to your HTML document
+                    $("#example-1-result").append(grid.render().$el);</textarea>
                 </div>
-                <div class="span6">
-                  <h2>Result:</h2>
+              </div>
+              <div class="row">
+                <div class="span12">
+                  <h3>Result</h3>
                   <div id="example-1-result" class="backgrid-container"></div>
+                  <p>The list of column metadata Backgrid.Grid expects is simply
+                  a list of JSON object, in which you can hardcode into your
+                  HTML templates or retrieve from a server when the DOM is
+                  ready. Backgrid.js doesn't care where the column metadata come
+                  from as long as you supply the list to the Grid
+                  constructor.</p>
+                  <p>As expected, you now have a basic editable data grid
+                  displayed. All the columns headers are labeled and sortable by
+                  default. ID cells are not editable, and all other cell types
+                  have reasonable validation built-in. If the table gets too
+                  large, you get a scroll bar.</p>
+                  <p>Backgrid.js comes with <a href="#api-cell" title="Cells">10
+                    basic cell types</a> in the core
+                    and <a href="#api-text-cell" title="TextCell">4 others as
+                    extensions</a>. Cell types such as
+                    <a href="#api-select2-cell"
+                    title="Select2Cell">Select2Cell</a>
+                    and <a href="#api-kalendae-cell"
+                    title="KalendaeCell">KalendaeCell</a> give you a much richer
+                    editing interface for option lists and datetime values on
+                    desktop browsers. In addition, there's a wild range of
+                    possibilities with how the data is converted for display and
+                    persistence by using <a href="#api-formatter"
+                    title="Formatters">formatters</a>.</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="span12">
+                  <h2>Paginator</h2>
+                  <p>If you have a large result set like the above, you'd
+                  probably want to paginate your results, this is easily
+                  achieved in Backgrid.js.</p>
+                  <p>Backgrid.js comes with a paginator extension which you can
+                    load by include the Javascript file like this:</p>
+                  <textarea class="code-snippet" data-mode="htmlmixed">
+                    &lt;script src="/js/backgrid/paginator.js"&gt;&lt;/script&gt;</textarea>
+                  <p>To use the paginator, you first must declare your
+                  collections to be a <code>PageableCollection</code>, which is
+                  simple subclass of Backbone.js Collection with added
+                  pagination behavior.</p>
+                  <textarea class="code-snippet" data-mode="javascript">
+                    var PageableTerritories = Backgrid.PageableCollection.extend({
+                      model: Territory,
+                      url: "examples/pageable-territories.json"
+                    });
+
+                    var pageableTerritories = new PageableTerritories();
+                    pageableTerritories.fetch(); // Prefetch the first page</textarea>
+                  <p>Once you have a pageable collection, you can supply it to
+                    the Grid constructor, in addition to a footer
+                    element <code>Paginator</code></p>
+                  <textarea class="code-snippet" data-mode="javascript">
+                    var pageableGrid = new Backgrid.Grid({
+                      columns: columns,
+                      collection: pageableTerritories,
+                      footer: Backgrid.Paginator
+                    });
+
+                    $("#example-2-result").append(pageableGrid.render().$el);</textarea>
+                </div>
+              </div>
+              <div class="row">
+                <div class="span12">
+                  <h3>Result</h3>
+                  <div id="example-2-result" class="backgrid-container"></div>
                 </div>
               </div>
             </div>
@@ -271,6 +353,7 @@
             <div class="span12">
               <div class="row">
                 <div class="span6">
+                  <h2></h2>
                 </div>
                 <div class="span6">
                 </div>
@@ -319,7 +402,8 @@
             var codemirror = CodeMirror.fromTextArea(elm, {
               mode: $elm.data("mode"),
               readOnly: true,
-              lineNumbers: true
+              lineNumbers: true,
+              theme: "ambiance",
             });
             
             var start = { line: 0, ch: 0 };
