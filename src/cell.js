@@ -333,7 +333,7 @@ var BooleanCell = Backgrid.BooleanCell = Cell.extend({
 
   className: "boolean-cell",
 
-  editor: _.template("<input type='checkbox value='<%= checked %>' />'"),
+  editor: _.template("<input type='checkbox'<%= checked ? checked='checked' : '' %> />'"),
 
   events: {
     "click": "enterEditMode",
@@ -359,7 +359,7 @@ var BooleanCell = Backgrid.BooleanCell = Cell.extend({
   },
 
   save: function (e) {
-    var val = this.formatter.toRaw(this.curentEditor.val());
+    var val = this.formatter.toRaw(this.currentEditor.prop("checked"));
     this.model.set(this.column.get("name"), val);
   }
 
