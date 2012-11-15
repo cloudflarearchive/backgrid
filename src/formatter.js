@@ -97,13 +97,11 @@ _.extend(DatetimeFormatter.prototype, {
     includeMilli: false
   },
 
-  DATE_RE: /([+\-]?\d{4})-(\d{2})-(\d{2})/,
-  TIME_RE: /(\d{2}):(\d{2}):(\d{2})(\.\d{3})?/,
-  ZONE_RE: /([+\-]\d{2}):?(\d{2})/,
+  DATE_RE: /^([+\-]?\d{4})-(\d{2})-(\d{2})$/,
+  TIME_RE: /^(\d{2}):(\d{2}):(\d{2})(\.\d{3})?$/,
+  ZONE_RE: /^([+\-]\d{2}):?(\d{2})$/,
   ISO_SPLITTER_RE: /T|Z| +/,
 
-  // Assumes the input is in UTC if not supplied. Returns an ISO formatted
-  // string in local timezone
   fromRaw: function (rawData) {
     rawData = trim(rawData);
     var parts = rawData.split(this.ISO_SPLITTER_RE) || [];
@@ -142,10 +140,9 @@ _.extend(DatetimeFormatter.prototype, {
     return result;
   },
 
-  // Assumes the input is in local timezone if not supplied. Returns an ISO
-  // formatted string in UTC
   toRaw: function (formattedData) {
     formattedData = trim(formattedData);
+
     var parts = formattedData.split(this.ISO_SPLITTER_RE) || [];
     var date = this.includeDate ? parts[0] : '';
     var time = this.includeDate ? parts[1] : parts[0] || '';
@@ -154,44 +151,47 @@ _.extend(DatetimeFormatter.prototype, {
     var HHmmssSSS = this.TIME_RE.exec(time) || [];
     var zzZZ = this.ZONE_RE.exec(zone) || [];
 
-    zzZZ[1] = zzZZ[1] * 1 || 0;
-    zzZZ[2] = zzZZ[2] * 1 || 0;
+    if (this.includeDate && typeof YYYYMMDD[0] === "undefined") return undefined;
+    if (this.includeTime && typeof HHmmssSSS[0] === "undefined") return undefined;
+    if (!this.includeDate && date) return undefined;
+    if (!this.includeTime && time) return undefined;
 
-    if (this.includeDate && _.isUndefined(YYYYMMDD[1]) || _.isUndefined(YYYYMMDD[2]) || _.isUndefined(YYYYMMDD[3])) {
-      return;
+    var jsDate = null;
+    if (zzZZ !== []) {
+      zzZZ[1] = zzZZ[1] * 1 || 0;
+      zzZZ[2] = zzZZ[2] * 1 || 0;
+      jsDate = new Date(Date.UTC(YYYYMMDD[1] * 1 || 0,
+                                 YYYYMMDD[2] * 1 - 1 || 0,
+                                 YYYYMMDD[3] * 1 || 0,
+                                 (HHmmssSSS[1] * 1 || null) + zzZZ[1],
+                                 (HHmmssSSS[2] * 1 || null) + zzZZ[2],
+                                 HHmmssSSS[3] * 1 || null,
+                                 HHmmssSSS[4] * 1 || null));
     }
-
-    if (!this.includeDate && (YYYYMMDD[1] || YYYYMMDD[2] || YYYYMMDD[3])) {
-      return;
+    else {
+      jsDate = new Date(YYYYMMDD[1] * 1 || 0,
+                        YYYYMMDD[2] * 1 - 1 || 0,
+                        YYYYMMDD[3] * 1 || 0,
+                        HHmmssSSS[1] * 1 || null,
+                        HHmmssSSS[2] * 1 || null,
+                        HHmmssSSS[3] * 1 || null,
+                        HHmmssSSS[4] * 1 || null);
     }
-
-    if (!this.includeTime && (HHmmssSSS[1] || HHmmssSSS[2] || HHmmssSSS[3] || HHmmssSSS[4])) {
-      return;
-    }
-
-    var jsDate = new Date(YYYYMMDD[1] * 1 || 0,
-                          YYYYMMDD[2] * 1 - 1 || 0,
-                          YYYYMMDD[3] * 1 || 0,
-                          (HHmmssSSS[1] * 1 || null),
-                          (HHmmssSSS[2] * 1 || null),
-                          HHmmssSSS[3] * 1 || null,
-                          HHmmssSSS[4] * 1 || null);
-
-    jsDate.setUTCHours(jsDate.getUTCHours() + zzZZ[1]);
-    jsDate.setUTCMinutes(jsDate.getUTCMinutes() + zzZZ[2]);
 
     var result = '';
 
     if (this.includeDate) {
-      result = lpad(jsDate.getFullYear(), 4, 0) + '-' + lpad(jsDate.getMonth() + 1, 2, 0) + '-' + lpad(jsDate.getDate(), 2, 0);
+      result = lpad(jsDate.getUTCFullYear(), 4, 0) + '-' + lpad(jsDate.getUTCMonth() + 1, 2, 0) + '-' + lpad(jsDate.getUTCDate(), 2, 0);
     }
 
     if (this.includeTime) {
-      result = result + ' ' + lpad(jsDate.getHours(), 2, 0) + ':' + lpad(jsDate.getMinutes(), 2, 0) + ':' + lpad(jsDate.getSeconds(), 2, 0);
+      result = result + 'T' + lpad(jsDate.getUTCHours(), 2, 0) + ':' + lpad(jsDate.getUTCMinutes(), 2, 0) + ':' + lpad(jsDate.getUTCSeconds(), 2, 0);
 
       if (this.includeMilli) {
-        result = result + '.' + lpad(jsDate.getMilliseconds(), 3, 0);
+        result = result + '.' + lpad(jsDate.getUTCMilliseconds(), 3, 0);
       }
+
+      result += 'Z';
     }
 
     return result;
