@@ -1,1 +1,4 @@
-* text
+* text=auto
+*.png binary
+*.jpg binary
+*.git binary
