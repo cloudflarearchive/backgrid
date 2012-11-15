@@ -43,7 +43,7 @@ test: FORCE
 
 corejs:
 	@@echo "Making the core JS distro"
-	$(UGLIFY) $(SRC_FILES) $(UGLIFY_FLAGS) --output $(JS_OUTFILE)
+	$(UGLIFY) $(SRC_FILES) $(UGLIFY_BEAUTIFY_FLAGS) --output $(JS_OUTFILE)
 	echo "(function (root) {\n" | cat - $(JS_OUTFILE) > /tmp/$(PROJECT_NAME).js && mv -f /tmp/$(PROJECT_NAME).js $(JS_OUTFILE)
 	echo "}(this));" >> $(JS_OUTFILE)
 	make $(JS_OUTFILE)
