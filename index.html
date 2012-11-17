@@ -10,9 +10,9 @@
     <link rel="stylesheet" href="assets/css/bootstrap.css" />
     <link rel="stylesheet" href="assets/css/bootstrap-responsive.css" />
     <link rel="stylesheet" href="codemirror/lib/codemirror.css" />
-    <link rel="stylesheet" href="codemirror/theme/ambiance.css" />
     <link rel="stylesheet" href="codemirror/theme/ambiance-light.css" />
     <link rel="stylesheet" href="lib/backgrid.css" />
+    <link rel="stylesheet" href="lib/extensions/paginator/backgrid-paginator.css" />
     <link rel="stylesheet" href="assets/css/doc.css" />
     <!--[if lt IE 9]>
         <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -21,74 +21,75 @@
   <body>
     <div id="main">
       <header>
-        <div class="container">
-          <div class="navbar navbar-fixed-top">
-            <div class="navbar-inner">
-              <div class="container">
-                <a href="http://wyuenho.github.com/backgrid"
-                   class="brand" title="Finally, an easily stylable HTML data grid widget with a JS API that doesn't suck.">Backgrid.js</a>
-                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-                </a>
-                <div class="nav-collapse collapse">
-                  <ul class="nav nav-pills">
-                    <li class="dropdown">
-                      <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);">
-                        Introduction
-                        <b class="caret"></b>
-                      </a>
-                      <ul class="dropdown-menu">
-                        <li><a href="#features">Features</a></li>
-                        <li><a href="#getting-started">Getting Started</a></li>
-                        <li><a href="#examples">Examples</a></li>
-                      </ul>
-                    </li>
-                    <li class="dropdown">
-                      <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);">
-                        API Reference
-                        <b class="caret"></b>
-                      </a>
-                      <ul class="dropdown-menu">
-                        <li><a href="#api-grid">Grid</a></li>
-                        <li><a href="#api-column">Column</a></li>
-                        <li><a href="#api-cell">Cells</a></li>
-                        <li><a href="#api-formatter">Formatter</a></li>
-                        <li><a href="#api-header">Header</a></li>
-                        <li><a href="#api-row">Row</a></li>
-                        <li><a href="#api-body">Body</a></li>
-                        <li><a href="#api-footer">Footer</a></li>
-                        <li class="divider"></li>
-                        <li>Extensions</li>
-                        <li><a href="#api-paginator">Paginator</a></li>
-                        <li><a href="#api-text-cell">TextCell</a></li>
-                        <li><a href="#api-kalendae-cell">KalendaeCell</a></li>
-                        <li><a href="#api-select2-cell">Select2Cell</a></li>
-                        <li><a href="#api-latlng-cell">LatLngCell</a></li>
-                      </ul>
-                    </li>
-                    <li class="dropdown">
-                      <a class="dropdown-toggle" data-toggle="dropdown" href="javascript:void(0);">
-                        More Info
-                        <b class="caret"></b>
-                      </a>
-                      <ul class="dropdown-menu">
-                        <li><a href="#styling">Styling</a></li>
-                        <li class="divider"></li>
-                        <li><a href="#faq">FAQ</a></li>
-                        <li><a href="#changelog">Change Log</a></li>
-                        <li><a href="#contributors">Contributors</a></li>
-                        <li><a href="#footer">License</a></li>
-                      </ul>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <a class="visible-desktop" href="https://github.com/wyuenho/backgrid">
-                <img style="position: absolute; top: 0; right: 0; border: 0;" src="assets/img/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub">
+        <div class="navbar navbar-fixed-top">
+          <div class="navbar-inner">
+            <div class="container">
+              <a href="."
+                 class="brand" title="Finally, an easily stylable HTML data grid widget with a JS API that doesn't suck.">Backgrid.js</a>
+              <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
               </a>
+              <div class="nav-collapse collapse">
+                <ul class="nav nav-pills">
+                  <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" data-target="#" href="#">
+                      Introduction
+                      <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li><a href="#features">Features</a></li>
+                      <li><a href="#getting-started">Getting Started</a></li>
+                      <li><a href="#examples">Examples</a></li>
+                    </ul>
+                  </li>
+                  <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" data-target="#" href="#">
+                      API Reference
+                      <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li><a href="#api-grid">Grid</a></li>
+                      <li><a href="#api-column">Column</a></li>
+                      <li><a href="#api-cells">Cells</a></li>
+                      <li><a href="#api-formatter">Formatter</a></li>
+                      <li><a href="#api-header">Header</a></li>
+                      <li><a href="#api-row">Row</a></li>
+                      <li><a href="#api-body">Body</a></li>
+                      <li><a href="#api-footer">Footer</a></li>
+                      <li class="divider"></li>
+                      <li><a href="#extensions"><strong class="muted">Extensions</strong></a></li>
+                      <li class="divider"></li>
+                      <li><a href="#api-paginator">Paginator</a></li>
+                      <li><a href="#api-text-cell">TextCell</a></li>
+                      <li><a href="#api-kalendae-cell">KalendaeCell</a></li>
+                      <li><a href="#api-select2-cell">Select2Cell</a></li>
+                      <li><a href="#api-latlng-cell">LatLngCell</a></li>
+                    </ul>
+                  </li>
+                  <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" data-target="#" href="#">
+                      More Info
+                      <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                      <li><a href="#styling">Styling</a></li>
+                      <li class="divider"></li>
+                      <li><a href="#faq">FAQ</a></li>
+                      <li><a href="#changelog">Change Log</a></li>
+                      <li><a href="#footer">License</a></li>
+                    </ul>
+                  </li>
+                  <li>
+                    <a href="https://coderwall.com/wyuenho"><img alt="Endorse wyuenho on Coderwall" src="http://api.coderwall.com/wyuenho/endorsecount.png" /></a>
+                  </li>
+                </ul>
+              </div>
             </div>
+            <a class="visible-desktop" href="https://github.com/wyuenho/backgrid">
+              <img style="position: absolute; top: 0; right: 0; border: 0;" src="assets/img/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub">
+            </a>
           </div>
         </div>
       </header>
@@ -111,10 +112,10 @@
           <div class="page-header">
             <h1>Features</h1>
             <p>The goal of Backgrid.js is to produce a set of simple, and stable
-            core of Backbone UI elements that offer you all the basic
-            displaying, sorting and editing functionality you'd expect, and
-            create an elegant API that makes extending Backgrid.js with extra
-            functionalities easy.</p>
+              core of Backbone UI elements that offer you all the basic
+              displaying, sorting and editing functionality you'd expect, and
+              create an elegant API that makes extending Backgrid.js with extra
+              functionalities easy.</p>
           </div>
           <div class="row">
             <div class="span6">
@@ -123,7 +124,7 @@
                 <li>No Hungarian notations.</li>
                 <li>Solid foundation. Based
                 on <a href="http://backbonejs.org">Backbone.js</a>.</li>
-                <li>Semantic and <a href="#styling">Easily stylable</a>. Just
+                <li>Semantic and <a href="#styling">easily stylable</a>. Just
                 style with plain CSS like you would a normal HTML table.</li>
                 <li>Low learning curve. Works with plain old Backbone models and
                 collections. Easy things are easy, hards things possible.</li>
@@ -137,18 +138,18 @@
               </ul>
             </div>
             <div class="span6">
-              <h2>Supported browsers: <a href="#ref-1" title="See #note-1" style="font-size: 14px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;">[1]</a></h2>
+              <h2>Supported browsers: <b style="font-size: 14px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: normal;">[1]</b></h2>
               <ul>
                 <li>Internet Explorer 8+</li>
                 <li>Chrome 4+</li>
                 <li>Safari 4+</li>
                 <li>Firefox 4+</li>
-                <li>Opera 9+ <a href="#ref-2" title="See #note-2">[2]</a></li>
+                <li>Opera 9+ [2]</li>
               </ul>
               <aside class="note">
                 <h3>Notes:</h3>
-                <div id="note-1">1. Both the desktop and mobile versions of the above browsers are supported.</div>
-                <div id="note-2">2. Currently needs to double click on a cell to gain focus.</div>
+                <div>1. Both the desktop and mobile versions of the above browsers are supported.</div>
+                <div>2. Currently needs to double click on a cell to gain focus.</div>
               </aside>
             </div>
           </div>
@@ -278,35 +279,35 @@
                   <aside class="note">See <a href="http://en.wikipedia.org/wiki/List_of_countries_by_population">Wikipedia</a></aside>
                   <br />
                   <p>The list of column metadata Backgrid.Grid expects is simply
-                  a list of JSON object, in which you can hardcode into your
-                  HTML templates or retrieve from a server when the DOM is
-                  ready. Backgrid.js doesn't care where the column metadata come
-                  from as long as you supply the list to the Grid
-                  constructor.</p>
+                    a list of JSON object, in which you can hardcode into your
+                    HTML templates or retrieve from a server when the DOM is
+                    ready. Backgrid.js doesn't care where the column metadata come
+                    from as long as you supply the list to the Grid
+                    constructor.</p>
                   <p>As expected, you now have a basic editable data grid
-                  displayed. All the columns headers are labeled and sortable by
-                  default. ID cells are not editable, and all other cell types
-                  have reasonable validation built-in. If the table gets too
-                  large, you get a scroll bar.</p>
+                    displayed. All the columns headers are labeled and sortable by
+                    default. ID cells are not editable, and all other cell types
+                    have reasonable validation built-in. If the table gets too
+                    large, you get a scroll bar.</p>
                   <p>Backgrid.js comes with <a href="#api-cell" title="Cells">10
-                    basic cell types</a> in the core
+                      basic cell types</a> in the core
                     and <a href="#api-text-cell" title="TextCell">4 others as
-                    extensions</a>. Cell types such as
+                      extensions</a>. Cell types such as
                     <a href="#api-select2-cell"
-                    title="Select2Cell">Select2Cell</a>
+                       title="Select2Cell">Select2Cell</a>
                     and <a href="#api-kalendae-cell"
-                    title="KalendaeCell">KalendaeCell</a> give you a much richer
+                           title="KalendaeCell">KalendaeCell</a> give you a much richer
                     editing interface for option lists and datetime values on
                     desktop browsers. In addition, there's a wild range of
                     possibilities with how the data is converted for display and
                     persistence by using <a href="#api-formatter"
-                    title="Formatters">formatters</a>.</p>
+                                            title="Formatters">formatters</a>.</p>
                 </div>
               </div>
               <div class="row">
                 <div class="span12">
                   <h2>Paginator</h2>
-                  <p>If you have a large result set like the above, you'd
+                  <p>If you have a large result set like the above, you&apos;d
                   probably want to paginate your results, this is easily
                   achieved in Backgrid.js.</p>
                   <p>Backgrid.js comes with a paginator extension which you can
@@ -322,12 +323,12 @@
                       model: Territory,
                       url: "examples/pageable-territories.json"
                     });
-
+                    
                     var pageableTerritories = new PageableTerritories();
                     pageableTerritories.fetch(); // Prefetch the first page</textarea>
                   <p>Once you have a pageable collection, you can supply it to
                     the Grid constructor, in addition to a footer
-                    element <code>Paginator</code></p>
+                    element <code>Backgrid.Paginator</code></p>
                   <textarea class="code-snippet" data-mode="javascript">
                     var pageableGrid = new Backgrid.Grid({
                       columns: columns,
@@ -335,7 +336,7 @@
                       footer: Backgrid.Paginator
                     });
 
-                    $("#example-2-result").append(pageableGrid.render().$el);</textarea>
+                    // $("#example-2-result").append(pageableGrid.render().$el);</textarea>
                 </div>
               </div>
               <div class="row">
@@ -347,45 +348,364 @@
             </div>
           </div>
         </section>
+        <section>
+          <div class="page-header">
+            <h1>API Reference</h1>
+          </div>
+          <div class="row">
+            <div class="span6">
+              <h2 id="api-grid">Grid</h2>
+            </div>
+            <div class="span6">
+            </div>
+          </div>
+          <div class="row">
+            <div class="span6">
+              <h2 id="api-column">Columns</h2>
+            </div>
+            <div class="span6">
+            </div>
+          </div>
+          <div class="row">
+            <div class="span6">
+              <h2 id="api-cells">Cells</h2>
+            </div>
+            <div class="span6">
+            </div>
+          </div>
+          <div class="row">
+            <div class="span6">
+              <h2 id="api-formatter">Formatter</h2>
+            </div>
+            <div class="span6">
+            </div>
+          </div>
+          <div class="row">
+            <div class="span6">
+              <h2 id="api-header">Header</h2>
+            </div>
+            <div class="span6">
+            </div>
+          </div>
+          <div class="row">
+            <div class="span6">
+              <h2 id="api-row">Row</h2>
+            </div>
+            <div class="span6">
+            </div>
+          </div>
+          <div class="row">
+            <div class="span6">
+              <h2 id="api-body">Body</h2>
+            </div>
+            <div class="span6">
+            </div>
+          </div>
+          <div class="row">
+            <div class="span6">
+              <h2 id="api-footer">Footer</h2>
+            </div>
+            <div class="span6">
+            </div>
+          </div>
+        </section>
+        <section id="extensions">
+          <div class="page-header">
+            <h1>Extensions</h1>
+            <p>It is not necessary to create an extension project if you simply
+              want to customize or extend some Backgrid.js classes for your own
+              private use; however, if you have one or more Backgrid.js
+              components that adds new features to the core, you may consider
+              packaging them up to share to the world.</p>
+            <p>A Backgrid.js extension is simply a directory structure that
+              packages the necessary JS, CSS, tests, and document files.</p>
+            <p>To create an extension, simply clone the tree into your file
+              system and type:</p>
+            <textarea class="code-snippet" data-mode="shell">
+              $ cd backgrid
+              $ EXTENSION=myawesomeextension make extension</textarea>
+            <p>A new extension directory structure should have been created for
+              you under <code>src/extensions</code>. You can look into the
+              directory&apos;s README file to find out how to proceed.</p>
+          </div>
+          <div class="row">
+            <div class="span6">
+              <h2 id="api-paginator">Paginator</h2>
+            </div>
+            <div class="span6">
+            </div>
+          </div>
+          <div class="row">
+            <div class="span6">
+              <h2 id="api-text-cell">TextCell</h2>
+            </div>
+            <div class="span6">
+            </div>
+          </div>
+          <div class="row">
+            <div class="span6">
+              <h2 id="api-kalendae-cell">KalendaeCell</h2>
+            </div>
+            <div class="span6">
+            </div>
+          </div>
+          <div class="row">
+            <div class="span6">
+              <h2 id="api-select2-cell">Select2Cell</h2>
+            </div>
+            <div class="span6">
+            </div>
+          </div>
+          <div class="row">
+            <div class="span6">
+              <h2 id="api-latlng-cell">LatLngCell</h2>
+            </div>
+            <div class="span6">
+            </div>
+          </div>
+        </section>
+        <section id="styling">
+          <div class="page-header">
+            <h1>Styling</h1>
+          </div>
+          <div class="row">
+            <div class="span12">
+              <p>Out of the box, Backgrid.js generates simple semantic HTML table
+                elements that you can style with pure CSS. This section is only
+                going to briefly describe some of the more important classes, and
+                things that you should be aware of when styling.</p>
+
+              <div class="row">
+                <div class="span6">
+                  <h2>.backgrid-container</h2>
+                  <p>This is the class that you should put into any container
+                    element that will hold the generated table. By default, it has a
+                    fixed maximum height and 100% width with no borders and
+                    paddings. It also serves as a <em>positioned</em> element so if
+                    you need to absolutely position any elements inside your custom
+                    table element classes, you can position them against this
+                    container.</p>
+                </div>
+                <div class="span6">
+                  <h2>&nbsp;</h2>
+                  <textarea class="code-snippet" data-mode="css">
+                    .backgrid-container {
+                      position: relative;
+                      overflow: auto;
+                      max-height: 494px;
+                      display: block;
+                      width: 100%;
+                      padding: 0;
+                      border: 0;
+                    }</textarea>
+                </div>
+              </div>
+              <div class="row">
+                <div class="span6">
+                  <h2>.backgrid</h2>
+                  <p>This is the class that will be applied to every Backgrid.js
+                    generated table. All other Backgrid.js default style on
+                    table elements will only apply to those that are descendents
+                    of tables of this class.</p>
+                  <textarea class="code-snippet" data-mode="css">
+                    /* Say you want to give some shiny gradient background colors
+                       to your table header */
+                    .backgrid th {
+                      background-color: linear-gradient(top, #2F2727, #1a82f7);
+                    }
+                  </textarea>
+                </div>
+                <div class="span6">
+                  <h2>&nbsp;</h2>
+                  <p>Although usually unnecessary, if you want to completely
+                    remove all Backgrid.js styles, you can supply
+                    a <code>className</code> attribute to
+                    the <code>Backgrid.Grid</code> constructor:</p>
+                  <textarea class="code-snippet" data-mode="javascript" data-eval="no">
+                    var grid = new Backgrid.Grid({
+                      className: "my-awesome-css-animated-grid",
+                      ...
+                    });</textarea>
+                </div>
+              </div>
+              <div class="row">
+                <div class="span12">
+                  <h2>.backgrid .*-cell</h2>
+                  <p>Every cell class Backgrid.js defines has a CSS class
+                    applied to them of the same, but dasherized name.  The
+                    default styles apply a <code>text-align: left</code> to text
+                    cells and <code>text-align: right</code> to numeric
+                    cells.</p>
+                  <p>See the relevant <a href="#api-cells">cell classes</a> for
+                    details.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
         <section id="faq">
           <div class="page-header">
             <h1>Frequently Asked Questions</h1>
           </div>
           <div class="row">
             <div class="span12">
-              <div class="row">
-                <div class="span6">
-                  <h2></h2>
-                </div>
-                <div class="span6">
-                </div>
-              </div>
+              <h2>Why doesn&apos;t Backgrid.js support AMD (or NPM)?</h2>
+              <p>The same question can be asked for volo, bower,
+                ender... etc. The problem with supporting any package manager
+                is that Backgrid.js is a highly modular project, and that
+                deciding to use any package manager presupposes all its
+                submodules and dependency is compatible with such package
+                manager and its importing mechanism. The Javascript ecosystem
+                has gotten so diverse now that there is still not yet a clear
+                packaging winner that everybody uses and works equally well
+                both on the server and the browser.</p>
+              <p>Having that said, Backgrid.js doesn&apos;t do anything to
+                prevent you from adding support to your favorite package
+                manager. You are encouraged to fork and maintain your own
+                Backgrid.js packages.</p>
+              <p>You are also more than welcomed to convince me
+              on <a href="https://github.com/wyuenho/backgrid/issues">Github</a>
+              as you may probably know more than I do about packaging
+              Javascripts.</p>
+              <h2>Does Backgrid.js support features (X)?</h2>
+              <p>If the feature you have in mind isn&apos;t found here in this
+                Backgrid.js version, it could either be in the works or under consideration.</p>
+              <p>See the list
+                of <a href="https://github.com/wyuenho/backgrid/issues?labels=enhancement%2Ctask&amp;page=1&amp;state=open"
+                      title="Github Issues">tasks and enhancements</a>.</p>
+              <h2>Where do I go to ask questions?</h2>
+              <p>Open an issue
+              on <a href="https://github.com/wyuenho/backgrid/issues/new"
+              title="Github">Github</a> with the question tag, or ask
+              on <a href="http://stackoverflow.com/questions/ask"
+              title="Stackoverflow">Stackoverflow</a> with the
+              tag <em>backgrid</em> where either I or fellow users can help
+              you.</p>
+              <h2>Does Backgrid.js support adaptive scrolling?</h2>
+              <p>Some data grid widgets out there supports a technique
+                called adaptive scrolling, meaning the DOM elements will be
+                swapped out of a viewport and new ones appended as the
+                models are loaded from the server, thus keeping the memory
+                more or less constant while providing an illusion to
+                end-users that there&apos;s no limit to the number of rows the
+                data grid can handle.</p>
+              <p>Backgrid.js has something better and achieves the same
+                effect with much cleaner code -
+                <a href="#api-paginator">paginator extension</a>, which uses
+                the
+                excellent <a href="http://addyosmani.github.com/backbone.paginator/"
+                             title="Backbone.Paginator">Backbone.Paginator</a>. The
+                paginator supports both paging on the server-side, or
+                preloading all the models and paging purely through the
+                browser. Paginated Backgrid.Grid instances only renders 1
+                pages of DOM nodes at a time to save memory and keep your web
+                page responsive.</p>
+              <h2>Does Backgrid.js support function aggregates?</h2>
+              <p>No because it is not the goal of this project to product a
+                full-fledged web-based spreadsheet. However, doing aggregation
+                is trivial using Underscore.js methods</p>
+              <textarea class="code-snippet" data-mode="javascript" data-eval="no">
+                // sum all the values of a column
+                var sum = collection.reduce(function (accum, num) {
+                  return accum + num;
+                });</textarea>
+              <h2>Does Backgrid.js support multi-user editing?</h2>
+              <p>Again, it is out of the scope of this project as this
+                functionality requires a broker to arbitrage between users and
+                is mostly found in web-based online spreadsheet products.</p>
+              <p>However, Backgrid.js does provide
+                real-time <em>rendering</em> out of the box by virtue of
+                listening to model attribute changes from the cell view
+                classes.</p>
+              <h2>How to build Backgrid.js?</h2>
+              <p>The Backgrid.js build system uses a number of *nix utilities,
+                gmake, <a href="https://github.com/mishoo/UglifyJS2"
+                          title="UglifyJS2">uglifyjs2</a> and
+                Twitter&apos;s <a href="https://github.com/twitter/recess"
+                                  title="recess">recess</a></p>
+              <p>Assuming you have installed gmake onto your system, you also
+                need to install <a href="http://nodejs.org/download/"
+                                   title="NodeJS">node.js and npm</a> first before you can install
+                uglifyjs2 and recess.</p>
+              <textarea class="code-snippet" data-mode="shell">
+                $ npm install uglifyjs2 recess</textarea>
+              <p>Then open up the Makefiles and see what rules are available to
+                you.</p>
+              <p>If you just want to customize what components are included in
+                your backbone.all.js file, just edit the <code>SUBDIRS</code>
+                variable in
+                the <a href="https://github.com/wyuenho/backgrid/tree/master/src/extensions/Makefile"
+                title="src/extension/Makefile">src/extensions/Makefile</a>. When
+                you are done, type:</p>
+              <textarea class="code-snippet" data-mode="shell">
+                $ cd backgrid
+                $ make dist</textarea>
+              <h2>How do I contribute?</h2>
+              <p>Fork the project, make your changes in the master branch,
+                push to your own fork and submit a pull request.</p>
+              <p>If you are contributing a new extension, please make a new
+                directory under <code>src/extensions</code> and add your
+                extension to the Makefiles.</p>
+              <p>Please be aware that Backgrid.js uses 2 spaces in place of a
+                tab for both .js and .css files. This project&apos;s Javascript
+                coding style is defined in
+                the <a href="https://github.com/wyuenho/backgrid/blob/master/.jshintrc"
+                title=".jshintrc">.jshintrc</a> file. Please don&apos;t use the
+                node.js, NPM or Allman style. <code>else</code> should be in its
+                separate line and one <code>var</code> statement per variable
+                declaration.</p>
+              <p>Changes that come with tests are more equal than
+                others.</p>
+              <p>If you make any changes to the documentation, since Backgrid.js
+                uses <a href="http://pages.github.com" title="Github
+                Pages">Github Pages</a>, please do so in your gh-pages branch
+                and submit a pull request from that branch.</p>
+              <p>Pull requests that follow the above guidelines will get
+                merged quicker than others.</p>
+              <aside class="note">
+                <h5>Note:</h5>
+                <p>1. Don&apos;t forget to keep your tree in sync with upstream
+                  before you submit a pull request. Usage of git-rebase is
+                  optional.</p>
+              </aside>
             </div>
           </div>
+        </section>
+        <section id="changelog">
+          <div class="page-header">
+            <h1>Changelog</h1>
+          </div>
+          <dl>
+            <dt>0.1</dt>
+            <dd>Initial release</dd>
+          </dl>
         </section>
       </div>
     </div>
     <div id="footer">
       <div class="container">
-        <p>Copyright &copy; 2012 Jimmy Yuen Ho Wong. Code licensed under
-          the <a href="LICENSE-MIT">MIT license</a>.<br /> Documentation
-          licensed
+        <p>Copyright &copy; 2012 Jimmy Yuen Ho Wong and Contributors. Code
+          licensed under the <a href="LICENSE-MIT">MIT license</a>.<br />
+          Documentation licensed
           under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY
           3.0</a></p>
       </div>
     </div>
     <script src="assets/js/scale.fix.js"></script>
     <script src="assets/js/jquery.js"></script>
+    <script src="assets/js/detectmobilebrowser.js"></script>
     <script src="assets/js/underscore.js"></script>
     <script src="assets/js/backbone.js"></script>
-    <script src="lib/backgrid.all.js"></script>
     <script src="assets/js/bootstrap.js"></script>
+    <script src="lib/backgrid.js"></script>
+    <script src="lib/extensions/paginator/backgrid-paginator.js"></script>
     <script src="codemirror/lib/codemirror.js"></script>
     <script src="codemirror/lib/util/formatting.js"></script>
     <script src="codemirror/mode/xml/xml.js"></script>
     <script src="codemirror/mode/css/css.js"></script>
     <script src="codemirror/mode/javascript/javascript.js"></script>
     <script src="codemirror/mode/htmlmixed/htmlmixed.js"></script>
+    <script src="codemirror/mode/shell/shell.js"></script>
     <script>
       (function () {
         function unescape (s) {
@@ -401,6 +721,7 @@
           
           $("textarea.code-snippet").each(function (index, elm) {
             var $elm = $(elm);
+
             var codemirror = CodeMirror.fromTextArea(elm, {
               mode: $elm.data("mode"),
               readOnly: true,
@@ -412,11 +733,13 @@
             var end = codemirror.posFromIndex(codemirror.getValue().length - 1);
             
             codemirror.autoIndentRange(start, end);
-            
-            if ($elm.data("mode") === "javascript") {
-              codestr = codestr + "\n" + codemirror.getValue();
+              
+            if ($elm.data("eval") !== "no") {
+              if ($elm.data("mode") === "javascript") {
+                codestr = codestr + "\n" + codemirror.getValue();
+              }
             }
-            
+              
             $elm.data("codemirror", codemirror);
           });
 
@@ -425,7 +748,32 @@
           document.body.appendChild(scriptTag);
         });
 
+        $(document).ready(function () {
+          $("a[href^='#']").click(function (e) {
+            if (!$.browser.mobile) {
+              e.preventDefault();
+              var target = this.hash;
+              var $target = $(target);
+              $("html, body").stop().animate({
+                "scrollTop": $target.offset().top - 55
+              }, 500, "swing", function() {
+                window.location.hash = target;
+              });
+            }
+          });
+        });
       }());
+    </script>
+    <script>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-36403214-1']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
     </script>
   </body>
 </html>

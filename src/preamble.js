@@ -12,6 +12,7 @@ var require = require || function (packageName) {
   throw new ReferenceError(packageName + " is required but missing.");
 };
 
+var $ = root.jQuery || root.Zepto || root.ender;
 var _ = root._ || require("underscore");
 var Backbone = root.Backbone || require("backbone");
 

@@ -140,9 +140,11 @@ var Header = Backgrid.Header = Backbone.View.extend({
   render: function () {
     var self = this;
     self.$el.empty();
+    var $tr = $("<tr>");
     _.each(self.cells, function (cell) {
-      self.$el.append(cell.render().$el);
+      $tr.append(cell.render().$el);
     });
+    self.$el.append($tr);
     return self;
   }
 
