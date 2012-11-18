@@ -13,7 +13,7 @@ build:
 	$(MAKE) -w -C src build
 	$(MAKE) -w -C src/extensions build
 
-dist: build
+dist:
 	mkdir -p lib
 	$(MAKE) -w -C src dist
 	$(MAKE) -w -C src/extensions dist
