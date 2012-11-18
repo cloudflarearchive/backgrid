@@ -1,4 +1,4 @@
-PROJECT_NAME = backgrid-paginator
+PROJECT_NAME = backgrid-$(notdir $(CURDIR))
 PROJECT_URL = http://github.com/wyuenho/backgrid
 AUTHOR = Jimmy Yuen Ho Wong
 
@@ -22,11 +22,11 @@ FORCE:
 	*/" | cat - $@ > "/tmp/`basename $@`" && mv -f "/tmp/`basename $@`" $@
 
 csslint:
-	recess $(CSS_FILES) --noIDS --noUniversalSelectors --compile > /tmp/$(CSS_OUTFILE) && mv -f /tmp/$(CSS_OUTFILE) $(CSS_OUTFILE);
+	recess $(CSS_FILE) --noIDS --noUniversalSelectors --compile > /tmp/$(CSS_FILE) && mv -f /tmp/$(CSS_FILE) $(CSS_FILE);
 
 minify:
 	uglifyjs2 $(JS_FILE) --compress --mangle --output $(JS_OUTFILE)
-	recess $(CSS_FILES) --noIDS --noUniversalSelectors --compress > /tmp/$(CSS_OUTFILE) && mv -f /tmp/$(CSS_OUTFILE) $(CSS_OUTFILE);
+	recess $(CSS_FILE) --noIDS --noUniversalSelectors --compress > /tmp/$(CSS_OUTFILE) && mv -f /tmp/$(CSS_OUTFILE) $(CSS_OUTFILE);
 
 build: minify
 	$(MAKE) $(JS_OUTFILE)
