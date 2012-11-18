@@ -43,8 +43,7 @@
 }
 
 .backgrid th a {
-  /* white-space: nowrap; */
-
+  white-space: nowrap;
 }
 
 .backgrid thead th {
