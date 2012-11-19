@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="assets/css/bootstrap.css" />
     <link rel="stylesheet" href="assets/css/bootstrap-responsive.css" />
     <link rel="stylesheet" href="codemirror/lib/codemirror.css" />
-    <link rel="stylesheet" href="codemirror/theme/ambiance-light.css" />
+    <link rel="stylesheet" href="codemirror/theme/neat.css" />
     <link rel="stylesheet" href="lib/backgrid.css" />
     <link rel="stylesheet" href="lib/extensions/paginator/backgrid-paginator.css" />
     <link rel="stylesheet" href="assets/css/doc.css" />
@@ -182,10 +182,11 @@
                 following will get the <strong>Backgrid.js</strong> core loaded:
               </p>
               <textarea class="code-snippet" data-mode="htmlmixed">&lt;head&gt;
-                &lt;script src="/js/jquery.js"&gt;&lt;/script&gt;
-                &lt;script src="/js/underscore.js"&gt;&lt;/script&gt;
-                &lt;script src="/js/backbone.js"&gt;&lt;/script&gt;
-                &lt;script src="/js/backgrid.core.js"&gt;&lt;/script&gt;
+                &lt;link rel="stylesheet" href="/js/lib/backgrid.css" /&gt;
+                &lt;script src="/js/assets/js/jquery.js"&gt;&lt;/script&gt;
+                &lt;script src="/js/assets/js/underscore.js"&gt;&lt;/script&gt;
+                &lt;script src="/js/assets/js/backbone.js"&gt;&lt;/script&gt;
+                &lt;script src="/js/lib/backgrid.js"&gt;&lt;/script&gt;
                 &lt;/head&gt;</textarea>
             </div>
           </div>
@@ -311,21 +312,45 @@
                   probably want to paginate your results, this is easily
                   achieved in Backgrid.js.</p>
                   <p>Backgrid.js comes with a paginator extension which you can
-                    load by include the Javascript file like this:</p>
+                    load by including the follwing into your <code>head</code> tag:</p>
                   <textarea class="code-snippet" data-mode="htmlmixed">
-                    &lt;script src="/js/backgrid/paginator.js"&gt;&lt;/script&gt;</textarea>
+                    &lt;link rel="stylesheet" href="/css/backgrid/extensions/paginator/backgrid-paginator.css" /&gt;
+                    &lt;script src="/js/assets/js/backbone.paginator.js"&gt;&lt;/script&gt;
+                    &lt;script src="/js/backgrid/extensions/paginator/backgrid-paginator.js"&gt;&lt;/script&gt;</textarea>
                   <p>To use the paginator, you first must declare your
-                  collections to be a <code>PageableCollection</code>, which is
-                  simple subclass of Backbone.js Collection with added
-                  pagination behavior.</p>
+                    collections to be
+                    a <a href="http://addyosmani.github.com/backbone.paginator/"
+                         title="Backbone.Paginator">Backbone.Paginator.*Pager</a>,
+                    which is simple subclass of Backbone.js Collection with added
+                    pagination behavior.</p>
                   <textarea class="code-snippet" data-mode="javascript">
-                    var PageableTerritories = Backgrid.PageableCollection.extend({
+                    var PageableTerritories = Backbone.Paginator.clientPager.extend({
                       model: Territory,
-                      url: "examples/pageable-territories.json"
+                    
+                      paginator_core: {
+                        dataType: "json",
+                        url: "examples/territories.json"
+                      },
+
+                      paginator_ui: {
+                        firstPage: 1, // page indices start at 1
+                        currentPage: 1,
+                        perPage: 15,
+                        totalPages: 17
+                      },
+
+                      server_api: {},
+
+                      parse: function (resp) {
+                        return resp;
+                      }
                     });
                     
                     var pageableTerritories = new PageableTerritories();
-                    pageableTerritories.fetch(); // Prefetch the first page</textarea>
+                    pageableTerritories.fetch().done(function () {
+                      pageableTerritories.goTo(1);
+                    });
+                    </textarea>
                   <p>Once you have a pageable collection, you can supply it to
                     the Grid constructor, in addition to a footer
                     element <code>Backgrid.Paginator</code></p>
@@ -336,7 +361,7 @@
                       footer: Backgrid.Paginator
                     });
 
-                    // $("#example-2-result").append(pageableGrid.render().$el);</textarea>
+                    $("#example-2-result").append(pageableGrid.render().$el);</textarea>
                 </div>
               </div>
               <div class="row">
@@ -423,10 +448,35 @@
               system and type:</p>
             <textarea class="code-snippet" data-mode="shell">
               $ cd backgrid
-              $ EXTENSION=myawesomeextension make extension</textarea>
+              $ make extension</textarea>
             <p>A new extension directory structure should have been created for
-              you under <code>src/extensions</code>. You can look into the
-              directory&apos;s README file to find out how to proceed.</p>
+              you under <code>src/extensions</code>. You can now look into the
+              bundled extensions&apos; to find out how to organize your code and
+              proceed.</p>
+            <h2>The extension protocol</h2>
+            <p>The following is a guideline for extension development:</p>
+            <ul>
+              <li>There should be 1 .js file and 1 .css file. If your code base
+                gets too large, consider breaking it into multiple extensions.</li>
+              <li>There should be 1 .min.js file and 1 .min.css file produced
+                for distribution.</li>
+              <li>Your Makefile should emulate other extensions&apos; as closely
+                as possible. Specifically, you should have a <code>dist</code>
+                rule that will take a <code>DIST_DIR</code> variable from
+                top-level make invocations and copy the output files to the
+                destination directory.</li>
+              <li>You should use recess to lint your CSS file(s).</li>
+              <li>You should follow the JS coding style
+                listed <a href="#contribute">below</a>.</li>
+              <li>You should wrap your JS file in an immediately invoked
+                anonymous function that lists out your dependencies in the
+                parameter list.</li>
+              <li>You should clearly specify your dependencies in the README
+                file if your extension relies on any libraries other than
+                Backgrid.js and its dependencies.</li>
+              <li>When in doubt, look at the other extensions for clues in
+                organizing your code.</li>
+            </ul>
           </div>
           <div class="row">
             <div class="span6">
@@ -550,15 +600,22 @@
           <div class="row">
             <div class="span12">
               <h2>Why doesn&apos;t Backgrid.js support AMD (or NPM)?</h2>
-              <p>The same question can be asked for volo, bower,
-                ender... etc. The problem with supporting any package manager
-                is that Backgrid.js is a highly modular project, and that
-                deciding to use any package manager presupposes all its
-                submodules and dependency is compatible with such package
-                manager and its importing mechanism. The Javascript ecosystem
-                has gotten so diverse now that there is still not yet a clear
-                packaging winner that everybody uses and works equally well
-                both on the server and the browser.</p>
+              <p>The same question can be asked for volo, bower, ender,
+                browserify and many other competing solutions. The number one
+                reason Backgrid.js does not support AMD is because of the
+                barrier it presents to writing extensions that require
+                third-party libraries that don&apos;t support AMD. In addition
+                to this, Underscore.js and Backbone.js also do not support AMD
+                at this time.</p>
+              <p>The problem with supporting any package manager is that
+                Backgrid.js is a highly modular project, and that deciding to
+                use any package manager presupposes all its submodules and
+                dependency is compatible with such package manager and its
+                importing mechanism. The Javascript ecosystem has gotten so
+                diverse now that there is still not yet a clear packaging winner
+                that everybody uses and works well under most situations, it is
+                also not clear that ES Harmony&apos;s module system will be
+                backward compatible with AMD.</p>
               <p>Having that said, Backgrid.js doesn&apos;t do anything to
                 prevent you from adding support to your favorite package
                 manager. You are encouraged to fork and maintain your own
@@ -591,15 +648,13 @@
                 data grid can handle.</p>
               <p>Backgrid.js has something better and achieves the same
                 effect with much cleaner code -
-                <a href="#api-paginator">paginator extension</a>, which uses
-                the
+                <a href="#api-paginator">paginator extension</a>, which uses the
                 excellent <a href="http://addyosmani.github.com/backbone.paginator/"
-                             title="Backbone.Paginator">Backbone.Paginator</a>. The
-                paginator supports both paging on the server-side, or
-                preloading all the models and paging purely through the
-                browser. Paginated Backgrid.Grid instances only renders 1
-                pages of DOM nodes at a time to save memory and keep your web
-                page responsive.</p>
+                title="Backbone.Paginator">Backbone.Paginator</a>. The paginator
+                supports both paging on the server-side, or preloading all the
+                models and paging purely through the browser. Paginated
+                Backgrid.Grid instances only render one page of DOM nodes at a
+                time to save memory and keep your web page responsive.</p>
               <h2>Does Backgrid.js support function aggregates?</h2>
               <p>No because it is not the goal of this project to product a
                 full-fledged web-based spreadsheet. However, doing aggregation
@@ -628,19 +683,17 @@
                                    title="NodeJS">node.js and npm</a> first before you can install
                 uglifyjs2 and recess.</p>
               <textarea class="code-snippet" data-mode="shell">
-                $ npm install uglifyjs2 recess</textarea>
-              <p>Then open up the Makefiles and see what rules are available to
-                you.</p>
+                $ npm install uglifyjs2 recess
+                
+                # recursively builds the core and all the extensions and put them into lib
+                $ cd backgrid && make dist</textarea>
               <p>If you just want to customize what components are included in
                 your backbone.all.js file, just edit the <code>SUBDIRS</code>
                 variable in
                 the <a href="https://github.com/wyuenho/backgrid/tree/master/src/extensions/Makefile"
-                title="src/extension/Makefile">src/extensions/Makefile</a>. When
-                you are done, type:</p>
-              <textarea class="code-snippet" data-mode="shell">
-                $ cd backgrid
-                $ make dist</textarea>
-              <h2>How do I contribute?</h2>
+                       title="src/extension/Makefile">src/extensions/Makefile</a>
+              </p>
+              <h2 id="contribute">How do I contribute?</h2>
               <p>Fork the project, make your changes in the master branch,
                 push to your own fork and submit a pull request.</p>
               <p>If you are contributing a new extension, please make a new
@@ -652,8 +705,9 @@
                 the <a href="https://github.com/wyuenho/backgrid/blob/master/.jshintrc"
                 title=".jshintrc">.jshintrc</a> file. Please don&apos;t use the
                 node.js, NPM or Allman style. <code>else</code> should be in its
-                separate line and one <code>var</code> statement per variable
-                declaration.</p>
+                separate line, one <code>var</code> statement per variable
+                declaration and all function definitions should have a space
+                preceeding the parameter list.</p>
               <p>Changes that come with tests are more equal than
                 others.</p>
               <p>If you make any changes to the documentation, since Backgrid.js
@@ -664,7 +718,7 @@
                 merged quicker than others.</p>
               <aside class="note">
                 <h5>Note:</h5>
-                <p>1. Don&apos;t forget to keep your tree in sync with upstream
+                <p>Don&apos;t forget to keep your tree in sync with upstream
                   before you submit a pull request. Usage of git-rebase is
                   optional.</p>
               </aside>
@@ -696,6 +750,7 @@
     <script src="assets/js/detectmobilebrowser.js"></script>
     <script src="assets/js/underscore.js"></script>
     <script src="assets/js/backbone.js"></script>
+    <script src="assets/js/backbone.paginator.js"></script>
     <script src="assets/js/bootstrap.js"></script>
     <script src="lib/backgrid.js"></script>
     <script src="lib/extensions/paginator/backgrid-paginator.js"></script>
@@ -726,7 +781,7 @@
               mode: $elm.data("mode"),
               readOnly: true,
               lineNumbers: true,
-              theme: "ambiance",
+              // theme: "neat",
             });
             
             var start = { line: 0, ch: 0 };

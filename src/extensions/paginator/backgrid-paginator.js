@@ -1,73 +1,19 @@
 /*
-  backgrid
+  backgrid-paginator
   http://github.com/wyuenho/backgrid
 
   Copyright (c) 2012 Jimmy Yuen Ho Wong
   Licensed under the MIT @license.
 */
 
-// TODO: Make this work when prepopulated and/or empty
-(function (root) {
-
-  var $ = root.jQuery || root.Zepto || root.ender;
-  var _ = root._;
-  var Backbone = root.Backbone;
-  var Backgrid = root.Backgrid;
-
-  var PageableCollection = Backgrid.PageableCollection = Backbone.Collection.extend({
-
-    parse: function (resp, xhr) {
-      var pageInfo = resp[0];
-      this.page = pageInfo.page;
-      this.pages = pageInfo.pages;
-      this.perPage = pageInfo.perPage || pageInfo.per_page;
-      return resp[1];
-    },
-
-    fetch: function (options) {
-      var self = this;
-      options = options ? _.clone(options) : {};
-      var success = options.success;
-      options.success = function (resp, status, xhr) {
-        if (success) success(self, resp);
-        self.trigger("fetched");
-      };
-      this.trigger("fetching");
-      return Backbone.Collection.prototype.fetch.call(this, options);
-    },
-
-    prevPage: function () {
-      return this.getPage(this.page + 1);
-    },
-
-    nextPage: function () {
-      return this.getPage(this.page - 1);
-    },
-
-    getPage: function (page) {
-      if (this.page < 0) {
-        throw new RangeError("You are already at the first page.");
-      }
-      else if (this.page >= this.pages) {
-        throw new RangeError("You are already at the last page.");
-      }
-
-      this.page = page;
-
-      return this.fetch({data: {
-        page: this.page,
-        "per_page": this.perPage
-      }});
-    }
-
-  });
+(function ($, _, Backbone, Backgrid) {
 
   var PaginatorItem = Backgrid.PaginatorItem = Backbone.View.extend({
 
     tagName: "li",
 
     events: {
-      "click a": "triggerLinkClicked"
+      "click a": "loadPage"
     },
 
     initialize: function (options) {
@@ -77,23 +23,20 @@
     },
 
     render: function () {
-      if (this.hasAnchor) {
-        var $a = $("<a>" + this.label + "</a>", {
-          href: "#",
-          title: "Page " + this.label
-        });
-        this.$el.append($a);
-      }
-      else {
-        this.$el.text(this.label);
-      }
+      var $a = $("<a>" + this.label + "</a>", {
+        href: "#",
+        title: "Page " + this.label
+      });
+      this.$el.append($a);
 
       return this;
     },
 
-    triggerLinkClicked: function (e) {
+    loadPage: function (e) {
       e.preventDefault();
-      this.trigger("clicked", this.page);
+      if (!this.$el.hasClass("active") && !this.$el.hasClass('disabled')) {
+        this.collection.goTo(this.page);
+      }
     }
 
   });
@@ -103,6 +46,7 @@
     className: "paginator",
 
     windowSize: 10,
+    hasFastForward: true,
 
     initialize: function (options) {
       Backgrid.Footer.prototype.initialize.apply(this, arguments);
@@ -112,8 +56,9 @@
       if (!(this.columns instanceof Backbone.Collection)) {
         this.columns = new Backgrid.Columns(this.columns);
       }
-      this.collection.on("fetched", this.refresh, this);
+      this.collection.on("reset", this.refresh, this);
       this.windowSize = options.windowSize || this.windowSize;
+      this.hasFastForward = options.hasFastForward || this.hasFastForward;
       this.items = [];
     },
 
@@ -140,42 +85,68 @@
 
       var collection = this.collection;
 
-      // render prev handle if not at first page
-      if (collection.page > 0) {
-        var item = new PaginatorItem({
-          label: "<",
-          page: collection.page
-        });
-        item.on("clicked", collection.getPage, collection);
-        this.items.push(item);
-        $ul.append(item.render().$el);
-      }
-
-      var lastPage = Math.ceil(collection.pages / collection.perPage) - 1;
-      var windowStart = collection.page % this.windowSize + Math.floor(collection.page / this.windowSize);
+      // 0-based here
+      var lastPage = collection.totalPages;
+      var windowStart = Math.floor((collection.currentPage - 1) / this.windowSize) * this.windowSize;
       var windowEnd = windowStart + this.windowSize;
       windowEnd = windowEnd <= lastPage ? windowEnd : lastPage;
       for (var i = windowStart; i < windowEnd; i++) {
         // render link if not at current page
         var item = new PaginatorItem({
           label: i + 1,
-          page: i,
-          hasAnchor: i !== collection.page
+          page: i + 1,
+          className: i + 1 === collection.currentPage ? "active" : undefined,
+          collection: collection
         });
-        item.on("clicked", collection.getPage, collection);
         this.items.push(item);
         $ul.append(item.render().$el);
       }
 
-      // render last handle if not at last page
-      if (collection.page < collection.pages - 1) {
-        var item = new PaginatorItem({
-          label: ">",
-          page: collection.page
+      this.renderFastForward();
+    },
+
+    renderFastForward: function () {
+      if (this.hasFastForward) {
+
+        var $ul = this.$el.find("ul");
+        var collection = this.collection;
+
+        var gotoFirst = new PaginatorItem({
+          label: "<<",
+          page: 1,
+          className: collection.currentPage > collection.firstPage ? undefined : "disabled",
+          collection: collection
         });
-        item.on("clicked", collection.getPage, collection);
-        this.items.push(item);
-        $ul.append(item.render().$el);
+
+        var gotoPrev = new PaginatorItem({
+          label: "<",
+          page: collection.currentPage - 1,
+          className: collection.currentPage > collection.firstPage ? undefined : "disabled",
+          collection: collection
+        });
+
+        var gotoNext = new PaginatorItem({
+          label: ">",
+          page: collection.currentPage + 1,
+          className: collection.currentPage < collection.totalPages ? undefined : "disabled",
+          collection: collection
+        });
+
+        var gotoLast = new PaginatorItem({
+          label: ">>",
+          page: collection.totalPages,
+          className: collection.currentPage < collection.totalPages ? undefined : "disabled",
+          collection: collection
+        });
+
+        this.items.unshift(gotoPrev);
+        this.items.unshift(gotoFirst);
+        this.items.push(gotoNext);
+        this.items.push(gotoLast);
+        $ul.prepend(gotoPrev.render().$el);
+        $ul.prepend(gotoFirst.render().$el);
+        $ul.append(gotoNext.render().$el);
+        $ul.append(gotoLast.render().$el);
       }
     },
 
@@ -191,4 +162,5 @@
     }
 
   });
-}(this));
+
+}(jQuery, _, Backbone, Backgrid));
