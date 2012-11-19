@@ -22,14 +22,16 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
       collection: this.collection
     });
 
-    this.body = new Body({
+    this.body = options.body || Body;
+    this.body = new this.body({
       parent: this,
       columns: this.columns,
       collection: this.collection
     });
 
-    if (options.footer) {
-      this.footer = new options.footer({
+    this.footer = options.footer || undefined;
+    if (this.footer) {
+      this.footer = new this.footer({
         parent: this,
         columns: this.columns,
         collection: this.collection

@@ -19,8 +19,9 @@ var Body = Backgrid.Body = Backbone.View.extend({
       self.columns = new Columns(self.columns);
     }
 
+    this.row = options.row || Row;
     self.rows = self.collection.map(function (model) {
-      var row = new Row({
+      var row = new self.row({
         parent: self,
         columns: self.columns,
         model: model
