@@ -12,14 +12,13 @@
   width: 100%;
   height: 494px;
   padding: 0;
-  overflow: scroll;
+  overflow: auto;
   border: 0;
 }
 
 .backgrid {
   width: 100%;
   max-width: 100%;
-  margin-bottom: 20px;
   background-color: transparent;
   border: 1px solid #DDD;
   border-collapse: separate;
