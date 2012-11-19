@@ -23,4 +23,12 @@ clean:
 	$(MAKE) -w -C src clean
 	$(MAKE) -w -C src/extensions clean
 
+extension:
+	@read -p "Please specify your extension name: " extension; \
+	mkdir -p src/extensions/$$extension; \
+	for filename in README.md Makefile $$extension.js $$extension.css test.js index.html; do \
+		touch src/extensions/$$extension/$$filename; \
+	done; \
+	echo "Extension directory $$extension has been created under src/extensions/$$entension"; \
+
 .EXPORT_ALL_VARIABLES:
