@@ -8,8 +8,12 @@
 
 .backgrid-container {
   position: relative;
+  display: block;
+  width: 100%;
   height: 494px;
+  padding: 0;
   overflow: scroll;
+  border: 0;
 }
 
 .backgrid {
