@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="assets/css/bootstrap.css" />
     <link rel="stylesheet" href="assets/css/bootstrap-responsive.css" />
     <link rel="stylesheet" href="codemirror/lib/codemirror.css" />
-    <link rel="stylesheet" href="codemirror/theme/neat.css" />
+    <link rel="stylesheet" href="codemirror/theme/ambiance.css" />
     <link rel="stylesheet" href="lib/backgrid.css" />
     <link rel="stylesheet" href="lib/extensions/paginator/backgrid-paginator.css" />
     <link rel="stylesheet" href="assets/css/doc.css" />
@@ -290,10 +290,10 @@
                     default. ID cells are not editable, and all other cell types
                     have reasonable validation built-in. If the table gets too
                     large, you get a scroll bar.</p>
-                  <p>Backgrid.js comes with <a href="#api-cell" title="Cells">10
+                  <p>Backgrid.js comes with <a href="#api-cells" title="Cells">10
                       basic cell types</a> in the core
-                    and <a href="#api-text-cell" title="TextCell">4 others as
-                      extensions</a>. Cell types such as
+                      and <a href="#api-text-cell" title="TextCell">many others
+                      as extensions</a>. Cell types such as
                     <a href="#api-select2-cell"
                        title="Select2Cell">Select2Cell</a>
                     and <a href="#api-kalendae-cell"
@@ -543,11 +543,11 @@
                   <textarea class="code-snippet" data-mode="css">
                     .backgrid-container {
                       position: relative;
-                      overflow: auto;
-                      max-height: 494px;
                       display: block;
                       width: 100%;
+                      height: 494px;
                       padding: 0;
+                      overflow: scroll;
                       border: 0;
                     }</textarea>
                 </div>
@@ -564,8 +564,7 @@
                        to your table header */
                     .backgrid th {
                       background-color: linear-gradient(top, #2F2727, #1a82f7);
-                    }
-                  </textarea>
+                    }</textarea>
                 </div>
                 <div class="span6">
                   <h2>&nbsp;</h2>
@@ -601,6 +600,8 @@
           </div>
           <div class="row">
             <div class="span12">
+              <h2>How do I validate user input?</h2>
+              <p>See <a href="#api-formatter" title="Formatter">Formatter</a>.</p>
               <h2>Why doesn&apos;t Backgrid.js support AMD (or NPM)?</h2>
               <p>The same question can be asked for volo, bower, ender,
                 browserify and many other competing solutions. The number one
@@ -623,23 +624,17 @@
                 manager. You are encouraged to fork and maintain your own
                 Backgrid.js packages.</p>
               <p>You are also more than welcomed to convince me
-              on <a href="https://github.com/wyuenho/backgrid/issues">Github</a>
-              as you may probably know more than I do about packaging
-              Javascripts.</p>
-              <h2>Does Backgrid.js support features (X)?</h2>
-              <p>If the feature you have in mind isn&apos;t found here in this
-                Backgrid.js version, it could either be in the works or under consideration.</p>
-              <p>See the list
-                of <a href="https://github.com/wyuenho/backgrid/issues?labels=enhancement%2Ctask&amp;page=1&amp;state=open"
-                      title="Github Issues">tasks and enhancements</a>.</p>
+                on <a href="https://github.com/wyuenho/backgrid/issues">Github</a>
+                as you may probably know more than I do about packaging
+                Javascripts.</p>
               <h2>Where do I go to ask questions?</h2>
               <p>Open an issue
-              on <a href="https://github.com/wyuenho/backgrid/issues/new"
-              title="Github">Github</a> with the question tag, or ask
-              on <a href="http://stackoverflow.com/questions/ask"
-              title="Stackoverflow">Stackoverflow</a> with the
-              tag <em>backgrid</em> where either I or fellow users can help
-              you.</p>
+                on <a href="https://github.com/wyuenho/backgrid/issues/new"
+                      title="Github">Github</a> with the question tag, or ask
+                on <a href="http://stackoverflow.com/questions/ask"
+                      title="Stackoverflow">Stackoverflow</a> with the
+                tag <em>backgrid</em> where either I or fellow users can help
+                you.</p>
               <h2>Does Backgrid.js support adaptive scrolling?</h2>
               <p>Some data grid widgets out there supports a technique
                 called adaptive scrolling, meaning the DOM elements will be
@@ -674,6 +669,13 @@
                 real-time <em>rendering</em> out of the box by virtue of
                 listening to model attribute changes from the cell view
                 classes.</p>
+              <h2>Does Backgrid.js support features (X)?</h2>
+              <p>If the feature you have in mind isn&apos;t found here in this
+                Backgrid.js version, it could either be in the works or under
+                consideration.</p>
+              <p>See the list
+                of <a href="https://github.com/wyuenho/backgrid/issues?labels=enhancement%2Ctask&amp;page=1&amp;state=open"
+                      title="Github Issues">tasks and enhancements</a>.</p>
               <h2>How to build Backgrid.js?</h2>
               <p>The Backgrid.js build system uses a number of *nix utilities,
                 gmake, <a href="https://github.com/mishoo/UglifyJS2"
@@ -682,13 +684,13 @@
                                   title="recess">recess</a></p>
               <p>Assuming you have installed gmake onto your system, you also
                 need to install <a href="http://nodejs.org/download/"
-                                   title="NodeJS">node.js and npm</a> first before you can install
+                title="NodeJS">node.js and npm</a> first before you can install
                 uglifyjs2 and recess.</p>
               <textarea class="code-snippet" data-mode="shell">
                 $ npm install uglifyjs2 recess
                 
                 # recursively builds the core and all the extensions and put them into lib
-                $ cd backgrid && make dist</textarea>
+                $ cd backgrid &amp;&amp; make dist</textarea>
               <p>If you just want to customize what components are included in
                 your backbone.all.js file, just edit the <code>SUBDIRS</code>
                 variable in
@@ -783,7 +785,7 @@
               mode: $elm.data("mode"),
               readOnly: true,
               lineNumbers: true,
-              // theme: "neat",
+              theme: "ambiance",
             });
             
             var start = { line: 0, ch: 0 };
