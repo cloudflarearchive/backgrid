@@ -18,7 +18,7 @@ CSS_FILES = $(PROJECT_NAME).css
 CSS_OUTFILE = $(PROJECT_NAME).css
 CSS_OUTFILE_MIN = $(PROJECT_NAME).min.css
 
-UGLIFY = uglifyjs2
+UGLIFY = uglifyjs
 UGLIFY_BEAUTIFY_FLAGS = --beautify indent-level=2,indent-start=2,bracketize=true \
 						--compress sequences=false,properties=false,dead-code=false,unsafe=false,conditionals=false,comparisons=false,evaluate=false,booleans=false,loops=false,unused=false,hoist-funs=false,hoist-vars=false,join-vars=false,cascade=false,warnings=true \
 						--comments '/^(?!jshint|global)([.\s\S](?!@license))+$$/'
@@ -39,8 +39,8 @@ FORCE:
 
 js:
 	$(UGLIFY) $(JS_FILES) $(UGLIFY_BEAUTIFY_FLAGS) --output $(JS_OUTFILE)
-	echo "(function (root) {\n" | cat - $(JS_OUTFILE) > /tmp/$(JS_OUTFILE) && mv -f /tmp/$(JS_OUTFILE) $(JS_OUTFILE)
-	echo "}(this));" >> $(JS_OUTFILE)
+	echo "(function (root, $$, _, Backbone) {\n" | cat - $(JS_OUTFILE) > /tmp/$(JS_OUTFILE) && mv -f /tmp/$(JS_OUTFILE) $(JS_OUTFILE)
+	echo "}(this, $$, _, Backbone));" >> $(JS_OUTFILE)
 	make $(JS_OUTFILE)
 
 csslint:

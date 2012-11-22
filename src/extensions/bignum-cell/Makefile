@@ -25,7 +25,7 @@ csslint:
 	recess $(CSS_FILE) --noIDS --noUniversalSelectors --compile > /tmp/$(CSS_FILE) && mv -f /tmp/$(CSS_FILE) $(CSS_FILE);
 
 minify:
-	uglifyjs2 $(JS_FILE) --compress --mangle --output $(JS_OUTFILE)
+	uglifyjs $(JS_FILE) --compress --mangle --output $(JS_OUTFILE)
 	recess $(CSS_FILE) --noIDS --noUniversalSelectors --compress > /tmp/$(CSS_OUTFILE) && mv -f /tmp/$(CSS_OUTFILE) $(CSS_OUTFILE);
 
 build: minify
