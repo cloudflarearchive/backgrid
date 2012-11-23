@@ -31,7 +31,6 @@
   padding: 0;
   line-height: 30px;
   text-decoration: none;
-  background-color: #ffffff;
 }
 
 .backgrid .paginator ul > li > a:hover,
@@ -51,5 +50,4 @@
 .backgrid .paginator ul > .disabled > a:hover {
   color: #999999;
   cursor: default;
-  background-color: transparent;
 }
