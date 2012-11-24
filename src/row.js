@@ -6,10 +6,27 @@
   Licensed under the MIT @license.
 */
 
+/**
+   Row is a simple container view that takes a model instance and a list of
+   column metadata describing how each of the model's attribute is to be
+   rendered, and apply the appropriate cell to each attribute.
+
+   @class Backgrid.Row
+   @extends Backbone.View
+ */
 var Row = Backgrid.Row = Backbone.View.extend({
 
+  /** @property */
   tagName: "tr",
 
+  /**
+     Initializes a row view instance.
+
+     @param {Object} options
+     @param {*} options.parent
+     @param {Backbone.Collection.<Backgrid.Column>|Array.<Backgrid.Column>|Array.<Object>} options.columns Column metadata.
+     @param {Backbone.Model} options.model The model instance to render.
+   */
   initialize: function (options) {
     var self = this;
     self.parent = options.parent;
@@ -31,7 +48,6 @@ var Row = Backgrid.Row = Backbone.View.extend({
   },
 
   dispose: function () {
-    Backbone.View.prototype.dispose.apply(this, arguments);
     this.columns.off(null, null, this);
     if (this.parent && this.parent.off) this.parent.off(null, null, this);
     var cell = null;
@@ -40,9 +56,12 @@ var Row = Backgrid.Row = Backbone.View.extend({
       cell.off(null, null, this);
       cell.dispose();
     }
-    return this;
+    return Backbone.View.prototype.dispose.apply(this, arguments);
   },
 
+  /**
+     Renders a row of cells for this row's model.
+   */
   render: function () {
     this.$el.empty();
     for (var i = 0; i < this.cells.length; i++) {

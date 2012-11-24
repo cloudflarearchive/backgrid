@@ -1,0 +1,52 @@
+[
+  {
+    "name": "Submodules",
+    "groups": [
+      {
+        "name": "Cells",
+        "classes": [
+          "Backgrid.Cell",
+          "Backgrid.DatetimeCell",
+          "Backgrid.DateCell",
+          "Backgrid.TimeCell",
+          "Backgrid.NumberCell",
+          "Backgrid.IntegerCell",
+          "Backgrid.StringCell",
+          "Backgrid.UriCell",
+          "Backgrid.EmailCell",
+          "Backgrid.BooleanCell",
+          "Backgrid.SelectCell"
+        ]
+      }, {
+        "name": "CellEditors",
+        "classes": [
+          "Backgrid.*CellEditor"
+        ]
+      }, {
+        "name": "Formatters",
+        "classes": [
+          "Backgrid.*Formatter"
+        ]
+      }, {
+        "name": "Columns",
+        "classes": [
+          "Backgrid.*Column*"
+        ]
+      }, {
+        "name": "Headers",
+        "classes": [
+          "Backgrid.HeaderCell",
+          "Backgrid.Header"
+        ]
+      }, {
+        "name": "Others",
+        "classes": [
+          "Backgrid.Grid",
+          "Backgrid.Body",
+          "Backgrid.Row",
+          "Backgrid.Footer"
+        ]
+      }
+    ]
+  }
+]

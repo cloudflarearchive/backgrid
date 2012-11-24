@@ -125,8 +125,7 @@
   background-color: #f9f9f9;
 }
 
-.backgrid tbody tr td.editor,
-.backgrid tbody tr th.editor {
+.backgrid tbody tr td.editor {
   background-color: rgba(82, 168, 236, 0.1);
   border: 0 \9;
   outline: 1px solid rgba(82, 168, 236, 0.8);
@@ -183,4 +182,26 @@
 
 .backgrid .boolean-cell {
   text-align: center;
+}
+
+.backgrid .select-cell {
+  position: relative;
+  text-align: center;
+}
+
+.backgrid .select-cell.editor {
+  padding: 0;
+  outline: 0;
+}
+
+.backgrid .select-cell.editor select {
+  width: 100%;
+  height: 28px;
+  margin: 0;
+  line-height: auto;
+  outline: 1px solid rgba(82, 168, 236, 0.8);
+}
+
+.backgrid .select-cell.editor select:focus {
+  outline: 1px solid rgba(82, 168, 236, 0.8);
 }

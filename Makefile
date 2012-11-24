@@ -19,6 +19,7 @@ dist:
 	$(MAKE) -w -C src/extensions dist
 
 clean:
+	rm -rf api/*
 	rm -rf lib/*
 	$(MAKE) -w -C src clean
 	$(MAKE) -w -C src/extensions clean
@@ -31,4 +32,15 @@ extension:
 	done; \
 	echo "Extension directory $$extension has been created under src/extensions/$$entension"; \
 
+doc:
+	jsduck lib/backgrid.js \
+		--external=Backbone.Model,Backbone.Collection,Backbone.View,ReferenceError,TypeError \
+		--title=Backgrid.js \
+		--no-source \
+		--categories=categories.json \
+		--warnings=-no_doc \
+		--pretty-json \
+		--output api
+
 .EXPORT_ALL_VARIABLES:
+

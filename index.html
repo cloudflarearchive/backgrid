@@ -1,4 +1,21 @@
 <!doctype html>
+<!--
+    Backgrid.js
+    Copyright (C) 2012 Jimmy Yuen Ho Wong
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+-->
 <html>
   <head>
     <meta charset="utf-8" />
@@ -25,7 +42,7 @@
           <div class="navbar-inner">
             <div class="container">
               <a href="."
-                 class="brand" title="Finally, an easily stylable HTML data grid widget with a JS API that doesn't suck.">Backgrid.js</a>
+                 class="brand" title="Finally, an easily stylable HTML data grid widget with a JS API that doesn&apos;t suck.">Backgrid.js</a>
               <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -78,7 +95,7 @@
                       <li class="divider"></li>
                       <li><a href="#faq">FAQ</a></li>
                       <li><a href="#changelog">Change Log</a></li>
-                      <li><a href="#footer">License</a></li>
+                      <li><a href="#license">License</a></li>
                     </ul>
                   </li>
                   <li>
@@ -95,7 +112,7 @@
       </header>
       <div class="container">
         <section class="hero-unit">
-          <h1>Backgrid.js</h1>
+          <h1>Backgrid.js <img class="beta" src="assets/img/beta.png" alt="Beta"/></h1>
           <p class="lead">
             Backgrid.js is a set of components for
             building <strong>semantic</strong> and <strong>easily
@@ -105,7 +122,9 @@
               possible when dealing with tabular data.</p>
           <p>
             <a class="btn btn-large btn-success" href="#examples">See Examples</a>
-            <a class="btn btn-large btn-primary hidden-phone hidden-tablet" href="https://github.com/wyuenho/backgrid/downloads" target="_blank">Download (v0.1)</a>
+            <a class="btn btn-large btn-primary hidden-phone hidden-tablet"
+               href="https://github.com/wyuenho/backgrid/downloads"
+               target="_blank">Download</a>
           </p>
         </section>
         <section id="features">
@@ -113,11 +132,11 @@
             <h1>Features</h1>
             <p>The goal of Backgrid.js is to produce a set of simple, and stable
               core of Backbone UI elements that offer you all the basic
-              displaying, sorting and editing functionality you'd expect, and
+              displaying, sorting and editing functionality you&apos;d expect, and
               create an elegant API that makes extending Backgrid.js with extra
               functionalities easy.</p>
           </div>
-          <div class="row">
+          <div class="row-fluid">
             <div class="span6">
               <h2>Advantages</h2>
               <ul>
@@ -158,7 +177,7 @@
           <div class="page-header">
             <h1>Getting Started</h1>
           </div>
-          <div class="row">
+          <div class="row-fluid">
             <div class="span6">
               <p>
                 Backgrid.js depends on 3 libraries to function:
@@ -169,7 +188,7 @@
                 <li><a href="http://backbonejs.org">backbone.js &gt;= 0.9.2</a></li>
               </ul>
               <aside class="note">
-                <h5>Note:</h5> If you don't care about having the latest
+                <h5>Note:</h5> If you don&apos;t care about having the latest
                 versions of the dependencies, you can use the bundled libraries
                 in the download package.
               </aside>
@@ -195,9 +214,9 @@
           <div class="page-header">
             <h1>Examples</h1>
           </div>
-          <div class="row">
+          <div class="row-fluid">
             <div class="span12">
-              <div class="row">
+              <div class="row-fluid">
                 <div class="span6">
                   <h2>Collection and Model</h2>
                   <p>Before you can display any tabular data in a grid, you must first obtain them.</p>
@@ -221,7 +240,7 @@
                     territories.fetch();</textarea>
                 </div>
               </div>
-              <div class="row">
+              <div class="row-fluid">
                 <div class="span12">
                   <h2>Grid</h2>
                   <p>
@@ -235,10 +254,10 @@
                     var columns = [{
                       name: "id", // The key of the model attribute
                       label: "ID", // The name to display in the header
-                      editable: false, // By default every cell in a column is editable, but *ID* shouldn't be
-                      // Defines a cell type, and ID is displayed with as an integer without thousands separators
+                      editable: false, // By default every cell in a column is editable, but *ID* shouldn&apos;t be
+                      // Defines a cell type, and ID is displayed as an integer without the &apos;,&apos; separating 1000s.
                       cell: Backgrid.IntegerCell.extend({
-                        orderSeparator: ''
+                        orderSeparator: &apos;&apos;
                       })
                     }, {
                       name: "name",
@@ -273,18 +292,18 @@
                     $("#example-1-result").append(grid.render().$el);</textarea>
                 </div>
               </div>
-              <div class="row">
+              <div class="row-fluid">
                 <div class="span12">
                   <h3>Result</h3>
                   <div id="example-1-result" class="backgrid-container"></div>
                   <aside class="note">See <a href="http://en.wikipedia.org/wiki/List_of_countries_by_population">Wikipedia</a></aside>
                   <br />
-                  <p>The list of column metadata Backgrid.Grid expects is simply
-                    a list of JSON object, in which you can hardcode into your
-                    HTML templates or retrieve from a server when the DOM is
-                    ready. Backgrid.js doesn't care where the column metadata come
-                    from as long as you supply the list to the Grid
-                    constructor.</p>
+                  <p>The list of column definitions Backgrid.Grid expects is
+                    simply a list of JSON object, in which you can hardcode into
+                    your HTML templates or retrieve from a server when the DOM
+                    is ready. Backgrid.js doesn&apos;t care where the column
+                    definitions come from as long as you supply the list to the
+                    Grid constructor.</p>
                   <p>As expected, you now have a basic editable data grid
                     displayed. All the columns headers are labeled and sortable by
                     default. ID cells are not editable, and all other cell types
@@ -296,23 +315,26 @@
                       as extensions</a>. Cell types such as
                     <a href="#api-select2-cell"
                        title="Select2Cell">Select2Cell</a>
-                    and <a href="#api-kalendae-cell"
-                           title="KalendaeCell">KalendaeCell</a> give you a much richer
-                    editing interface for option lists and datetime values on
-                    desktop browsers. In addition, there's a wild range of
-                    possibilities with how the data is converted for display and
-                    persistence by using <a href="#api-formatter"
-                                            title="Formatters">formatters</a>.</p>
+                       and <a href="#api-kalendae-cell"
+                       title="KalendaeCell">KalendaeCell</a> give you a much
+                       richer editing interface for option lists and datetime
+                       values on desktop browsers. In addition, there&apos;s a
+                       wild range of possibilities with how the data is
+                       converted for display and persistence by
+                       using <a href="#api-formatter"
+                       title="Formatters">formatters</a> or
+                       customizing <a href="#api-cells">cell classes</a></p>
                 </div>
               </div>
-              <div class="row">
+              <div class="row-fluid">
                 <div class="span12">
                   <h2>Paginator</h2>
                   <p>If you have a large result set like the above, you&apos;d
                   probably want to paginate your results, this is easily
                   achieved in Backgrid.js.</p>
                   <p>Backgrid.js comes with a paginator extension which you can
-                    load by including the follwing into your <code>head</code> tag:</p>
+                    load by including the following into your <code>head</code>
+                    tag:</p>
                   <textarea class="code-snippet" data-mode="htmlmixed">
                     &lt;link rel="stylesheet" href="/css/backgrid/extensions/paginator/backgrid-paginator.css" /&gt;
                     &lt;script src="/js/assets/js/backbone.paginator.js"&gt;&lt;/script&gt;
@@ -364,7 +386,7 @@
                     $("#example-2-result").append(pageableGrid.render().$el);</textarea>
                 </div>
               </div>
-              <div class="row">
+              <div class="row-fluid">
                 <div class="span12">
                   <h3>Result</h3>
                   <div id="example-2-result" class="backgrid-container"></div>
@@ -377,60 +399,404 @@
           <div class="page-header">
             <h1>API Reference</h1>
           </div>
-          <div class="row">
-            <div class="span6">
+          <div class="row-fluid">
+            <div class="span2">
               <h2 id="api-grid">Grid</h2>
+              <ul class="nav navlist">
+                <li><a href="api/index.html#!/api/Backgrid.Grid">Backgrid.Grid</a></li>
+              </ul>
             </div>
-            <div class="span6">
+            <div class="span10">
+              <h3>How to Use the Grid</h3>
+              <p>As described in the <a href="#examples">examples</a> above, a
+                basic grid needs only a collection and a list of column
+                definitions.</p>
+              <p>The various ways of customizing a grid is described in the
+                following sections.</p>
             </div>
           </div>
-          <div class="row">
-            <div class="span6">
+          <div class="row-fluid">
+            <div class="span2">
               <h2 id="api-column">Columns</h2>
+              <ul class="nav navlist">
+                <li><a href="api/index.html#!/api/Backgrid.Column" title="Backgrid.Column">Backgrid.Column</a></li>
+                <li><a href="api/index.html#!/api/Backgrid.Columns" title="Backgrid.Columns">Backgrid.Columns</a></li>
+              </ul>
             </div>
-            <div class="span6">
+            <div class="span10">
+              <h3>Column Defaults</h3>
+              <p>Column defaults and required parameters are defined in
+                the <a href="api/index.html#!/api/Backgrid.Column-method-initialize">Backgrid.Column#initialize</a>
+                method.</p>
+              <h3>Column Definition</h3>
+              <p>A Column is a placeholder for a column definition.</p>
+              <p>You usually don&apos;t need to create an instance of this class
+                yourself as a collection of column instances will be created for
+                you from a list of column object literals you provide to the
+                Backgrid.js view class constructors.</p>
+              <p>Internally, columns are stored as a collection in the form of
+                Backgrid.Columns. In addition, all parent views will convert the
+                column definition into
+                a <a href="api/index.html#!/api/Backgrid.Columns">Backgrid.Columns</a>
+                collection and pass a reference to any subviews that require
+                it.</p>
+              <h3>Listening to Column Attribute Changes</h3>
+              <p>Occasionally, you may want to listen to column attribute change
+                events. In that case, you can choose to initialize a
+                Backgrid.Columns collection and listen to events from the
+                individual models.</p>
+              <textarea class="code-snippet" data-mode="javascript" data-eval="no">
+                var myColumns = new Backgrid.Columns({
+                  name: "id", label: "ID", cell: "string"
+                }, {
+                  // ...
+                });
+
+                myColumns.on("change:renderable", function (col, colAttr) {
+                  if (!colAttr) {
+                    // hide the column
+                  }
+                });</textarea>
             </div>
           </div>
-          <div class="row">
-            <div class="span6">
+          <div class="row-fluid">
+            <div class="span2">
               <h2 id="api-cells">Cells</h2>
+              <ul class="nav navlist">
+                <li><a href="api/index.html#!/api/Backgrid.Cell">Backgrid.Cell</a></li>
+                <li><a href="api/index.html#!/api/Backgrid.DatetimeCell">Backgrid.DatetimeCell</a></li>
+                <li><a href="api/index.html#!/api/Backgrid.DateCell">Backgrid.DateCell</a></li>
+                <li><a href="api/index.html#!/api/Backgrid.TimeCell">Backgrid.TimeCell</a></li>
+                <li><a href="api/index.html#!/api/Backgrid.NumberCell">Backgrid.NumberCell</a></li>
+                <li><a href="api/index.html#!/api/Backgrid.IntegerCell">Backgrid.IntegerCell</a></li>
+                <li><a href="api/index.html#!/api/Backgrid.StringCell">Backgrid.StringCell</a></li>
+                <li><a href="api/index.html#!/api/Backgrid.UriCell">Backgrid.UriCell</a></li>
+                <li><a href="api/index.html#!/api/Backgrid.EmailCell">Backgrid.EmailCell</a></li>
+                <li><a href="api/index.html#!/api/Backgrid.BooleanCell">Backgrid.BooleanCell</a></li>
+                <li><a href="api/index.html#!/api/Backgrid.SelectCell">Backgrid.SelectCell</a></li>
+                <li><a href="api/index.html#!/api/Backgrid.CellEditor">Backgrid.CellEditor</a></li>
+                <li><a href="api/index.html#!/api/Backgrid.DivCellEditor">Backgrid.DivCellEditor</a></li>
+                <li><a href="api/index.html#!/api/Backgrid.SelectCellEditor">Backgrid.SelectCellEditor</a></li>
+              </ul>
             </div>
-            <div class="span6">
+            <div class="span10">
+              <h3>Demo</h3>
+              <p class="label label-success">Try them</p>
+              <div class="backgrid-container" style="height: auto">
+                <table class="backgrid">
+                  <tr>
+                    <th>Name (StringCell)</th>
+                    <th>Age (IntegerCell)</th>
+                    <th>Birthday (DateCell)</th>
+                    <th>Gender (SelectCell)</th>
+                    <th>Alive (BooleanCell)</th>
+                  </tr>
+                  <tr id="cell-demo-row-1"></tr>
+                </table>
+              </div>
+              <div class="backgrid-container" style="height: auto">
+                <table class="backgrid">
+                  <tr>
+                    <th>URL (UriCell)</th>
+                    <th>Email (EmailCell)</th>
+                    <th>Next Delivery Time (DateTimeCell)</th>
+                    <th>His Local Time (TimeCell)</th>
+                    <th>Change in Wallet (NumberCell)</th>
+                  </tr>
+                  <tr id="cell-demo-row-2"></tr>
+                </table>
+              </div>
+              <aside class="note">
+                <h5>Note:</h5>
+                <p>Backgrid.js and its author are not associated with Santa and
+                  santaclaus.com in any way.</p>
+              </aside>
+              <h3>Configuring Cells</h3>
+              <p>While many built-in cells provide reasonable defaults, you may
+                choose to configure them to suit your own needs.</p>
+              <p>Cell types that you are most likely to configure are the
+                NumberCell, DatetimeCell and SelectCell classes. Once
+                configured, you may use them as the cell attribute values in
+                column definitions.</p>
+              <textarea class="code-snippet" data-mode="javascript" data-eval="no">
+                var grid = new Backgrid.Grid({
+
+                  columns: [{
+                    name: "id",
+                    label: "ID",
+                    editable: false,
+                    // Dynamically defines a new cell type with new defaults.
+                    // ID is displayed as an integer without &apos;,&apos;s.
+                    cell: Backgrid.IntegerCell.extend({
+                      orderSeparator: ''
+                    })
+                  }, {
+                    name: "lastaccessed",
+                    label: "Last Login Time",
+                    editable: false,
+                    cell: Backgrid.DatetimeCell.extend({
+                      includeMilli: true
+                    })
+                  }, {
+                    name: "gender",
+                    label: "Gender",
+                    cell: Backgrid.SelectCell.extend({
+                      // It's possible to render an option group or use a
+                      // function to provide option values too.
+                      optionValues: [["Male", "m"], ["Female", "f"]]
+                    })
+                  }],
+
+                  collection: col
+                });
+              </textarea>
+              <p>See the <a href="api/index.html" title="API Doc">JSDoc</a> for
+                the various Cell classes for details on what you can configure
+                using this method.</p>
+              <h3>Custom Cell</h3>
+              <p>If the built-in and extension cell classes are not enough for
+                you, you may choose to create your own cell class and supply it
+                to a column definition.</p>
+              <p>If your custom cell will still use a
+                <em>contenteditable</em> <code>div</code> like the predefined
+                ones for editing, you may choose to
+                subclass <a href="api/index.html#!/api/Backgrid.Cell">Cell</a>
+                or one of the predefined classes and simply define a className
+                and a <a href="#api-formatter"
+                title="Formatters">formatter</a>. In fact, most of the core cell
+                classes are done this way.</p>
+              <textarea class="code-snippet" data-mode="javascript" data-eval="no">
+                // This is the verbatim Backgrid.StringCell definition
+
+                var StringCell = Backgrid.StringCell = Cell.extend({
+
+                  // Cell default class names are the lower-cased and dasherized
+                  // form of the the cell class names by convention.
+                  className: "string-cell",
+
+                  formatter: {
+                    fromRaw: function (rawData) {
+                      return _.escape(rawData);
+                    },
+                    toRaw: function (formattedData) {
+                      return formattedData;
+                    }
+                  }
+                });</textarea>
+              <p>If your cell class will render differently in display mode, you
+                may simply
+                override <a href="api/index.html#!/api/Backgrid.Cell-method-render">Cell#render()</a>
+                in your subclass.</p>
+              <h3>Custom CellEditor</h3>
+              <p class="label label-warning">Advanced Usage</p>
+              <p>Some cell types, like the
+                <a href="#api-text-cell" title="TextCell">TextCell</a>
+                extension, may only make sense if the editor is rendered in a
+                modal dialog or a form element in a different part of the
+                page. In that case the
+                default <a href="api/index.html#!/api/Backgrid.DivCellEditor"
+                title="DivCellEditor">DivCellEditor</a>, which renders a
+                contenteditable div, will not be suitable and a
+                new <a href="api/index.html#!/api/Backgrid.CellEditor"
+                title="CellEditor">CellEditor</a> must be defined.</p>
+              <p>A custom cell editor should
+                subclass <a href="api/index.html#!/api/Backgrid.CellEditor">CellEditor</a>
+                as it defines a number of required parameters in its initializer
+                an clean up operations that are necessary for most cell
+                editors. When a cell class enters edit mode, a new editor
+                instance is constructed by given it the required parameters, and
+                then a Backbone event <code>edit</code> is fired from the cell
+                instance itself. A custom cell class can act on this event to do
+                anything before the cell editor is rendered.</p>
+              <p>Once the cell has entered edit mode, a Backbone
+                event <code>editing</code> is fired. A custom cell class can
+                then act on it to do anything after the cell editor has been
+                rendered, e.x: placing the focus inside the editor.</p>
+              <p>During editing, if any error is encountered (see
+                the <a href="#api-formatter">formatter protocol</a> below), a
+                cell editor should fire a Backbone event <code>error</code> so
+                listeners, usually a cell instance, can respond
+                appropriately. When editing is done, a cell editor should fire a
+                Backbone <code>done</code> event. A cell should be listening to
+                this event so it can remove its editor and re-render itsef in
+                display mode.</p>
+              <p class="label label-important">Truely Advanced Hacking</p>
+              <p>At the most basic level, Cells and CellEditors are simply
+                <a href="http://backbonejs.org/#View"
+                title="Backbone.View">Backbone.View</a> classes that are
+                guaranteed to be given a number of parameters when constructed
+                by <a href="api/index.html#!/api/Backgrid.Row"
+                title="Row">Row</a>. You can use any Backbone.View as your Cell
+                and CellEditor.</p>
             </div>
           </div>
-          <div class="row">
-            <div class="span6">
+          <div class="row-fluid">
+            <div class="span2">
               <h2 id="api-formatter">Formatter</h2>
+              <ul class="nav navlist">
+                <li><a href="api/index.html#!/api/Backgrid.Formatter">Backgrid.Formatter</a></li>
+                <li><a href="api/index.html#!/api/Backgrid.DatetimeFormatter">Backgrid.DatetimeFormatter</a></li>
+                <li><a href="api/index.html#!/api/Backgrid.NumberFormatter">Backgrid.NumberFormatter</a></li>
+              </ul>
             </div>
-            <div class="span6">
+            <div class="span10">
+              <h3>Custom Formatters</h3>
+              <p>In Backgrid.js, Formatters serves the purpose of converting values
+                between JSON value types and strings, and validation. Writing
+                formatters for value conversion and validation is easy as you only
+                have to conform to a very simple protocol.</p>
+              <p>Any formatters must have the following 2 methods defined:</p>
+              <textarea class="code-snippet" data-mode="javascript" data-eval="no">
+                var formatter = {
+                  // function (*): string
+                  fromRaw: function (rawData) { },
+                  // function (string): *|undefined
+                  toRaw: function (formattedData) { }
+                };</textarea>
+              <p><code>fromRaw()</code> is called by Backgrid.Cell and its
+                subclasses whenever a raw model value needs to be formatted into
+                humanized form for display.</p>
+              <p><code>toRaw()</code> is called by Backgrid.CellEditor and its
+                subclasses whenever a user input string needs to be converted back
+                to a raw JSON value for model persistence.</p>
+              <h3>Validation</h3>
+              <p>In addition to user input conversion, toRaw() also validates
+                the user input during conversion. If the user input is invalid
+                or cannot be converted to a JSON value,
+                toRaw() <strong>MUST</strong> return <code>undefined</code>
+                instead of throwing an Error.</p>
+              <h3>Using Custom Formatters</h3>
+              <p>A custom formatter can be used in any of the following ways and
+                is chosen in the following order of precedence:</p>
+              <ul>
+                <li>A formatter instance as the formatter attribute in a column
+                  definition.</li>
+                <li>A formatter instance as the formatter class attribute when
+                  defining a new Cell class.</li>
+              </ul>
+              <textarea class="code-snippet" data-mode="javascript" data-eval="no">
+                var grid = new Backgrid.Grid({
+                  columns: [{
+                    name: "id",
+                    formatter: new MyUUIDFormatter() // As a column definition attribute
+                    cell: "string"
+                  }, {
+                    name: "url",
+                    cell: UriCell.extend({
+                      formatter: new MyURLFormatter() // As a cell class attribute
+                    })
+                  }],
+                  collection: col
+                });</textarea>
+              <p class="label label-info">FYI</p>
+              <p>If you supply a formatter as column definition attribute AND a
+                cell with a custom formattered configured, the formatter in the
+                column definition always overrides the cell&apos;s.</p>
             </div>
           </div>
-          <div class="row">
-            <div class="span6">
+          <div class="row-fluid">
+            <div class="span2">
               <h2 id="api-header">Header</h2>
+              <ul class="nav navlist">
+                <li><a href="api/index.html#!/api/Backgrid.Header">Backgrid.Header</a></li>
+                <li><a href="api/index.html#!/api/Backgrid.HeaderCell">Backgrid.HeaderCell</a></li>
+              </ul>
             </div>
-            <div class="span6">
+            <div class="span10">
+              <h3>Customizing the Header</h3>
+              <p class="label label-warning">Advanced Usage</p>
+              <p></p>
             </div>
           </div>
-          <div class="row">
-            <div class="span6">
+          <div class="row-fluid">
+            <div class="span2">
               <h2 id="api-row">Row</h2>
+              <ul class="nav navlist">
+                <li><a href="api/index.html#!/api/Backgrid.Row">Backgrid.Row</a></li>
+              </ul>
             </div>
-            <div class="span6">
+            <div class="span10">
+              <h3>Customizing Row</h3>
+              <p>A row is simply an intermediary view class that construct the
+                appropriate Cell class instances for rendering the model
+                columns.</p>
+              <p>If you would like to override how a row is rendered, you may
+                define your own Row subclass and give it to a Body described
+                below.</p>
             </div>
           </div>
-          <div class="row">
-            <div class="span6">
+          <div class="row-fluid">
+            <div class="span2">
               <h2 id="api-body">Body</h2>
+              <ul class="nav navlist">
+                <li><a href="api/index.html#!/api/Backgrid.Body">Backgrid.Body</a></li>
+              </ul>
             </div>
-            <div class="span6">
+            <div class="span10">
+              <h3>Using a Custom Row</h3>
+              <p class="label label-warning">Advanced Usage</p>
+              <p>If you have a custom Row class that you would like to use in
+                place of the default Row, you may supply it to the Body
+                constructor as follows:</p>
+              <textarea class="code-snippet" data-mode="javascript" data-eval="no">
+                var ZebraStrippingRow = Backgrid.Row.extend({
+                  // ...
+                });
+
+                var grid = new Backgrid.Grid({
+                  body: Backgrid.Body.extend({ // <-- Supplies a new Body class created on the spot to the grid.
+                    row: ZebraStrippingRow // <-- Tell the new Body class to use ZebraStrippingRow to render rows.
+                  }),
+                  columns: [{
+                    //...
+                  }],
+                  collection: col
+                });</textarea>
+              <h3>Customizing Body</h3>
+              <p class="label label-warning">Advanced Usage</p>
+              <p>Body is the intermediary view that coordinates between the
+                various parts of the grid. Specifically, the default
+                implementation is responsible for re-rendering the rows when any
+                model is inserted into, removed from or reordered in the
+                underlying collection. See
+                the <a href="api/index.html#!/api/Backgrid.Body">JSDoc</a> for
+                details.</p>
             </div>
           </div>
-          <div class="row">
-            <div class="span6">
+          <div class="row-fluid">
+            <div class="span2">
               <h2 id="api-footer">Footer</h2>
+              <ul class="nav navlist">
+                <li><a href="api/index.html#!/api/Backgrid.Footer">Backgrid.Footer</a></li>
+              </ul>
             </div>
-            <div class="span6">
+            <div class="span10">
+              <h3>Putting Things at The End of a Table</h3>
+              <p>The default Footer class is an abstract class that only defines
+                a number of required constructor parameters. If you wish to
+                append additional information to the end of a table you must
+                subclass Footer and supply the class to the Grid
+                constructor.</p>
+              <textarea class="code-snippet" data-mode="javascript" data-eval="no">
+                var CaptionFooter = Backgrid.Footer.extend({
+
+                  render: function () {
+                    this.$el.html("&lt;tr&gt;&lt;td colspan=&apos;6&apos;&gt;Hello World!&lt;/td&gt;&lt;/tr&gt;");
+                    return this;
+                  }
+
+                });
+
+                var grid = new Backgrid.Grid({
+                  columns: [{
+                    //...
+                  }],
+                  collection: col,
+                  footer: CaptionFooter // <--
+                });</textarea>
+              <p>Very often, you&apos;ll want to append a paginator to the end
+                of your table if there are too many row. Luckily, there already
+                is a <a href="#api-paginator">paginator extension</a> provided for you.</p>
             </div>
           </div>
         </section>
@@ -480,37 +846,38 @@
                 organizing your code.</li>
             </ul>
           </div>
-          <div class="row">
+          <div class="row-fluid">
             <div class="span6">
               <h2 id="api-paginator">Paginator</h2>
             </div>
             <div class="span6">
             </div>
           </div>
-          <div class="row">
+          <div class="row-fluid">
             <div class="span6">
               <h2 id="api-text-cell">TextCell</h2>
             </div>
             <div class="span6">
             </div>
           </div>
-          <div class="row">
+          <div class="row-fluid">
             <div class="span6">
               <h2 id="api-kalendae-cell">KalendaeCell</h2>
             </div>
             <div class="span6">
             </div>
           </div>
-          <div class="row">
+          <div class="row-fluid">
             <div class="span6">
               <h2 id="api-select2-cell">Select2Cell</h2>
             </div>
             <div class="span6">
             </div>
           </div>
-          <div class="row">
+          <div class="row-fluid">
             <div class="span6">
               <h2 id="api-latlng-cell">LatLngCell</h2>
+              Coming soon...
             </div>
             <div class="span6">
             </div>
@@ -520,14 +887,14 @@
           <div class="page-header">
             <h1>Styling</h1>
           </div>
-          <div class="row">
+          <div class="row-fluid">
             <div class="span12">
               <p>Out of the box, Backgrid.js generates simple semantic HTML table
                 elements that you can style with pure CSS. This section is only
                 going to briefly describe some of the more important classes, and
                 things that you should be aware of when styling.</p>
 
-              <div class="row">
+              <div class="row-fluid">
                 <div class="span6">
                   <h2>.backgrid-container</h2>
                   <p>This is the class that you should put into any container
@@ -552,7 +919,7 @@
                     }</textarea>
                 </div>
               </div>
-              <div class="row">
+              <div class="row-fluid">
                 <div class="span6">
                   <h2>.backgrid</h2>
                   <p>This is the class that will be applied to every Backgrid.js
@@ -579,7 +946,7 @@
                     });</textarea>
                 </div>
               </div>
-              <div class="row">
+              <div class="row-fluid">
                 <div class="span12">
                   <h2>.backgrid .*-cell</h2>
                   <p>Every cell class Backgrid.js defines has a CSS class
@@ -598,7 +965,7 @@
           <div class="page-header">
             <h1>Frequently Asked Questions</h1>
           </div>
-          <div class="row">
+          <div class="row-fluid">
             <div class="span12">
               <h2>How do I validate user input?</h2>
               <p>See <a href="#api-formatter" title="Formatter">Formatter</a>.</p>
@@ -628,11 +995,11 @@
                 as you may probably know more than I do about packaging
                 Javascripts.</p>
               <h2>Where do I go to ask questions?</h2>
-              <p>Open an issue
-                on <a href="https://github.com/wyuenho/backgrid/issues/new"
-                      title="Github">Github</a> with the question tag, or ask
-                on <a href="http://stackoverflow.com/questions/ask"
-                      title="Stackoverflow">Stackoverflow</a> with the
+              <p>Ask on
+                the <a href="https://groups.google.com/forum/?fromgroups#!forum/backgridjs"
+                title="backgridjs Google Group">Google Group mailing list</a> or
+                go to <a href="http://stackoverflow.com/questions/ask"
+                title="Stackoverflow">Stackoverflow</a> with the
                 tag <em>backgrid</em> where either I or fellow users can help
                 you.</p>
               <h2>Does Backgrid.js support adaptive scrolling?</h2>
@@ -679,20 +1046,20 @@
               <h2>How to build Backgrid.js?</h2>
               <p>The Backgrid.js build system uses a number of *nix utilities,
                 gmake, <a href="https://github.com/mishoo/UglifyJS2"
-                          title="UglifyJS2">uglifyjs2</a> and
+                          title="UglifyJS">uglifyjs</a> and
                 Twitter&apos;s <a href="https://github.com/twitter/recess"
                                   title="recess">recess</a></p>
               <p>Assuming you have installed gmake onto your system, you also
                 need to install <a href="http://nodejs.org/download/"
                 title="NodeJS">node.js and npm</a> first before you can install
-                uglifyjs2 and recess.</p>
+                uglifyjs and recess.</p>
               <textarea class="code-snippet" data-mode="shell">
-                $ npm install uglifyjs2 recess
+                $ npm install uglifyjs recess
                 
                 # recursively builds the core and all the extensions and put them into lib
                 $ cd backgrid &amp;&amp; make dist</textarea>
               <p>If you just want to customize what components are included in
-                your backbone.all.js file, just edit the <code>SUBDIRS</code>
+                your backbone.js file, just edit the <code>SUBDIRS</code>
                 variable in
                 the <a href="https://github.com/wyuenho/backgrid/tree/master/src/extensions/Makefile"
                        title="src/extension/Makefile">src/extensions/Makefile</a>
@@ -738,15 +1105,18 @@
             <dd>Initial release</dd>
           </dl>
         </section>
-      </div>
-    </div>
-    <div id="footer">
-      <div class="container">
-        <p>Copyright &copy; 2012 Jimmy Yuen Ho Wong and Contributors. Code
-          licensed under the <a href="LICENSE-MIT">MIT license</a>.<br />
-          Documentation licensed
-          under <a href="http://creativecommons.org/licenses/by/3.0/">CC BY
-          3.0</a></p>
+        <section id="license">
+          <div class="page-header">
+            <h1>License</h1>
+          </div>
+          <p>Copyright &copy; 2012 Jimmy Yuen Ho Wong and
+            Contributors.</p>
+          <p>Backgrid.js Javascript and CSS source code licensed
+            under the <a href="LICENSE-MIT">MIT license</a>.</p>
+          <p>Documentation licensed
+            under <a href="http://www.gnu.org/licenses/gpl-3.0.html"
+                     title="GPLv3">GPLv3</a>.
+        </section>
       </div>
     </div>
     <script src="assets/js/scale.fix.js"></script>
@@ -767,12 +1137,6 @@
     <script src="codemirror/mode/shell/shell.js"></script>
     <script>
       (function () {
-        function unescape (s) {
-          var result = s.replace("&lt;", '<');
-          result = result.replace("&gt;", '>');
-          result = result.replace("&amp;", "&");
-          return result;
-        }
         
         $(document).ready(function () {
 
@@ -786,6 +1150,7 @@
               readOnly: true,
               lineNumbers: true,
               theme: "ambiance",
+              tabindex: -1
             });
             
             var start = { line: 0, ch: 0 };
@@ -820,6 +1185,82 @@
               });
             }
           });
+        });
+
+        $(document).ready(function () {
+
+          function nextChristmas() {
+            var now = new Date();
+            if (now.getMonth() < 11 || (now.getMonth() == 11 && now.getDate() < 24)) {
+              return new Date(now.getFullYear(), 11, 24).toISOString();
+            }
+
+            if (now.getMonth() == 11 && now.getDate() >= 26) {
+              return new Date(now.getFullYear() + 1, 11, 24).toISOString();
+            }
+          }
+
+          var santa = new Backbone.Model({
+            name: "Santa Clause",
+            age: new Date().getFullYear() - 270,
+            birthday: "0270-03-01",
+            gender: "m",
+            alive: true,
+            url: "http://santaclaus.com",
+            email: "santa@santaclaus.com",
+            nextDeliveryTime: nextChristmas(),
+            hisLocalTime: new Date().toISOString().split(/T|Z| +/)[1],
+            moneyInWallet: 10.7
+          });
+
+          var columns = [{
+            name: "name",
+            cell: "string"
+          }, {
+            name: "age",
+            cell: "integer"
+          }, {
+            name: "birthday",
+            cell: "date"
+          }, {
+            name: "gender",
+            cell: Backgrid.SelectCell.extend({
+              optionValues: [["Male", "m"], ["Female", "f"]]
+            })
+          }, {
+            name: "alive",
+            cell: "boolean"
+          }, {
+            name: "url",
+            cell: "uri"
+          }, {
+            name: "email",
+            cell: "email"
+          }, {
+            name: "nextDeliveryTime",
+            cell: "datetime"
+          }, {
+            name: "hisLocalTime", // His local time is your local time, Santa lives at the North Pole.
+            cell: "time"
+          }, {
+            name: "moneyInWallet",
+            cell: "number"
+          }];
+
+          var cellDemoRow1 = new Backgrid.Row({
+            columns: columns.slice(0, 5),
+            model: santa
+          });
+
+          $("#cell-demo-row-1").replaceWith(cellDemoRow1.render().$el);
+
+          var cellDemoRow2 = new Backgrid.Row({
+            columns: columns.slice(5),
+            model: santa
+          });
+
+          $("#cell-demo-row-2").replaceWith(cellDemoRow2.render().$el);
+
         });
       }());
     </script>

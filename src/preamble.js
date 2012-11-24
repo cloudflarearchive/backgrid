@@ -6,15 +6,9 @@
   Licensed under the MIT @license.
 */
 
-/*global root:true */
-
-var require = require || function (packageName) {
-  throw new ReferenceError(packageName + " is required but missing.");
+var Backgrid = root.Backgrid = {
+  VERSION: "0.1"
 };
-
-var $ = root.jQuery || root.Zepto || root.ender;
-var _ = root._ || require("underscore");
-var Backbone = root.Backbone || require("backbone");
 
 // Monkey-patch Backbone <= 0.9.2 with dispose() on the View
 if (!Backbone.View.prototype.dispose) {
@@ -59,7 +53,3 @@ function lpad(str, length, padstr) {
   }
   return padding + str;
 }
-
-var Backgrid = root.Backgrid = {};
-
-Backgrid.VERSION = "0.1";

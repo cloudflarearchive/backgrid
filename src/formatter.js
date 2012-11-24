@@ -6,25 +6,62 @@
   Licensed under the MIT @license.
 */
 
-// Just a convenient class for interested parties to subclass.
-// The default Cell classes don't require the formatter to be a subclass of
-// Formatter as long as the fromRaw(rawData) and toRaw(formattedData) methods
-// are defined.
+/**
+   Just a convenient class for interested parties to subclass.
+
+   The default Cell classes don't require the formatter to be a subclass of
+   Formatter as long as the fromRaw(rawData) and toRaw(formattedData) methods
+   are defined.
+
+   @abstract
+   @class Backgrid.Formatter
+*/
 var Formatter = Backgrid.Formatter = function () {};
 _.extend(Formatter.prototype, {
-  // Takes a raw value from a model and returns a formatted string for display.
+
+  /**
+     Takes a raw value from a model and returns a formatted string for display.
+
+     @member Backgrid.Formatter
+     @param {*} rawData
+     @return {string}
+  */
   fromRaw: function (rawData) {
     return rawData;
   },
-  // Takes a formatted string, usually from user input, and returns a
-  // appropriately typed value for persistence in the model.
+
+  /**
+     Takes a formatted string, usually from user input, and returns a
+     appropriately typed value for persistence in the model.
+
+     If the user input is invalid or unable to be converted to a raw value
+     suitable for persistence in the model, toRaw must return `undefined`.
+
+     @member Backgrid.Formatter
+     @param {string} formattedData
+     @return {*|undefined}
+  */
   toRaw: function (formattedData) {
     return formattedData;
   }
+
 });
 
-// A floating point number formatter. Doesn't speak scientific notation at the
-// moment.
+/**
+   A floating point number formatter. Doesn't speak understand notation at the
+   moment.
+
+   @class Backgrid.NumberFormatter
+   @extends Backgrid.Formatter
+   @param {Object} options
+   @param {number} [options.decimals=2] Number of decimals to display. Must be an integer.
+   @param {string} [options.decimalSeparator='.'] The separator to use when
+   displaying decimals.
+   @param {string} [options.orderSeparator=','] The separator to use to
+   separator thousands. May be an empty string.
+
+   @throws {RangeError} If decimals < 0 or > 20.
+*/
 var NumberFormatter = Backgrid.NumberFormatter = function (options) {
   options = options ? _.clone(options) : {};
   _.extend(this, this.defaults, options);
@@ -44,6 +81,16 @@ _.extend(NumberFormatter.prototype, {
 
   HUMANIZED_NUM_RE: /(\d)(?=(?:\d{3})+$)/g,
 
+  /**
+     Takes a floating point number and convert it to a formatted string where
+     every thousand is separated by `orderSeparator`, with a `decimal` number of
+     decimals separated by `decimalSeparator`. The number returned is rounded
+     the usual way.
+
+     @member Backgrid.NumberFormatter
+     @param {number} number
+     @return {string}
+   */
   fromRaw: function (number) {
     if (isNaN(number) || number === null) return '';
 
@@ -56,6 +103,15 @@ _.extend(NumberFormatter.prototype, {
     return integerPart.replace(this.HUMANIZED_NUM_RE, '$1' + this.orderSeparator) + decimalPart;
   },
 
+  /**
+     Takes a string, possibly formatted with `orderSeparator` and/or
+     `decimalSeparator`, and convert it back to a number.
+
+     @member Backgrid.NumberFormatter
+     @param {string} formattedData
+     @return {number|undefined} Undefined if the string cannot be converted to
+     a number.
+   */
   toRaw: function (formattedData) {
     var rawData = '';
 
@@ -80,8 +136,25 @@ _.extend(NumberFormatter.prototype, {
 
 });
 
-// Only understands ISO-8601 formatted datetime strings. If a timezone is
-// specified, it must be an offset.
+/**
+   Formatter to converts between various datetime string formats.
+
+   This class only understands ISO-8601 formatted datetime strings. If a
+   timezone is specified, it must be an offset.
+
+   @class Backgrid.DatetimeFormatter
+   @extends Backgrid.Formatter
+
+   @param {Object} options
+   @param {boolean} [options.includeDate=true] Whether the values include the
+   date part.
+   @param {boolean} [options.includeTime=true] Whether the values include the
+   time part.
+   @param {boolean} [options.includeMilli=false] If `includeTime` is true,
+   whether to include the millisecond part.
+
+   @throws {Error} If both `includeDate` and `includeTime` are false.
+*/
 var DatetimeFormatter = Backgrid.DatetimeFormatter = function (options) {
   options = options ? _.clone(options) : {};
   _.extend(this, this.defaults, options);
@@ -102,6 +175,16 @@ _.extend(DatetimeFormatter.prototype, {
   ZONE_RE: /^([+\-]\d{2}):?(\d{2})$/,
   ISO_SPLITTER_RE: /T|Z| +/,
 
+  /**
+     Converts an ISO-8601 formatted datetime string, possibly with a timezone,
+     to a datetime string, date string or a time string in the __local
+     timezone__, depending on the options supplied to this formatter instance at
+     construction.
+
+     @member Backgrid.DatetimeFormatter
+     @param {string} rawData
+     @return {string}
+   */
   fromRaw: function (rawData) {
     rawData = trim(rawData);
     var parts = rawData.split(this.ISO_SPLITTER_RE) || [];
@@ -140,6 +223,18 @@ _.extend(DatetimeFormatter.prototype, {
     return result;
   },
 
+  /**
+     Converts a datetime, date or time string, to an ISO-8601 formatted
+     datetime, date or time string, depending on the options supplied to this
+     formatter instance at construction. If the string input does not include a
+     time zone offset, the string is assumed to denote a local time, otherwise
+     the date and time part are assumed to be in UTC.
+
+     @member Backgrid.DatetimeFormatter
+     @param {string} formattedData
+     @return {string|undefined} Undefined if unable to convert to an ISO-8601
+     string.
+   */
   toRaw: function (formattedData) {
     formattedData = trim(formattedData);
 
