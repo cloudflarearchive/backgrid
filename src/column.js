@@ -25,7 +25,8 @@ var Column = Backgrid.Column = Backbone.Model.extend({
     editable: true,
     renderable: true,
     formatter: null,
-    cell: null
+    cell: null,
+    headerCell: null
   },
 
   /**
@@ -38,12 +39,13 @@ var Column = Backgrid.Column = Backbone.Model.extend({
      cell class in Backbone, i.e.: string => StringCell. If a Cell subclass
      is supplied, it is initialized with a hash of parameters. If a Cell
      instance is supplied, it is used directly.
+     @param {string|Backgrid.HeaderCell} attrs.headerCell The header cell type.
      @param {string} [attrs.label=null] The label to show in the header.
      @param {boolean} [attrs.sortable=true]
      @param {boolean} [attrs.editable=true]
      @param {boolean} [attrs.renderable=true]
-     @param {Backgrid.Formatter|Object} [attrs.formatter=null] The formatter to
-     use to convert between raw model values and user input.
+     @param {Backgrid.Formatter|Object|string} [attrs.formatter=null] The
+     formatter to use to convert between raw model values and user input.
 
      @throws {Error} If attrs.cell or attrs.options are not supplied.
      @throws {ReferenceError} If attrs.cell is a string but a cell class of

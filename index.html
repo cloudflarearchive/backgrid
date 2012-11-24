@@ -703,9 +703,47 @@
               </ul>
             </div>
             <div class="span10">
+              <h3>Understanding the Default Header</h3>
+              <p>Backgrid.js comes with a default header section and header cell
+                implementation that simply renders a sorter if the column is
+                sortable. The text inside the header cells come from the column
+                definitions. If a <em>label</em> is not defined in a column
+                definition, its name is used as the label instead.</p>
+              <p>The default header cell implementation supports sorting in
+                ascending or descending order, using the column&apos;s natural
+                ordering. The sorter will also allow cycling back to the
+                table&apos;s default sorting order, which is sorting by the
+                model <a href="http://backbonejs.org/#Model-id"
+                title="Backbone.Model#id">server IDs</a>
+                and <a href="http://backbonejs.org/#Model-cid"
+                title="Backbone.Model#cid">client IDs</a>.</p>
               <h3>Customizing the Header</h3>
               <p class="label label-warning">Advanced Usage</p>
-              <p></p>
+              <p>You are allow to use a different header cell class on
+                columns. There is no restriction on what a header cell must do,
+                any <a href="http://backbonejs.org/#View"
+                title="Backbone.View">Backbone.View</a> class can be
+                used. However, if you wish to modify how the sorter behaves, you
+                must implement the sorting protocol. See
+                the <a href="api/index.html#!/api/Backgrid.HeaderCell"
+                title="Backgrid.HeaderCell API">JSDoc</a> for details.</p>
+              <textarea class="code-snippet" data-mode="javascript" data-eval="no">
+                var SelectAllHeader = Backgrid.HeaderCell.extend({
+                  // Implement your "select all" logic here
+                });
+
+                var grid = new Backgrid.Grid({
+
+                  columns: [{
+                    name: "selected",
+                    label: "",
+                    sortable: false,
+                    cell: "boolean",
+                    headerCell: SelectAllHeader
+                  }],
+
+                  collection: col
+                });</textarea>
             </div>
           </div>
           <div class="row-fluid">

@@ -8,7 +8,7 @@
 
 /**
    HeaderCell is a special cell class that renders a column header if the column
-   is renderable. If the column is sortable, a sorter is also render and will
+   is renderable. If the column is sortable, a sorter is also rendered and will
    trigger a table refresh after sorting.
 
    @class Backgrid.HeaderCell
@@ -173,7 +173,8 @@ var Header = Backgrid.Header = Backbone.View.extend({
     for (var i = 0; i < self.columns.length; i++) {
       var column = self.columns.at(i);
       if (column.get("renderable")) {
-        var cell = new self.headerCell({
+        var headerCell = column.get("headerCell") || self.headerCell;
+        var cell = new headerCell({
           parent: self,
           column: column
         });
