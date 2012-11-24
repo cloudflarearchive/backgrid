@@ -48,8 +48,7 @@ _.extend(Formatter.prototype, {
 });
 
 /**
-   A floating point number formatter. Doesn't speak understand notation at the
-   moment.
+   A floating point number formatter. Doesn't understand notation at the moment.
 
    @class Backgrid.NumberFormatter
    @extends Backgrid.Formatter
@@ -90,7 +89,7 @@ _.extend(NumberFormatter.prototype, {
      @member Backgrid.NumberFormatter
      @param {number} number
      @return {string}
-   */
+  */
   fromRaw: function (number) {
     if (isNaN(number) || number === null) return '';
 
@@ -111,7 +110,7 @@ _.extend(NumberFormatter.prototype, {
      @param {string} formattedData
      @return {number|undefined} Undefined if the string cannot be converted to
      a number.
-   */
+  */
   toRaw: function (formattedData) {
     var rawData = '';
 
@@ -183,8 +182,8 @@ _.extend(DatetimeFormatter.prototype, {
 
      @member Backgrid.DatetimeFormatter
      @param {string} rawData
-     @return {string}
-   */
+     @return {string} ISO-8601 string. Always in local time.
+  */
   fromRaw: function (rawData) {
     rawData = trim(rawData);
     var parts = rawData.split(this.ISO_SPLITTER_RE) || [];
@@ -232,9 +231,9 @@ _.extend(DatetimeFormatter.prototype, {
 
      @member Backgrid.DatetimeFormatter
      @param {string} formattedData
-     @return {string|undefined} Undefined if unable to convert to an ISO-8601
-     string.
-   */
+     @return {string|undefined} ISO-8601 string. Undefined if unable to convert
+     to an ISO-8601 string.
+  */
   toRaw: function (formattedData) {
     formattedData = trim(formattedData);
 
@@ -246,13 +245,14 @@ _.extend(DatetimeFormatter.prototype, {
     var HHmmssSSS = this.TIME_RE.exec(time) || [];
     var zzZZ = this.ZONE_RE.exec(zone) || [];
 
-    if (this.includeDate && typeof YYYYMMDD[0] === "undefined") return undefined;
-    if (this.includeTime && typeof HHmmssSSS[0] === "undefined") return undefined;
+    if (this.includeDate && _.isUndefined(YYYYMMDD[0])) return undefined;
+    if (this.includeTime && _.isUndefined(HHmmssSSS[0])) return undefined;
     if (!this.includeDate && date) return undefined;
     if (!this.includeTime && time) return undefined;
 
     var jsDate = null;
-    if (zzZZ !== []) {
+
+    if (zzZZ && !_.isUndefined(zzZZ[0])) {
       zzZZ[1] = zzZZ[1] * 1 || 0;
       zzZZ[2] = zzZZ[2] * 1 || 0;
       jsDate = new Date(Date.UTC(YYYYMMDD[1] * 1 || 0,
@@ -280,13 +280,20 @@ _.extend(DatetimeFormatter.prototype, {
     }
 
     if (this.includeTime) {
-      result = result + 'T' + lpad(jsDate.getUTCHours(), 2, 0) + ':' + lpad(jsDate.getUTCMinutes(), 2, 0) + ':' + lpad(jsDate.getUTCSeconds(), 2, 0);
+
+      if (this.includeDate) {
+        result += 'T';
+      }
+
+      result += lpad(jsDate.getUTCHours(), 2, 0) + ':' + lpad(jsDate.getUTCMinutes(), 2, 0) + ':' + lpad(jsDate.getUTCSeconds(), 2, 0);
 
       if (this.includeMilli) {
         result = result + '.' + lpad(jsDate.getUTCMilliseconds(), 3, 0);
       }
 
-      result += 'Z';
+      if (this.includeDate) {
+        result += 'Z';
+      }
     }
 
     return result;
