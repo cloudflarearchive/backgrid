@@ -61,10 +61,10 @@ Ext.data.JsonP.Backgrid_Formatter({
 
     ]
   },
-  "linenr": 57,
+  "linenr": 9,
   "files": [
     {
-      "filename": "backgrid.js",
+      "filename": "formatter.js",
       "href": null
     }
   ],

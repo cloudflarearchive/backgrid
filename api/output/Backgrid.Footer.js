@@ -60,10 +60,10 @@ Ext.data.JsonP.Backgrid_Footer({
 
     ]
   },
-  "linenr": 1669,
+  "linenr": 9,
   "files": [
     {
-      "filename": "backgrid.js",
+      "filename": "footer.js",
       "href": null
     }
   ],

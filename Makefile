@@ -33,7 +33,7 @@ extension:
 	echo "Extension directory $$extension has been created under src/extensions/$$entension"; \
 
 doc:
-	jsduck lib/backgrid.js \
+	jsduck src/ \
 		--external=Backbone.Model,Backbone.Collection,Backbone.View,ReferenceError,TypeError \
 		--title=Backgrid.js \
 		--no-source \

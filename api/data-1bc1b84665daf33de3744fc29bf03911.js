@@ -2,20 +2,8 @@ Docs = {
   "data": {
     "classes": [
       {
-        "name": "Backgrid.Formatter",
-        "extends": null,
-        "private": null,
-        "icon": "icon-class"
-      },
-      {
-        "name": "Backgrid.NumberFormatter",
-        "extends": "Backgrid.Formatter",
-        "private": null,
-        "icon": "icon-class"
-      },
-      {
-        "name": "Backgrid.DatetimeFormatter",
-        "extends": "Backgrid.Formatter",
+        "name": "Backgrid.Body",
+        "extends": "Backbone.View",
         "private": null,
         "icon": "icon-class"
       },
@@ -116,7 +104,31 @@ Docs = {
         "icon": "icon-class"
       },
       {
-        "name": "Backgrid.Row",
+        "name": "Backgrid.Footer",
+        "extends": "Backbone.View",
+        "private": null,
+        "icon": "icon-class"
+      },
+      {
+        "name": "Backgrid.Formatter",
+        "extends": null,
+        "private": null,
+        "icon": "icon-class"
+      },
+      {
+        "name": "Backgrid.NumberFormatter",
+        "extends": "Backgrid.Formatter",
+        "private": null,
+        "icon": "icon-class"
+      },
+      {
+        "name": "Backgrid.DatetimeFormatter",
+        "extends": "Backgrid.Formatter",
+        "private": null,
+        "icon": "icon-class"
+      },
+      {
+        "name": "Backgrid.Grid",
         "extends": "Backbone.View",
         "private": null,
         "icon": "icon-class"
@@ -134,19 +146,7 @@ Docs = {
         "icon": "icon-class"
       },
       {
-        "name": "Backgrid.Body",
-        "extends": "Backbone.View",
-        "private": null,
-        "icon": "icon-class"
-      },
-      {
-        "name": "Backgrid.Footer",
-        "extends": "Backbone.View",
-        "private": null,
-        "icon": "icon-class"
-      },
-      {
-        "name": "Backgrid.Grid",
+        "name": "Backgrid.Row",
         "extends": "Backbone.View",
         "private": null,
         "icon": "icon-class"
@@ -163,84 +163,85 @@ Docs = {
     ],
     "search": [
       {
-        "name": "Formatter",
-        "fullName": "Backgrid.Formatter",
+        "name": "Body",
+        "fullName": "Backgrid.Body",
         "icon": "icon-class",
-        "url": "#!/api/Backgrid.Formatter",
-        "meta": {
-          "abstract": true
-        },
-        "sort": 1
-      },
-      {
-        "name": "fromRaw",
-        "fullName": "Backgrid.Formatter.fromRaw",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.Formatter-method-fromRaw",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "toRaw",
-        "fullName": "Backgrid.Formatter.toRaw",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.Formatter-method-toRaw",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "NumberFormatter",
-        "fullName": "Backgrid.NumberFormatter",
-        "icon": "icon-class",
-        "url": "#!/api/Backgrid.NumberFormatter",
+        "url": "#!/api/Backgrid.Body",
         "meta": {
         },
         "sort": 1
       },
       {
-        "name": "fromRaw",
-        "fullName": "Backgrid.NumberFormatter.fromRaw",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.NumberFormatter-method-fromRaw",
+        "name": "tagName",
+        "fullName": "Backgrid.Body.tagName",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.Body-property-tagName",
         "meta": {
         },
         "sort": 3
       },
       {
-        "name": "toRaw",
-        "fullName": "Backgrid.NumberFormatter.toRaw",
+        "name": "initialize",
+        "fullName": "Backgrid.Body.initialize",
         "icon": "icon-method",
-        "url": "#!/api/Backgrid.NumberFormatter-method-toRaw",
+        "url": "#!/api/Backgrid.Body-method-initialize",
         "meta": {
         },
         "sort": 3
       },
       {
-        "name": "DatetimeFormatter",
-        "fullName": "Backgrid.DatetimeFormatter",
-        "icon": "icon-class",
-        "url": "#!/api/Backgrid.DatetimeFormatter",
-        "meta": {
-        },
-        "sort": 1
-      },
-      {
-        "name": "fromRaw",
-        "fullName": "Backgrid.DatetimeFormatter.fromRaw",
+        "name": "sort",
+        "fullName": "Backgrid.Body.sort",
         "icon": "icon-method",
-        "url": "#!/api/Backgrid.DatetimeFormatter-method-fromRaw",
+        "url": "#!/api/Backgrid.Body-method-sort",
         "meta": {
         },
         "sort": 3
       },
       {
-        "name": "toRaw",
-        "fullName": "Backgrid.DatetimeFormatter.toRaw",
+        "name": "_idCidComparator",
+        "fullName": "Backgrid.Body._idCidComparator",
         "icon": "icon-method",
-        "url": "#!/api/Backgrid.DatetimeFormatter-method-toRaw",
+        "url": "#!/api/Backgrid.Body-method-_idCidComparator",
         "meta": {
+          "private": true
+        },
+        "sort": 3
+      },
+      {
+        "name": "insertRow",
+        "fullName": "Backgrid.Body.insertRow",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Body-method-insertRow",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "removeRow",
+        "fullName": "Backgrid.Body.removeRow",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Body-method-removeRow",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "refresh",
+        "fullName": "Backgrid.Body.refresh",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Body-method-refresh",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "render",
+        "fullName": "Backgrid.Body.render",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Body-method-render",
+        "meta": {
+          "chainable": true
         },
         "sort": 3
       },
@@ -902,39 +903,194 @@ Docs = {
         "sort": 3
       },
       {
-        "name": "Row",
-        "fullName": "Backgrid.Row",
+        "name": "Footer",
+        "fullName": "Backgrid.Footer",
         "icon": "icon-class",
-        "url": "#!/api/Backgrid.Row",
+        "url": "#!/api/Backgrid.Footer",
         "meta": {
+          "abstract": true
         },
         "sort": 1
       },
       {
         "name": "tagName",
-        "fullName": "Backgrid.Row.tagName",
+        "fullName": "Backgrid.Footer.tagName",
         "icon": "icon-property",
-        "url": "#!/api/Backgrid.Row-property-tagName",
+        "url": "#!/api/Backgrid.Footer-property-tagName",
         "meta": {
         },
         "sort": 3
       },
       {
         "name": "initialize",
-        "fullName": "Backgrid.Row.initialize",
+        "fullName": "Backgrid.Footer.initialize",
         "icon": "icon-method",
-        "url": "#!/api/Backgrid.Row-method-initialize",
+        "url": "#!/api/Backgrid.Footer-method-initialize",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "Formatter",
+        "fullName": "Backgrid.Formatter",
+        "icon": "icon-class",
+        "url": "#!/api/Backgrid.Formatter",
+        "meta": {
+          "abstract": true
+        },
+        "sort": 1
+      },
+      {
+        "name": "fromRaw",
+        "fullName": "Backgrid.Formatter.fromRaw",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Formatter-method-fromRaw",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "toRaw",
+        "fullName": "Backgrid.Formatter.toRaw",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Formatter-method-toRaw",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "NumberFormatter",
+        "fullName": "Backgrid.NumberFormatter",
+        "icon": "icon-class",
+        "url": "#!/api/Backgrid.NumberFormatter",
+        "meta": {
+        },
+        "sort": 1
+      },
+      {
+        "name": "fromRaw",
+        "fullName": "Backgrid.NumberFormatter.fromRaw",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.NumberFormatter-method-fromRaw",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "toRaw",
+        "fullName": "Backgrid.NumberFormatter.toRaw",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.NumberFormatter-method-toRaw",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "DatetimeFormatter",
+        "fullName": "Backgrid.DatetimeFormatter",
+        "icon": "icon-class",
+        "url": "#!/api/Backgrid.DatetimeFormatter",
+        "meta": {
+        },
+        "sort": 1
+      },
+      {
+        "name": "fromRaw",
+        "fullName": "Backgrid.DatetimeFormatter.fromRaw",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.DatetimeFormatter-method-fromRaw",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "toRaw",
+        "fullName": "Backgrid.DatetimeFormatter.toRaw",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.DatetimeFormatter-method-toRaw",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "Grid",
+        "fullName": "Backgrid.Grid",
+        "icon": "icon-class",
+        "url": "#!/api/Backgrid.Grid",
+        "meta": {
+        },
+        "sort": 1
+      },
+      {
+        "name": "tagName",
+        "fullName": "Backgrid.Grid.tagName",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.Grid-property-tagName",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "className",
+        "fullName": "Backgrid.Grid.className",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.Grid-property-className",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "initialize",
+        "fullName": "Backgrid.Grid.initialize",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Grid-method-initialize",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "sort",
+        "fullName": "Backgrid.Grid.sort",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Grid-method-sort",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "insertRow",
+        "fullName": "Backgrid.Grid.insertRow",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Grid-method-insertRow",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "removeRow",
+        "fullName": "Backgrid.Grid.removeRow",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Grid-method-removeRow",
         "meta": {
         },
         "sort": 3
       },
       {
         "name": "render",
-        "fullName": "Backgrid.Row.render",
+        "fullName": "Backgrid.Grid.render",
         "icon": "icon-method",
-        "url": "#!/api/Backgrid.Row-method-render",
+        "url": "#!/api/Backgrid.Grid-method-render",
         "meta": {
           "chainable": true
+        },
+        "sort": 3
+      },
+      {
+        "name": "rendered",
+        "fullName": "Backgrid.Grid.rendered",
+        "icon": "icon-event",
+        "url": "#!/api/Backgrid.Grid-event-rendered",
+        "meta": {
         },
         "sort": 3
       },
@@ -1067,195 +1223,39 @@ Docs = {
         "sort": 3
       },
       {
-        "name": "Body",
-        "fullName": "Backgrid.Body",
+        "name": "Row",
+        "fullName": "Backgrid.Row",
         "icon": "icon-class",
-        "url": "#!/api/Backgrid.Body",
+        "url": "#!/api/Backgrid.Row",
         "meta": {
         },
         "sort": 1
       },
       {
         "name": "tagName",
-        "fullName": "Backgrid.Body.tagName",
+        "fullName": "Backgrid.Row.tagName",
         "icon": "icon-property",
-        "url": "#!/api/Backgrid.Body-property-tagName",
+        "url": "#!/api/Backgrid.Row-property-tagName",
         "meta": {
         },
         "sort": 3
       },
       {
         "name": "initialize",
-        "fullName": "Backgrid.Body.initialize",
+        "fullName": "Backgrid.Row.initialize",
         "icon": "icon-method",
-        "url": "#!/api/Backgrid.Body-method-initialize",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "sort",
-        "fullName": "Backgrid.Body.sort",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.Body-method-sort",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "_idCidComparator",
-        "fullName": "Backgrid.Body._idCidComparator",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.Body-method-_idCidComparator",
-        "meta": {
-          "private": true
-        },
-        "sort": 3
-      },
-      {
-        "name": "insertRow",
-        "fullName": "Backgrid.Body.insertRow",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.Body-method-insertRow",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "removeRow",
-        "fullName": "Backgrid.Body.removeRow",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.Body-method-removeRow",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "refresh",
-        "fullName": "Backgrid.Body.refresh",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.Body-method-refresh",
+        "url": "#!/api/Backgrid.Row-method-initialize",
         "meta": {
         },
         "sort": 3
       },
       {
         "name": "render",
-        "fullName": "Backgrid.Body.render",
+        "fullName": "Backgrid.Row.render",
         "icon": "icon-method",
-        "url": "#!/api/Backgrid.Body-method-render",
+        "url": "#!/api/Backgrid.Row-method-render",
         "meta": {
           "chainable": true
-        },
-        "sort": 3
-      },
-      {
-        "name": "Footer",
-        "fullName": "Backgrid.Footer",
-        "icon": "icon-class",
-        "url": "#!/api/Backgrid.Footer",
-        "meta": {
-          "abstract": true
-        },
-        "sort": 1
-      },
-      {
-        "name": "tagName",
-        "fullName": "Backgrid.Footer.tagName",
-        "icon": "icon-property",
-        "url": "#!/api/Backgrid.Footer-property-tagName",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "initialize",
-        "fullName": "Backgrid.Footer.initialize",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.Footer-method-initialize",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "Grid",
-        "fullName": "Backgrid.Grid",
-        "icon": "icon-class",
-        "url": "#!/api/Backgrid.Grid",
-        "meta": {
-        },
-        "sort": 1
-      },
-      {
-        "name": "tagName",
-        "fullName": "Backgrid.Grid.tagName",
-        "icon": "icon-property",
-        "url": "#!/api/Backgrid.Grid-property-tagName",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "className",
-        "fullName": "Backgrid.Grid.className",
-        "icon": "icon-property",
-        "url": "#!/api/Backgrid.Grid-property-className",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "initialize",
-        "fullName": "Backgrid.Grid.initialize",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.Grid-method-initialize",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "sort",
-        "fullName": "Backgrid.Grid.sort",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.Grid-method-sort",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "insertRow",
-        "fullName": "Backgrid.Grid.insertRow",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.Grid-method-insertRow",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "removeRow",
-        "fullName": "Backgrid.Grid.removeRow",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.Grid-method-removeRow",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "render",
-        "fullName": "Backgrid.Grid.render",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.Grid-method-render",
-        "meta": {
-          "chainable": true
-        },
-        "sort": 3
-      },
-      {
-        "name": "rendered",
-        "fullName": "Backgrid.Grid.rendered",
-        "icon": "icon-event",
-        "url": "#!/api/Backgrid.Grid-event-rendered",
-        "meta": {
         },
         "sort": 3
       }
