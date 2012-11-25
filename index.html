@@ -116,10 +116,10 @@
           <p class="lead">
             Backgrid.js is a set of components for
             building <strong>semantic</strong> and <strong>easily
-            stylable</strong> data <strong>grid</strong> widgets.</p>
-          <p class="lead">It offers you a simple, intuitive and beautiful
-              programming interface that make easy things easy, but hard things
-              possible when dealing with tabular data.</p>
+            stylable</strong> <strong>data grid</strong> widgets.</p>
+          <p class="lead">It offers a simple, intuitive 
+              programming interface that makes easy things easy, but <em>hard things possible</em> 
+              when dealing with tabular data.</p>
           <p>
             <a class="btn btn-large btn-success" href="#examples">See Examples</a>
             <a class="btn btn-large btn-primary hidden-phone hidden-tablet"
@@ -130,9 +130,8 @@
         <section id="features">
           <div class="page-header">
             <h1>Features</h1>
-            <p>The goal of Backgrid.js is to produce a set of simple, and stable
-              core of Backbone UI elements that offer you all the basic
-              displaying, sorting and editing functionality you&apos;d expect, and
+            <p>The goal of Backgrid.js is to produce a set of core Backbone UI elements that offer you all the basic
+              displaying, sorting and editing functionalities you&apos;d expect, and to
               create an elegant API that makes extending Backgrid.js with extra
               functionalities easy.</p>
           </div>
@@ -197,8 +196,8 @@
               <p>
                 Suppose you have extracted all the dependencies into a directory
                 <code>PROJECT_ROOT/js</code>, and you are serving an HTML
-                document from <code>PROJECT_ROOT</code>, similiar code like the
-                following will get the <strong>Backgrid.js</strong> core loaded:
+                document from <code>PROJECT_ROOT</code>. The following code
+                will get the <strong>Backgrid.js</strong> core loaded:
               </p>
               <textarea class="code-snippet" data-mode="htmlmixed">&lt;head&gt;
                 &lt;link rel="stylesheet" href="/js/lib/backgrid.css" /&gt;
@@ -219,7 +218,7 @@
               <div class="row-fluid">
                 <div class="span6">
                   <h2>Collection and Model</h2>
-                  <p>Before you can display any tabular data in a grid, you must first obtain them.</p>
+                  <p>Before you can display any tabular data in a grid, you must first obtain the data.</p>
                   <p>At the most basic level, Backgrid pretends that every row
                     is a model object and the whole table is backed by a simple
                     Backbone collection.</p>
@@ -299,15 +298,15 @@
                   <aside class="note">See <a href="http://en.wikipedia.org/wiki/List_of_countries_by_population">Wikipedia</a></aside>
                   <br />
                   <p>The list of column definitions Backgrid.Grid expects is
-                    simply a list of JSON object, in which you can hardcode into
+                    simply a list of JSON objects, which you can hardcode into
                     your HTML templates or retrieve from a server when the DOM
                     is ready. Backgrid.js doesn&apos;t care where the column
-                    definitions come from as long as you supply the list to the
+                    definitions come from, as long as you supply the list to the
                     Grid constructor.</p>
                   <p>As expected, you now have a basic editable data grid
                     displayed. All the columns headers are labeled and sortable by
                     default. ID cells are not editable, and all other cell types
-                    have reasonable validation built-in. If the table gets too
+                    have reasonable validation built in. If the table gets too
                     large, you get a scroll bar.</p>
                   <p>Backgrid.js comes with <a href="#api-cells" title="Cells">10
                       basic cell types</a> in the core
@@ -319,18 +318,18 @@
                        title="KalendaeCell">KalendaeCell</a> give you a much
                        richer editing interface for option lists and datetime
                        values on desktop browsers. In addition, there&apos;s a
-                       wild range of possibilities with how the data is
+                       wide range of possibilities with how the data is
                        converted for display and persistence by
                        using <a href="#api-formatter"
                        title="Formatters">formatters</a> or
-                       customizing <a href="#api-cells">cell classes</a></p>
+                       customizing <a href="#api-cells">cell classes</a>.</p>
                 </div>
               </div>
               <div class="row-fluid">
                 <div class="span12">
                   <h2>Paginator</h2>
                   <p>If you have a large result set like the above, you&apos;d
-                  probably want to paginate your results, this is easily
+                  probably want to paginate your results. This is easily
                   achieved in Backgrid.js.</p>
                   <p>Backgrid.js comes with a paginator extension which you can
                     load by including the following into your <code>head</code>
@@ -339,11 +338,11 @@
                     &lt;link rel="stylesheet" href="/css/backgrid/extensions/paginator/backgrid-paginator.css" /&gt;
                     &lt;script src="/js/assets/js/backbone.paginator.js"&gt;&lt;/script&gt;
                     &lt;script src="/js/backgrid/extensions/paginator/backgrid-paginator.js"&gt;&lt;/script&gt;</textarea>
-                  <p>To use the paginator, you first must declare your
+                  <p>To use the paginator, you must first declare your
                     collections to be
                     a <a href="http://addyosmani.github.com/backbone.paginator/"
                          title="Backbone.Paginator">Backbone.Paginator.*Pager</a>,
-                    which is simple subclass of Backbone.js Collection with added
+                    which is a simple subclass of the Backbone.js Collection with added
                     pagination behavior.</p>
                   <textarea class="code-snippet" data-mode="javascript">
                     var PageableTerritories = Backbone.Paginator.clientPager.extend({
@@ -411,7 +410,7 @@
               <p>As described in the <a href="#examples">examples</a> above, a
                 basic grid needs only a collection and a list of column
                 definitions.</p>
-              <p>The various ways of customizing a grid is described in the
+              <p>The various ways of customizing a grid are described in the
                 following sections.</p>
             </div>
           </div>
@@ -431,7 +430,7 @@
               <h3>Column Definition</h3>
               <p>A Column is a placeholder for a column definition.</p>
               <p>You usually don&apos;t need to create an instance of this class
-                yourself as a collection of column instances will be created for
+                yourself, as a collection of column instances will be created for
                 you from a list of column object literals you provide to the
                 Backgrid.js view class constructors.</p>
               <p>Internally, columns are stored as a collection in the form of
@@ -611,11 +610,11 @@
               <p>Once the cell has entered edit mode, a Backbone
                 event <code>editing</code> is fired. A custom cell class can
                 then act on it to do anything after the cell editor has been
-                rendered, e.x: placing the focus inside the editor.</p>
-              <p>During editing, if any error is encountered (see
+                rendered, e.g. placing the focus inside the editor.</p>
+              <p>During editing, if an error is encountered (see
                 the <a href="#api-formatter">formatter protocol</a> below), a
-                cell editor should fire a Backbone event <code>error</code> so
-                listeners, usually a cell instance, can respond
+                cell editor should fire a Backbone event <code>error</code> so that
+                listeners&mdash;usually a cell instance&mdash;can respond
                 appropriately. When editing is done, a cell editor should fire a
                 Backbone <code>done</code> event. A cell should be listening to
                 this event so it can remove its editor and re-render itsef in
@@ -645,7 +644,7 @@
                 between JSON value types and strings, and validation. Writing
                 formatters for value conversion and validation is easy as you only
                 have to conform to a very simple protocol.</p>
-              <p>Any formatters must have the following 2 methods defined:</p>
+              <p>Any formatters must have the following two methods defined:</p>
               <textarea class="code-snippet" data-mode="javascript" data-eval="no">
                 var formatter = {
                   // function (*): string
@@ -655,7 +654,7 @@
                 };</textarea>
               <p><code>fromRaw()</code> is called by Backgrid.Cell and its
                 subclasses whenever a raw model value needs to be formatted into
-                humanized form for display.</p>
+                a humanized form for display.</p>
               <p><code>toRaw()</code> is called by Backgrid.CellEditor and its
                 subclasses whenever a user input string needs to be converted back
                 to a raw JSON value for model persistence.</p>
@@ -706,7 +705,7 @@
               <h3>Understanding the Default Header</h3>
               <p>Backgrid.js comes with a default header section and header cell
                 implementation that simply renders a sorter if the column is
-                sortable. The text inside the header cells come from the column
+                sortable. The text inside the header cells comes from the column
                 definitions. If a <em>label</em> is not defined in a column
                 definition, its name is used as the label instead.</p>
               <p>The default header cell implementation supports sorting in
@@ -720,7 +719,7 @@
               <h3>Customizing the Header</h3>
               <p class="label label-warning">Advanced Usage</p>
               <p>You are allow to use a different header cell class on
-                columns. There is no restriction on what a header cell must do,
+                columns. There is no restriction on what a header cell must do. In fact, 
                 any <a href="http://backbonejs.org/#View"
                 title="Backbone.View">Backbone.View</a> class can be
                 used. However, if you wish to modify how the sorter behaves, you
@@ -755,7 +754,7 @@
             </div>
             <div class="span10">
               <h3>Customizing Row</h3>
-              <p>A row is simply an intermediary view class that construct the
+              <p>A row is simply an intermediary view class that constructs the
                 appropriate Cell class instances for rendering the model
                 columns.</p>
               <p>If you would like to override how a row is rendered, you may
@@ -795,7 +794,7 @@
               <p>Body is the intermediary view that coordinates between the
                 various parts of the grid. Specifically, the default
                 implementation is responsible for re-rendering the rows when any
-                model is inserted into, removed from or reordered in the
+                model is inserted into, removed from, or reordered in the
                 underlying collection. See
                 the <a href="api/index.html#!/api/Backgrid.Body">JSDoc</a> for
                 details.</p>
@@ -833,8 +832,8 @@
                   footer: CaptionFooter // <--
                 });</textarea>
               <p>Very often, you&apos;ll want to append a paginator to the end
-                of your table if there are too many row. Luckily, there already
-                is a <a href="#api-paginator">paginator extension</a> provided for you.</p>
+                of your table if there are too many rows. For this, there's already
+                a <a href="#api-paginator">paginator extension</a> provided for you.</p>
             </div>
           </div>
         </section>
@@ -844,8 +843,8 @@
             <p>It is not necessary to create an extension project if you simply
               want to customize or extend some Backgrid.js classes for your own
               private use; however, if you have one or more Backgrid.js
-              components that adds new features to the core, you may consider
-              packaging them up to share to the world.</p>
+              components that add new features to the core, you may consider
+              packaging them up to share with the world.</p>
             <p>A Backgrid.js extension is simply a directory structure that
               packages the necessary JS, CSS, tests, and document files.</p>
             <p>To create an extension, simply clone the tree into your file
@@ -855,7 +854,7 @@
               $ make extension</textarea>
             <p>A new extension directory structure should have been created for
               you under <code>src/extensions</code>. You can now look into the
-              bundled extensions&apos; to find out how to organize your code and
+              bundled extensions to find out how to organize your code and
               proceed.</p>
             <h2>The extension protocol</h2>
             <p>The following is a guideline for extension development:</p>
@@ -864,7 +863,7 @@
                 gets too large, consider breaking it into multiple extensions.</li>
               <li>There should be 1 .min.js file and 1 .min.css file produced
                 for distribution.</li>
-              <li>Your Makefile should emulate other extensions&apos; as closely
+              <li>Your Makefile should emulate other extensions as closely
                 as possible. Specifically, you should have a <code>dist</code>
                 rule that will take a <code>DIST_DIR</code> variable from
                 top-level make invocations and copy the output files to the
@@ -961,8 +960,8 @@
                 <div class="span6">
                   <h2>.backgrid</h2>
                   <p>This is the class that will be applied to every Backgrid.js
-                    generated table. All other Backgrid.js default style on
-                    table elements will only apply to those that are descendents
+                    generated table. All other Backgrid.js default styles on
+                    table elements will only apply to descendents
                     of tables of this class.</p>
                   <textarea class="code-snippet" data-mode="css">
                     /* Say you want to give some shiny gradient background colors
@@ -1018,13 +1017,13 @@
               <p>The problem with supporting any package manager is that
                 Backgrid.js is a highly modular project, and that deciding to
                 use any package manager presupposes all its submodules and
-                dependency is compatible with such package manager and its
+                dependency is compatible with such a package manager and its
                 importing mechanism. The Javascript ecosystem has gotten so
                 diverse now that there is still not yet a clear packaging winner
                 that everybody uses and works well under most situations, it is
                 also not clear that ES Harmony&apos;s module system will be
-                backward compatible with AMD.</p>
-              <p>Having that said, Backgrid.js doesn&apos;t do anything to
+                backwards compatible with AMD.</p>
+              <p>Having said that, Backgrid.js doesn&apos;t do anything to
                 prevent you from adding support to your favorite package
                 manager. You are encouraged to fork and maintain your own
                 Backgrid.js packages.</p>
@@ -1041,7 +1040,7 @@
                 tag <em>backgrid</em> where either I or fellow users can help
                 you.</p>
               <h2>Does Backgrid.js support adaptive scrolling?</h2>
-              <p>Some data grid widgets out there supports a technique
+              <p>Some data grid widgets out there support a technique
                 called adaptive scrolling, meaning the DOM elements will be
                 swapped out of a viewport and new ones appended as the
                 models are loaded from the server, thus keeping the memory
@@ -1058,7 +1057,7 @@
                 Backgrid.Grid instances only render one page of DOM nodes at a
                 time to save memory and keep your web page responsive.</p>
               <h2>Does Backgrid.js support function aggregates?</h2>
-              <p>No because it is not the goal of this project to product a
+              <p>No, because it is not the goal of this project to produce a
                 full-fledged web-based spreadsheet. However, doing aggregation
                 is trivial using Underscore.js methods</p>
               <textarea class="code-snippet" data-mode="javascript" data-eval="no">
@@ -1074,7 +1073,7 @@
                 real-time <em>rendering</em> out of the box by virtue of
                 listening to model attribute changes from the cell view
                 classes.</p>
-              <h2>Does Backgrid.js support features (X)?</h2>
+              <h2>Does Backgrid.js support feature (X)?</h2>
               <p>If the feature you have in mind isn&apos;t found here in this
                 Backgrid.js version, it could either be in the works or under
                 consideration.</p>
@@ -1086,7 +1085,7 @@
                 gmake, <a href="https://github.com/mishoo/UglifyJS2"
                           title="UglifyJS">uglifyjs</a> and
                 Twitter&apos;s <a href="https://github.com/twitter/recess"
-                                  title="recess">recess</a></p>
+                                  title="recess">recess</a>.</p>
               <p>Assuming you have installed gmake onto your system, you also
                 need to install <a href="http://nodejs.org/download/"
                 title="NodeJS">node.js and npm</a> first before you can install
