@@ -130,9 +130,10 @@
         <section id="features">
           <div class="page-header">
             <h1>Features</h1>
-            <p>The goal of Backgrid.js is to produce a set of core Backbone UI elements that offer you all the basic
-              displaying, sorting and editing functionalities you&apos;d expect, and to
-              create an elegant API that makes extending Backgrid.js with extra
+            <p>The goal of Backgrid.js is to produce a set of core Backbone UI
+              elements that offer you all the basic displaying, sorting and
+              editing functionalities you&apos;d expect, and to create an
+              elegant API that makes extending Backgrid.js with extra
               functionalities easy.</p>
           </div>
           <div class="row-fluid">
@@ -218,7 +219,8 @@
               <div class="row-fluid">
                 <div class="span6">
                   <h2>Collection and Model</h2>
-                  <p>Before you can display any tabular data in a grid, you must first obtain the data.</p>
+                  <p>Before you can display any tabular data in a grid, you must
+                    first obtain the data.</p>
                   <p>At the most basic level, Backgrid pretends that every row
                     is a model object and the whole table is backed by a simple
                     Backbone collection.</p>
@@ -243,11 +245,11 @@
                 <div class="span12">
                   <h2>Grid</h2>
                   <p>
-                    The main entry point of the Backgrid package is
-                    the Backgrid.Grid class. You can create a default
-                    Backgrid by first defining some columns, and then put that
-                    list of columns and the collection of data into the Grid
-                    constructor like this:
+                    The main entry point of the Backgrid package is the
+                    Backgrid.Grid class. You can create a default Backgrid by
+                    first defining some columns, and then put that list of
+                    columns and the collection of data into the Grid constructor
+                    like this:
                   </p>
                   <textarea class="code-snippet" data-mode="javascript">
                     var columns = [{
@@ -329,8 +331,8 @@
                 <div class="span12">
                   <h2>Paginator</h2>
                   <p>If you have a large result set like the above, you&apos;d
-                  probably want to paginate your results. This is easily
-                  achieved in Backgrid.js.</p>
+                    probably want to paginate your results. This is easily
+                    achieved in Backgrid.js.</p>
                   <p>Backgrid.js comes with a paginator extension which you can
                     load by including the following into your <code>head</code>
                     tag:</p>
@@ -832,7 +834,7 @@
                   footer: CaptionFooter // <--
                 });</textarea>
               <p>Very often, you&apos;ll want to append a paginator to the end
-                of your table if there are too many rows. For this, there's already
+                of your table if there are too many rows. For this, there&apos;s already
                 a <a href="#api-paginator">paginator extension</a> provided for you.</p>
             </div>
           </div>
@@ -926,21 +928,22 @@
           </div>
           <div class="row-fluid">
             <div class="span12">
-              <p>Out of the box, Backgrid.js generates simple semantic HTML table
-                elements that you can style with pure CSS. This section is only
-                going to briefly describe some of the more important classes, and
-                things that you should be aware of when styling.</p>
+              <p>Out of the box, Backgrid.js generates simple semantic HTML
+                table elements that you can style with pure CSS. This section is
+                only going to briefly describe some of the more important
+                classes, and things that you should be aware of when
+                styling.</p>
 
               <div class="row-fluid">
                 <div class="span6">
                   <h2>.backgrid-container</h2>
                   <p>This is the class that you should put into any container
-                    element that will hold the generated table. By default, it has a
-                    fixed maximum height and 100% width with no borders and
-                    paddings. It also serves as a <em>positioned</em> element so if
-                    you need to absolutely position any elements inside your custom
-                    table element classes, you can position them against this
-                    container.</p>
+                    element that will hold the generated table. By default, it
+                    has a fixed maximum height and 100% width with no borders
+                    and paddings. It also serves as a <em>positioned</em>
+                    element so if you need to absolutely position any elements
+                    inside your custom table element classes, you can position
+                    them against this container.</p>
                 </div>
                 <div class="span6">
                   <h2>&nbsp;</h2>
@@ -1069,10 +1072,9 @@
               <p>Again, it is out of the scope of this project as this
                 functionality requires a broker to arbitrage between users and
                 is mostly found in web-based online spreadsheet products.</p>
-              <p>However, Backgrid.js does provide
-                real-time <em>rendering</em> out of the box by virtue of
-                listening to model attribute changes from the cell view
-                classes.</p>
+              <p>However, Backgrid.js does provide real-time <em>rendering</em>
+                out of the box by virtue of listening to model attribute changes
+                from the cell view classes.</p>
               <h2>Does Backgrid.js support feature (X)?</h2>
               <p>If the feature you have in mind isn&apos;t found here in this
                 Backgrid.js version, it could either be in the works or under
@@ -1116,14 +1118,13 @@
                 separate line, one <code>var</code> statement per variable
                 declaration and all function definitions should have a space
                 preceeding the parameter list.</p>
-              <p>Changes that come with tests are more equal than
-                others.</p>
+              <p>Changes that come with tests are more equal than others.</p>
               <p>If you make any changes to the documentation, since Backgrid.js
                 uses <a href="http://pages.github.com" title="Github
                 Pages">Github Pages</a>, please do so in your gh-pages branch
                 and submit a pull request from that branch.</p>
-              <p>Pull requests that follow the above guidelines will get
-                merged quicker than others.</p>
+              <p>Pull requests that follow the above guidelines will get merged
+                quicker than others.</p>
               <aside class="note">
                 <h5>Note:</h5>
                 <p>Don&apos;t forget to keep your tree in sync with upstream
