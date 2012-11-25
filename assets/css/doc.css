@@ -1,5 +1,9 @@
-img.beta {
+.beta {
   vertical-align: super;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 18px;
+  line-height: 30px;
+  padding: 0px 10px;
 }
 
 .page-header {
