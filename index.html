@@ -666,6 +666,12 @@
                 or cannot be converted to a JSON value,
                 toRaw() <strong>MUST</strong> return <code>undefined</code>
                 instead of throwing an Error.</p>
+              <p>In addition to using formatters to do simple yes or no
+                validations, if your model class has
+                a <a href="http://backbonejs.org/#Model-validate"
+                title="Backbone.Model#validate">validate()</a> method defined,
+                it will also be used for validation after trying with the
+                formatter.</p>
               <h3>Using Custom Formatters</h3>
               <p>A custom formatter can be used in any of the following ways and
                 is chosen in the following order of precedence:</p>
@@ -1025,7 +1031,7 @@
                 diverse now that there is still not yet a clear packaging winner
                 that everybody uses and works well under most situations, it is
                 also not clear that ES Harmony&apos;s module system will be
-                backwards compatible with AMD.</p>
+                backward compatible with AMD.</p>
               <p>Having said that, Backgrid.js doesn&apos;t do anything to
                 prevent you from adding support to your favorite package
                 manager. You are encouraged to fork and maintain your own
