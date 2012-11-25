@@ -95,7 +95,7 @@ $("#example-1-result").append(grid.render().$el);
 
 # Result:
 
-Take a look [here](index.html#example-1-result).
+Take a look [here](http://wyuenho.github.com/backgrid/#examples).
 
 ## More Examples
 
@@ -106,7 +106,7 @@ Are you kidding me? This is a README file. Go to the [documentation](index.html
 
 ### 0.1
 
-- Initial Release
+- In Progress
 
 ## License
 Copyright (c) 2012 Jimmy Yuen Ho Wong  
