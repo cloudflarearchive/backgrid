@@ -12,7 +12,7 @@
 
    @class Backgrid.Body
    @extends Backbone.View
- */
+*/
 var Body = Backgrid.Body = Backbone.View.extend({
 
   /** @property */
@@ -31,7 +31,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
      See:
 
      - Backgrid.Row
-   */
+  */
   initialize: function (options) {
     var self = this;
 
@@ -82,7 +82,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
      See:
 
      - [Backbone.Collection#comparator](http://backbonejs.org/#Collection-comparator)
-   */
+  */
   sort: function (comparator) {
     var oldComparator = this.collection.comparator;
     this.collection.comparator = comparator || this._idCidComparator;
@@ -97,26 +97,26 @@ var Body = Backgrid.Body = Backbone.View.extend({
      @private
      @param {*} left
      @param {*} right
-   */
+  */
   _idCidComparator: function (left, right) {
     var lid = left.id,
     lcid = left.cid,
-    rid = right.cid,
-    rcid = right.rcid;
+    rid = right.id,
+    rcid = right.cid;
 
-    if (lid && rid) {
+    if (!_.isUndefined(lid) || !_.isUndefined(rid)) {
       if (lid < rid) return -1;
-      else if (lid > rid) return -1;
+      else if (lid > rid) return 1;
     }
-    else if (lid && rcid) {
+    else if (!_.isUndefined(lid) && !_.isUndefined(rcid)) {
       if (lid < rcid) return -1;
       else if (lid > rcid) return 1;
     }
-    else if (lcid && rid) {
+    else if (!_.isUndefined(lcid) && !_.isUndefined(rid)) {
       if (lcid < rid) return -1;
       else if (lcid > rid) return 1;
     }
-    else if (lcid && rcid) {
+    else if (!_.isUndefined(lcid) && !_.isUndefined(rcid)) {
       if (lcid < rcid) return -1;
       else if (lcid > rcid) return 1;
     }
@@ -145,7 +145,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
      See:
 
      - [Backbone.Collection#add](http://backbonejs.org/#Collection-add)
-   */
+  */
   insertRow: function (model, collection, options) {
 
     // insertRow() is called directly
@@ -195,7 +195,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
      See:
 
      - [Backbone.Collection#remove](http://backbonejs.org/#Collection-remove)
-   */
+  */
   removeRow: function (model, collection, options) {
 
     // removeRow() is called directly
@@ -213,7 +213,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
 
   /**
      Reinitialize all the rows inside the body and re-render them.
-   */
+  */
   refresh: function () {
     var self = this;
 
@@ -236,7 +236,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
 
   /**
      Renders all the rows inside this body.
-   */
+  */
   render: function () {
     var self = this;
     self.$el.empty();
