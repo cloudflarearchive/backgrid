@@ -107,7 +107,7 @@ var DivCellEditor = Backgrid.DivCellEditor = CellEditor.extend({
   postRender: function () {
     this.$el.focus();
 
-    if (typeof window.getSelection !== "undefined" && typeof document.createRange !== "undefined") {
+    if (!_.isUndefined(window.getSelection) && !_.isUndefined(document.createRange)) {
       var rng = document.createRange();
       rng.selectNodeContents(this.el);
       rng.collapse(false);
@@ -115,7 +115,7 @@ var DivCellEditor = Backgrid.DivCellEditor = CellEditor.extend({
       sel.removeAllRanges();
       sel.addRange(rng);
     }
-    if (typeof document.body.createTextRange !== "undefined") {
+    if (!_.isUndefined(document.body.createTextRange)) {
       var txtRng = document.body.createTextRange();
       txtRng.moveToElementText(this.el);
       txtRng.collapse(false);
@@ -146,16 +146,11 @@ var DivCellEditor = Backgrid.DivCellEditor = CellEditor.extend({
         e.preventDefault();
         var valueToSet = this.formatter.toRaw(this.$el.text());
 
-        if (typeof valueToSet === "undefined") {
+        if (_.isUndefined(valueToSet) || this.model.set(this.column.get("name"), valueToSet)) {
           this.trigger("error");
-          return;
-        }
-
-        if (this.model.set(this.column.get("name"), valueToSet)) {
-          this.trigger("done");
         }
         else {
-          this.trigger("error");
+          this.trigger("done");
         }
       }
       // esc
@@ -176,7 +171,7 @@ var DivCellEditor = Backgrid.DivCellEditor = CellEditor.extend({
     Backbone.View.prototype.remove.apply(this, arguments);
     // FF inexplicably still place a blanking caret at the beginning of the
     // parent's text after this editor element has been removed from the DOM
-    if (typeof window.getSelection !== "undefined") {
+    if (!_.isUndefined(window.getSelection)) {
       var sel = window.getSelection();
       sel.removeAllRanges();
     }
@@ -296,7 +291,7 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
          @event edit
          @param {Backgrid.Cell} cell This cell instance.
          @param {Backgrid.CellEditor} editor The cell editor constructed.
-       */
+      */
       this.trigger("edit", this, this.currentEditor);
 
       this.currentEditor.on("done", this.exitEditMode, this);
@@ -313,7 +308,7 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
          @event editing
          @param {Backgrid.Cell} cell This cell instance.
          @param {Backgrid.CellEditor} editor The cell editor constructed.
-       */
+      */
       this.trigger("editing", this, this.currentEditor);
     }
   },
@@ -630,13 +625,13 @@ var BooleanCell = Backgrid.BooleanCell = Cell.extend({
 
      @property {function(Object): string} editor The Underscore.js template to
      render the editor.
-   */
+  */
   editor: _.template("<input type='checkbox'<%= checked ? checked='checked' : '' %> />'"),
 
   /**
      Since the editor is not an instance of a CellEditor subclass, more things
      need to be done in BooleanCell class to listen to editor mode events.
-   */
+  */
   events: {
     "click": "enterEditMode",
     "blur input[type=checkbox]": "exitEditMode",
@@ -646,7 +641,7 @@ var BooleanCell = Backgrid.BooleanCell = Cell.extend({
   /**
      Renders a checkbox and check it if the model value of this column is true,
      uncheck otherwise.
-   */
+  */
   render: function () {
     this.currentEditor = $(this.editor({
       checked: this.formatter.fromRaw(this.model.get(this.column.get("name")))
@@ -657,7 +652,7 @@ var BooleanCell = Backgrid.BooleanCell = Cell.extend({
 
   /**
      Simple focuses the checkbox and add an `editor` CSS class to the cell.
-   */
+  */
   enterEditMode: function (e) {
     this.$el.addClass("editor");
     this.currentEditor.focus();
@@ -665,7 +660,7 @@ var BooleanCell = Backgrid.BooleanCell = Cell.extend({
 
   /**
      Removed the `editor` CSS class from the cell.
-   */
+  */
   exitEditMode: function (e) {
     this.$el.removeClass("editor");
   },
@@ -673,7 +668,7 @@ var BooleanCell = Backgrid.BooleanCell = Cell.extend({
   /**
      Set true to the model attribute if the checkbox is checked, false
      otherwise.
-   */
+  */
   save: function (e) {
     var val = this.formatter.toRaw(this.currentEditor.prop("checked"));
     this.model.set(this.column.get("name"), val);
@@ -722,7 +717,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
      object hashes. The name is rendered at the option text and the value is the
      option value. If `optionValues` is a function, it is called without a
      parameter.
-   */
+  */
   render: function () {
     var optionValues = _.result(this, "optionValues");
     var currentValue = this.model.get(this.column.get("name"));
@@ -763,7 +758,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
   /**
      Saves the value of the selected option to the model attribute. Triggers
      `done` event.
-   */
+  */
   save: function (e) {
     this.model.set(this.column.get("name"), this.$el.val());
     this.trigger("done");
