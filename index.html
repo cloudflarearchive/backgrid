@@ -142,11 +142,11 @@
               <ul>
                 <li>No Hungarian notations.</li>
                 <li>Solid foundation. Based
-                on <a href="http://backbonejs.org">Backbone.js</a>.</li>
+                  on <a href="http://backbonejs.org">Backbone.js</a>.</li>
                 <li>Semantic and <a href="#styling">easily stylable</a>. Just
-                style with plain CSS like you would a normal HTML table.</li>
+                  style with plain CSS like you would a normal HTML table.</li>
                 <li>Low learning curve. Works with plain old Backbone models and
-                collections. Easy things are easy, hards things possible.</li>
+                  collections. Easy things are easy, hards things possible.</li>
                 <li>Highly modular and customizable. Componenets are just simple
                   Backbone View classes, customization is easy if you already
                   know Backbone.</li>
@@ -853,10 +853,10 @@
               private use; however, if you have one or more Backgrid.js
               components that add new features to the core, you may consider
               packaging them up to share with the world.</p>
-            <p>A Backgrid.js extension is simply a directory structure that
-              packages the necessary JS, CSS, tests, and document files.</p>
-            <p>To create an extension, simply clone the tree into your file
-              system and type:</p>
+            <p>A Backgrid.js extension is a directory structure that packages
+              the necessary JS, CSS, tests, and document files.</p>
+            <p>To create an extension, clone the tree into your file system and
+              type:</p>
             <textarea class="code-snippet" data-mode="shell">
               $ cd backgrid
               $ make extension</textarea>
@@ -1089,54 +1089,9 @@
                 of <a href="https://github.com/wyuenho/backgrid/issues?labels=enhancement%2Ctask&amp;page=1&amp;state=open"
                       title="Github Issues">tasks and enhancements</a>.</p>
               <h2>How to build Backgrid.js?</h2>
-              <p>The Backgrid.js build system uses a number of *nix utilities,
-                gmake, <a href="https://github.com/mishoo/UglifyJS2"
-                          title="UglifyJS">uglifyjs</a> and
-                Twitter&apos;s <a href="https://github.com/twitter/recess"
-                                  title="recess">recess</a>.</p>
-              <p>Assuming you have installed gmake onto your system, you also
-                need to install <a href="http://nodejs.org/download/"
-                title="NodeJS">node.js and npm</a> first before you can install
-                uglifyjs and recess.</p>
-              <textarea class="code-snippet" data-mode="shell">
-                $ npm install uglifyjs recess
-                
-                # recursively builds the core and all the extensions and put them into lib
-                $ cd backgrid &amp;&amp; make dist</textarea>
-              <p>If you just want to customize what components are included in
-                your backbone.js file, just edit the <code>SUBDIRS</code>
-                variable in
-                the <a href="https://github.com/wyuenho/backgrid/tree/master/src/extensions/Makefile"
-                       title="src/extension/Makefile">src/extensions/Makefile</a>
-              </p>
+              <p><a href="CONTRIBUTING.md" title="Contributing">See Contributing.</a></p>
               <h2 id="contribute">How do I contribute?</h2>
-              <p>Fork the project, make your changes in the master branch,
-                push to your own fork and submit a pull request.</p>
-              <p>If you are contributing a new extension, please make a new
-                directory under <code>src/extensions</code> and add your
-                extension to the Makefiles.</p>
-              <p>Please be aware that Backgrid.js uses 2 spaces in place of a
-                tab for both .js and .css files. This project&apos;s Javascript
-                coding style is defined in
-                the <a href="https://github.com/wyuenho/backgrid/blob/master/.jshintrc"
-                title=".jshintrc">.jshintrc</a> file. Please don&apos;t use the
-                node.js, NPM or Allman style. <code>else</code> should be in its
-                separate line, one <code>var</code> statement per variable
-                declaration and all function definitions should have a space
-                preceeding the parameter list.</p>
-              <p>Changes that come with tests are more equal than others.</p>
-              <p>If you make any changes to the documentation, since Backgrid.js
-                uses <a href="http://pages.github.com" title="Github
-                Pages">Github Pages</a>, please do so in your gh-pages branch
-                and submit a pull request from that branch.</p>
-              <p>Pull requests that follow the above guidelines will get merged
-                quicker than others.</p>
-              <aside class="note">
-                <h5>Note:</h5>
-                <p>Don&apos;t forget to keep your tree in sync with upstream
-                  before you submit a pull request. Usage of git-rebase is
-                  optional.</p>
-              </aside>
+              <p><a href="CONTRIBUTING.md" title="Contributing">See Contributing.</a></p>
             </div>
           </div>
         </section>
