@@ -1,6 +1,3 @@
-<link rel="stylesheet" href="lib/backgrid.css" />
-<link rel="stylesheet" href="lib/extensions/paginator/backgrid-paginator.css" />
-
 # Backgrid.js
 
 Backgrid.js is a set of components for building semantic and easily stylable
@@ -38,44 +35,20 @@ functionalities easy.
 
 <span id="note-2">[2]</span>: Currently needs to double click on a cell to gain focus.
 
-## Examples
+## Example
 
 ```javascript
 var Territory = Backbone.Model.extend({});
 
-// Get a pageable collection of territories.
-var PageableTerritories = Backbone.Paginator.clientPager.extend({
+var Territories = Backbone.Collection.extend({
   model: Territory,
-  
-  // Params for $.ajax.
-  paginator_core: {
-    dataType: "json",
-    url: "examples/territories.json"
-  },
-  
-  // Paging info.
-  paginator_ui: {
-    firstPage: 1, // page indices start at 1.
-    currentPage: 1,
-    perPage: 15,
-    totalPages: 17
-  },
-  
-  // No need for server query, Backbone.Paginator supports loading the
-  // whole thing and paging just inside the browser.
-  server_api: {},
-  
-  // How the Pager should parse the response.
-  parse: function (resp) {
-    return resp;
-  }
+  url: "examples/territories.json"
 });
 
-// Fetch all the territories and go to the page when done
-var pageableTerritories = new PageableTerritories();
-pageableTerritories.fetch().done(function () {
-  pageableTerritories.goTo(1);
-});
+var territories = new Territories();
+
+// Fetch some countries from the url
+territories.fetch();
 
 // Column definitions
 var columns = [{
@@ -120,16 +93,14 @@ var grid = new Backgrid.Grid({
 $("#example-1-result").append(grid.render().$el);
 ```
 
-## Result
+# Result:
 
-<div id="example-1-result" class="backgrid-container" style="height: 523px"></div>
-
+Take a look [here](index.html#example-1-result).
 
 ## More Examples
 
 Are you kidding me? This is a README file. Go to the [documentation](index.html
 "Backbone.js Documentation") to find out more :)
-
 
 ## Release History
 
@@ -142,16 +113,3 @@ Copyright (c) 2012 Jimmy Yuen Ho Wong
 Source code licensed under the [MIT license](LICENSE-MIT "MIT License").
 
 Documentation licenses under [GPLv3](http://www.gnu.org/licenses/gpl-3.0.html "GPLv3")
-
-<script src="assets/js/jquery.js"></script>
-<script src="assets/js/underscore.js"></script>
-<script src="assets/js/backbone.js"></script>
-<script src="assets/js/backbone.paginator.js"></script>
-<script src="lib/backgrid.js"></script>
-<script src="lib/extensions/paginator/backgrid-paginator.js"></script>
-<script>
-$(document).ready(function () {
-    eval($("code").text());
-});
-</script>
-
