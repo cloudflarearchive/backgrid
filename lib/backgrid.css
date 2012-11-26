@@ -32,6 +32,7 @@
 
 .backgrid th,
 .backgrid td {
+  height: 20px;
   padding: 4px 5px;
   line-height: 20px;
   text-align: left;

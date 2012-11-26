@@ -30,6 +30,7 @@
     <link rel="stylesheet" href="codemirror/theme/ambiance.css" />
     <link rel="stylesheet" href="lib/backgrid.css" />
     <link rel="stylesheet" href="lib/extensions/paginator/backgrid-paginator.css" />
+    <link rel="stylesheet" href="lib/extensions/text-cell/backgrid-text-cell.css" />
     <link rel="stylesheet" href="assets/css/doc.css" />
     <!--[if lt IE 9]>
         <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -184,7 +185,7 @@
               </p>
               <ul>
                 <li><a href="http://jquery.com">jquery &gt;= 1.7.0</a></li>
-                <li><a href="http://underscorejs.org">underscore.js &gt; 1.4.0</a></li>
+                <li><a href="http://underscorejs.org">underscore.js &gt;= 1.4.0</a></li>
                 <li><a href="http://backbonejs.org">backbone.js &gt;= 0.9.2</a></li>
               </ul>
               <aside class="note">
@@ -195,18 +196,16 @@
             </div>
             <div class="span6">
               <p>
-                Suppose you have extracted all the dependencies into a directory
-                <code>PROJECT_ROOT/js</code>, and you are serving an HTML
-                document from <code>PROJECT_ROOT</code>. The following code
-                will get the <strong>Backgrid.js</strong> core loaded:
+                Something like the following will get
+                the <strong>Backgrid.js</strong> core loaded:
               </p>
-              <textarea class="code-snippet" data-mode="htmlmixed">&lt;head&gt;
-                &lt;link rel="stylesheet" href="/js/lib/backgrid.css" /&gt;
-                &lt;script src="/js/assets/js/jquery.js"&gt;&lt;/script&gt;
-                &lt;script src="/js/assets/js/underscore.js"&gt;&lt;/script&gt;
-                &lt;script src="/js/assets/js/backbone.js"&gt;&lt;/script&gt;
-                &lt;script src="/js/lib/backgrid.js"&gt;&lt;/script&gt;
-                &lt;/head&gt;</textarea>
+              <textarea class="code-snippet" data-mode="htmlmixed">
+                &lt;link rel="stylesheet" href="lib/backgrid.css" /&gt;
+                &lt;script src="assets/js/jquery.js"&gt;&lt;/script&gt;
+                &lt;script src="assets/js/underscore.js"&gt;&lt;/script&gt;
+                &lt;script src="assets/js/backbone.js"&gt;&lt;/script&gt;
+                &lt;script src="lib/backgrid.js"&gt;&lt;/script&gt;</textarea>
+              <p>Adjust the paths as needed.</p>
             </div>
           </div>
         </section>
@@ -227,7 +226,7 @@
                   <p>Suppose we have a list of territory info objects:</p>
                 </div>
                 <div class="span6">
-                  <textarea class="code-snippet" data-mode="javascript">
+                  <textarea class="code-snippet" data-mode="javascript" data-eval="yes">
                     var Territory = Backbone.Model.extend({});
                     
                     var Territories = Backbone.Collection.extend({
@@ -251,7 +250,7 @@
                     columns and the collection of data into the Grid constructor
                     like this:
                   </p>
-                  <textarea class="code-snippet" data-mode="javascript">
+                  <textarea class="code-snippet" data-mode="javascript" data-eval="yes">
                     var columns = [{
                       name: "id", // The key of the model attribute
                       label: "ID", // The name to display in the header
@@ -337,16 +336,16 @@
                     load by including the following into your <code>head</code>
                     tag:</p>
                   <textarea class="code-snippet" data-mode="htmlmixed">
-                    &lt;link rel="stylesheet" href="/css/backgrid/extensions/paginator/backgrid-paginator.css" /&gt;
-                    &lt;script src="/js/assets/js/backbone.paginator.js"&gt;&lt;/script&gt;
-                    &lt;script src="/js/backgrid/extensions/paginator/backgrid-paginator.js"&gt;&lt;/script&gt;</textarea>
+                    &lt;link rel="stylesheet" href="lib/extensions/paginator/backgrid-paginator.css" /&gt;
+                    &lt;script src="assets/js/backbone.paginator.js"&gt;&lt;/script&gt;
+                    &lt;script src="lib/extensions/paginator/backgrid-paginator.js"&gt;&lt;/script&gt;</textarea>
                   <p>To use the paginator, you must first declare your
                     collections to be
                     a <a href="http://addyosmani.github.com/backbone.paginator/"
                          title="Backbone.Paginator">Backbone.Paginator.*Pager</a>,
                     which is a simple subclass of the Backbone.js Collection with added
                     pagination behavior.</p>
-                  <textarea class="code-snippet" data-mode="javascript">
+                  <textarea class="code-snippet" data-mode="javascript" data-eval="yes">
                     var PageableTerritories = Backbone.Paginator.clientPager.extend({
                       model: Territory,
                     
@@ -376,12 +375,12 @@
                     </textarea>
                   <p>Once you have a pageable collection, you can supply it to
                     the Grid constructor, in addition to a footer
-                    element <code>Backgrid.Paginator</code></p>
-                  <textarea class="code-snippet" data-mode="javascript">
+                    element <code>Backgrid.Extension.Paginator</code></p>
+                  <textarea class="code-snippet" data-mode="javascript" data-eval="yes">
                     var pageableGrid = new Backgrid.Grid({
                       columns: columns,
                       collection: pageableTerritories,
-                      footer: Backgrid.Paginator
+                      footer: Backgrid.Extension.Paginator
                     });
 
                     $("#example-2-result").append(pageableGrid.render().$el);</textarea>
@@ -412,6 +411,57 @@
               <p>As described in the <a href="#examples">examples</a> above, a
                 basic grid needs only a collection and a list of column
                 definitions.</p>
+              <h3>Events</h3>
+              <p>All the Backgrid.js components publish and subscribe to events
+                through Backgrid.Grid instances. For example,
+                a <a href="#api-header">HeaderCell</a> will trigger
+                a <code>sort</code> event when it receives a <em>click</em>
+                event from its sorter. The event is triggered through the grid
+                instance the header cells belong to. You can subscribe to any
+                Backgrid.js events in your own code.</p>
+              <h3>Manipulating Columns and Rows</h3>
+              <p>It is very easy to insert or remove a row in a grid, you just
+                have to pass a model reference
+                to <a href="api/index.html#!/api/Backgrid.Grid-method-insertRow">Grid#insertRow</a>
+                or <a href="api/index.html#!/api/Backgrid.Grid-method-removeRow">Grid#removeRow</a>.</p>
+              <textarea class="code-snippet" data-mode="javascript">
+                // Inserting rows
+                grid.insertRow([{
+                  // model 1
+                }, {
+                  // model 2 ... etc
+                }]);
+
+                // Remove rows
+                var musketeers = grid.collection.where({ job: "Musketeer" });
+                grid.removeRow(musketeers);</textarea>
+              <p>Inserting and remove columns is similarly easy. You just need
+                to pass some definitions
+                to <a href="api/index.html#!/api/Backgrid.Grid-method-insertColumn">Grid#insertColumn</a>
+                or
+                <a href="api/index.html#!/api/Backgrid.Grid-method-removeColumn">Grid#removeColumn</a>.</p>
+              <textarea class="code-snippet" data-mode="javascript">
+                // Insert a few new columns. Make sure your model has these attributes though.
+                grid.insertColumn([{
+
+                    name: "selected",
+                    label: "",
+                    cell: "boolean",
+                    sortable: false,
+                    headerCell: MySelectAllCell
+
+                  }, {
+
+                    name: "address",
+                    label: "Address",
+                    cell: "string"
+
+                  }]);
+
+                // Remove a column
+                var genderCol = grid.columns.where({ name: "gender" });
+                grid.removeColumn(genderCol);</textarea>
+              <h3>Customization</h3>
               <p>The various ways of customizing a grid are described in the
                 following sections.</p>
             </div>
@@ -861,10 +911,12 @@
               $ cd backgrid
               $ make extension</textarea>
             <p>A new extension directory structure should have been created for
-              you under <code>src/extensions</code>. You can now look into the
-              bundled extensions to find out how to organize your code and
-              proceed.</p>
-            <h2>The Extension Protocol</h2>
+              you under <code>src/extensions</code>. The current implementation
+              of <code>make extension</code> only creates a blank directory
+              filled with a number of blank files for you. You should take a
+              look at other extensions to copy what you need. e.g. Makefile,
+              .gitignore.</p>
+            <h2>Extension Development Guide</h2>
             <p>The following is a guideline for extension development:</p>
             <ul>
               <li>There should be 1 .js file and 1 .css file. If your code base
@@ -878,12 +930,14 @@
                 destination directory.</li>
               <li>You should use recess to lint your CSS file(s).</li>
               <li>You should follow the JS coding style
-                listed <a href="#contribute">below</a>.</li>
+                defined <a href="CONTRIBUTING.md#coding-style">here</a>.</li>
               <li>Your .gitignore file inside the extension directory should
                 ignore all output files.</li>
               <li>You should wrap your JS file in an immediately invoked
                 anonymous function that lists out your dependencies in the
                 parameter list.</li>
+              <li>Your extension should live under
+                the <code>Backgrid.Extension</code> module.</li>
               <li>You should clearly specify your dependencies in the README
                 file if your extension relies on any libraries other than
                 Backgrid.js and its dependencies.</li>
@@ -892,15 +946,25 @@
             </ul>
           </div>
           <div class="row-fluid">
-            <div class="span2">
+            <div class="span3">
               <h2 id="api-paginator">Paginator</h2>
               <ul class="nav navlist">
-                <li><a href="api/index.html#!/api/Backgrid.Paginator">Backgrid.Paginator</a></li>
-                <li><a href="api/index.html#!/api/Backgrid.PageHandle">Backgrid.PageHandle</a></li>
+                <li><a href="api/index.html#!/api/Backgrid.Extension.Paginator">Backgrid.Extension.Paginator</a></li>
+                <li><a href="api/index.html#!/api/Backgrid.Extension.PageHandle">Backgrid.Extension.PageHandle</a></li>
+              </ul>
+              <h4>Best Used On</h4>
+              <ul>
+                <li>Desktop</li>
+                <li>Mobile</li>
               </ul>
             </div>
-            <div class="span10">
-              <h2>Backbone.Paginator</h2>
+            <div class="span9">
+              <h3>Prerequisites</h3>
+              <textarea class="code-snippet" data-mode="htmlmixed">
+                &lt;link rel="stylesheet" href="lib/extensions/paginator/backgrid-paginator.css" /&gt;
+                &lt;script src="assets/js/backbone.paginator.js"&gt;&lt;/script&gt;
+                &lt;script src="lib/extensions/paginator/backgrid-paginator.js"&gt;&lt;/script&gt;</textarea>
+              <h3>Backbone.Paginator</h3>
               <p>Backgrid.js relies on the
                 excellent <a href="http://addyosmani.github.com/backbone.paginator/">Backbone.Paginator</a>
                 library, please install it into your project first.</p>
@@ -926,7 +990,7 @@
 
                   paginator_ui: {
                     // The lowest page index the API allows.
-                    // Backgrid.Paginator uses 1-based index.
+                    // Backgrid.Extension.Paginator uses 1-based index.
                     firstPage: 1,
 
                     // The page index to fetch for models on the first call for fetch().
@@ -958,8 +1022,8 @@
 
                 var books = new Books()
                 books.goTo(1); // This will fetch the first page of models</textarea>
-              <h2>Configuring Paginator</h2>
-              <p>Backgrid.Paginator supports a few configuration options to adjust to the size of the result set.</p>
+              <h3>Configuring Paginator</h3>
+              <p>Backgrid.Extension.Paginator supports a few configuration options to adjust to the size of the result set.</p>
               <textarea class="code-snippet" data-mode="javascript" data-eval="no">
                 var bookGrid = new Backgrid.Grid({
 
@@ -969,7 +1033,7 @@
 
                   collection: books,
 
-                  footer: Backgrid.Paginator.extend({
+                  footer: Backgrid.Extension.Paginator.extend({
 
                     // If you anticipate a large number of pages, you can adjust
                     // the number of page handles to show. The sliding window
@@ -986,32 +1050,77 @@
             </div>
           </div>
           <div class="row-fluid">
-            <div class="span2">
+            <div class="span3">
               <h2 id="api-text-cell">TextCell</h2>
+              <ul class="nav navlist">
+                <li><a href="api/index.html#!/api/Backgrid.Extension.TextCell">Backgrid.Extension.TextCell</a></li>
+              </ul>
+              <h4>Best Used On</h4>
+              <ul>
+                <li>Desktop</li>
+              </ul>
             </div>
-            <div class="span10">
+            <div class="span9">
+              <h3>Prerequisites</h3>
+              <p>TextCell
+                require <a href="http://twitter.github.com/bootstrap/javascript.html#modals"
+                           title="bootstrap-modal.js">bootstrap-modal.js</a> to render
+                it&apos;s modal dialog.</p>
+              <textarea class="code-snippet" data-mode="htmlmixed">
+                &lt;link rel="stylesheet" href="assets/css/bootstrap.css" /&gt;
+                &lt;link rel="stylesheet" href="lib/extensions/text-cell/backgrid-text-cell.css" /&gt;
+                &lt;script src="assets/js/bootstrap.js"&gt;&lt;/script&gt;
+                &lt;script src="lib/extensions/text-cell/backgrid-text-cell.js"&gt;&lt;/script&gt;</textarea>
+              <h3>Usage</h3>
+              <p>TextCell is a string cell type that renders a form with a text
+                area in a modal dialog instead of
+                a <em>contenteditable</em> <code>&lt;div&gt;</code> editor. It
+                is best suited for entering a large body of text.</p>
+              <textarea class="code-snippet" data-mode="javascript" data-eval="yes">
+                var Book = Backbone.Model.extend({});
+                var Books = Backbone.Collection.extend({
+                  model: Book
+                });
+                var books = new Books([{ description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent sed nibh tortor, nec mollis diam. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Morbi venenatis sollicitudin vulputate. Aenean dapibus ultrices odio. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla id molestie erat. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Ut nec erat quis massa gravida facilisis. Ut at nisi ac tortor consectetur ullamcorper id nec purus. Fusce condimentum, lacus vitae convallis condimentum, velit orci auctor dui, et mattis dui est sed purus. Praesent pharetra, metus sit amet lacinia adipiscing, purus dolor sodales orci, non malesuada orci orci sit amet dolor. Sed id nisl et neque sollicitudin condimentum eget in nisl." }]);
+
+                var grid = new Backgrid.Grid({
+                  columns: [{
+                    name: "description",
+                    label: "Description",
+                    // You can use Backgrid.Extension.TextCell.extend() too.
+                    // See the JSDoc for a list of configurable options.
+                    cell: "text"
+                  }],
+
+                  collection: books
+                });
+
+                $("#example-3-result").append(grid.render().el);
+              </textarea>
+              <h3>Result</h3>
+              <div id="example-3-result" class="backgrid-container" style="height: auto;"></div>
             </div>
           </div>
           <div class="row-fluid">
-            <div class="span2">
+            <div class="span3">
               <h2 id="api-kalendae-cell">KalendaeCell</h2>
             </div>
-            <div class="span10">
+            <div class="span9">
             </div>
           </div>
           <div class="row-fluid">
-            <div class="span2">
+            <div class="span3">
               <h2 id="api-select2-cell">Select2Cell</h2>
             </div>
-            <div class="span10">
+            <div class="span9">
             </div>
           </div>
           <div class="row-fluid">
-            <div class="span2">
+            <div class="span3">
               <h2 id="api-latlng-cell">LatLngCell</h2>
               Coming soon...
             </div>
-            <div class="span10">
+            <div class="span9">
             </div>
           </div>
         </section>
@@ -1072,7 +1181,7 @@
                     remove all Backgrid.js styles, you can supply
                     a <code>className</code> attribute to
                     the <code>Backgrid.Grid</code> constructor:</p>
-                  <textarea class="code-snippet" data-mode="javascript" data-eval="no">
+                  <textarea class="code-snippet" data-mode="javascript">
                     var grid = new Backgrid.Grid({
                       className: "my-awesome-css-animated-grid",
                       ...
@@ -1156,7 +1265,7 @@
               <p>No, because it is not the goal of this project to produce a
                 full-fledged web-based spreadsheet. However, doing aggregation
                 is trivial using Underscore.js methods</p>
-              <textarea class="code-snippet" data-mode="javascript" data-eval="no">
+              <textarea class="code-snippet" data-mode="javascript">
                 // sum all the values of a column
                 var sum = collection.reduce(function (accum, num) {
                   return accum + num;
@@ -1209,6 +1318,7 @@
     <script src="assets/js/bootstrap.js"></script>
     <script src="lib/backgrid.js"></script>
     <script src="lib/extensions/paginator/backgrid-paginator.js"></script>
+    <script src="lib/extensions/text-cell/backgrid-text-cell.js"></script>
     <script src="codemirror/lib/codemirror.js"></script>
     <script src="codemirror/lib/util/formatting.js"></script>
     <script src="codemirror/mode/xml/xml.js"></script>
@@ -1239,7 +1349,7 @@
             
             codemirror.autoIndentRange(start, end);
               
-            if ($elm.data("eval") !== "no") {
+            if ($elm.data("eval") === "yes") {
               if ($elm.data("mode") === "javascript") {
                 codestr = codestr + "\n" + codemirror.getValue();
               }
@@ -1258,12 +1368,14 @@
             if (!$.browser.mobile) {
               e.preventDefault();
               var target = this.hash;
-              var $target = $(target);
-              $("html, body").stop().animate({
-                "scrollTop": $target.offset().top - 55
-              }, 500, "swing", function() {
-                window.location.hash = target;
-              });
+              if (target) {
+                var $target = $(target);
+                $("html, body").stop().animate({
+                  "scrollTop": $target.offset().top - 55
+                }, 500, "swing", function() {
+                  window.location.hash = target;
+                });
+              }
             }
           });
         });

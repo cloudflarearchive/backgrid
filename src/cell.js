@@ -239,7 +239,8 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
     this.editor = options.editor || this.editor;
     this.formatter = options.formatter || this.column.get("formatter") || this.formatter;
     if (_.isString(this.formatter)) {
-      var formatter = Backgrid[capitalize(this.formatter) + "Formatter"];
+      var key = capitalize(this.formatter) + "Formatter";
+      var formatter = Backgrid[key] || Backgrid.Extension[key];
       if (_.isUndefined(formatter)) {
         throw new ReferenceError("Formatter type '" + this.formatter  + "' not found");
       }

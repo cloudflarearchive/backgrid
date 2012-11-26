@@ -128,7 +128,8 @@ var Body = Backgrid.Body = Backbone.View.extend({
      This method can be called either directly or as a callback to a
      [Backbone.Collecton#add](http://backbonejs.org/#Collection-add) event.
 
-     When called directly, it accepts a model and an option hash just like
+     When called directly, it accepts a model or an array of models and an
+     option hash just like
      [Backbone.Collection#add](http://backbonejs.org/#Collection-add) and
      delegates to it. Once the model is added, a new row is inserted into the
      body and automatically rendered.
@@ -178,7 +179,8 @@ var Body = Backgrid.Body = Backbone.View.extend({
      [Backbone.Collection#remove](http://backbonejs.org/#Collection-remove)
      event.
 
-     When called directly, it accepts a model and an option hash just like
+     When called directly, it accepts a model or an array of models and an
+     option hash just like
      [Backbone.Collection#remove](http://backbonejs.org/#Collection-remove) and
      delegates to it. Once the model is removed, a corresponding row is removed
      from the body.

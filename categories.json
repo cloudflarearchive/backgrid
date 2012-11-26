@@ -54,8 +54,15 @@
       {
         "name": "Paginator",
         "classes": [
-          "Backgrid.Paginator",
-          "Backgrid.PageHandle"
+          "Backgrid.Extension.Paginator",
+          "Backgrid.Extension.PageHandle"
+        ]
+      },
+      {
+        "name": "TextCell",
+        "classes": [
+          "Backgrid.Extension.TextCell",
+          "Backgrid.Extension.TextareaEditor"
         ]
       }
     ]

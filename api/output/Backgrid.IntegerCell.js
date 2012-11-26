@@ -147,7 +147,7 @@ Ext.data.JsonP.Backgrid_IntegerCell({
 
     ]
   },
-  "linenr": 495,
+  "linenr": 496,
   "files": [
     {
       "filename": "cell.js",

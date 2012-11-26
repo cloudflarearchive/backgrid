@@ -66,7 +66,8 @@ var Column = Backgrid.Column = Backbone.Model.extend({
     if (!attrs.name) { throw new Error("name is required"); }
 
     if (typeof attrs.cell === "string") {
-      var cell = Backgrid[capitalize(this.get("cell")) + "Cell"];
+      var key = capitalize(this.get("cell")) + "Cell";
+      var cell = Backgrid[key] || Backgrid.Extension[key];
       if (typeof cell === "undefined") throw new ReferenceError("Cell type '" + attrs.cell  + "' not found");
       this.set({
         cell: cell

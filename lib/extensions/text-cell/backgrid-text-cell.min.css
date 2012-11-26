@@ -1,0 +1,8 @@
+/*
+  backgrid-text-cell
+  http://github.com/wyuenho/backgrid
+
+  Copyright (c) 2012 Jimmy Yuen Ho Wong
+  Licensed under the MIT @license.
+*/
+.backgrid .text-cell{max-width:150px;overflow:hidden;text-align:left;-o-text-overflow:ellipsis;text-overflow:ellipsis;white-space:nowrap}.backgrid .text-cell.editor *{box-sizing:border-box}.backgrid .text-cell.editor textarea{width:100%}

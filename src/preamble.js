@@ -7,7 +7,8 @@
 */
 
 var Backgrid = root.Backgrid = {
-  VERSION: "0.1"
+  VERSION: "0.1",
+  Extension: {}
 };
 
 // Monkey-patch Backbone <= 0.9.2 with dispose() on the View

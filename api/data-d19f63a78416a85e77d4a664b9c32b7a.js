@@ -104,13 +104,25 @@ Docs = {
         "icon": "icon-class"
       },
       {
-        "name": "Backgrid.PageHandle",
+        "name": "Backgrid.Extension.PageHandle",
         "extends": null,
         "private": null,
         "icon": "icon-class"
       },
       {
-        "name": "Backgrid.Paginator",
+        "name": "Backgrid.Extension.Paginator",
+        "extends": null,
+        "private": null,
+        "icon": "icon-class"
+      },
+      {
+        "name": "Backgrid.Extension.TextareaEditor",
+        "extends": null,
+        "private": null,
+        "icon": "icon-class"
+      },
+      {
+        "name": "Backgrid.Extension.TextCell",
         "extends": null,
         "private": null,
         "icon": "icon-class"
@@ -915,46 +927,46 @@ Docs = {
         "sort": 3
       },
       {
-        "name": "PageHandle",
-        "fullName": "Backgrid.PageHandle",
+        "name": "Extension.PageHandle",
+        "fullName": "Backgrid.Extension.PageHandle",
         "icon": "icon-class",
-        "url": "#!/api/Backgrid.PageHandle",
+        "url": "#!/api/Backgrid.Extension.PageHandle",
         "meta": {
         },
         "sort": 1
       },
       {
         "name": "tagName",
-        "fullName": "Backgrid.PageHandle.tagName",
+        "fullName": "Backgrid.Extension.PageHandle.tagName",
         "icon": "icon-property",
-        "url": "#!/api/Backgrid.PageHandle-property-tagName",
+        "url": "#!/api/Backgrid.Extension.PageHandle-property-tagName",
         "meta": {
         },
         "sort": 3
       },
       {
         "name": "events",
-        "fullName": "Backgrid.PageHandle.events",
+        "fullName": "Backgrid.Extension.PageHandle.events",
         "icon": "icon-property",
-        "url": "#!/api/Backgrid.PageHandle-property-events",
+        "url": "#!/api/Backgrid.Extension.PageHandle-property-events",
         "meta": {
         },
         "sort": 3
       },
       {
         "name": "initialize",
-        "fullName": "Backgrid.PageHandle.initialize",
+        "fullName": "Backgrid.Extension.PageHandle.initialize",
         "icon": "icon-method",
-        "url": "#!/api/Backgrid.PageHandle-method-initialize",
+        "url": "#!/api/Backgrid.Extension.PageHandle-method-initialize",
         "meta": {
         },
         "sort": 3
       },
       {
         "name": "render",
-        "fullName": "Backgrid.PageHandle.render",
+        "fullName": "Backgrid.Extension.PageHandle.render",
         "icon": "icon-method",
-        "url": "#!/api/Backgrid.PageHandle-method-render",
+        "url": "#!/api/Backgrid.Extension.PageHandle-method-render",
         "meta": {
           "chainable": true
         },
@@ -962,83 +974,201 @@ Docs = {
       },
       {
         "name": "loadPage",
-        "fullName": "Backgrid.PageHandle.loadPage",
+        "fullName": "Backgrid.Extension.PageHandle.loadPage",
         "icon": "icon-method",
-        "url": "#!/api/Backgrid.PageHandle-method-loadPage",
+        "url": "#!/api/Backgrid.Extension.PageHandle-method-loadPage",
         "meta": {
         },
         "sort": 3
       },
       {
-        "name": "Paginator",
-        "fullName": "Backgrid.Paginator",
+        "name": "Extension.Paginator",
+        "fullName": "Backgrid.Extension.Paginator",
         "icon": "icon-class",
-        "url": "#!/api/Backgrid.Paginator",
+        "url": "#!/api/Backgrid.Extension.Paginator",
         "meta": {
         },
         "sort": 1
       },
       {
         "name": "className",
-        "fullName": "Backgrid.Paginator.className",
+        "fullName": "Backgrid.Extension.Paginator.className",
         "icon": "icon-property",
-        "url": "#!/api/Backgrid.Paginator-property-className",
+        "url": "#!/api/Backgrid.Extension.Paginator-property-className",
         "meta": {
         },
         "sort": 3
       },
       {
         "name": "windowSize",
-        "fullName": "Backgrid.Paginator.windowSize",
+        "fullName": "Backgrid.Extension.Paginator.windowSize",
         "icon": "icon-property",
-        "url": "#!/api/Backgrid.Paginator-property-windowSize",
+        "url": "#!/api/Backgrid.Extension.Paginator-property-windowSize",
         "meta": {
         },
         "sort": 3
       },
       {
         "name": "hasFastForward",
-        "fullName": "Backgrid.Paginator.hasFastForward",
+        "fullName": "Backgrid.Extension.Paginator.hasFastForward",
         "icon": "icon-property",
-        "url": "#!/api/Backgrid.Paginator-property-hasFastForward",
+        "url": "#!/api/Backgrid.Extension.Paginator-property-hasFastForward",
         "meta": {
         },
         "sort": 3
       },
       {
         "name": "initialize",
-        "fullName": "Backgrid.Paginator.initialize",
+        "fullName": "Backgrid.Extension.Paginator.initialize",
         "icon": "icon-method",
-        "url": "#!/api/Backgrid.Paginator-method-initialize",
+        "url": "#!/api/Backgrid.Extension.Paginator-method-initialize",
         "meta": {
         },
         "sort": 3
       },
       {
         "name": "refresh",
-        "fullName": "Backgrid.Paginator.refresh",
+        "fullName": "Backgrid.Extension.Paginator.refresh",
         "icon": "icon-method",
-        "url": "#!/api/Backgrid.Paginator-method-refresh",
+        "url": "#!/api/Backgrid.Extension.Paginator-method-refresh",
         "meta": {
         },
         "sort": 3
       },
       {
         "name": "renderFastForward",
-        "fullName": "Backgrid.Paginator.renderFastForward",
+        "fullName": "Backgrid.Extension.Paginator.renderFastForward",
         "icon": "icon-method",
-        "url": "#!/api/Backgrid.Paginator-method-renderFastForward",
+        "url": "#!/api/Backgrid.Extension.Paginator-method-renderFastForward",
         "meta": {
         },
         "sort": 3
       },
       {
         "name": "render",
-        "fullName": "Backgrid.Paginator.render",
+        "fullName": "Backgrid.Extension.Paginator.render",
         "icon": "icon-method",
-        "url": "#!/api/Backgrid.Paginator-method-render",
+        "url": "#!/api/Backgrid.Extension.Paginator-method-render",
         "meta": {
           "chainable": true
+        },
+        "sort": 3
+      },
+      {
+        "name": "Extension.TextareaEditor",
+        "fullName": "Backgrid.Extension.TextareaEditor",
+        "icon": "icon-class",
+        "url": "#!/api/Backgrid.Extension.TextareaEditor",
+        "meta": {
+        },
+        "sort": 1
+      },
+      {
+        "name": "className",
+        "fullName": "Backgrid.Extension.TextareaEditor.className",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.Extension.TextareaEditor-property-className",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "cols",
+        "fullName": "Backgrid.Extension.TextareaEditor.cols",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.Extension.TextareaEditor-property-cols",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "rows",
+        "fullName": "Backgrid.Extension.TextareaEditor.rows",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.Extension.TextareaEditor-property-rows",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "events",
+        "fullName": "Backgrid.Extension.TextareaEditor.events",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.Extension.TextareaEditor-property-events",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "modalOptions",
+        "fullName": "Backgrid.Extension.TextareaEditor.modalOptions",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.Extension.TextareaEditor-property-modalOptions",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "render",
+        "fullName": "Backgrid.Extension.TextareaEditor.render",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Extension.TextareaEditor-method-render",
+        "meta": {
+          "chainable": true
+        },
+        "sort": 3
+      },
+      {
+        "name": "save",
+        "fullName": "Backgrid.Extension.TextareaEditor.save",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Extension.TextareaEditor-method-save",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "cancel",
+        "fullName": "Backgrid.Extension.TextareaEditor.cancel",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Extension.TextareaEditor-method-cancel",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "close",
+        "fullName": "Backgrid.Extension.TextareaEditor.close",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Extension.TextareaEditor-method-close",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "Extension.TextCell",
+        "fullName": "Backgrid.Extension.TextCell",
+        "icon": "icon-class",
+        "url": "#!/api/Backgrid.Extension.TextCell",
+        "meta": {
+        },
+        "sort": 1
+      },
+      {
+        "name": "className",
+        "fullName": "Backgrid.Extension.TextCell.className",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.Extension.TextCell-property-className",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "editor",
+        "fullName": "Backgrid.Extension.TextCell.editor",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.Extension.TextCell-property-editor",
+        "meta": {
         },
         "sort": 3
       },

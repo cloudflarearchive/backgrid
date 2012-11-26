@@ -11,9 +11,9 @@
   /**
      Helper class for rendering the individual page handles.
 
-     @class Backgrid.PageHandle
+     @class Backgrid.Extension.PageHandle
   */
-  var PageHandle = Backgrid.PageHandle = Backbone.View.extend({
+  var PageHandle = Backgrid.Extension.PageHandle = Backbone.View.extend({
 
     /** @property */
     tagName: "li",
@@ -71,9 +71,9 @@
      next page handles. The fast forward, fast backward, previous and next page
      handles can be turned off.
 
-     @class Backgrid.Paginator
+     @class Backgrid.Extension.Paginator
   */
-  var Paginator = Backgrid.Paginator = Backgrid.Footer.extend({
+  var Paginator = Backgrid.Extension.Paginator = Backgrid.Footer.extend({
 
     /** @property */
     className: "paginator",
