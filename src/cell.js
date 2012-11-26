@@ -146,7 +146,7 @@ var DivCellEditor = Backgrid.DivCellEditor = CellEditor.extend({
         e.preventDefault();
         var valueToSet = this.formatter.toRaw(this.$el.text());
 
-        if (_.isUndefined(valueToSet) || this.model.set(this.column.get("name"), valueToSet)) {
+        if (_.isUndefined(valueToSet) || !this.model.set(this.column.get("name"), valueToSet)) {
           this.trigger("error");
         }
         else {
