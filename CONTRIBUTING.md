@@ -92,12 +92,34 @@ code follows this coding style extremely closely, with 2 exceptions:
 CSS
 ---
 
-Please make sure you use recess to lint your CSS files before you submit a pull
-request. There's a make rule is put in every Makefile for this purpose.
+Please make sure you use `recess` to lint your CSS files before you submit a
+pull request. There's a make rule is put in every Makefile for this purpose.
 
 ```shell
 $ make csslint
 ```
+
+Commit Messages
+===============
+
+This
+[Erlang/OTP commit message guideline](https://github.com/erlang/otp/wiki/Writing-good-commit-messages)
+says it all. Take one minute to read it. If you are filing a pull request with
+commit messages that don't follow this guideline, don't fret, take another
+minute to rewrite them.
+
+```shell
+git log # find out how many commits you need to go back
+git rebase -i HEAD~<number of changes to go back>
+git push origin +<branch>:<branch>
+```
+
+Branching
+=========
+
+If you are filing a pull request, you should be working on the `<version>-wip`
+branch which should be the only work-in-progress branch for this project. The
+`master` branch is reserved for stable releases.
 
 Documentation
 =============
