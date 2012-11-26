@@ -1,6 +1,6 @@
 [
   {
-    "name": "Submodules",
+    "name": "Core",
     "groups": [
       {
         "name": "Cells",
@@ -45,6 +45,17 @@
           "Backgrid.Body",
           "Backgrid.Row",
           "Backgrid.Footer"
+        ]
+      }
+    ]
+  }, {
+    "name": "Extensions",
+    "groups": [
+      {
+        "name": "Paginator",
+        "classes": [
+          "Backgrid.Paginator",
+          "Backgrid.PageHandle"
         ]
       }
     ]

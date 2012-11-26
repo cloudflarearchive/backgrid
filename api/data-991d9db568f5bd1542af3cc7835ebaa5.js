@@ -104,6 +104,18 @@ Docs = {
         "icon": "icon-class"
       },
       {
+        "name": "Backgrid.PageHandle",
+        "extends": null,
+        "private": null,
+        "icon": "icon-class"
+      },
+      {
+        "name": "Backgrid.Paginator",
+        "extends": null,
+        "private": null,
+        "icon": "icon-class"
+      },
+      {
         "name": "Backgrid.Footer",
         "extends": "Backbone.View",
         "private": null,
@@ -899,6 +911,134 @@ Docs = {
         "icon": "icon-property",
         "url": "#!/api/Backgrid.Columns-property-model",
         "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "PageHandle",
+        "fullName": "Backgrid.PageHandle",
+        "icon": "icon-class",
+        "url": "#!/api/Backgrid.PageHandle",
+        "meta": {
+        },
+        "sort": 1
+      },
+      {
+        "name": "tagName",
+        "fullName": "Backgrid.PageHandle.tagName",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.PageHandle-property-tagName",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "events",
+        "fullName": "Backgrid.PageHandle.events",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.PageHandle-property-events",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "initialize",
+        "fullName": "Backgrid.PageHandle.initialize",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.PageHandle-method-initialize",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "render",
+        "fullName": "Backgrid.PageHandle.render",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.PageHandle-method-render",
+        "meta": {
+          "chainable": true
+        },
+        "sort": 3
+      },
+      {
+        "name": "loadPage",
+        "fullName": "Backgrid.PageHandle.loadPage",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.PageHandle-method-loadPage",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "Paginator",
+        "fullName": "Backgrid.Paginator",
+        "icon": "icon-class",
+        "url": "#!/api/Backgrid.Paginator",
+        "meta": {
+        },
+        "sort": 1
+      },
+      {
+        "name": "className",
+        "fullName": "Backgrid.Paginator.className",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.Paginator-property-className",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "windowSize",
+        "fullName": "Backgrid.Paginator.windowSize",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.Paginator-property-windowSize",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "hasFastForward",
+        "fullName": "Backgrid.Paginator.hasFastForward",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.Paginator-property-hasFastForward",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "initialize",
+        "fullName": "Backgrid.Paginator.initialize",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Paginator-method-initialize",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "refresh",
+        "fullName": "Backgrid.Paginator.refresh",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Paginator-method-refresh",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "renderFastForward",
+        "fullName": "Backgrid.Paginator.renderFastForward",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Paginator-method-renderFastForward",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "render",
+        "fullName": "Backgrid.Paginator.render",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Paginator-method-render",
+        "meta": {
+          "chainable": true
         },
         "sort": 3
       },

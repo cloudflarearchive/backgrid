@@ -243,7 +243,7 @@
               </div>
               <div class="row-fluid">
                 <div class="span12">
-                  <h2>Grid</h2>
+                  <h2 id="example-1">Grid</h2>
                   <p>
                     The main entry point of the Backgrid package is the
                     Backgrid.Grid class. You can create a default Backgrid by
@@ -329,7 +329,7 @@
               </div>
               <div class="row-fluid">
                 <div class="span12">
-                  <h2>Paginator</h2>
+                  <h2 id="example-2">Paginator</h2>
                   <p>If you have a large result set like the above, you&apos;d
                     probably want to paginate your results. This is easily
                     achieved in Backgrid.js.</p>
@@ -892,39 +892,126 @@
             </ul>
           </div>
           <div class="row-fluid">
-            <div class="span6">
+            <div class="span2">
               <h2 id="api-paginator">Paginator</h2>
+              <ul class="nav navlist">
+                <li><a href="api/index.html#!/api/Backgrid.Paginator">Backgrid.Paginator</a></li>
+                <li><a href="api/index.html#!/api/Backgrid.PageHandle">Backgrid.PageHandle</a></li>
+              </ul>
             </div>
-            <div class="span6">
+            <div class="span10">
+              <h2>Backbone.Paginator</h2>
+              <p>Backgrid.js relies on the
+                excellent <a href="http://addyosmani.github.com/backbone.paginator/">Backbone.Paginator</a>
+                library, please install it into your project first.</p>
+              <p>Before you can use the Paginator, you need to declare your
+                collection to be one of
+                the <a href="http://addyosmani.github.com/backbone.paginator/#section-4">Backbone.Paginator.requestPager</a>
+                or <a href="http://addyosmani.github.com/backbone.paginator/#section-5">Backbone.Paginator.clientPager</a>. Usage
+                of the clientPager is illustrated in
+                an <a href="#example-2">example</a> above. The section will
+                describe the much simpler requestPager.</p>
+              <textarea class="code-snippet" data-mode="javascript" data-eval="no">
+                var Book = Backbone.Model({});
+                var Books = Backbone.Paginator.requestPager.extend({
+                  model: Book,
+
+                  paginator_core: {
+                    // Backbone.Paginator uses 'jsonp' by default
+                    dataType: 'json',
+
+                    // The URL of your Web API service
+                    url: 'http://api.example-bookstore.com/books'
+                  },
+
+                  paginator_ui: {
+                    // The lowest page index the API allows.
+                    // Backgrid.Paginator uses 1-based index.
+                    firstPage: 1,
+
+                    // The page index to fetch for models on the first call for fetch().
+                    currentPage: 1,
+
+                    perPage: 10,
+
+                    // A default number of total pages to query in case the
+                    // does not support providing the total number of pages.
+                    totalPages: 10
+                  },
+
+                  // Configure what your API query looks like when submitted to the server.
+                  // Any parameters you put here is sent as URL query parameters.
+                  server_api: {
+                    limit: function () { return this.perPage; },
+                    offset: function () { (return this.currentPage - 1) * this.perPage; }
+                  },
+
+                  // Configure how to get the models from the response.
+                  parse: function (resp) {
+                    // You should reset totalPages after every fetch() if your
+                    // server API supports it.
+                    this.totalPages = resp[0].totalPages;
+                    return resp[1];
+                  }
+
+                });
+
+                var books = new Books()
+                books.goTo(1); // This will fetch the first page of models</textarea>
+              <h2>Configuring Paginator</h2>
+              <p>Backgrid.Paginator supports a few configuration options to adjust to the size of the result set.</p>
+              <textarea class="code-snippet" data-mode="javascript" data-eval="no">
+                var bookGrid = new Backgrid.Grid({
+
+                  columns: [{
+                    // Your column definitions
+                  }],
+
+                  collection: books,
+
+                  footer: Backgrid.Paginator.extend({
+
+                    // If you anticipate a large number of pages, you can adjust
+                    // the number of page handles to show. The sliding window
+                    // will automatically show the next set of page handles when
+                    // you click next at the end of a window.
+                    windowSize: 20, // Default is 10
+
+                    // If you anticipate a small number of pages, you can choose
+                    // to disable the rendering of fast forward handles to save
+                    // space.
+                    hasFastForward: false // Default is true
+                  });
+                })</textarea>
             </div>
           </div>
           <div class="row-fluid">
-            <div class="span6">
+            <div class="span2">
               <h2 id="api-text-cell">TextCell</h2>
             </div>
-            <div class="span6">
+            <div class="span10">
             </div>
           </div>
           <div class="row-fluid">
-            <div class="span6">
+            <div class="span2">
               <h2 id="api-kalendae-cell">KalendaeCell</h2>
             </div>
-            <div class="span6">
+            <div class="span10">
             </div>
           </div>
           <div class="row-fluid">
-            <div class="span6">
+            <div class="span2">
               <h2 id="api-select2-cell">Select2Cell</h2>
             </div>
-            <div class="span6">
+            <div class="span10">
             </div>
           </div>
           <div class="row-fluid">
-            <div class="span6">
+            <div class="span2">
               <h2 id="api-latlng-cell">LatLngCell</h2>
               Coming soon...
             </div>
-            <div class="span6">
+            <div class="span10">
             </div>
           </div>
         </section>
@@ -1078,9 +1165,6 @@
               <p>Again, it is out of the scope of this project as this
                 functionality requires a broker to arbitrage between users and
                 is mostly found in web-based online spreadsheet products.</p>
-              <p>However, Backgrid.js does provide real-time <em>rendering</em>
-                out of the box by virtue of listening to model attribute changes
-                from the cell view classes.</p>
               <h2>Does Backgrid.js support feature (X)?</h2>
               <p>If the feature you have in mind isn&apos;t found here in this
                 Backgrid.js version, it could either be in the works or under
