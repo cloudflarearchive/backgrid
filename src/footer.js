@@ -27,8 +27,11 @@ var Footer = Backgrid.Footer = Backbone.View.extend({
      @param {Backbone.Collection.<Backgrid.Column>|Array.<Backgrid.Column>|Array.<Object>} options.columns
      Column metadata.
      @param {Backbone.Collection} options.collection
+
+     @throw {TypeError} If options.columns or options.collection is undefined.
   */
   initialize: function (options) {
+    requireOptions(options, ["columns", "collection"]);
     this.parent = options.parent;
     this.columns = options.columns;
     if (!(this.columns instanceof Backbone.Collection)) {

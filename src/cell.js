@@ -30,16 +30,12 @@ var CellEditor = Backgrid.CellEditor = Backbone.View.extend({
   */
   initialize: function (options) {
     requireOptions(options, ["formatter", "column", "model"]);
-
-    Backbone.View.prototype.initialize.apply(this, arguments);
-
     this.parent = options.parent;
     this.formatter = options.formatter;
     this.column = options.column;
     if (!(this.column instanceof Column)) {
       this.column = new Column(this.column);
     }
-
     if (this.parent && this.parent.on) this.parent.on("editing", this.postRender, this);
   },
 
@@ -227,16 +223,12 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
      said name cannot be found in the Backgrid module.
   */
   initialize: function (options) {
-
     requireOptions(options, ["model", "column"]);
-
-    Backbone.View.prototype.initialize.apply(this, arguments);
-
+    this.parent = options.parent;
     this.column = options.column;
     if (!(this.column instanceof Column)) {
       this.column = new Column(this.column);
     }
-
     this.formatter = resolveNameToClass(this.formatter, "Formatter");
     this.editor = resolveNameToClass(this.editor, "CellEditor");
   },
@@ -291,7 +283,8 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
 
       this.$el.empty();
       this.undelegateEvents();
-      this.$el.append(this.currentEditor.render().$el);
+      this.$el.append(this.currentEditor.$el);
+      this.currentEditor.render();
       this.$el.addClass("editor");
 
       /**

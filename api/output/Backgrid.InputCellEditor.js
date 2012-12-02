@@ -101,7 +101,7 @@ Ext.data.JsonP.Backgrid_InputCellEditor({
 
     ]
   },
-  "linenr": 64,
+  "linenr": 60,
   "files": [
     {
       "filename": "cell.js",

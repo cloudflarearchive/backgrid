@@ -49,7 +49,7 @@
     },
 
     /**
-       Renders this editor.
+       Renders a modal form dialog with a textarea, submit button and a close button.
     */
     render: function () {
       this.$el.html($(this.template({
@@ -106,11 +106,9 @@
     },
 
     /**
-       Event handler. Triggers a `done` event after the modal is hidden.
-
-       @param {Event} e
+       Triggers a `done` event after the modal is hidden.
      */
-    close: function (e) {
+    close: function () {
       this.trigger("done");
     }
 
@@ -118,8 +116,8 @@
 
   /**
      TextCell is a string cell type that renders a form with a text area in a
-     modal dialog instead of a contenteditable `div` editor. It is best suited
-     for entering a large body of text.
+     modal dialog instead of an input box editor. It is best suited for entering
+     a large body of text.
 
      @class Backgrid.Extension.TextCell
      @extends Backgrid.StringCell

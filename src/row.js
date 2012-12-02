@@ -26,37 +26,61 @@ var Row = Backgrid.Row = Backbone.View.extend({
      @param {*} options.parent
      @param {Backbone.Collection.<Backgrid.Column>|Array.<Backgrid.Column>|Array.<Object>} options.columns Column metadata.
      @param {Backbone.Model} options.model The model instance to render.
+
+     @throw {TypeError} If options.columns or options.model is undefined.
    */
   initialize: function (options) {
-    var self = this;
-    self.parent = options.parent;
-    self.columns = options.columns;
-    if (!(self.columns instanceof Backbone.Collection)) {
-      self.columns = new Columns(self.columns);
+    requireOptions(options, ["columns", "model"]);
+    this.parent = options.parent;
+    this.columns = options.columns;
+    if (!(this.columns instanceof Backbone.Collection)) {
+      this.columns = new Columns(this.columns);
     }
-    self.cells = [];
-    self.columns.each(function (column) {
-      if (column.get("renderable")) {
-        var cell = column.get("cell");
-        cell = new cell({
-          column: column,
-          model: self.model
-        });
-        self.cells.push(cell);
-      }
+    this.columns.on("change:renderable", this.renderColumn, this);
+
+    this.cells = [];
+    var self = this;
+    this.columns.each(function (column) {
+      var cell = new (column.get("cell"))({
+        parent: self,
+        column: column,
+        model: self.model
+      });
+
+      self.cells.push(cell);
     });
   },
 
   dispose: function () {
     this.columns.off(null, null, this);
     if (this.parent && this.parent.off) this.parent.off(null, null, this);
-    var cell = null;
-    for (var i = 0; i < this.cells.length; i++) {
-      cell = this.cells[i];
-      cell.off(null, null, this);
-      cell.dispose();
-    }
     return Backbone.View.prototype.dispose.apply(this, arguments);
+  },
+
+  /**
+     Backbone event handler. Insert a table cell DOM subtree to the right column
+     if renderable is true, detach otherwise.
+
+     @param {Backgrid.Column} column
+     @param {boolean} renderable
+   */
+  renderColumn: function (column, renderable) {
+    var spliceIndex = this.columns.indexOf(column);
+    if (renderable) {
+      var cell = this.cells[spliceIndex];
+      if (spliceIndex === 0) {
+        this.$el.prepend(cell.render().$el);
+      }
+      else if (spliceIndex === this.columns.length - 1) {
+        this.$el.append(cell.render().$el);
+      }
+      else {
+        this.$el.children().eq(spliceIndex).before(cell.render().$el);
+      }
+    }
+    else {
+      this.$el.children().eq(spliceIndex).detach();
+    }
   },
 
   /**
@@ -65,7 +89,10 @@ var Row = Backgrid.Row = Backbone.View.extend({
   render: function () {
     this.$el.empty();
     for (var i = 0; i < this.cells.length; i++) {
-      this.$el.append(this.cells[i].render().$el);
+      var cell = this.cells[i];
+      if (cell.column.get("renderable")) {
+        this.$el.append(cell.render().$el);
+      }
     }
     return this;
   }

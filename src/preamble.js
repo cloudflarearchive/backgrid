@@ -6,6 +6,8 @@
   Licensed under the MIT @license.
 */
 
+var window = root;
+
 var Backgrid = root.Backgrid = {
   VERSION: "0.1",
   Extension: {}

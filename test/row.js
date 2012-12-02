@@ -1,74 +1,97 @@
 describe("A Row", function () {
 
-  it("", function () {
-
+  it("throws TypeError if a model is not given", function () {
+    expect(function () {
+      new Backgrid.Row({
+        columns: [{
+          name: "name",
+          cell: "string"
+        }]
+      });
+    }).toThrow(new TypeError("'model' is required"));
   });
-  
+
+  it("throws TypeError if a list of column definitions is not given", function () {
+    expect(function () {
+      new Backgrid.Row({
+        model: new Backbone.Model()
+      });
+    }).toThrow(new TypeError("'columns' is required"));
+  });
+
+  it("renders a row of cells using a model's values and a list of column definitions", function () {
+    var row = new Backgrid.Row({
+      model: new Backbone.Model({
+        name: "name",
+        age: 18
+      }),
+      columns: [{
+        name: "name",
+        cell: "string"
+      }, {
+        name: "age",
+        cell: "integer"
+      }]
+    });
+
+    row.render();
+
+    expect(row.el.tagName).toBe("TR");
+
+    var $tds = row.$el.children();
+    expect($tds.eq(0).text()).toBe("name");
+    expect($tds.eq(1).text()).toBe("18");
+  });
+
+  it("inserts or removes a cell if a column's renderable attribute changes", function () {
+
+    var row = new Backgrid.Row({
+      model: new Backbone.Model({
+        name: "name",
+        age: 18,
+        birthday: "1987-06-05"
+      }),
+      columns: [{
+        name: "name",
+        cell: "string"
+      }, {
+        name: "age",
+        cell: "integer",
+        renderable: false
+      }, {
+        name: "birthday",
+        cell: "date"
+      }]
+    });
+
+    row.render();
+
+    var $tds = row.$el.children();
+    expect($tds.length).toBe(2);
+    expect($tds.eq(0).text()).toBe("name");
+    expect($tds.eq(1).text()).toBe("1987-06-05");
+
+    row.columns.at(1).set("renderable", true);
+    $tds = row.$el.children();
+    expect($tds.eq(0).text()).toBe("name");
+    expect($tds.eq(1).text()).toBe("18");
+    expect($tds.eq(2).text()).toBe("1987-06-05");
+
+    row.columns.at(0).set("renderable", false);
+    $tds = row.$el.children();
+    expect($tds.eq(0).text()).toBe("18");
+    expect($tds.eq(1).text()).toBe("1987-06-05");
+
+    row.columns.at(2).set("renderable", false);
+    $tds = row.$el.children();
+    expect($tds.eq(0).text()).toBe("18");
+
+    row.columns.at(0).set("renderable", true);
+    row.columns.at(2).set("renderable", true);
+    $tds = row.$el.children();
+    expect($tds.eq(0).text()).toBe("name");
+    expect($tds.eq(1).text()).toBe("18");
+    expect($tds.eq(2).text()).toBe("1987-06-05");
+  });
+
 });
-
-// (function() {
-
-//   function Environment() {}
-
-//   _.extend(Environment.prototype, {
-
-//     setup: function() {
-//       this.columns = [{
-//         type: 'string',
-//         name: 'title',
-//         label: 'Title'
-//       }, {
-//         type: 'number',
-//         name: 'year',
-//         label: 'Year'
-//       }];
-
-//       this.book = new Backbone.Model({
-//         title: 'Alice in Wonderland',
-//         year: 1865
-//       });
-
-//       this.row = new Backgrid.Row({
-//         columns: this.columns,
-//         model: this.book
-//       });
-//     },
-
-//     teardown: function() {
-//       delete this.columns;
-//     }
-//   });
-
-//   module('Backgrid.Row', new Environment());
-
-//   test('Initialization', function() {
-
-//     ok(this.row);
-//     strictEqual(this.row.cells[0].column.get('name'), 'title');
-//     strictEqual(this.row.cells[0].column.get('type'), 'string');
-//     strictEqual(this.row.cells[0].column.get('label'), 'Title');
-//     strictEqual(this.row.cells[1].column.get('name'), 'year');
-//     strictEqual(this.row.cells[1].column.get('type'), 'number');
-//     strictEqual(this.row.cells[1].column.get('label'), 'Year');
-//     deepEqual(this.row.cells[0].parent, this.row);
-//     deepEqual(this.row.cells[1].parent, this.row);
-//   });
-
-//   test('Rendering', function() {
-//     strictEqual(this.row.render(), this.row);
-//     ok(this.row.el instanceof HTMLTableRowElement);
-//     ok(this.row.el.isEqualNode($("<tr>" + "<td>Alice in Wonderland</td>" + "<td>1865</td>" + "</tr>")[0]));
-//   });
-
-//   test('Event handling', function() {
-//     this.row.render();
-
-//     this.book.set({
-//       title: "1984",
-//       year: 1934
-//     });
-
-//     ok(this.row.el.isEqualNode($("<tr>" + "<td>1984</td>" + "<td>1934</td>" + "</tr>")[0]));
-//   });
-
-// }());

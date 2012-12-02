@@ -179,7 +179,6 @@ describe("An InputCellEditor", function () {
 
 });
 
-// TODO: test the backbone events with stubs
 describe("A Cell", function () {
 
   var book;
@@ -202,7 +201,7 @@ describe("A Cell", function () {
     });
   });
 
-  it("throws TypeError is model or cell is not given to the constructor", function () {
+  it("throws TypeError if model or cell is not given to the constructor", function () {
     expect(function () {
       new Backgrid.Cell({
         column: column

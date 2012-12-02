@@ -28,11 +28,13 @@ var Body = Backgrid.Body = Backbone.View.extend({
      Column metadata
      @param {Backgrid.Row} [options.row=Backgrid.Row] The Row class to use.
 
-     See:
+     @throw {TypeError} If options.columns or options.collection is undefined.
 
-     - Backgrid.Row
+     See Backgrid.Row.
   */
   initialize: function (options) {
+    requireOptions(options, ["columns", "collection"]);
+
     var self = this;
 
     self.parent = options.parent;

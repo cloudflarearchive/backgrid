@@ -25,7 +25,7 @@ describe("A Column", function () {
     }).not.toThrow();
   });
 
-  it("has a label the same as name if no label give", function () {
+  it("has a label the same as name if no label given", function () {
     var col = new Backgrid.Column({
       name: "name",
       cell: 1

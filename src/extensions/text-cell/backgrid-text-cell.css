@@ -17,6 +17,7 @@
 
 .backgrid .text-cell.editor {
   max-width: 100%;
+  height: 28px;
 }
 
 .backgrid .text-cell.editor * {

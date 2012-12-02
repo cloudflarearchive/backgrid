@@ -1702,6 +1702,15 @@ Docs = {
         "sort": 3
       },
       {
+        "name": "renderColumn",
+        "fullName": "Backgrid.Row.renderColumn",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Row-method-renderColumn",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
         "name": "render",
         "fullName": "Backgrid.Row.render",
         "icon": "icon-method",
