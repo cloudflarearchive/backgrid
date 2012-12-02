@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1" />
@@ -33,6 +33,7 @@
     <link rel="stylesheet" href="lib/backgrid.css" />
     <link rel="stylesheet" href="lib/extensions/paginator/backgrid-paginator.css" />
     <link rel="stylesheet" href="lib/extensions/text-cell/backgrid-text-cell.css" />
+    <link rel="stylesheet" href="lib/extensions/moment-cell/backgrid-moment-cell.css" />
     <link rel="stylesheet" href="assets/css/doc.css" />
     <!--[if lt IE 9]>
         <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -72,7 +73,7 @@
                     <ul class="dropdown-menu">
                       <li><a href="#api-grid">Grid</a></li>
                       <li><a href="#api-column">Column</a></li>
-                      <li><a href="#api-cells">Cells</a></li>
+                      <li><a href="#api-cell">Cell</a></li>
                       <li><a href="#api-formatter">Formatter</a></li>
                       <li><a href="#api-header">Header</a></li>
                       <li><a href="#api-row">Row</a></li>
@@ -83,7 +84,7 @@
                       <li class="divider"></li>
                       <li><a href="#api-paginator">Paginator</a></li>
                       <li><a href="#api-text-cell">TextCell</a></li>
-                      <li><a href="#api-kalendae-cell">KalendaeCell</a></li>
+                      <li><a href="#api-moment-cell">MomentCell</a></li>
                       <li><a href="#api-select2-cell">Select2Cell</a></li>
                       <li><a href="#api-latlng-cell">LatLngCell</a></li>
                     </ul>
@@ -130,7 +131,7 @@
                target="_blank">Download</a>
           </p>
         </section>
-        <section id="features">
+        <div id="features">
           <div class="page-header">
             <h1>Features</h1>
             <p>The goal of Backgrid.js is to produce a set of core Backbone UI
@@ -166,16 +167,15 @@
                 <li>Chrome 4+</li>
                 <li>Safari 4+</li>
                 <li>Firefox 4+</li>
-                <li>Opera 9+ [2]</li>
+                <li>Opera 9+</li>
               </ul>
               <aside class="note">
                 <h3>Notes:</h3>
                 <div>1. Both the desktop and mobile versions of the above browsers are supported.</div>
-                <div>2. Currently needs to double click on a cell to gain focus.</div>
               </aside>
             </div>
           </div>
-        </section>
+        </div>
         <section id="getting-started">
           <div class="page-header">
             <h1>Getting Started</h1>
@@ -311,21 +311,20 @@
                     default. ID cells are not editable, and all other cell types
                     have reasonable validation built in. If the table gets too
                     large, you get a scroll bar.</p>
-                  <p>Backgrid.js comes with <a href="#api-cells" title="Cells">10
+                  <p>Backgrid.js comes with <a href="#api-cell" title="Cells">10
                       basic cell types</a> in the core
                       and <a href="#api-text-cell" title="TextCell">many others
                       as extensions</a>. Cell types such as
                     <a href="#api-select2-cell"
                        title="Select2Cell">Select2Cell</a>
-                       and <a href="#api-kalendae-cell"
-                       title="KalendaeCell">KalendaeCell</a> give you a much
-                       richer editing interface for option lists and datetime
-                       values on desktop browsers. In addition, there&apos;s a
-                       wide range of possibilities with how the data is
-                       converted for display and persistence by
-                       using <a href="#api-formatter"
-                       title="Formatters">formatters</a> or
-                       customizing <a href="#api-cells">cell classes</a>.</p>
+                       and <a href="#api-moment-cell"
+                       title="MomentCell">MomentCell</a> give you a much richer
+                       editing interface for option lists and datetime values on
+                       desktop browsers. In addition, there&apos;s a wide range
+                       of possibilities with how the data is converted for
+                       display and persistence by using <a href="#api-formatter"
+                       title="Formatter">formatters</a> or
+                       customizing <a href="#api-cell">cell classes</a>.</p>
                 </div>
               </div>
               <div class="row-fluid">
@@ -373,8 +372,7 @@
                     var pageableTerritories = new PageableTerritories();
                     pageableTerritories.fetch().done(function () {
                       pageableTerritories.goTo(1);
-                    });
-                    </textarea>
+                    });</textarea>
                   <p>Once you have a pageable collection, you can supply it to
                     the Grid constructor, in addition to a footer
                     element <code>Backgrid.Extension.Paginator</code></p>
@@ -413,14 +411,6 @@
               <p>As described in the <a href="#examples">examples</a> above, a
                 basic grid needs only a collection and a list of column
                 definitions.</p>
-              <h3>Events</h3>
-              <p>All the Backgrid.js components publish and subscribe to events
-                through Backgrid.Grid instances. For example,
-                a <a href="#api-header">HeaderCell</a> will trigger
-                a <code>sort</code> event when it receives a <em>click</em>
-                event from its sorter. The event is triggered through the grid
-                instance the header cells belong to. You can subscribe to any
-                Backgrid.js events in your own code.</p>
               <h3>Manipulating Columns and Rows</h3>
               <p>It is very easy to insert or remove a row in a grid, you just
                 have to pass a model reference
@@ -514,7 +504,7 @@
           </div>
           <div class="row-fluid">
             <div class="span2">
-              <h2 id="api-cells">Cells</h2>
+              <h2 id="api-cell">Cell</h2>
               <ul class="nav navlist">
                 <li><a href="api/index.html#!/api/Backgrid.Cell">Backgrid.Cell</a></li>
                 <li><a href="api/index.html#!/api/Backgrid.DatetimeCell">Backgrid.DatetimeCell</a></li>
@@ -528,7 +518,7 @@
                 <li><a href="api/index.html#!/api/Backgrid.BooleanCell">Backgrid.BooleanCell</a></li>
                 <li><a href="api/index.html#!/api/Backgrid.SelectCell">Backgrid.SelectCell</a></li>
                 <li><a href="api/index.html#!/api/Backgrid.CellEditor">Backgrid.CellEditor</a></li>
-                <li><a href="api/index.html#!/api/Backgrid.DivCellEditor">Backgrid.DivCellEditor</a></li>
+                <li><a href="api/index.html#!/api/Backgrid.InputCellEditor">Backgrid.InputCellEditor</a></li>
                 <li><a href="api/index.html#!/api/Backgrid.SelectCellEditor">Backgrid.SelectCellEditor</a></li>
               </ul>
             </div>
@@ -545,10 +535,6 @@
                     <th>Alive (BooleanCell)</th>
                   </tr>
                   <tr id="cell-demo-row-1"></tr>
-                </table>
-              </div>
-              <div class="backgrid-container" style="height: auto">
-                <table class="backgrid">
                   <tr>
                     <th>URL (UriCell)</th>
                     <th>Email (EmailCell)</th>
@@ -603,6 +589,12 @@
                   collection: col
                 });
               </textarea>
+              <p class="label label-info">FYI</p>
+              <p>SelectCell treats all option values as strings by default, if
+                you need to persist a different type of values into your model,
+                you should extend SelectCell to provide your
+                own <a href="#api-formatter"
+                title="Formatter">formatter</a>.</p>
               <p>See the <a href="api/index.html" title="API Doc">JSDoc</a> for
                 the various Cell classes for details on what you can configure
                 using this method.</p>
@@ -611,12 +603,12 @@
                 you, you may choose to create your own cell class and supply it
                 to a column definition.</p>
               <p>If your custom cell will still use a
-                <em>contenteditable</em> <code>div</code> like the predefined
+                <code>&lt;input type="text" /&gt;</code> like the predefined
                 ones for editing, you may choose to
                 subclass <a href="api/index.html#!/api/Backgrid.Cell">Cell</a>
                 or one of the predefined classes and simply define a className
                 and a <a href="#api-formatter"
-                title="Formatters">formatter</a>. In fact, most of the core cell
+                title="Formatter">formatter</a>. In fact, most of the core cell
                 classes are done this way.</p>
               <textarea class="code-snippet" data-mode="javascript" data-eval="no">
                 // This is the verbatim Backgrid.StringCell definition
@@ -647,10 +639,10 @@
                 extension, may only make sense if the editor is rendered in a
                 modal dialog or a form element in a different part of the
                 page. In that case the
-                default <a href="api/index.html#!/api/Backgrid.DivCellEditor"
-                title="DivCellEditor">DivCellEditor</a>, which renders a
-                contenteditable div, will not be suitable and a
-                new <a href="api/index.html#!/api/Backgrid.CellEditor"
+                default <a href="api/index.html#!/api/Backgrid.InputCellEditor"
+                title="InputCellEditor">InputCellEditor</a>, which renders a
+                <code>&lt;input type="text" /&gt;</code>, will not be suitable
+                and a new <a href="api/index.html#!/api/Backgrid.CellEditor"
                 title="CellEditor">CellEditor</a> must be defined.</p>
               <p>A custom cell editor should
                 subclass <a href="api/index.html#!/api/Backgrid.CellEditor">CellEditor</a>
@@ -687,14 +679,14 @@
             <div class="span2">
               <h2 id="api-formatter">Formatter</h2>
               <ul class="nav navlist">
-                <li><a href="api/index.html#!/api/Backgrid.Formatter">Backgrid.Formatter</a></li>
+                <li><a href="api/index.html#!/api/Backgrid.CellFormatter">Backgrid.CellFormatter</a></li>
                 <li><a href="api/index.html#!/api/Backgrid.DatetimeFormatter">Backgrid.DatetimeFormatter</a></li>
                 <li><a href="api/index.html#!/api/Backgrid.NumberFormatter">Backgrid.NumberFormatter</a></li>
               </ul>
             </div>
             <div class="span10">
               <h3>Custom Formatters</h3>
-              <p>In Backgrid.js, Formatters serves the purpose of converting values
+              <p>In Backgrid.js, cell formatters serves the purpose of converting values
                 between JSON value types and strings, and validation. Writing
                 formatters for value conversion and validation is easy as you only
                 have to conform to a very simple protocol.</p>
@@ -725,21 +717,11 @@
                 it will also be used for validation after trying with the
                 formatter.</p>
               <h3>Using Custom Formatters</h3>
-              <p>A custom formatter can be used in any of the following ways and
-                is chosen in the following order of precedence:</p>
-              <ul>
-                <li>A formatter instance as the formatter attribute in a column
-                  definition.</li>
-                <li>A formatter instance as the formatter class attribute when
-                  defining a new Cell class.</li>
-              </ul>
+              <p>A custom formatter can be used instead of the cell's default by
+                extending the cell:</p>
               <textarea class="code-snippet" data-mode="javascript" data-eval="no">
                 var grid = new Backgrid.Grid({
                   columns: [{
-                    name: "id",
-                    formatter: new MyUUIDFormatter() // As a column definition attribute
-                    cell: "string"
-                  }, {
                     name: "url",
                     cell: UriCell.extend({
                       formatter: new MyURLFormatter() // As a cell class attribute
@@ -747,10 +729,6 @@
                   }],
                   collection: col
                 });</textarea>
-              <p class="label label-info">FYI</p>
-              <p>If you supply a formatter as column definition attribute AND a
-                cell with a custom formattered configured, the formatter in the
-                column definition always overrides the cell&apos;s.</p>
             </div>
           </div>
           <div class="row-fluid">
@@ -961,6 +939,9 @@
               </ul>
             </div>
             <div class="span9">
+              <h3>When to Use</h3>
+              <p>When you have more data than your grid can fit, you can use
+                Paginator to break the display of your data into pages.</p>
               <h3>Prerequisites</h3>
               <textarea class="code-snippet" data-mode="htmlmixed">
                 &lt;link rel="stylesheet" href="lib/extensions/paginator/backgrid-paginator.css" /&gt;
@@ -1065,6 +1046,11 @@
               </ul>
             </div>
             <div class="span9">
+              <h3>When to Use</h3>
+              <p>TextCell is a string cell type that renders a form with a text
+                area in a modal dialog instead of
+                an <code>&lt;input type="text" /&gt;</code> editor. It
+                is best suited for entering a large body of text.</p>
               <h3>Prerequisites</h3>
               <p>TextCell
                 require <a href="http://twitter.github.com/bootstrap/javascript.html#modals"
@@ -1077,11 +1063,6 @@
                 &lt;link rel="stylesheet" href="lib/extensions/text-cell/backgrid-text-cell.css" /&gt;
                 &lt;script src="assets/js/bootstrap.js"&gt;&lt;/script&gt;
                 &lt;script src="lib/extensions/text-cell/backgrid-text-cell.js"&gt;&lt;/script&gt;</textarea>
-              <h3>Usage</h3>
-              <p>TextCell is a string cell type that renders a form with a text
-                area in a modal dialog instead of
-                a <em>contenteditable</em> <code>&lt;div&gt;</code> editor. It
-                is best suited for entering a large body of text.</p>
               <textarea class="code-snippet" data-mode="javascript" data-eval="yes">
                 var Book = Backbone.Model.extend({});
                 var Books = Backbone.Collection.extend({
@@ -1109,9 +1090,87 @@
           </div>
           <div class="row-fluid">
             <div class="span3">
-              <h2 id="api-kalendae-cell">KalendaeCell</h2>
+              <h2 id="api-moment-cell">MomentCell</h2>
+              <h4>Best Used On</h4>
+              <ul>
+                <li>Desktop</li>
+                <li>Mobile</li>
+              </ul>
             </div>
             <div class="span9">
+              <h3>When to Use</h3>
+              <p>While the core DatetimeCell is light-weight and does the job of
+                formatting IS0-8601 datetime strings fairly well, it may not be
+                well suited when the datatime strings are not in ISO
+                format.</p>
+              <h3>Prerequisites</h3>
+              <p>MomentCell uses <a href="http://moment.js/"
+                title="Moment.js">Moment.js</a> to render a very powerful
+                datetime cell.</p>
+              <textarea class="code-snippet" data-mode="htmlmixed">
+                &lt;link rel="stylesheet" href="lib/extensions/moment-cell/backgrid-moment-cell.css" /&gt;
+                &lt;script src="assets/js/moment/moment.js"&gt;&lt;/script&gt;
+                &lt;script src="lib/extensions/moment-cell/backgrid-moment-cell.js"&gt;&lt;/script&gt;
+                <!-- Moment.js language files for i18n. -->
+                <!-- Moment.js language files must be included after
+                     backgrid-moment-cell.js because it changes moment.js' default
+                     language -->
+                &lt;script src="assets/js/moment/lang/zh-tw.js"&gt;&lt;/script&gt;</textarea>
+              <h3>Usage</h3>
+              <p>The default MomentCell acts just like DatetimeCell, so if you
+                have a column with datetime values, the default MomentCell is
+                almost a drop-in replacement, with the only difference being
+                that an offset is always present in the output.</p>
+              <p>In addition to the ability to read and write ISO-8601 datetime
+                strings. By specifying the model and display formats, MomentCell
+                can convert and validated any datetime values moment.js
+                understands.
+              <p>Like the core cell types, you can configure MomentCell
+                simply by extending it.</p>
+              <textarea class="code-snippet" data-mode="javascript" data-eval="yes">
+                var Datum = Backbone.Model.extend({});
+                
+                var Data = Backbone.Collection.extend({
+                  model: Datum
+                });
+                
+                var data = new Data([{
+                  date: "270/3/1",
+                  time: "12:34:56.789",
+                  datetime: "1911-10-10T07:00:00"
+                }]);
+
+                var grid = new Backgrid.Grid({
+                  columns: [{
+                    name: "datetime",
+                    // You can use a default MomentCell by just writing a name
+                    cell: "moment"
+                  }, {
+                    name: "date",
+                    cell: Backgrid.Extension.MomentCell.extend({
+                      modelFormat: "YYYY/M/D",
+                      // You can specify the locales of the model and display formats too
+                      displayLang: "zh-tw",
+                      displayFormat: "YYYY-MMM-DD" 
+                    })
+                  }, {
+                    name: "time",
+                    cell: Backgrid.Extension.MomentCell.extend({
+                      modelInUTC: true,
+                      modelFormat: "HH:mm:ss.SSS",
+                      displayFormat: "H:m:s",
+                      // By default all the values are presumed to be in UTC,
+                      // you can convert it to the browser's local time if you
+                      // want
+                      displayInUTC: false
+                    })
+                  }],
+                  collection: data
+                });
+
+                $("#example-4-result").append(grid.render().el);</textarea>
+              <h3>Result</h3>
+              <div id="example-4-result" class="backgrid-container" style="height: auto;"></div>
             </div>
           </div>
           <div class="row-fluid">
@@ -1198,11 +1257,13 @@
                 <div class="span12">
                   <h2>.backgrid .*-cell</h2>
                   <p>Every cell class Backgrid.js defines has a CSS class
-                    applied to them of the same, but dasherized name.  The
+                    applied to them of the same, but dasherized name. The
                     default styles apply a <code>text-align: left</code> to text
-                    cells and <code>text-align: right</code> to numeric
-                    cells.</p>
-                  <p>See the relevant <a href="#api-cells">cell classes</a> for
+                    cells and <code>text-align: right</code> to numeric and
+                    datetime cells. All cell editor that uses
+                    the <code>&lt;input&gt;</code> element is absolutely
+                    positioned against the table cell.</p>
+                  <p>See the relevant <a href="#api-cell">cell classes</a> for
                     details.</p>
                 </div>
               </div>
@@ -1322,9 +1383,11 @@
     <script src="assets/js/backbone.js"></script>
     <script src="assets/js/backbone.paginator.js"></script>
     <script src="assets/js/bootstrap.js"></script>
+    <script src="assets/js/moment/moment.js"></script>
     <script src="lib/backgrid.js"></script>
     <script src="lib/extensions/paginator/backgrid-paginator.js"></script>
     <script src="lib/extensions/text-cell/backgrid-text-cell.js"></script>
+    <script src="lib/extensions/moment-cell/backgrid-moment-cell.js"></script>
     <script src="codemirror/lib/codemirror.js"></script>
     <script src="codemirror/lib/util/formatting.js"></script>
     <script src="codemirror/mode/xml/xml.js"></script>
@@ -1332,8 +1395,11 @@
     <script src="codemirror/mode/javascript/javascript.js"></script>
     <script src="codemirror/mode/htmlmixed/htmlmixed.js"></script>
     <script src="codemirror/mode/shell/shell.js"></script>
+    <script src="assets/js/moment/lang/zh-tw.js"></script>
     <script>
       (function () {
+
+        moment.lang("en");
         
         $(document).ready(function () {
 
@@ -1391,11 +1457,11 @@
           function nextChristmas() {
             var now = new Date();
             if (now.getMonth() < 11 || (now.getMonth() == 11 && now.getDate() < 24)) {
-              return new Date(now.getFullYear(), 11, 24).toISOString();
+              return new Date(now.getFullYear() + "-12-24T00:00Z").toISOString();
             }
 
             if (now.getMonth() == 11 && now.getDate() >= 26) {
-              return new Date(now.getFullYear() + 1, 11, 24).toISOString();
+              return new Date(now.getFullYear() + 1 + "-12-24T00:00Z").toISOString();
             }
           }
 

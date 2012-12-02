@@ -25,7 +25,9 @@
       }, {
         "name": "Formatters",
         "classes": [
-          "Backgrid.*Formatter"
+          "Backgrid.CellFormatter",
+          "Backgrid.NumberFormatter",
+          "Backgrid.DatetimeFormatter"
         ]
       }, {
         "name": "Columns",
@@ -63,6 +65,13 @@
         "classes": [
           "Backgrid.Extension.TextCell",
           "Backgrid.Extension.TextareaEditor"
+        ]
+      },
+      {
+        "name": "MomentCell",
+        "classes": [
+          "Backgrid.Extension.MomentFormatter",
+          "Backgrid.Extension.MomentCell"
         ]
       }
     ]

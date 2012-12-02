@@ -99,7 +99,7 @@ Take a look [here](http://wyuenho.github.com/backgrid/#examples).
 
 ## More Examples
 
-Are you kidding me? This is a README file. Go to the [documentation](index.html
+Are you kidding me? This is a README file. Go to the [documentation](http://wyuenho.github.com/backgrid/
 "Backbone.js Documentation") to find out more :)
 
 ## Release History

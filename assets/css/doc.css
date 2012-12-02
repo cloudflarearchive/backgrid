@@ -45,6 +45,10 @@ h1,h2,h3,h4,h5,h6,.brand {
   height: 523px;
 }
 
+#example-4-result .backgrid {
+  table-layout: fixed;
+}
+
 .CodeMirror {
   border: 1px solid #ddd;
   -webkit-border-radius: 4px;

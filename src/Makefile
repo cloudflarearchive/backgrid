@@ -60,9 +60,6 @@ dist: build
 	cp -f $(CSS_OUTFILE) $(DIST_DIR)/$(CSS_OUTFILE)
 	cp -f $(CSS_OUTFILE_MIN) $(DIST_DIR)/$(CSS_OUTFILE_MIN)
 
-test: FORCE
-	phantomjs ../../bin/qunit-runner.js test/index.html
-
 clean:
 	rm -rf $(JS_OUTFILE) $(JS_OUTFILE_MIN) $(CSS_OUTFILE_MIN)
 

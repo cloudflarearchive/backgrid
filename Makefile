@@ -5,7 +5,7 @@ AUTHOR = Jimmy Yuen Ho Wong
 DIST_DIR = $(CURDIR)/lib
 
 
-all: clean dist
+all: clean doc dist test
 
 FORCE:
 
@@ -27,20 +27,25 @@ clean:
 extension:
 	@read -p "Please specify your extension name: " extension; \
 	mkdir -p src/extensions/$$extension; \
-	for filename in .gitignore README.md Makefile $$extension.js $$extension.css test.js index.html; do \
+	for filename in .gitignore README.md Makefile $$extension.js $$extension.css; do \
 		touch src/extensions/$$extension/$$filename; \
 	done; \
-	echo "Extension directory $$extension has been created under src/extensions/$$entension"; \
+	echo "Extension directory $$extension has been created under src/extensions/$$extension ."; \
+	touch test/$$extension.js; \
+	echo "Test for $$extension has been created in test/$$extension.js .";
 
 doc:
 	jsduck src/ \
-		--external=Backbone.Model,Backbone.Collection,Backbone.View,ReferenceError,TypeError \
+		--external=Backbone.Model,Backbone.Collection,Backbone.View,ReferenceError,TypeError,RangeError \
 		--title=Backgrid.js \
 		--no-source \
 		--categories=categories.json \
 		--warnings=-no_doc \
 		--pretty-json \
 		--output api
+
+test: FORCE
+	phantomjs bin/run-jasmine.js test/index.html
 
 .EXPORT_ALL_VARIABLES:
 

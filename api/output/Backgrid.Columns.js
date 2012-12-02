@@ -52,7 +52,7 @@ Ext.data.JsonP.Backgrid_Columns({
 
     ]
   },
-  "linenr": 83,
+  "linenr": 72,
   "files": [
     {
       "filename": "column.js",

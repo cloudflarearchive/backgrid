@@ -14,15 +14,16 @@
    are defined.
 
    @abstract
-   @class Backgrid.Formatter
+   @class Backgrid.CellFormatter
+   @constructor
 */
-var Formatter = Backgrid.Formatter = function () {};
-_.extend(Formatter.prototype, {
+var CellFormatter = Backgrid.CellFormatter = function () {};
+_.extend(CellFormatter.prototype, {
 
   /**
      Takes a raw value from a model and returns a formatted string for display.
 
-     @member Backgrid.Formatter
+     @member Backgrid.CellFormatter
      @param {*} rawData
      @return {string}
   */
@@ -37,7 +38,7 @@ _.extend(Formatter.prototype, {
      If the user input is invalid or unable to be converted to a raw value
      suitable for persistence in the model, toRaw must return `undefined`.
 
-     @member Backgrid.Formatter
+     @member Backgrid.CellFormatter
      @param {string} formattedData
      @return {*|undefined}
   */
@@ -51,14 +52,8 @@ _.extend(Formatter.prototype, {
    A floating point number formatter. Doesn't understand notation at the moment.
 
    @class Backgrid.NumberFormatter
-   @extends Backgrid.Formatter
-   @param {Object} options
-   @param {number} [options.decimals=2] Number of decimals to display. Must be an integer.
-   @param {string} [options.decimalSeparator='.'] The separator to use when
-   displaying decimals.
-   @param {string} [options.orderSeparator=','] The separator to use to
-   separator thousands. May be an empty string.
-
+   @extends Backgrid.CellFormatter
+   @constructor
    @throws {RangeError} If decimals < 0 or > 20.
 */
 var NumberFormatter = Backgrid.NumberFormatter = function (options) {
@@ -69,9 +64,21 @@ var NumberFormatter = Backgrid.NumberFormatter = function (options) {
     throw new RangeError("decimals must be between 0 and 20");
   }
 };
-NumberFormatter.prototype = new Formatter;
+NumberFormatter.prototype = new CellFormatter;
 _.extend(NumberFormatter.prototype, {
 
+  /**
+     @member Backgrid.NumberFormatter
+     @cfg {Object} options
+
+     @cfg {number} [options.decimals=2] Number of decimals to display. Must be an integer.
+
+     @cfg {string} [options.decimalSeparator='.'] The separator to use when
+     displaying decimals.
+
+     @cfg {string} [options.orderSeparator=','] The separator to use to
+     separator thousands. May be an empty string.
+   */
   defaults: {
     decimals: 2,
     decimalSeparator: '.',
@@ -138,31 +145,40 @@ _.extend(NumberFormatter.prototype, {
 /**
    Formatter to converts between various datetime string formats.
 
-   This class only understands ISO-8601 formatted datetime strings. If a
-   timezone is specified, it must be an offset.
+   This class only understands ISO-8601 formatted datetime strings. See
+   Backgrid.Extension.MomentFormatter if you need a much more flexible datetime
+   formatter.
 
    @class Backgrid.DatetimeFormatter
-   @extends Backgrid.Formatter
-
-   @param {Object} options
-   @param {boolean} [options.includeDate=true] Whether the values include the
-   date part.
-   @param {boolean} [options.includeTime=true] Whether the values include the
-   time part.
-   @param {boolean} [options.includeMilli=false] If `includeTime` is true,
-   whether to include the millisecond part.
-
+   @extends Backgrid.CellFormatter
+   @constructor
    @throws {Error} If both `includeDate` and `includeTime` are false.
 */
 var DatetimeFormatter = Backgrid.DatetimeFormatter = function (options) {
   options = options ? _.clone(options) : {};
   _.extend(this, this.defaults, options);
 
-  if (!this.includeDate && !this.includeTime) throw new Error("Either includeDate or includeTime must be true");
+  if (!this.includeDate && !this.includeTime) {
+    throw new Error("Either includeDate or includeTime must be true");
+  }
 };
-DatetimeFormatter.prototype = new Formatter;
+DatetimeFormatter.prototype = new CellFormatter;
 _.extend(DatetimeFormatter.prototype, {
 
+  /**
+     @member Backgrid.DatetimeFormatter
+
+     @cfg {Object} options
+
+     @cfg {boolean} [options.includeDate=true] Whether the values include the
+     date part.
+
+     @cfg {boolean} [options.includeTime=true] Whether the values include the
+     time part.
+
+     @cfg {boolean} [options.includeMilli=false] If `includeTime` is true,
+     whether to include the millisecond part, if it exists.
+   */
   defaults: {
     includeDate: true,
     includeTime: true,
@@ -170,108 +186,33 @@ _.extend(DatetimeFormatter.prototype, {
   },
 
   DATE_RE: /^([+\-]?\d{4})-(\d{2})-(\d{2})$/,
-  TIME_RE: /^(\d{2}):(\d{2}):(\d{2})(\.\d{3})?$/,
-  ZONE_RE: /^([+\-]\d{2}):?(\d{2})$/,
+  TIME_RE: /^(\d{2}):(\d{2}):(\d{2})(\.(\d{3}))?$/,
   ISO_SPLITTER_RE: /T|Z| +/,
 
-  /**
-     Converts an ISO-8601 formatted datetime string, possibly with a timezone,
-     to a datetime string, date string or a time string in the __local
-     timezone__, depending on the options supplied to this formatter instance at
-     construction.
+  _convert: function (data, validate) {
+    data = trim(data);
+    var parts = data.split(this.ISO_SPLITTER_RE) || [];
 
-     @member Backgrid.DatetimeFormatter
-     @param {string} rawData
-     @return {string} ISO-8601 string. Always in local time.
-  */
-  fromRaw: function (rawData) {
-    rawData = trim(rawData);
-    var parts = rawData.split(this.ISO_SPLITTER_RE) || [];
-    var date = this.includeDate ? parts[0] : '';
-    var time = this.includeDate ? parts[1] : parts[0] || '';
-    var zone = this.includeDate ? parts[2] : parts[1] || '';
+    var date = this.DATE_RE.test(parts[0]) ? parts[0] : '';
+    var time = date && parts[1] ? parts[1] : this.TIME_RE.test(parts[0]) ? parts[0] : '';
+    
     var YYYYMMDD = this.DATE_RE.exec(date) || [];
     var HHmmssSSS = this.TIME_RE.exec(time) || [];
-    var zzZZ = this.ZONE_RE.exec(zone) || [];
 
-    zzZZ[1] = zzZZ[1] * 1 || 0;
-    zzZZ[2] = zzZZ[2] * 1 || 0;
+    if (validate) {
+      if (this.includeDate && _.isUndefined(YYYYMMDD[0])) return;
+      if (this.includeTime && _.isUndefined(HHmmssSSS[0])) return;
+      if (!this.includeDate && date) return;
+      if (!this.includeTime && time) return;
+    }
 
     var jsDate = new Date(Date.UTC(YYYYMMDD[1] * 1 || 0,
                                    YYYYMMDD[2] * 1 - 1 || 0,
                                    YYYYMMDD[3] * 1 || 0,
-                                   (HHmmssSSS[1] * 1 || null) + zzZZ[1],
-                                   (HHmmssSSS[2] * 1 || null) + zzZZ[2],
+                                   HHmmssSSS[1] * 1 || null,
+                                   HHmmssSSS[2] * 1 || null,
                                    HHmmssSSS[3] * 1 || null,
-                                   HHmmssSSS[4] * 1 || null));
-
-    var result = '';
-
-    if (this.includeDate) {
-      result = lpad(jsDate.getFullYear(), 4, 0) + '-' + lpad(jsDate.getMonth() + 1, 2, 0) + '-' + lpad(jsDate.getDate(), 2, 0);
-    }
-
-    if (this.includeTime) {
-      result = result + ' ' + lpad(jsDate.getHours(), 2, 0) + ':' + lpad(jsDate.getMinutes(), 2, 0) + ':' + lpad(jsDate.getSeconds(), 2, 0);
-
-      if (this.includeMilli) {
-        result = result + '.' + lpad(jsDate.getMilliseconds(), 3, 0);
-      }
-    }
-
-    return result;
-  },
-
-  /**
-     Converts a datetime, date or time string, to an ISO-8601 formatted
-     datetime, date or time string, depending on the options supplied to this
-     formatter instance at construction. If the string input does not include a
-     time zone offset, the string is assumed to denote a local time, otherwise
-     the date and time part are assumed to be in UTC.
-
-     @member Backgrid.DatetimeFormatter
-     @param {string} formattedData
-     @return {string|undefined} ISO-8601 string. Undefined if unable to convert
-     to an ISO-8601 string.
-  */
-  toRaw: function (formattedData) {
-    formattedData = trim(formattedData);
-
-    var parts = formattedData.split(this.ISO_SPLITTER_RE) || [];
-    var date = this.includeDate ? parts[0] : '';
-    var time = this.includeDate ? parts[1] : parts[0] || '';
-    var zone = this.includeDate ? parts[2] : parts[1] || '';
-    var YYYYMMDD = this.DATE_RE.exec(date) || [];
-    var HHmmssSSS = this.TIME_RE.exec(time) || [];
-    var zzZZ = this.ZONE_RE.exec(zone) || [];
-
-    if (this.includeDate && _.isUndefined(YYYYMMDD[0])) return undefined;
-    if (this.includeTime && _.isUndefined(HHmmssSSS[0])) return undefined;
-    if (!this.includeDate && date) return undefined;
-    if (!this.includeTime && time) return undefined;
-
-    var jsDate = null;
-
-    if (zzZZ && !_.isUndefined(zzZZ[0])) {
-      zzZZ[1] = zzZZ[1] * 1 || 0;
-      zzZZ[2] = zzZZ[2] * 1 || 0;
-      jsDate = new Date(Date.UTC(YYYYMMDD[1] * 1 || 0,
-                                 YYYYMMDD[2] * 1 - 1 || 0,
-                                 YYYYMMDD[3] * 1 || 0,
-                                 (HHmmssSSS[1] * 1 || null) + zzZZ[1],
-                                 (HHmmssSSS[2] * 1 || null) + zzZZ[2],
-                                 HHmmssSSS[3] * 1 || null,
-                                 HHmmssSSS[4] * 1 || null));
-    }
-    else {
-      jsDate = new Date(YYYYMMDD[1] * 1 || 0,
-                        YYYYMMDD[2] * 1 - 1 || 0,
-                        YYYYMMDD[3] * 1 || 0,
-                        HHmmssSSS[1] * 1 || null,
-                        HHmmssSSS[2] * 1 || null,
-                        HHmmssSSS[3] * 1 || null,
-                        HHmmssSSS[4] * 1 || null);
-    }
+                                   HHmmssSSS[5] * 1 || null));
 
     var result = '';
 
@@ -280,22 +221,49 @@ _.extend(DatetimeFormatter.prototype, {
     }
 
     if (this.includeTime) {
-
-      if (this.includeDate) {
-        result += 'T';
-      }
-
-      result += lpad(jsDate.getUTCHours(), 2, 0) + ':' + lpad(jsDate.getUTCMinutes(), 2, 0) + ':' + lpad(jsDate.getUTCSeconds(), 2, 0);
+      result = result + (this.includeDate ? 'T' : '') + lpad(jsDate.getUTCHours(), 2, 0) + ':' + lpad(jsDate.getUTCMinutes(), 2, 0) + ':' + lpad(jsDate.getUTCSeconds(), 2, 0);
 
       if (this.includeMilli) {
         result = result + '.' + lpad(jsDate.getUTCMilliseconds(), 3, 0);
       }
+    }
 
-      if (this.includeDate) {
-        result += 'Z';
-      }
+    if (this.includeDate && this.includeTime) {
+      result += "Z";
     }
 
     return result;
+  },
+
+  /**
+     Converts an ISO-8601 formatted datetime string to a datetime string, date
+     string or a time string. The timezone is ignored if supplied.
+
+     @member Backgrid.DatetimeFormatter
+     @param {string} rawData
+     @return {string} ISO-8601 string in UTC.
+  */
+  fromRaw: function (rawData) {
+    return this._convert(rawData);
+  },
+
+  /**
+     Converts an ISO-8601 formatted datetime string to a datetime string, date
+     string or a time string. The timezone is ignored if supplied. This method
+     parses the input values exactly the same way as
+     Backgrid.Extension.MomentFormatter#fromRaw(), in addition to doing some
+     sanity checks.
+
+     @member Backgrid.DatetimeFormatter
+     @param {string} formattedData
+     @return {string|undefined} ISO-8601 string in UTC. Undefined if a date is
+     found `includeDate` is false, or a time is found if `includeTime` is false,
+     or if `includeDate` is true and a date is not found, or if `includeTime` is
+     true and a time is not found.
+  */
+  toRaw: function (formattedData) {
+    return this._convert(formattedData, true);
   }
+
 });
+

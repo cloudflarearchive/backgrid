@@ -1,6 +1,4 @@
-SUBDIRS = bignum-cell \
-	kalendae-cell \
-	latlng-cell \
+SUBDIRS = moment-cell \
 	paginator \
 	select2-cell \
 	text-cell
@@ -28,11 +26,6 @@ csslint:
 dist:
 	for subdir in $(SUBDIRS);\
 		do $(MAKE) -w -C $$subdir dist;\
-	done
-
-test:
-	for subdir in $(SUBDIRS);\
-		do $(MAKE) -w -C $$subdir test;\
 	done
 
 .EXPORT_ALL_VARIABLES:

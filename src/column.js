@@ -19,14 +19,14 @@
 var Column = Backgrid.Column = Backbone.Model.extend({
 
   defaults: {
-    name: null,
-    label: null,
+    name: undefined,
+    label: undefined,
     sortable: true,
     editable: true,
     renderable: true,
-    formatter: null,
-    cell: null,
-    headerCell: null
+    formatter: undefined,
+    cell: undefined,
+    headerCell: undefined
   },
 
   /**
@@ -39,43 +39,32 @@ var Column = Backgrid.Column = Backbone.Model.extend({
      cell class in Backbone, i.e.: string => StringCell. If a Cell subclass
      is supplied, it is initialized with a hash of parameters. If a Cell
      instance is supplied, it is used directly.
-     @param {string|Backgrid.HeaderCell} attrs.headerCell The header cell type.
-     @param {string} [attrs.label=null] The label to show in the header.
+     @param {string|Backgrid.HeaderCell} [attrs.headerCell] The header cell type.
+     @param {string} [attrs.label] The label to show in the header.
      @param {boolean} [attrs.sortable=true]
      @param {boolean} [attrs.editable=true]
      @param {boolean} [attrs.renderable=true]
-     @param {Backgrid.Formatter|Object|string} [attrs.formatter=null] The
+     @param {Backgrid.CellFormatter|Object|string} [attrs.formatter] The
      formatter to use to convert between raw model values and user input.
 
-     @throws {Error} If attrs.cell or attrs.options are not supplied.
+     @throws {TypeError} If attrs.cell or attrs.options are not supplied.
      @throws {ReferenceError} If attrs.cell is a string but a cell class of
      said name cannot be found in the Backgrid module.
 
      See:
 
      - Backgrid.Cell
-     - Backgrid.Formatter
+     - Backgrid.CellFormatter
    */
   initialize: function (attrs) {
+    requireOptions(attrs, ["cell", "name"]);
 
     if (!this.has("label")) {
       this.set({ label: this.get("name") }, { silent: true });
     }
 
-    if (!attrs.cell) { throw new Error("cell is required"); }
-    if (!attrs.name) { throw new Error("name is required"); }
-
-    if (typeof attrs.cell === "string") {
-      var key = capitalize(this.get("cell")) + "Cell";
-      var cell = Backgrid[key] || Backgrid.Extension[key];
-      if (typeof cell === "undefined") throw new ReferenceError("Cell type '" + attrs.cell  + "' not found");
-      this.set({
-        cell: cell
-      }, { silent: true });
-    }
-    else {
-      this.set({ cell: attrs.cell }, { silent: true });
-    }
+    var cell = resolveNameToClass(this.get("cell"), "Cell");
+    this.set({ cell: cell }, { silent: true });
   }
 
 });

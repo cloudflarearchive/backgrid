@@ -21,18 +21,24 @@ var CellEditor = Backgrid.CellEditor = Backbone.View.extend({
 
      @param {Object} options
      @param {*} options.parent
-     @param {Backgrid.Formatter} options.formatter
+     @param {Backgrid.CellFormatter} options.formatter
      @param {Backgrid.Column} options.column
      @param {Backbone.Model} options.model
+
+     @throw {TypeError} If `formatter` is not a formatter instance, or when
+     `model` or `column` are undefined.
   */
   initialize: function (options) {
+    requireOptions(options, ["formatter", "column", "model"]);
+
     Backbone.View.prototype.initialize.apply(this, arguments);
+
     this.parent = options.parent;
     this.formatter = options.formatter;
     this.column = options.column;
-
-    if (!this.formatter) throw new Error("formatter is required");
-    if (!this.column) throw new Error("column is required");
+    if (!(this.column instanceof Column)) {
+      this.column = new Column(this.column);
+    }
 
     if (this.parent && this.parent.on) this.parent.on("editing", this.postRender, this);
   },
@@ -56,20 +62,21 @@ var CellEditor = Backgrid.CellEditor = Backbone.View.extend({
 });
 
 /**
-   A CellEditor subclass that uses a contenteditable `div` tag as the editing
-   area. Used by most built-in cell types.
+   InputCellEditor the cell editor type used by most core cell types. This cell
+   editor renders a text input box as its editor. The input will render a
+   placeholder if the value is empty on supported browsers.
 
-   @class Backgrid.DivCellEditor
+   @class Backgrid.InputCellEditor
    @extends Backgrid.CellEditor
 */
-var DivCellEditor = Backgrid.DivCellEditor = CellEditor.extend({
+var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
 
   /** @property */
-  tagName: "div",
+  tagName: "input",
 
   /** @property */
   attributes: {
-    contenteditable: "true"
+    type: "text"
   },
 
   /** @property */
@@ -83,45 +90,27 @@ var DivCellEditor = Backgrid.DivCellEditor = CellEditor.extend({
      triggered.
 
      @param {Object} options
-     @param {Backgrid.Formatter} options.formatter
+     @param {Backgrid.CellFormatter} options.formatter
      @param {Backgrid.Column} options.column
      @param {Backbone.Model} options.model
+     @param {string} [options.placeholder]
   */
   initialize: function (options) {
     CellEditor.prototype.initialize.apply(this, arguments);
+
+    if (options.placeholder) {
+      this.$el.attr("placeholder", options.placeholder);
+    }
+
     this.on("done", this.remove, this);
   },
 
   /**
-     Renders this editor.
+     Renders a text input with the cell value formatted for display, if it
+     exists.
   */
   render: function () {
-    this.$el.text(this.formatter.fromRaw(this.model.get(this.column.get("name"))));
-    return this;
-  },
-
-  /**
-     Focuses the editor and moves the caret inside and to the end of the text.
-     See Backgrid.CellEditor#postRender.
-  */
-  postRender: function () {
-    this.$el.focus();
-
-    if (!_.isUndefined(window.getSelection) && !_.isUndefined(document.createRange)) {
-      var rng = document.createRange();
-      rng.selectNodeContents(this.el);
-      rng.collapse(false);
-      var sel = window.getSelection();
-      sel.removeAllRanges();
-      sel.addRange(rng);
-    }
-    if (!_.isUndefined(document.body.createTextRange)) {
-      var txtRng = document.body.createTextRange();
-      txtRng.moveToElementText(this.el);
-      txtRng.collapse(false);
-      txtRng.select();
-    }
-
+    this.$el.val(this.formatter.fromRaw(this.model.get(this.column.get("name"))));
     return this;
   },
 
@@ -129,7 +118,11 @@ var DivCellEditor = Backgrid.DivCellEditor = CellEditor.extend({
      If the key pressed is `enter` or `tab`, converts the value in the editor to
      a raw value for the model using the formatter.
 
-     If the key pressed is `esc` or the event type is `blur`, undo the changes.
+     If the key pressed is `esc` the changes are undone.
+
+     If the editor's value was changed and goes out of focus (`blur`), the event
+     is intercepted, cancelled so the cell remains in focus pending for further
+     action.
 
      Triggers a Backbone `done` event when successful. `error` if the value
      cannot be converted. Classes listening to the `error` event, usually the
@@ -139,12 +132,11 @@ var DivCellEditor = Backgrid.DivCellEditor = CellEditor.extend({
      @param {Event} e
   */
   saveOrCancel: function (e) {
-
     if (e.type === "keydown") {
       // enter or tab
       if (e.keyCode === 13 || e.keyCode === 9) {
         e.preventDefault();
-        var valueToSet = this.formatter.toRaw(this.$el.text());
+        var valueToSet = this.formatter.toRaw(this.$el.val());
 
         if (_.isUndefined(valueToSet) || !this.model.set(this.column.get("name"), valueToSet)) {
           this.trigger("error");
@@ -157,23 +149,31 @@ var DivCellEditor = Backgrid.DivCellEditor = CellEditor.extend({
       else if (e.keyCode === 27) {
         // undo
         e.stopPropagation();
-        this.$el.text(this.formatter.fromRaw(this.model.get(this.column.get("name"))));
         this.trigger("done");
       }
     }
     else if (e.type === "blur") {
-      this.$el.text(this.formatter.fromRaw(this.model.get(this.column.get("name"))));
-      this.trigger("done");
+      if (this.formatter.fromRaw(this.model.get(this.column.get("name"))) === this.$el.val()) {
+        this.trigger("done");
+      }
+      else {
+        var self = this;
+        var timeout = window.setTimeout(function () {
+          self.$el.focus();
+          window.clearTimeout(timeout);
+        }, 1);
+      }
     }
   },
 
-  remove: function () {
-    Backbone.View.prototype.remove.apply(this, arguments);
-    // FF inexplicably still place a blanking caret at the beginning of the
-    // parent's text after this editor element has been removed from the DOM
-    if (!_.isUndefined(window.getSelection)) {
-      var sel = window.getSelection();
-      sel.removeAllRanges();
+  postRender: function () {
+    // move the cursor to the end on firefox if text is right aligned
+    if (this.$el.css("text-align") === "right") {
+      var val = this.$el.val();
+      this.$el.focus().val(null).val(val);
+    }
+    else {
+      this.$el.focus();
     }
     return this;
   }
@@ -184,7 +184,7 @@ var DivCellEditor = Backgrid.DivCellEditor = CellEditor.extend({
    The super-class for all Cell types. By default, this class renders a plain
    table cell with the model value converted to a string using the
    formatter. The table cell is clickable, upon which the cell will go into
-   editor mode, which is rendered by a Backgrid.DivCellEditor instance by
+   editor mode, which is rendered by a Backgrid.InputCellEditor instance by
    default. Upon any formatting errors, this class will add a `error` CSS class
    to the table cell.
 
@@ -198,18 +198,18 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
   tagName: "td",
 
   /**
-     @property {Backgrid.Formatter|Object|string} [formatter=new Formatter()]
+     @property {Backgrid.CellFormatter|Object|string} [formatter=new CellFormatter()]
   */
-  formatter: new Formatter(),
+  formatter: new CellFormatter(),
 
   /**
-     @property {Backgrid.CellEditor} [editor=DivCellEditor] The default editor for all cell
-     instances of this class. This value must be a class, it will be
-     automatically instantiated upon entering edit mode.
+     @property {Backgrid.CellEditor} [editor=Backgrid.InputCellEditor] The
+     default editor for all cell instances of this class. This value must be a
+     class, it will be automatically instantiated upon entering edit mode.
 
-     See Backgrid.CellEditor.
+     See Backgrid.CellEditor
   */
-  editor: DivCellEditor,
+  editor: InputCellEditor,
 
   /** @property */
   events: {
@@ -222,32 +222,23 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
      @param {Object} options
      @param {Backbone.Model} options.model
      @param {Backgrid.Column} options.column
-     @param {Backgrid.CellEditor} [options.editor]
-     @param {Backgrid.Formatter} [options.formatter]
 
      @throws {ReferenceError} If formatter is a string but a formatter class of
      said name cannot be found in the Backgrid module.
   */
   initialize: function (options) {
+
+    requireOptions(options, ["model", "column"]);
+
     Backbone.View.prototype.initialize.apply(this, arguments);
 
     this.column = options.column;
-    if (!this.column instanceof Column) {
+    if (!(this.column instanceof Column)) {
       this.column = new Column(this.column);
     }
 
-    this.editor = options.editor || this.editor;
-    this.formatter = options.formatter || this.column.get("formatter") || this.formatter;
-    if (_.isString(this.formatter)) {
-      var key = capitalize(this.formatter) + "Formatter";
-      var formatter = Backgrid[key] || Backgrid.Extension[key];
-      if (_.isUndefined(formatter)) {
-        throw new ReferenceError("Formatter type '" + this.formatter  + "' not found");
-      }
-      else {
-        this.formatter = new formatter;
-      }
-    }
+    this.formatter = resolveNameToClass(this.formatter, "Formatter");
+    this.editor = resolveNameToClass(this.editor, "CellEditor");
   },
 
   dispose: function () {
@@ -353,16 +344,9 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
 var StringCell = Backgrid.StringCell = Cell.extend({
 
   /** @property */
-  className: "string-cell",
+  className: "string-cell"
 
-  formatter: {
-    fromRaw: function (rawData) {
-      return _.escape(rawData);
-    },
-    toRaw: function (formattedData) {
-      return formattedData;
-    }
-  }
+  // No formatter needed. Strings call auto-escaped by jQuery on insertion.
 
 });
 
@@ -384,7 +368,8 @@ var UriCell = Backgrid.UriCell = Cell.extend({
       return rawData;
     },
     toRaw: function (formattedData) {
-      return encodeURI(formattedData);
+      var result = encodeURI(formattedData);
+      return result === "undefined" ? undefined : result;
     }
   },
 
@@ -419,7 +404,10 @@ var EmailCell = Backgrid.EmailCell = Cell.extend({
       return rawData;
     },
     toRaw: function (formattedData) {
-      return formattedData.indexOf('@') === -1 ? undefined : formattedData;
+      var parts = formattedData.split("@");
+      if (parts.length === 2 && _.all(parts)) {
+        return formattedData;
+      }
     }
   },
 
@@ -428,8 +416,7 @@ var EmailCell = Backgrid.EmailCell = Cell.extend({
     var formattedValue = this.formatter.fromRaw(this.model.get(this.column.get("name")));
     this.$el.append($("<a>", {
       href: "mailto:" + formattedValue,
-      title: formattedValue,
-      target: "_blank"
+      title: formattedValue
     }).text(formattedValue));
     return this;
   }
@@ -438,14 +425,10 @@ var EmailCell = Backgrid.EmailCell = Cell.extend({
 
 /**
    NumberCell is a generic cell that renders all numbers. Numbers are formatted
-   using Backgrid.NumberFormatter.
+   using a Backgrid.NumberFormatter.
 
    @class Backgrid.NumberCell
    @extends Backgrid.Cell
-
-   See:
-
-   - Backgrid.NumberFormatter
 */
 var NumberCell = Backgrid.NumberCell = Cell.extend({
 
@@ -463,28 +446,19 @@ var NumberCell = Backgrid.NumberCell = Cell.extend({
   /** @property {string} [orderSeparator=','] */
   orderSeparator: NumberFormatter.prototype.defaults.orderSeparator,
 
+  /** @property {Backgrid.CellFormatter} [formatter=Backgrid.NumberFormatter] */
+  formatter: NumberFormatter,
+
   /**
-     Initializer.
+     Initializes this cell and the number formatter.
 
      @param {Object} options
      @param {Backbone.Model} options.model
      @param {Backgrid.Column} options.column
-     @param {Backgrid.CellEditor} [options.editor]
-     @param {Backgrid.Formatter} [options.formatter]
-     @param {number} [options.decimals] Must be an integer.
-     @param {string} [options.decimalSeparator]
-     @param {string} [options.orderSeparator]
   */
   initialize: function (options) {
     Cell.prototype.initialize.apply(this, arguments);
-
-    if (options) {
-      this.decimals = _.isUndefined(options.decimals) ? this.decimals : options.decimals;
-      this.decimalSeparator = _.isUndefined(options.decimalSeparator) ? this.decimalSeparator : options.decimalSeparator;
-      this.orderSeparator = _.isUndefined(options.orderSeparator) ? this.orderSeparator : options.orderSeparator;
-    }
-
-    this.formatter = options.formatter || this.column.get("formatter") || new NumberFormatter({
+    this.formatter = new this.formatter({
       decimals: this.decimals,
       decimalSeparator: this.decimalSeparator,
       orderSeparator: this.orderSeparator
@@ -499,7 +473,7 @@ var NumberCell = Backgrid.NumberCell = Cell.extend({
    displayed.
 
    @class Backgrid.IntegerCell
-   @extends Backgrid.Cell
+   @extends Backgrid.NumberCell
 */
 var IntegerCell = Backgrid.IntegerCell = NumberCell.extend({
 
@@ -515,15 +489,15 @@ var IntegerCell = Backgrid.IntegerCell = NumberCell.extend({
 /**
    DatetimeCell is a basic cell that accepts datetime string values in RFC-2822
    or W3C's subset of ISO-8601 and displays them in ISO-8601 format. For a much
-   more sophisticated date time cell with better datetime formatted and a
-   datepicker for an editor, take a look at the KalendaeCell extension.
+   more sophisticated date time cell with better datetime formatting, take a
+   look at the Backgrid.Extension.MomentCell extension.
 
    @class Backgrid.DatetimeCell
    @extends Backgrid.Cell
 
    See:
 
-   - Backgrid.KalendaeCell
+   - Backgrid.Extension.MomentCell
    - Backgrid.DatetimeFormatter
 */
 var DatetimeCell = Backgrid.DatetimeCell = Cell.extend({
@@ -546,30 +520,33 @@ var DatetimeCell = Backgrid.DatetimeCell = Cell.extend({
   */
   includeMilli: DatetimeFormatter.prototype.defaults.includeMilli,
 
+  /** @property {Backgrid.CellFormatter} [formatter=Backgrid.DatetimeFormatter] */
+  formatter: DatetimeFormatter,
+
   /**
-     Initializer.
+     Initializes this cell and the datetime formatter.
 
      @param {Object} options
      @param {Backbone.Model} options.model
      @param {Backgrid.Column} options.column
-     @param {Backgrid.CellEditor} [options.editor]
-     @param {Backgrid.Formatter} [options.formatter]
-     @param {boolean} [options.includeDate]
-     @param {boolean} [options.includeTime]
-     @param {boolean} [options.includeMilli]
   */
   initialize: function (options) {
     Cell.prototype.initialize.apply(this, arguments);
-    if (options) {
-      this.includeDate = _.isUndefined(options.includeDate) ? this.includeDate : options.includeDate;
-      this.includeTime = _.isUndefined(options.includeTime) ? this.includeTime : options.includeTime;
-      this.includeMilli = _.isUndefined(options.includeMilli) ? this.includeMilli : options.includeMilli;
-    }
-
-    this.formatter = options.formatter || this.column.get("formatter") ||  new DatetimeFormatter({
+    this.formatter = new this.formatter({
       includeDate: this.includeDate,
       includeTime: this.includeTime,
       includeMilli: this.includeMilli
+    });
+
+    var placeholder = this.includeDate ? "YYYY-MM-DD" : "";
+    placeholder += (this.includeDate && this.includeTime) ? "T" : "";
+    placeholder += this.includeTime ? "HH:mm:ss" : "";
+    placeholder += (this.includeTime && this.includeMilli) ? ".SSS" : "";
+
+    this.editor = this.editor.extend({
+      attributes: _.extend({}, this.editor.prototype.attributes, this.editor.attributes, {
+        placeholder: placeholder
+      })
     });
   }
 
@@ -624,7 +601,7 @@ var BooleanCell = Backgrid.BooleanCell = Cell.extend({
      BooleanCell simple uses a default HTML checkbox template instead of a
      CellEditor instance.
 
-     @property {function(Object): string} editor The Underscore.js template to
+     @property {function(Object, ?Object=): string} editor The Underscore.js template to
      render the editor.
   */
   editor: _.template("<input type='checkbox'<%= checked ? checked='checked' : '' %> />'"),
@@ -644,6 +621,7 @@ var BooleanCell = Backgrid.BooleanCell = Cell.extend({
      uncheck otherwise.
   */
   render: function () {
+    this.$el.empty();
     this.currentEditor = $(this.editor({
       checked: this.formatter.fromRaw(this.model.get(this.column.get("name")))
     }));
@@ -694,6 +672,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
     "blur": "save"
   },
 
+  /** @property {function(Object, ?Object=): string} template */
   template: _.template('<option value="<%= value %>" <%= selected ? \'selected="selected"\' : "" %>><%= text %></option>'),
 
   setOptionValues: function (optionValues) {
@@ -720,6 +699,8 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
      parameter.
   */
   render: function () {
+    this.$el.empty();
+
     var optionValues = _.result(this, "optionValues");
     var currentValue = this.model.get(this.column.get("name"));
 
@@ -745,7 +726,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
       else if (_.isObject(optionValue)) {
         optgroupName = optionValue.name;
         optgroup = $("<optgroup></optgroup>", { label: optgroupName });
-        optgroup.append(this._renderOptions(optionValue.value, currentValue));
+        optgroup.append(this._renderOptions(optionValue.values, currentValue));
         this.$el.append(optgroup);
       }
       else {
@@ -761,7 +742,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
      `done` event.
   */
   save: function (e) {
-    this.model.set(this.column.get("name"), this.$el.val());
+    this.model.set(this.column.get("name"), this.formatter.toRaw(this.$el.val()));
     this.trigger("done");
   }
 
@@ -769,8 +750,20 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
 
 /**
    SelectCell is also a different kind of cell in that upon going into edit mode
-   the cell renders a list of options for to pick from, as opposed to
-   a contenteditable div.
+   the cell renders a list of options for to pick from, as opposed to an input
+   box.
+
+   SelectCell cannot be referenced by its string name when used in a column
+   definition because requires an `optionValues` class attribute to be
+   defined. `optionValues` can either be a list of name-value pairs, to be
+   rendered as options, or a list of object hashes which consist of a key *name*
+   which is the option group name, and a key *values* which is a list of
+   name-value pairs to be rendered as options under that option group.
+
+   In addition, `optionValues` can also be a parameter-less function that
+   returns one of the above. If the options are static, it is recommended the
+   returned values to be memoized. _.memoize() is a good function to help with
+   that.
 
    @class Backgrid.SelectCell
    @extends Backgrid.Cell
@@ -784,27 +777,23 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
   editor: SelectCellEditor,
 
   /**
-     Besides the usual Cell constructor parameter, SelectCell also requires an
-     optionValues parameter which can either be a list of name-value pairs, to
-     be rendered as options, or a list of object hashes which consist of a key
-     *name* which is the option group name, and a key *value* which is a list of
-     name-value pairs to be rendered as options under that option group.
+     @property {Array.<Array>|Array.<{name: string, values: Array.<Array>}>} optionValues
+  */
+  optionValues: undefined,
 
-     In addition, optionValues can also be a parameter-less function that
-     returns one of the above. If the options are static, it is recommended the
-     returned values to be memoized. _.memoize() is a good function to help with
-     that.
+  /**
+     Initializer.
 
      @param {Object} options
-     @param {Array.<Array>|Array.<Object>} options.optionValues
      @param {Backbone.Model} options.model
      @param {Backgrid.Column} options.column
-     @throws {Error} If options.optionValues is missing.
+
+     @throws {TypeError} If `optionsValues` is undefined.
   */
   initialize: function (options) {
     Cell.prototype.initialize.apply(this, arguments);
-    this.optionValues = options.optionValues || this.optionValues;
-    if (!this.optionValues) throw new Error("optionValues is required");
+    requireOptions(this, ["optionValues"]);
+    this.optionValues = _.result(this, "optionValues");
     this.on("edit", this.setOptionValues, this);
   },
 
@@ -815,35 +804,50 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
   /**
      Renders the label using the raw value as key to look up from `optionValues`.
 
-     @throws {TypeError} If `optionValues` is not a right data structure.
+     @throws {TypeError} If `optionValues` is malformed.
   */
   render: function () {
-    var optionValues = _.result(this, "optionValues");
-    var rawData = this.model.get(this.column.get("name"));
+    this.$el.empty();
 
-    for (var i = 0; i < optionValues.length; i++) {
-      var optionValue = optionValues[i];
+    var optionValues = this.optionValues;
+    var rawData = this.formatter.fromRaw(this.model.get(this.column.get("name")));
 
-      if (_.isArray(optionValue)) {
-        var optionText  = optionValue[0];
-        var optionValue = optionValue[1];
+    try {
 
-        if (optionValue === rawData) {
-          this.$el.append(optionText);
-        }
-      }
-      else if (_.isObject(optionValue)) {
-        var optionGroupValues = optionValue.value;
-        for (var j = 0; j < optionGroupValues; j++) {
-          var optionGroupValue = optionGroupValues[j];
-          if (optionGroupValue[1] === rawData) {
-            this.$el.append(optionGroupValue[0]);
+      if (optionValues == false || optionValues == null) throw new TypeError;
+
+      for (var i = 0; i < optionValues.length; i++) {
+        var optionValue = optionValues[i];
+
+        if (_.isArray(optionValue)) {
+          var optionText  = optionValue[0];
+          var optionValue = optionValue[1];
+
+          if (optionValue === rawData) {
+            this.$el.append(optionText);
+            break;
           }
         }
+        else if (_.isObject(optionValue)) {
+          var optionGroupValues = optionValue.values;
+          for (var j = 0; j < optionGroupValues.length; j++) {
+            var optionGroupValue = optionGroupValues[j];
+            if (optionGroupValue[1] === rawData) {
+              this.$el.append(optionGroupValue[0]);
+              break;
+            }
+          }
+        }
+        else {
+          throw new TypeError;
+        }
       }
-      else {
-        throw TypeError("optionValues elements must be a list if name-value pairs or a list of object literals of { name: 'optgroup label', value: [option name-value pairs] }");
+    }
+    catch (ex) {
+      if (ex instanceof TypeError) {
+        throw TypeError("'optionValues' must be of type {Array.<Array>|Array.<{name: string, values: Array.<Array>}>}");
       }
+      throw ex;
     }
 
     return this;

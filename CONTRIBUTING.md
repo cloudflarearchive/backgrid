@@ -72,6 +72,13 @@ When you are ready to make your awesome extension available to the world, don't
 forget to add your extension to the `SUBDIRS` variable in
 `src/extensions/Makefile`.
 
+Branching
+=========
+
+If you are filing a pull request, you should be working on the `<version>-wip`
+branch which should be the only work-in-progress branch for this project. The
+`master` branch is reserved for stable releases.
+
 Code Style
 ==========
 
@@ -99,6 +106,17 @@ pull request. There's a make rule is put in every Makefile for this purpose.
 $ make csslint
 ```
 
+Testing
+=======
+
+Backbone.js uses [jasmine](http://pivotal.github.com/jasmine/) for testing. To
+facilitate console based testing, there's a make rule in the toplevel Makefile
+you can use:
+
+```shell
+$ make test
+```
+
 Commit Messages
 ===============
 
@@ -113,13 +131,6 @@ git log # find out how many commits you need to go back
 git rebase -i HEAD~<number of changes to go back>
 git push origin +<branch>:<branch>
 ```
-
-Branching
-=========
-
-If you are filing a pull request, you should be working on the `<version>-wip`
-branch which should be the only work-in-progress branch for this project. The
-`master` branch is reserved for stable releases.
 
 Documentation
 =============

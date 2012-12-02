@@ -54,3 +54,25 @@ function lpad(str, length, padstr) {
   }
   return padding + str;
 }
+
+function requireOptions(options, requireOptionKeys) {
+  for (var i = 0; i < requireOptionKeys.length; i++) {
+    var key = requireOptionKeys[i];
+    if (_.isUndefined(options[key])) {
+      throw new TypeError("'" + key  + "' is required");
+    }
+  }
+}
+
+function resolveNameToClass(name, suffix) {
+  if (_.isString(name)) {
+    var key = capitalize(name) + suffix;
+    var klass = Backgrid[key] || Backgrid.Extension[key];
+    if (_.isUndefined(klass)) {
+      throw new ReferenceError("Class '" + key + "' not found");
+    }
+    return klass;
+  }
+
+  return name;
+}

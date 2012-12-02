@@ -39,8 +39,5 @@ dist: build
 	cp -f $(CSS_FILE) $(DIST_DIR)/extensions/$(notdir $(CURDIR))/$(CSS_FILE)
 	cp -f $(CSS_OUTFILE) $(DIST_DIR)/extensions/$(notdir $(CURDIR))/$(CSS_OUTFILE)
 
-test: FORCE
-	phantomjs ../../../bin/qunit-runner.js index.html
-
 clean:
 	rm -f $(JS_OUTFILE) $(CSS_OUTFILE)
