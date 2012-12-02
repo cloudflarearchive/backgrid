@@ -54,6 +54,9 @@ var Row = Backgrid.Row = Backbone.View.extend({
   dispose: function () {
     this.columns.off(null, null, this);
     if (this.parent && this.parent.off) this.parent.off(null, null, this);
+    for (var i = 0; i < this.cells.length; i++) {
+      this.cells[i].off(null, null, this);
+    }
     return Backbone.View.prototype.dispose.apply(this, arguments);
   },
 
