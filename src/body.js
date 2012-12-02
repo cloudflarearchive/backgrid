@@ -28,7 +28,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
      Column metadata
      @param {Backgrid.Row} [options.row=Backgrid.Row] The Row class to use.
 
-     @throw {TypeError} If options.columns or options.collection is undefined.
+     @throws {TypeError} If options.columns or options.collection is undefined.
 
      See Backgrid.Row.
   */

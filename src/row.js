@@ -27,7 +27,7 @@ var Row = Backgrid.Row = Backbone.View.extend({
      @param {Backbone.Collection.<Backgrid.Column>|Array.<Backgrid.Column>|Array.<Object>} options.columns Column metadata.
      @param {Backbone.Model} options.model The model instance to render.
 
-     @throw {TypeError} If options.columns or options.model is undefined.
+     @throws {TypeError} If options.columns or options.model is undefined.
    */
   initialize: function (options) {
     requireOptions(options, ["columns", "model"]);

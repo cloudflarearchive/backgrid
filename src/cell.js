@@ -25,7 +25,7 @@ var CellEditor = Backgrid.CellEditor = Backbone.View.extend({
      @param {Backgrid.Column} options.column
      @param {Backbone.Model} options.model
 
-     @throw {TypeError} If `formatter` is not a formatter instance, or when
+     @throws {TypeError} If `formatter` is not a formatter instance, or when
      `model` or `column` are undefined.
   */
   initialize: function (options) {
