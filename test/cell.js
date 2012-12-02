@@ -149,6 +149,13 @@ describe("An InputCellEditor", function () {
     expect(editor.formatter.toRaw).toHaveBeenCalledWith("invalid value");
     expect(editor.trigger.calls.length).toBe(1);
     expect(editor.trigger).toHaveBeenCalledWith("error");
+
+    editor.trigger.reset();
+    editor.formatter.toRaw.reset();
+    editor.$el.trigger(enter);
+    editor.model.validate = function () { return "error found"; };
+    expect(editor.trigger.calls.length).toBe(1);
+    expect(editor.trigger).toHaveBeenCalledWith("error");
   });
 
   it("discards changes and triggers 'done' when esc is pressed'", function () {
