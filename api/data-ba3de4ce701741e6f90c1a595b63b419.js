@@ -1479,19 +1479,37 @@ Docs = {
         "sort": 3
       },
       {
-        "name": "initialize",
-        "fullName": "Backgrid.Grid.initialize",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.Grid-method-initialize",
+        "name": "header",
+        "fullName": "Backgrid.Grid.header",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.Grid-property-header",
         "meta": {
         },
         "sort": 3
       },
       {
-        "name": "sort",
-        "fullName": "Backgrid.Grid.sort",
+        "name": "body",
+        "fullName": "Backgrid.Grid.body",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.Grid-property-body",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "footer",
+        "fullName": "Backgrid.Grid.footer",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.Grid-property-footer",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "initialize",
+        "fullName": "Backgrid.Grid.initialize",
         "icon": "icon-method",
-        "url": "#!/api/Backgrid.Grid-method-sort",
+        "url": "#!/api/Backgrid.Grid-method-initialize",
         "meta": {
         },
         "sort": 3
