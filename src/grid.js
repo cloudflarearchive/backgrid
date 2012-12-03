@@ -63,6 +63,15 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
   /** @property */
   className: "backgrid",
 
+  /** @property */
+  header: Header,
+
+  /** @property */
+  body: Body,
+
+  /** @property */
+  footer: null,
+
   /**
      Initializes the a Grid instance.
 
@@ -74,29 +83,30 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
      @param {Backgrid.Footer} [options.footer=Backgrid.Footer] An optional Footer class.
    */
   initialize: function (options) {
-    this.columns = options.columns;
+    requireOptions(options, ["columns", "collection"]);
 
     // Convert the list of column objects here first so the subviews don't have
     // to.
+    this.columns = options.columns;
     if (!(this.columns instanceof Backbone.Collection)) {
       this.columns = new Backgrid.Columns(this.columns);
     }
 
-    this.header = options.header || Header;
+    this.header = options.header || this.header;
     this.header = new this.header({
       parent: this,
       columns: this.columns,
       collection: this.collection
     });
 
-    this.body = options.body || Body;
+    this.body = options.body || this.body;
     this.body = new this.body({
       parent: this,
       columns: this.columns,
       collection: this.collection
     });
 
-    this.footer = options.footer || undefined;
+    this.footer = options.footer || this.footer;
     if (this.footer) {
       this.footer = new this.footer({
         parent: this,
@@ -117,16 +127,6 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
       this.footer.dispose();
     }
     return Backbone.View.prototype.dispose.apply(this, arguments);
-  },
-
-  /**
-     Sorts the rows. Delegates to Backgrid.Body#sort.
-
-     @param {function(*, *)} comparator A 2-argument function suitable for
-     [Backbone.Collection#sort](http://backbonejs.org/#Collection-sort).
-   */
-  sort: function (comparator) {
-    return this.body.sort(comparator);
   },
 
   /**
