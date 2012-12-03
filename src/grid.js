@@ -49,11 +49,11 @@
 
    See:
 
-   - {@link Backgrid.Column}
-   - {@link Backgrid.Header}
-   - {@link Backgrid.Body}
-   - {@link Backgrid.Row}
-   - {@link Backgrid.Footer}
+   - Backgrid.Column
+   - Backgrid.Header
+   - Backgrid.Body
+   - Backgrid.Row
+   - Backgrid.Footer
 */
 var Grid = Backgrid.Grid = Backbone.View.extend({
 
@@ -158,7 +158,7 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
     this.$el.append(this.body.render().$el);
 
     /**
-       Backbone Event. Fired when the grid has been successfully rendered.
+       Backbone event. Fired when the grid has been successfully rendered.
 
        @event rendered
      */

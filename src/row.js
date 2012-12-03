@@ -55,13 +55,15 @@ var Row = Backgrid.Row = Backbone.View.extend({
     this.columns.off(null, null, this);
     if (this.parent && this.parent.off) this.parent.off(null, null, this);
     for (var i = 0; i < this.cells.length; i++) {
-      this.cells[i].off(null, null, this);
+      var cell = this.cells[i];
+      cell.off(null, null, this);
+      cell.dispose();
     }
     return Backbone.View.prototype.dispose.apply(this, arguments);
   },
 
   /**
-     Backbone event handler. Insert a table cell DOM subtree to the right column
+     Backbone event handler. Insert a table cell to the right column in the row
      if renderable is true, detach otherwise.
 
      @param {Backgrid.Column} column

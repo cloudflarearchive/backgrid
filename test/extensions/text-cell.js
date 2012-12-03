@@ -63,7 +63,7 @@ describe("A TextareaEditor", function () {
     editor.$el.find("form").submit();
     // have to wait for bootstrap's css transition to finish
     // before hidden is fired and trogger called
-    editor.$el.on($.support.transition.end, function () {
+    editor.$el.one($.support.transition.end, function () {
       expect(editor.trigger.calls.length).toBe(1);
       expect(editor.trigger).toHaveBeenCalledWith("done");
       expect(editor.model.get(editor.column.get("name"))).toBe("another name");

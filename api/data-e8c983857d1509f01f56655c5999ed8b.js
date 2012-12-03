@@ -176,6 +176,12 @@ Docs = {
         "icon": "icon-class"
       },
       {
+        "name": "Backgrid.HeaderRow",
+        "extends": null,
+        "private": null,
+        "icon": "icon-class"
+      },
+      {
         "name": "Backgrid.Header",
         "extends": "Backbone.View",
         "private": null,
@@ -222,25 +228,6 @@ Docs = {
         "icon": "icon-method",
         "url": "#!/api/Backgrid.Body-method-initialize",
         "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "sort",
-        "fullName": "Backgrid.Body.sort",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.Body-method-sort",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "_idCidComparator",
-        "fullName": "Backgrid.Body._idCidComparator",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.Body-method-_idCidComparator",
-        "meta": {
-          "private": true
         },
         "sort": 3
       },
@@ -1574,10 +1561,10 @@ Docs = {
         "sort": 3
       },
       {
-        "name": "direction",
-        "fullName": "Backgrid.HeaderCell.direction",
+        "name": "_direction",
+        "fullName": "Backgrid.HeaderCell._direction",
         "icon": "icon-property",
-        "url": "#!/api/Backgrid.HeaderCell-property-direction",
+        "url": "#!/api/Backgrid.HeaderCell-property-_direction",
         "meta": {
         },
         "sort": 3
@@ -1592,10 +1579,10 @@ Docs = {
         "sort": 3
       },
       {
-        "name": "toggle",
-        "fullName": "Backgrid.HeaderCell.toggle",
+        "name": "direction",
+        "fullName": "Backgrid.HeaderCell.direction",
         "icon": "icon-method",
-        "url": "#!/api/Backgrid.HeaderCell-method-toggle",
+        "url": "#!/api/Backgrid.HeaderCell-method-direction",
         "meta": {
         },
         "sort": 3
@@ -1619,12 +1606,58 @@ Docs = {
         "sort": 3
       },
       {
+        "name": "sort",
+        "fullName": "Backgrid.HeaderCell.sort",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.HeaderCell-method-sort",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "_idCidComparator",
+        "fullName": "Backgrid.HeaderCell._idCidComparator",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.HeaderCell-method-_idCidComparator",
+        "meta": {
+          "private": true
+        },
+        "sort": 3
+      },
+      {
         "name": "render",
         "fullName": "Backgrid.HeaderCell.render",
         "icon": "icon-method",
         "url": "#!/api/Backgrid.HeaderCell-method-render",
         "meta": {
           "chainable": true
+        },
+        "sort": 3
+      },
+      {
+        "name": "HeaderRow",
+        "fullName": "Backgrid.HeaderRow",
+        "icon": "icon-class",
+        "url": "#!/api/Backgrid.HeaderRow",
+        "meta": {
+        },
+        "sort": 1
+      },
+      {
+        "name": "initialize",
+        "fullName": "Backgrid.HeaderRow.initialize",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.HeaderRow-method-initialize",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "resetCellDirections",
+        "fullName": "Backgrid.HeaderRow.resetCellDirections",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.HeaderRow-method-resetCellDirections",
+        "meta": {
         },
         "sort": 3
       },
@@ -1651,15 +1684,6 @@ Docs = {
         "fullName": "Backgrid.Header.initialize",
         "icon": "icon-method",
         "url": "#!/api/Backgrid.Header-method-initialize",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "dispatchSortEvent",
-        "fullName": "Backgrid.Header.dispatchSortEvent",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.Header-method-dispatchSortEvent",
         "meta": {
         },
         "sort": 3

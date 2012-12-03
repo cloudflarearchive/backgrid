@@ -589,7 +589,7 @@
                   collection: col
                 });
               </textarea>
-              <p class="label label-info">FYI</p>
+              <p class="label label-info">Pro Tip</p>
               <p>SelectCell treats all option values as strings by default, if
                 you need to persist a different type of values into your model,
                 you should extend SelectCell to provide your
@@ -736,16 +736,17 @@
               <h2 id="api-header">Header</h2>
               <ul class="nav navlist">
                 <li><a href="api/index.html#!/api/Backgrid.Header">Backgrid.Header</a></li>
+                <li><a href="api/index.html#!/api/Backgrid.HeaderRow">Backgrid.HeaderRow</a></li>
                 <li><a href="api/index.html#!/api/Backgrid.HeaderCell">Backgrid.HeaderCell</a></li>
               </ul>
             </div>
             <div class="span10">
               <h3>Understanding the Default Header</h3>
-              <p>Backgrid.js comes with a default header section and header cell
-                implementation that simply renders a sorter if the column is
-                sortable. The text inside the header cells comes from the column
-                definitions. If a <em>label</em> is not defined in a column
-                definition, its name is used as the label instead.</p>
+              <p>Backgrid.js comes with a default header section, a header row
+                and a header cell implementation that renders a sorter if the
+                column is sortable. The text inside the header cells comes from
+                the column definitions. If a <em>label</em> is not defined in a
+                column definition, its name is used as the label instead.</p>
               <p>The default header cell implementation supports sorting in
                 ascending or descending order, using the column&apos;s natural
                 ordering. The sorter will also allow cycling back to the

@@ -38,6 +38,7 @@
         "name": "Headers",
         "classes": [
           "Backgrid.HeaderCell",
+          "Backgrid.HeaderRow",
           "Backgrid.Header"
         ]
       }, {

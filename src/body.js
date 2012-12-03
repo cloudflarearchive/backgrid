@@ -72,59 +72,6 @@ var Body = Backgrid.Body = Backbone.View.extend({
   },
   
   /**
-     If a comparator is given, it is attached to the collection so
-     Backbone.Collection can use it to sort. If not, a default comparator that
-     sorts the id and cid in ascending order is used instead.
-
-     If the underlying collection instance has a comparator defined previously,
-     it is restored after sorting.
-
-     @param {function(*, *): number} [comparator]
-
-     See [Backbone.Collection#comparator](http://backbonejs.org/#Collection-comparator)
-  */
-  sort: function (comparator) {
-    var oldComparator = this.collection.comparator;
-    this.collection.comparator = comparator || this._idCidComparator;
-    this.collection.sort();
-    this.collection.comparator = oldComparator;
-  },
-
-  /**
-     Default comparator for Backbone.Collections. Sorts ids and cids in
-     ascending order.
-
-     @private
-     @param {*} left
-     @param {*} right
-  */
-  _idCidComparator: function (left, right) {
-    var lid = left.id,
-    lcid = left.cid,
-    rid = right.id,
-    rcid = right.cid;
-
-    if (!_.isUndefined(lid) || !_.isUndefined(rid)) {
-      if (lid < rid) return -1;
-      else if (lid > rid) return 1;
-    }
-    else if (!_.isUndefined(lid) && !_.isUndefined(rcid)) {
-      if (lid < rcid) return -1;
-      else if (lid > rcid) return 1;
-    }
-    else if (!_.isUndefined(lcid) && !_.isUndefined(rid)) {
-      if (lcid < rid) return -1;
-      else if (lcid > rid) return 1;
-    }
-    else if (!_.isUndefined(lcid) && !_.isUndefined(rcid)) {
-      if (lcid < rcid) return -1;
-      else if (lcid > rcid) return 1;
-    }
-    
-    return 0;
-  },
-
-  /**
      This method can be called either directly or as a callback to a
      [Backbone.Collecton#add](http://backbonejs.org/#Collection-add) event.
 
