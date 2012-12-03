@@ -81,9 +81,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
 
      @param {function(*, *): number} [comparator]
 
-     See:
-
-     - [Backbone.Collection#comparator](http://backbonejs.org/#Collection-comparator)
+     See [Backbone.Collection#comparator](http://backbonejs.org/#Collection-comparator)
   */
   sort: function (comparator) {
     var oldComparator = this.collection.comparator;
@@ -157,7 +155,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
       return;
     }
 
-    var row = new self.row({
+    var row = new this.row({
       parent: this,
       columns: this.columns,
       model: model

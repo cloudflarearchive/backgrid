@@ -36,7 +36,7 @@ describe("A NumberFormatter", function () {
 
   });
 
-  it(".fromRaw() converts a number to a number string with 2 decimals, with" +
+  it(".fromRaw() converts a number to a number string with 2 decimals, with " +
      "1000s separated by ',' and the decimal part separated by '.' by default", function () {
     var formatter = new Backgrid.NumberFormatter();
     expect(formatter.fromRaw(1000003.1415926)).toBe("1,000,003.14");

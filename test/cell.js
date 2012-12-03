@@ -583,9 +583,9 @@ describe("A BooleanCell", function () {
     expect(cell.$el.find("input[type=checkbox]").length).toBe(1);
   });
 
-  it("saves false to the model when the checkbox is clicked", function () {
+  it("saves a boolean value to the model when the checkbox is toggled", function () {
     cell.render();
-    cell.$el.find("input[type=checkbox]").click().change();
+    cell.$el.find("input[type=checkbox]").prop("checked", false).change();
     expect(cell.model.get(cell.column.get("name"))).toBe(false);
   });
 
