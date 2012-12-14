@@ -15,7 +15,6 @@
    Backbone.View class, the grid is rendered as a DOM node fragment when you
    call render().
 
-       @example
        var grid = Backgrid.Grid({
          columns: [{ name: "id", label: "ID", type: "string" },
           // ...
@@ -30,7 +29,6 @@
    then supply that class or an instance of that class to the Grid constructor.
    See the documentation for Header and Footer for further details.
 
-       @example
        var grid = Backgrid.Grid({
          columns: [{ name: "id", label: "ID", type: "string" }],
          collections: books,

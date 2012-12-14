@@ -116,7 +116,7 @@
       </header>
       <div class="container">
         <section class="hero-unit">
-          <h1>Backgrid.js <span class="badge badge-warning beta">BETA</span></h1>
+          <h1>Backgrid.js</h1>
           <p class="lead">
             Backgrid.js is a set of components for
             building <strong>semantic</strong> and <strong>easily
@@ -158,6 +158,7 @@
                   into <a href="#extensions">extensions</a>, which keeps the
                   bloat away.</li>
                 <li>Good documentation.</li>
+                <li>Well tested. Comes with <a href="test/" title="Jasmine Tests">100s of test cases</a>.</li>
               </ul>
             </div>
             <div class="span6">
@@ -188,7 +189,7 @@
               <ul>
                 <li><a href="http://jquery.com">jquery &gt;= 1.7.0</a></li>
                 <li><a href="http://underscorejs.org">underscore.js &gt;= 1.4.0</a></li>
-                <li><a href="http://backbonejs.org">backbone.js &gt;= 0.9.2</a></li>
+                <li><a href="http://backbonejs.org">backbone.js == 0.9.2</a></li>
               </ul>
               <aside class="note">
                 <h5>Note:</h5> If you don&apos;t care about having the latest
@@ -338,52 +339,36 @@
                     tag:</p>
                   <textarea class="code-snippet" data-mode="htmlmixed">
                     &lt;link rel="stylesheet" href="lib/extensions/paginator/backgrid-paginator.css" /&gt;
-                    &lt;script src="assets/js/backbone.paginator.js"&gt;&lt;/script&gt;
+                    &lt;script src="assets/js/backbone-pageable.js"&gt;&lt;/script&gt;
                     &lt;script src="lib/extensions/paginator/backgrid-paginator.js"&gt;&lt;/script&gt;</textarea>
                   <p>To use the paginator, you must first declare your
                     collections to be
-                    a <a href="http://addyosmani.github.com/backbone.paginator/"
-                         title="Backbone.Paginator">Backbone.Paginator.*Pager</a>,
+                    a <a href="https://github.com/wyuenho/backbone-pageable/"
+                         title="Backbone.PageableCollection">Backbone.PageableCollection</a>,
                     which is a simple subclass of the Backbone.js Collection with added
                     pagination behavior.</p>
                   <textarea class="code-snippet" data-mode="javascript" data-eval="yes">
-                    var PageableTerritories = Backbone.Paginator.clientPager.extend({
+                    var PageableTerritories = Backbone.PageableCollection.extend({
                       model: Territory,
-                    
-                      paginator_core: {
-                        dataType: "json",
-                        url: "examples/territories.json"
-                      },
-
-                      paginator_ui: {
-                        firstPage: 1, // page indices start at 1
-                        currentPage: 1,
-                        perPage: 15,
-                        totalPages: 17
-                      },
-
-                      server_api: {},
-
-                      parse: function (resp) {
-                        return resp;
+                      url: "examples/pageable-territories.json",
+                      state: {
+                        isClientMode: true, // page entirely on the client side
+                        pageSize: 15
                       }
                     });
                     
                     var pageableTerritories = new PageableTerritories();
-                    pageableTerritories.fetch().done(function () {
-                      pageableTerritories.goTo(1);
-                    });</textarea>
-                  <p>Once you have a pageable collection, you can supply it to
-                    the Grid constructor, in addition to a footer
-                    element <code>Backgrid.Extension.Paginator</code></p>
-                  <textarea class="code-snippet" data-mode="javascript" data-eval="yes">
-                    var pageableGrid = new Backgrid.Grid({
-                      columns: columns,
-                      collection: pageableTerritories,
-                      footer: Backgrid.Extension.Paginator
-                    });
 
-                    $("#example-2-result").append(pageableGrid.render().$el);</textarea>
+                    pageableTerritories.fetch().done(function () {
+
+                      var pageableGrid = new Backgrid.Grid({
+                        columns: columns,
+                        collection: pageableTerritories,
+                        footer: Backgrid.Extension.Paginator
+                      });
+                    
+                      $("#example-2-result").append(pageableGrid.render().$el);
+                    });</textarea>
                 </div>
               </div>
               <div class="row-fluid">
@@ -931,7 +916,6 @@
               <h2 id="api-paginator">Paginator</h2>
               <ul class="nav navlist">
                 <li><a href="api/index.html#!/api/Backgrid.Extension.Paginator">Backgrid.Extension.Paginator</a></li>
-                <li><a href="api/index.html#!/api/Backgrid.Extension.PageHandle">Backgrid.Extension.PageHandle</a></li>
               </ul>
               <h4>Best Used On</h4>
               <ul>
@@ -944,78 +928,89 @@
               <p>When you have more data than your grid can fit, you can use
                 Paginator to break the display of your data into pages.</p>
               <h3>Prerequisites</h3>
+              <p>Backgrid.Extension.Paginator needs a Backbone.Collection
+                subclass that supports pagination. Luckily, there is already one
+                available specially written for this purpose
+                - <a href="https://github.com/wyuenho/backbone-pageable"
+                title="backbone-pageable">Backbone.PageableCollection</a>.</p>
+              <p>Backbone.PageableCollection is a strict superset of the vanilla
+                Backbone.Collection with additional pagination and sorting
+                functionality. If you like, you can use
+                Backbone.PageableCollection throughout your application and it
+                will work exactly the same as Backbone.Collection.</p>
               <textarea class="code-snippet" data-mode="htmlmixed">
                 &lt;link rel="stylesheet" href="lib/extensions/paginator/backgrid-paginator.css" /&gt;
-                &lt;script src="assets/js/backbone.paginator.js"&gt;&lt;/script&gt;
+                &lt;script src="assets/js/backbone-pageable.js"&gt;&lt;/script&gt;
                 &lt;script src="lib/extensions/paginator/backgrid-paginator.js"&gt;&lt;/script&gt;</textarea>
-              <h3>Backbone.Paginator</h3>
-              <p>Backgrid.js relies
-                on <a href="http://addyosmani.github.com/backbone.paginator/">Backbone.Paginator</a>
-                library, please install it into your project first.</p>
-              <p>Before you can use the Paginator, you need to declare your
-                collection to be one of
-                the <a href="http://addyosmani.github.com/backbone.paginator/#section-4">Backbone.Paginator.requestPager</a>
-                or <a href="http://addyosmani.github.com/backbone.paginator/#section-5">Backbone.Paginator.clientPager</a>. Usage
-                of the clientPager is illustrated in
-                an <a href="#example-2">example</a> above. The section will
-                describe the much simpler requestPager.</p>
-              <textarea class="code-snippet" data-mode="javascript" data-eval="no">
-                var Book = Backbone.Model({});
-                var Books = Backbone.Paginator.requestPager.extend({
-                  model: Book,
+              <h3>Backbone.PageableCollection</h3>
+              <p>Out of the box, Backbone.PageableCollection works with RESTful
+                APIs that accept Ruby's will_paginate pagination query
+                parameters but you are able to configure the query string
+                mapping anyway you like. The following example works with
+                <a href="http://developer.github.com/v3/" title="GitHub API
+                v3">Github's API</a>:</p>
+              <textarea class="code-snippet" data-mode="javascript" data-eval="yes">
+                var Issue = Backbone.Model.extend({});
 
-                  paginator_core: {
-                    // Backbone.Paginator uses 'jsonp' by default
-                    dataType: 'json',
+                // Works exactly like Backbone.Collection.
+                var Issues = Backbone.PageableCollection.extend({
+                  model: Issue,
 
-                    // The URL of your Web API service
-                    url: 'http://api.example-bookstore.com/books'
+                  url: "https://api.github.com/repos/documentcloud/backbone/issues?state=closed",
+
+                  // Initial pagination states
+                  state: {
+                    pageSize: 15,
+                    totalRecords: 2000,
+                    sortKey: "updated"
                   },
 
-                  paginator_ui: {
-                    // The lowest page index the API allows.
-                    // Backgrid.Extension.Paginator uses 1-based index.
-                    firstPage: 1,
-
-                    // The page index to fetch for models on the first call for fetch().
-                    currentPage: 1,
-
-                    perPage: 10,
-
-                    // A default number of total pages to query in case the
-                    // does not support providing the total number of pages.
-                    totalPages: 10
-                  },
-
-                  // Configure what your API query looks like when submitted to the server.
-                  // Any parameters you put here is sent as URL query parameters.
-                  server_api: {
-                    limit: function () { return this.perPage; },
-                    offset: function () { (return this.currentPage - 1) * this.perPage; }
-                  },
-
-                  // Configure how to get the models from the response.
-                  parse: function (resp) {
-                    // You should reset totalPages after every fetch() if your
-                    // server API supports it.
-                    this.totalPages = resp[0].totalPages;
-                    return resp[1];
+                  // You can remap the query parameters
+                  queryParams: {
+                    directions: {
+                      "-1": "asc",
+                      "1": "desc"
+                    }
                   }
-
                 });
 
-                var books = new Books()
-                books.goTo(1); // This will fetch the first page of models</textarea>
-              <h3>Configuring Paginator</h3>
-              <p>Backgrid.Extension.Paginator supports a few configuration options to adjust to the size of the result set.</p>
-              <textarea class="code-snippet" data-mode="javascript" data-eval="no">
-                var bookGrid = new Backgrid.Grid({
+                var issues = new Issues();
+
+                // If you aren't bootstrapping your data via the constructor, you
+                // need to issue a fetch first.
+                issues.getFirstPage().done(function () { // Do work only after the fetching is done</textarea>
+              <h3>Configuring Backgrid.Extention.Paginator</h3>
+              <p>Backgrid.Extension.Paginator supports a few configuration
+                options to adjust to the size of the result set.</p>
+              <textarea class="code-snippet" data-mode="javascript" data-eval="yes">
+                var issueGrid = new Backgrid.Grid({
 
                   columns: [{
-                    // Your column definitions
+                    name: "number",
+                    cell: Backgrid.IntegerCell.extend({ orderSeparator: '' }),
+                    editable: false,
+                    sortable: false
+                  }, {
+                    name: "title",
+                    cell: "string",
+                    sortable: false
+                  }, {
+                    name: "body",
+                    cell: "text", // See the TextCell extension in the next section
+                    sortable: false
+                  }, {
+                    name: "updated_at",
+                    cell: "datetime",
+                    editable: false,
+                    sortable: false
+                  }, {
+                    name: "closed_at",
+                    cell: "datetime",
+                    editable: false,
+                    sortable: false
                   }],
 
-                  collection: books,
+                  collection: issues,
 
                   footer: Backgrid.Extension.Paginator.extend({
 
@@ -1028,9 +1023,16 @@
                     // If you anticipate a small number of pages, you can choose
                     // to disable the rendering of fast forward handles to save
                     // space.
-                    hasFastForward: false // Default is true
-                  });
-                })</textarea>
+                    hasFastForward: true // true is the default
+                  })
+                });
+
+                $("#example-3-result").append(issueGrid.render().el);
+              });</textarea>
+            </div>
+            <div class="span12">
+              <h3>Result</h3>
+              <div id="example-3-result" class="backgrid-container" style="height: auto"></div>
             </div>
           </div>
           <div class="row-fluid">
@@ -1083,10 +1085,10 @@
                   collection: books
                 });
 
-                $("#example-3-result").append(grid.render().el);
+                $("#example-4-result").append(grid.render().el);
               </textarea>
               <h3>Result</h3>
-              <div id="example-3-result" class="backgrid-container" style="height: auto;"></div>
+              <div id="example-4-result" class="backgrid-container" style="height: auto;"></div>
             </div>
           </div>
           <div class="row-fluid">
@@ -1323,8 +1325,8 @@
               <p>Backgrid.js has something better and achieves the same
                 effect with much cleaner code -
                 <a href="#api-paginator">paginator extension</a>, which
-                uses <a href="http://addyosmani.github.com/backbone.paginator/"
-                title="Backbone.Paginator">Backbone.Paginator</a>. The paginator
+                uses <a href="https://github.com/wyuenho/backbone-pageable/"
+                title="backbone-pageable">backbone-pageable</a>. The paginator
                 supports both paging on the server-side, or preloading all the
                 models and paging purely through the browser. Paginated
                 Backgrid.Grid instances only render one page of DOM nodes at a
@@ -1382,7 +1384,7 @@
     <script src="assets/js/detectmobilebrowser.js"></script>
     <script src="assets/js/underscore.js"></script>
     <script src="assets/js/backbone.js"></script>
-    <script src="assets/js/backbone.paginator.js"></script>
+    <script src="assets/js/backbone-pageable.js"></script>
     <script src="assets/js/bootstrap.js"></script>
     <script src="assets/js/moment/moment.js"></script>
     <script src="lib/backgrid.js"></script>

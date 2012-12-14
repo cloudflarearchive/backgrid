@@ -344,7 +344,7 @@ var StringCell = Backgrid.StringCell = Cell.extend({
 });
 
 /**
-   UriCell renders an HTML <a> anchor for the value and accepts URIs as user
+   UriCell renders an HTML `<a>` anchor for the value and accepts URIs as user
    input values. A URI input is URI encoded using `encodeURI()` before writing
    to the underlying model.
 
@@ -380,7 +380,7 @@ var UriCell = Backgrid.UriCell = Cell.extend({
 });
 
 /**
-   Like Backgrid.UriCell, EmailCell renders an HTML <a> anchor for the
+   Like Backgrid.UriCell, EmailCell renders an HTML `<a>` anchor for the
    value. The `href` in the anchor is prefixed with `mailto:`. EmailCell will
    complain if the user enters a string that doesn't contain the `@` sign.
 
@@ -649,7 +649,7 @@ var BooleanCell = Backgrid.BooleanCell = Cell.extend({
 });
 
 /**
-   SelectCellEditor renders an HTML <select> fragment as the editor.
+   SelectCellEditor renders an HTML `<select>` fragment as the editor.
 
    @class Backgrid.SelectCellEditor
    @extends Backgrid.CellEditor
@@ -703,6 +703,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
     var optionText = null;
     var optionValue = null;
     var optgroupName = null;
+    var optgroup = null;
     for (var i = 0; i < optionValues.length; i++) {
       var optionValue = optionValues[i];
 

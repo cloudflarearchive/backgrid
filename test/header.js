@@ -98,21 +98,10 @@ describe("A HeaderCell", function () {
 
   });
 
-  xit("can sort on a Backbone.Paginator.clientPager collection", function () {
+  it("can sort on a client-side Backbone.PageableCollection", function () {
 
-    var Books = Backbone.Paginator.clientPager.extend({
-      model: Book,
-      
-      paginator_core: {},
-
-      paginator_ui: {
-        firstPage: 1,
-        currentPage: 1,
-        perPage: 1,
-        totalPages: 3
-      },
-
-      server_api: {}
+    var Books = Backbone.PageableCollection.extend({
+      model: Book
     });
 
     var books = new Books([{
@@ -121,7 +110,12 @@ describe("A HeaderCell", function () {
       title: "A Tale of Two Cities"
     }, {
       title: "The Catcher in the Rye"
-    }]);
+    }], {
+      state: {
+        isClientMode: true,
+        pageSize: 1
+      }
+    });
 
     cell = new Backgrid.HeaderCell({
       column: {
@@ -133,24 +127,36 @@ describe("A HeaderCell", function () {
 
     cell.render();
 
-    cell.collection.goTo(1);
-
     cell.$el.find("a").click();
 
     expect(cell.collection.toJSON()).toEqual([{
       title: "A Tale of Two Cities"
     }]);
 
-    cell.collection.goTo(2);
+    cell.collection.getPage(2);
 
     expect(cell.collection.toJSON()).toEqual([{
       title: "Alice's Adventures in Wonderland"
     }]);
 
-    cell.collection.goTo(3);
+    cell.collection.getPage(3);
 
     expect(cell.collection.toJSON()).toEqual([{
       title: "The Catcher in the Rye"
+    }]);
+
+    cell.collection.getFirstPage();
+
+    cell.$el.find("a").click();
+
+    expect(cell.collection.toJSON()).toEqual([{
+      title: "The Catcher in the Rye"
+    }]);
+
+    cell.$el.find("a").click();
+
+    expect(cell.collection.toJSON()).toEqual([{
+      title: "Alice's Adventures in Wonderland"
     }]);
 
   });

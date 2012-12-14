@@ -1,7 +1,7 @@
 Dependencies
 ============
 
-[Backbone.Paginator](http://addyosmani.github.com/backbone.paginator/)
+[backbone-pageable](http://github.com/wyuenho/backbone-pageable/)
 
 Usage
 ====

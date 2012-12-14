@@ -136,21 +136,16 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
   },
 
   /**
-     If the underlying collection is a [Backbone.Paginator.requestPager](),
-     `sortField` and `sortDirection` are set onto the collection directly with
-     `columnName` and `direction` and the models are refetched from the server.
+     If the underlying collection is a Backbone.PageableCollection in
+     server-mode, a page of models is fetched after sorting is done on the
+     server.
 
-     If the underlying collection is a Backbone.Collection or a
-     [Backbone.Paginator.clientPager](), and if a comparator is given, it is
-     attached to the collection for sorting. If a comparator is not given, a
-     default comparator that sorts the id and cid in ascending order is used
-     instead.
-
-     If the underlying collection instance has a comparator defined previously,
-     it is restored after sorting.
-
-     Nothing is done if the underlying collection is not one of the three
-     recognized types.
+     If the underlying collection is a Backbone.PageableCollection in
+     client-mode, or any
+     [Backbone.Collection](http://backbonejs.org/#Collection) instance, sorting
+     is done on the client side. If the collection is an instance of a
+     Backbone.PageableCollection, sorting will be done globally on all the pages
+     and the current page will then be returned.
 
      @param {function(*, *): number} [comparator]
 
@@ -160,24 +155,42 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
 
     comparator = direction ? comparator : this._idCidComparator;
 
-    // Backbone.Paginator.clientPager
-    if (Backbone.Paginator && this.collection instanceof Backbone.Paginator.clientPager) {
-      this.collection.origModels.sort(comparator);
-      var pageInfo = this.collection.info();
-      this.collection.reset(this.collection.origModels.slice(pageInfo.startRecord - 1, pageInfo.endRecord - 1));
+    var collection = this.collection;
+
+    if (this.collection instanceof Backbone.PageableCollection) {
+
+      var state = collection.state;
+      state.sortKey = columnName;
+
+      if (direction === "ascending") {
+        state.order = -1;
+      }
+      else if (direction === "descending") {
+        state.order = 1;
+      }
+      else {
+        state.order = null;
+      }
+
+      if (state.isClientMode) {
+        if (!(collection.fullCollection.comparator = collection.makeComparator())) {
+          collection.fullCollection.comparator = comparator;
+        }
+        collection.fullCollection.sort();
+      }
+      else {
+        collection.fetch();
+      }
     }
-    // Backbone.Paginator.requestPager
-    else if (Backbone.Paginator && this.collection instanceof Backbone.Paginator.requestPager) {
-      this.collection.sortField = columnName;
-      this.collection.sortDirection = direction;
-      this.collection.fetch();
-    }
-    // Good ol' Backbone.Collection
     else {
-      var oldComparator = this.collection.comparator;
-      this.collection.comparator = comparator;
-      this.collection.sort();
-      this.collection.comparator = oldComparator;
+      var oldComparator = collection.comparator;
+      collection.comparator = comparator;
+      try {
+        collection.sort();
+      }
+      finally {
+        collection.comparator = oldComparator;
+      }
     }
   },
 
@@ -211,7 +224,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
       if (lcid < rcid) return -1;
       else if (lcid > rcid) return 1;
     }
-    
+
     return 0;
   },
 
@@ -231,7 +244,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
    HeaderRow is a controller for a row of header cells.
 
    @class Backgrid.HeaderRow
-   @extens Backgrid.Row
+   @extends Backgrid.Row
  */
 var HeaderRow = Backgrid.HeaderRow = Backgrid.Row.extend({
 

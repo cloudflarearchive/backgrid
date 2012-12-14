@@ -116,12 +116,6 @@ Docs = {
         "icon": "icon-class"
       },
       {
-        "name": "Backgrid.Extension.PageHandle",
-        "extends": null,
-        "private": null,
-        "icon": "icon-class"
-      },
-      {
         "name": "Backgrid.Extension.Paginator",
         "extends": null,
         "private": null,
@@ -177,7 +171,7 @@ Docs = {
       },
       {
         "name": "Backgrid.HeaderRow",
-        "extends": null,
+        "extends": "Backgrid.Row",
         "private": null,
         "icon": "icon-class"
       },
@@ -1033,61 +1027,6 @@ Docs = {
         "sort": 3
       },
       {
-        "name": "Extension.PageHandle",
-        "fullName": "Backgrid.Extension.PageHandle",
-        "icon": "icon-class",
-        "url": "#!/api/Backgrid.Extension.PageHandle",
-        "meta": {
-        },
-        "sort": 1
-      },
-      {
-        "name": "tagName",
-        "fullName": "Backgrid.Extension.PageHandle.tagName",
-        "icon": "icon-property",
-        "url": "#!/api/Backgrid.Extension.PageHandle-property-tagName",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "events",
-        "fullName": "Backgrid.Extension.PageHandle.events",
-        "icon": "icon-property",
-        "url": "#!/api/Backgrid.Extension.PageHandle-property-events",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "initialize",
-        "fullName": "Backgrid.Extension.PageHandle.initialize",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.Extension.PageHandle-method-initialize",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "render",
-        "fullName": "Backgrid.Extension.PageHandle.render",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.Extension.PageHandle-method-render",
-        "meta": {
-          "chainable": true
-        },
-        "sort": 3
-      },
-      {
-        "name": "loadPage",
-        "fullName": "Backgrid.Extension.PageHandle.loadPage",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.Extension.PageHandle-method-loadPage",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
         "name": "Extension.Paginator",
         "fullName": "Backgrid.Extension.Paginator",
         "icon": "icon-class",
@@ -1124,6 +1063,24 @@ Docs = {
         "sort": 3
       },
       {
+        "name": "template",
+        "fullName": "Backgrid.Extension.Paginator.template",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.Extension.Paginator-property-template",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "events",
+        "fullName": "Backgrid.Extension.Paginator.events",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.Extension.Paginator-property-events",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
         "name": "initialize",
         "fullName": "Backgrid.Extension.Paginator.initialize",
         "icon": "icon-method",
@@ -1133,19 +1090,19 @@ Docs = {
         "sort": 3
       },
       {
-        "name": "refresh",
-        "fullName": "Backgrid.Extension.Paginator.refresh",
+        "name": "changePage",
+        "fullName": "Backgrid.Extension.Paginator.changePage",
         "icon": "icon-method",
-        "url": "#!/api/Backgrid.Extension.Paginator-method-refresh",
+        "url": "#!/api/Backgrid.Extension.Paginator-method-changePage",
         "meta": {
         },
         "sort": 3
       },
       {
-        "name": "renderFastForward",
-        "fullName": "Backgrid.Extension.Paginator.renderFastForward",
+        "name": "makeHandles",
+        "fullName": "Backgrid.Extension.Paginator.makeHandles",
         "icon": "icon-method",
-        "url": "#!/api/Backgrid.Extension.Paginator-method-renderFastForward",
+        "url": "#!/api/Backgrid.Extension.Paginator-method-makeHandles",
         "meta": {
         },
         "sort": 3
