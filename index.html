@@ -965,8 +965,11 @@
                     sortKey: "updated"
                   },
 
-                  // You can remap the query parameters
+                  // You can remap the query parameters from `state` keys from
+                  // the default to those your server supports
                   queryParams: {
+                    sortKey: "sort",
+                    order: "direction",
                     directions: {
                       "-1": "asc",
                       "1": "desc"
