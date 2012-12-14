@@ -36,7 +36,7 @@ Building
 
 The Backgrid.js build system is designed to be used in a UNIX-like
 environment. Backgrid.js uses [gmake](http://www.gnu.org/software/make/),
-[uglifyjs](https://github.com/mishoo/UglifyJS2) and
+[uglifyjs](https://github.com/mishoo/UglifyJS2),
 [recess](https://github.com/twitter/recess) and
 [JSDuck](https://github.com/senchalabs/jsduck).
 

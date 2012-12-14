@@ -57,8 +57,7 @@
       {
         "name": "Paginator",
         "classes": [
-          "Backgrid.Extension.Paginator",
-          "Backgrid.Extension.PageHandle"
+          "Backgrid.Extension.Paginator"
         ]
       },
       {

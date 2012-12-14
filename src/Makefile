@@ -39,7 +39,7 @@ FORCE:
 
 js:
 	$(UGLIFY) $(JS_FILES) $(UGLIFY_BEAUTIFY_FLAGS) --output $(JS_OUTFILE)
-	echo "(function (root, $$, _, Backbone) {\n" | cat - $(JS_OUTFILE) > /tmp/$(JS_OUTFILE) && mv -f /tmp/$(JS_OUTFILE) $(JS_OUTFILE)
+	echo "(function (root, $$, _, Backbone) {\n\n  \"use strict\";\n" | cat - $(JS_OUTFILE) > /tmp/$(JS_OUTFILE) && mv -f /tmp/$(JS_OUTFILE) $(JS_OUTFILE)
 	echo "}(this, $$, _, Backbone));" >> $(JS_OUTFILE)
 	make $(JS_OUTFILE)
 
