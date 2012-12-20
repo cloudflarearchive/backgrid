@@ -273,7 +273,7 @@ var HeaderRow = Backgrid.HeaderRow = Backgrid.Row.extend({
     this.headerCell = options.headerCell || HeaderCell;
     for (var i = 0; i < this.columns.length; i++) {
       var column = this.columns.at(i);
-      var headerCell = this.headerCell || column.get("headerCell");
+      var headerCell = column.get("headerCell") || this.headerCell;
       var cell = new headerCell({
         parent: this,
         column: column,

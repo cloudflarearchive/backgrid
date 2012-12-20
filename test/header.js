@@ -227,6 +227,32 @@ describe("A HeaderRow", function () {
                                       '<th><a>year<b class="sort-caret"></b></a></th>');
   });
 
+  it("renders a custom header cell for a single column", function () {
+    var CustomHeaderCell = Backgrid.HeaderCell.extend({
+      render: function() {
+        this.$el.html("Custom header")
+        return this;
+      }
+    })
+
+    row = new Backgrid.HeaderRow({
+      columns: [{
+        name: "name",
+        cell: "string",
+      }, {
+        name: "year",
+        cell: "integer",
+        headerCell: CustomHeaderCell
+      }],
+      collection: books
+    });
+
+    row.render();
+
+    expect(row.$el[0].innerHTML).toBe('<th><a>name<b class="sort-caret"></b></a></th>' +
+                                      '<th>Custom header</th>');
+  });
+
   it("resets the carets of the non-sorting columns", function () {
     row.$el.find("a").eq(0).click(); // ascending
     row.$el.find("a").eq(1).click(); // ascending, resets the previous
