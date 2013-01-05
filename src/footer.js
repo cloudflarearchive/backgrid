@@ -39,10 +39,4 @@ var Footer = Backgrid.Footer = Backbone.View.extend({
     }
   },
 
-  dispose: function () {
-    this.columns.off(null, null, this);
-    if (this.parent && this.parent.off) this.parent.off(null, null, this);
-    return Backbone.View.prototype.dispose.apply(this, arguments);
-  }
-
 });

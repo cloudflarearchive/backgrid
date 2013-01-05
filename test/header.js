@@ -19,29 +19,17 @@ describe("A HeaderCell", function () {
     }).toThrow(new TypeError("'collection' is required"));
   });
 
-  var Book = Backbone.Model.extend({});
-  var Books = Backbone.Collection.extend({
-    model: Book
-  });
-
-  var books;
+  var col;
   var cell;
   beforeEach(function () {
-
-    books = new Books([{
-      title: "Alice's Adventures in Wonderland"
-    }, {
-      title: "A Tale of Two Cities"
-    }, {
-      title: "The Catcher in the Rye"
-    }]);
+    col = new Backbone.Collection([{id: 2}, {id: 1}, {id: 3}]);
 
     cell = new Backgrid.HeaderCell({
       column: {
-        name: "title",
-        cell: "string"
+        name: "id",
+        cell: "integer"
       },
-      collection: books
+      collection: col
     });
 
     cell.render();
@@ -49,62 +37,30 @@ describe("A HeaderCell", function () {
 
   it("renders a table header cell with an anchor wrapping the label text and the sort caret", function () {
     expect(cell.el.tagName).toBe("TH");
-    expect(cell.$el.find("a").text()).toBe("title");
+    expect(cell.$el.find("a").text()).toBe("id");
     expect(cell.$el.find(".sort-caret").length).toBe(1);
   });
 
   it("sorts the underlying collection in ascending order upon clicking the sort caret once", function () {
-    
     cell.$el.find("a").click();
-
-    expect(cell.collection.toJSON()).toEqual([{
-      title: "A Tale of Two Cities"
-    }, {
-      title: "Alice's Adventures in Wonderland"
-    }, {
-      title: "The Catcher in the Rye"
-    }]);
+    expect(cell.collection.toJSON()).toEqual([{id: 1}, {id: 2}, {id: 3}]);
   });
 
   it("sorts the underlying collection in descending order upon clicking the sort caret twice", function () {
-
     cell.$el.find("a").click().click();
-
     expect(cell.direction()).toBe("descending");
-
-    expect(cell.collection.toJSON()).toEqual([{
-      title: "The Catcher in the Rye"
-    }, {
-      title: "Alice's Adventures in Wonderland"
-    }, {
-      title: "A Tale of Two Cities"
-    }]);
-
+    expect(cell.collection.toJSON()).toEqual([{id: 3}, {id: 2}, {id: 1}]);
   });
 
   it("sorts the underlying collection in default order upon clicking the sort caret thrice", function () {
-
     cell.$el.find("a").click().click().click();
-
     expect(cell.direction()).toBeNull();
-    
-    expect(cell.collection.toJSON()).toEqual([{
-      title: "Alice's Adventures in Wonderland"
-    }, {
-      title: "A Tale of Two Cities"
-    }, {
-      title: "The Catcher in the Rye"
-    }]);
-
+    expect(cell.collection.toJSON()).toEqual([{id: 2}, {id: 1}, {id: 3}]);
   });
 
   it("can sort on a client-side Backbone.PageableCollection", function () {
 
-    var Books = Backbone.PageableCollection.extend({
-      model: Book
-    });
-
-    var books = new Books([{
+    var books = new Backbone.PageableCollection([{
       title: "Alice's Adventures in Wonderland"
     }, {
       title: "A Tale of Two Cities"
@@ -112,9 +68,9 @@ describe("A HeaderCell", function () {
       title: "The Catcher in the Rye"
     }], {
       state: {
-        isClientMode: true,
         pageSize: 1
-      }
+      },
+      mode: "client"
     });
 
     cell = new Backgrid.HeaderCell({

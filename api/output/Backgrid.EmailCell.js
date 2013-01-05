@@ -139,7 +139,7 @@ Ext.data.JsonP.Backgrid_EmailCell({
 
     ]
   },
-  "linenr": 382,
+  "linenr": 370,
   "files": [
     {
       "filename": "cell.js",

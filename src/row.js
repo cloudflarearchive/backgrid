@@ -23,7 +23,6 @@ var Row = Backgrid.Row = Backbone.View.extend({
      Initializes a row view instance.
 
      @param {Object} options
-     @param {*} options.parent
      @param {Backbone.Collection.<Backgrid.Column>|Array.<Backgrid.Column>|Array.<Object>} options.columns Column metadata.
      @param {Backbone.Model} options.model The model instance to render.
 
@@ -31,35 +30,20 @@ var Row = Backgrid.Row = Backbone.View.extend({
    */
   initialize: function (options) {
     requireOptions(options, ["columns", "model"]);
-    this.parent = options.parent;
     this.columns = options.columns;
     if (!(this.columns instanceof Backbone.Collection)) {
       this.columns = new Columns(this.columns);
     }
-    this.columns.on("change:renderable", this.renderColumn, this);
+    this.listenTo(this.columns, "change:renderable", this.renderColumn);
 
-    this.cells = [];
-    var self = this;
-    this.columns.each(function (column) {
-      var cell = new (column.get("cell"))({
-        parent: self,
+    var cells = this.cells = [];
+    for (var i = 0; i < this.columns.length; i++) {
+      var column = this.columns.at(i);
+      cells.push(new (column.get("cell"))({
         column: column,
-        model: self.model
-      });
-
-      self.cells.push(cell);
-    });
-  },
-
-  dispose: function () {
-    this.columns.off(null, null, this);
-    if (this.parent && this.parent.off) this.parent.off(null, null, this);
-    for (var i = 0; i < this.cells.length; i++) {
-      var cell = this.cells[i];
-      cell.off(null, null, this);
-      cell.dispose();
+        model: this.model
+      }));
     }
-    return Backbone.View.prototype.dispose.apply(this, arguments);
   },
 
   /**
