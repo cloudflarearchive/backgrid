@@ -92,14 +92,12 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
 
     this.header = options.header || this.header;
     this.header = new this.header({
-      parent: this,
       columns: this.columns,
       collection: this.collection
     });
 
     this.body = options.body || this.body;
     this.body = new this.body({
-      parent: this,
       columns: this.columns,
       collection: this.collection
     });
@@ -107,24 +105,10 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
     this.footer = options.footer || this.footer;
     if (this.footer) {
       this.footer = new this.footer({
-        parent: this,
         columns: this.columns,
         collection: this.collection
       });
     }
-  },
-
-  dispose: function () {
-    this.columns.off(null, null, this);
-    this.header.off(null, null, this);
-    this.header.dispose();
-    this.body.off(null, null, this);
-    this.body.dispose();
-    if (this.footer) {
-      this.footer.off(null, null, this);
-      this.footer.dispose();
-    }
-    return Backbone.View.prototype.dispose.apply(this, arguments);
   },
 
   /**

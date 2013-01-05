@@ -22,7 +22,6 @@ var Body = Backgrid.Body = Backbone.View.extend({
      Initializer.
 
      @param {Object} options
-     @param {*} options.parent
      @param {Backbone.Collection} options.collection
      @param {Backbone.Collection.<Backgrid.Column>|Array.<Backgrid.Column>|Array.<Object>} options.columns
      Column metadata
@@ -37,7 +36,6 @@ var Body = Backgrid.Body = Backbone.View.extend({
 
     var self = this;
 
-    self.parent = options.parent;
     self.columns = options.columns;
     if (!(self.columns instanceof Backbone.Collection)) {
       self.columns = new Columns(self.columns);
@@ -46,7 +44,6 @@ var Body = Backgrid.Body = Backbone.View.extend({
     self.row = options.row || Row;
     self.rows = self.collection.map(function (model) {
       var row = new self.row({
-        parent: self,
         columns: self.columns,
         model: model
       });
@@ -54,23 +51,12 @@ var Body = Backgrid.Body = Backbone.View.extend({
       return row;
     });
 
-    self.collection.on("add", self.insertRow, self);
-    self.collection.on("remove", self.removeRow, self);
-    self.collection.on("reset", self.refresh, self);
+    self.listenTo(self.collection, "add", self.insertRow);
+    self.listenTo(self.collection, "remove", self.removeRow);
+    self.listenTo(self.collection, "sort", self.refresh);
+    self.listenTo(self.collection, "reset", self.refresh);
   },
 
-  dispose: function () {
-    this.columns.off(null, null, this);
-    if (this.parent && this.parent.off) this.parent.off(null, null, this);
-    var row = null;
-    for (var i = 0; i < this.rows.length; i++) {
-      row = this.rows[i];
-      row.off(null, null, this);
-      row.dispose();
-    }
-    return Backbone.View.prototype.dispose.apply(this, arguments);
-  },
-  
   /**
      This method can be called either directly or as a callback to a
      [Backbone.Collecton#add](http://backbonejs.org/#Collection-add) event.
@@ -96,26 +82,30 @@ var Body = Backgrid.Body = Backbone.View.extend({
   */
   insertRow: function (model, collection, options) {
 
+
     // insertRow() is called directly
-    if (!options) {
+    if (!(collection instanceof Backbone.Collection) && !options) {
       this.collection.add(model, (options = collection));
       return;
     }
 
+    options = options || {};
+
     var row = new this.row({
-      parent: this,
       columns: this.columns,
       model: model
     });
 
-    this.rows.splice(options.index, 0, row);
+    var index = collection.indexOf(model);
+
+    this.rows.splice(index, 0, row);
 
     if (_.isUndefined(options.render) || options.render) {
-      if (options.index >= this.$el.children().length) {
+      if (index >= this.$el.children().length) {
         this.$el.children().last().after(row.render().$el);
       }
       else {
-        this.$el.children().eq(options.index).before(row.render().$el);
+        this.$el.children().eq(index).before(row.render().$el);
       }
     }
 
@@ -162,17 +152,18 @@ var Body = Backgrid.Body = Backbone.View.extend({
 
   /**
      Reinitialize all the rows inside the body and re-render them.
+
+     @chainable
   */
   refresh: function () {
     var self = this;
 
     _.each(self.rows, function (row) {
-      row.dispose();
+      row.remove();
     });
 
     self.rows = self.collection.map(function (model) {
       var row = new self.row({
-        parent: self,
         columns: self.columns,
         model: model
       });
@@ -180,7 +171,11 @@ var Body = Backgrid.Body = Backbone.View.extend({
       return row;
     });
 
-    return self.render();
+    self.render();
+
+    Backbone.trigger("backgrid:refresh");
+
+    return self;
   },
 
   /**

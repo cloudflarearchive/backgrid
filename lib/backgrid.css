@@ -58,7 +58,8 @@
   background-color: #f9f9f9;
 }
 
-.backgrid td.editor {
+.backgrid td.editor,
+.backgrid tbody tr:nth-child(odd) td.editor {
   background-color: rgba(82, 168, 236, 0.1);
   outline: 1px solid rgba(82, 168, 236, 0.8);
   outline-offset: -1px;

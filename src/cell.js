@@ -36,13 +36,9 @@ var CellEditor = Backgrid.CellEditor = Backbone.View.extend({
     if (!(this.column instanceof Column)) {
       this.column = new Column(this.column);
     }
-    if (this.parent && this.parent.on) this.parent.on("editing", this.postRender, this);
-  },
-
-  dispose: function () {
-    this.column.off(null, null, this);
-    if (this.parent && this.parent.off) this.parent.off(null, null, this);
-    return Backbone.View.prototype.dispose.apply(this, arguments);
+    if (this.parent && _.isFunction(this.parent.on)) {
+      this.listenTo(this.parent, "editing", this.postRender);
+    }
   },
 
   /**
@@ -98,7 +94,7 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
       this.$el.attr("placeholder", options.placeholder);
     }
 
-    this.on("done", this.remove, this);
+    this.listenTo(this, "done", this.remove);
   },
 
   /**
@@ -224,20 +220,12 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
   */
   initialize: function (options) {
     requireOptions(options, ["model", "column"]);
-    this.parent = options.parent;
     this.column = options.column;
     if (!(this.column instanceof Column)) {
       this.column = new Column(this.column);
     }
     this.formatter = resolveNameToClass(this.formatter, "Formatter");
     this.editor = resolveNameToClass(this.editor, "CellEditor");
-  },
-
-  dispose: function () {
-    if (this.currentEditor) this.exitEditMode();
-    this.column.off(null, null, this);
-    if (this.parent && this.parent.off) this.parent.off(null, null, this);
-    return Backbone.View.prototype.dispose.apply(this, arguments);
   },
 
   /**
@@ -278,8 +266,8 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
       */
       this.trigger("edit", this, this.currentEditor);
 
-      this.currentEditor.on("done", this.exitEditMode, this);
-      this.currentEditor.on("error", this.renderError, this);
+      this.listenTo(this.currentEditor, "done", this.exitEditMode);
+      this.listenTo(this.currentEditor, "error", this.renderError);
 
       this.$el.empty();
       this.undelegateEvents();
@@ -788,7 +776,7 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
     Cell.prototype.initialize.apply(this, arguments);
     requireOptions(this, ["optionValues"]);
     this.optionValues = _.result(this, "optionValues");
-    this.on("edit", this.setOptionValues, this);
+    this.listenTo(this, "edit", this.setOptionValues);
   },
 
   setOptionValues: function (cell, editor) {

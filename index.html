@@ -188,8 +188,8 @@
               </p>
               <ul>
                 <li><a href="http://jquery.com">jquery &gt;= 1.7.0</a></li>
-                <li><a href="http://underscorejs.org">underscore.js &gt;= 1.4.0</a></li>
-                <li><a href="http://backbonejs.org">backbone.js == 0.9.2</a></li>
+                <li><a href="http://underscorejs.org">underscore.js ~ 1.4.0</a></li>
+                <li><a href="http://backbonejs.org">backbone.js ~ 0.9.9</a></li>
               </ul>
               <aside class="note">
                 <h5>Note:</h5> If you don&apos;t care about having the latest
@@ -237,10 +237,7 @@
                       url: "examples/territories.json"
                     });
                     
-                    var territories = new Territories();
-                    
-                    // Fetch some countries from the url
-                    territories.fetch();</textarea>
+                    var territories = new Territories();</textarea>
                 </div>
               </div>
               <div class="row-fluid">
@@ -285,14 +282,17 @@
                       cell: "uri" // Renders the value in an HTML &lt;a&gt; element
                     }];
 
-                    // Initialize a new Grid instance
-                    var grid = new Backgrid.Grid({
-                      columns: columns,
-                      collection: territories
-                    });
+                    // Fetch some countries from the url
+                    territories.fetch().done(function () {
+                      // Initialize a new Grid instance
+                      var grid = new Backgrid.Grid({
+                        columns: columns,
+                        collection: territories
+                      });
 
-                    // Render the grid and attach the root to your HTML document
-                    $("#example-1-result").append(grid.render().$el);</textarea>
+                      // Render the grid and attach the root to your HTML document
+                      $("#example-1-result").append(grid.render().$el);
+                    });</textarea>
                 </div>
               </div>
               <div class="row-fluid">
@@ -352,9 +352,9 @@
                       model: Territory,
                       url: "examples/pageable-territories.json",
                       state: {
-                        isClientMode: true, // page entirely on the client side
                         pageSize: 15
-                      }
+                      },
+                      mode: "client" // page entirely on the client side
                     });
                     
                     var pageableTerritories = new PageableTerritories();
@@ -606,7 +606,7 @@
 
                   formatter: {
                     fromRaw: function (rawData) {
-                      return _.escape(rawData);
+                      return rawData;
                     },
                     toRaw: function (formattedData) {
                       return formattedData;
@@ -632,7 +632,7 @@
               <p>A custom cell editor should
                 subclass <a href="api/index.html#!/api/Backgrid.CellEditor">CellEditor</a>
                 as it defines a number of required parameters in its initializer
-                an clean up operations that are necessary for most cell
+                and clean up operations that are necessary for most cell
                 editors. When a cell class enters edit mode, a new editor
                 instance is constructed by given it the required parameters, and
                 then a Backbone event <code>edit</code> is fired from the cell
@@ -956,13 +956,16 @@
                 var Issues = Backbone.PageableCollection.extend({
                   model: Issue,
 
+                  // Enable infinite paging
+                  mode: "infinite",
+
                   url: "https://api.github.com/repos/documentcloud/backbone/issues?state=closed",
 
                   // Initial pagination states
                   state: {
                     pageSize: 15,
-                    totalRecords: 2000,
-                    sortKey: "updated"
+                    sortKey: "updated",
+                    order: 1
                   },
 
                   // You can remap the query parameters from `state` keys from
@@ -1026,7 +1029,11 @@
                     // If you anticipate a small number of pages, you can choose
                     // to disable the rendering of fast forward handles to save
                     // space.
-                    hasFastForward: true // true is the default
+                    hasFastForward: true, // true is the default
+
+                    //fastForwardHandleLabels: {
+                    //  next: "Next"
+                    //}
                   })
                 });
 
