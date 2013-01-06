@@ -58,11 +58,33 @@ describe("A TextareaEditor", function () {
     expect(editor.$el.find("form textarea").prop("rows")).toBe(Backgrid.Extension.TextareaEditor.prototype.rows);
   });
 
+  it("asks for confirmation if textarea is dirty when canceling", function () {
+    var spiedConfirm = spyOn(window, "confirm");
+
+    spiedConfirm.andReturn(false);
+    editor.$el.find("textarea").val("name\r");
+    editor.$el.find(".close").click();
+    editor.$el.one($.support.transition.end, function () {
+      expect(editor.trigger).toHaveBeenCalledWith("done");
+      expect(window.confirm).toHaveBeenCalledWith("Would you like to save your changes?");
+      expect(editor.model.get(editor.column.get("name"))).toBe("name");
+    });
+    spiedConfirm.reset();
+
+    spiedConfirm.andReturn(true);
+    editor.$el.find(".close").click();
+    editor.$el.one($.support.transition.end, function () {
+      expect(editor.trigger).toHaveBeenCalledWith("done");
+      expect(window.confirm).toHaveBeenCalledWith("Would you like to save your changes?");
+      expect(editor.model.get(editor.column.get("name"))).toBe("name\r");
+    });
+  });
+
   it("saves the text from the textarea to the model and trigger 'done' when the form is submitted", function () {
     editor.$el.find("textarea").val("another name");
     editor.$el.find("form").submit();
     // have to wait for bootstrap's css transition to finish
-    // before hidden is fired and trogger called
+    // before hidden is fired and `trigger` called
     editor.$el.one($.support.transition.end, function () {
       expect(editor.trigger.calls.length).toBe(1);
       expect(editor.trigger).toHaveBeenCalledWith("done");
