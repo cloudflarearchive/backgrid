@@ -45,33 +45,6 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
       this.column = new Column(this.column);
     }
     this.listenTo(Backbone, "backgrid:sort", this._resetCellDirection);
-    this.listenTo(this.collection, "reset", this._updateModelOrder);
-    this.listenTo(this.collection, "add", this._updateModelOrder);
-    this.listenTo(this.collection, "remove", this._updateModelOrder);
-    this._updateModelOrder("reset", this.collection);
-  },
-
-  _updateModelOrder: function (event, model, collection, options) {
-
-    var modelOrder = this._origModelOrder = this._origModelOrder || {};
-
-    if (event == "reset") {
-      options = collection;
-      collection = model;
-      model = null;
-
-      collection.each(function (model, i) {
-        modelOrder[model.cid] = i;
-      });
-    }
-
-    if (event == "add") {
-      modelOrder[model.cid] = collection.indexOf(model);
-    }
-
-    if (event == "remove") {
-      delete modelOrder[model.cid];
-    }
   },
 
   /**
@@ -98,9 +71,11 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
 
      @private
    */
-  _resetCellDirection: function (sortByColName, direction, comparator, cell) {
-    if (cell !== this) this.direction(null);
-    else this.direction(direction);
+  _resetCellDirection: function (sortByColName, direction, comparator, collection) {
+    if (collection == this.collection) {
+      if (sortByColName !== this.column.get("name")) this.direction(null);
+      else this.direction(direction);
+    }
   },
 
   /**
@@ -115,7 +90,6 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
 
     if (this.column.get("sortable")) {
       if (this.direction() === "ascending") {
-
         this.sort(columnName, "descending", function (left, right) {
           var leftVal = left.get(columnName);
           var rightVal = right.get(columnName);
@@ -127,10 +101,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
         });
       }
       else if (this.direction() === "descending") {
-        var self = this;
-        this.sort(columnName, null, function (model) {
-          return self._origModelOrder[model.cid];
-        });
+        this.sort(columnName, null);
       }
       else {
         this.sort(columnName, "ascending", function (left, right) {
@@ -168,51 +139,29 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
   */
   sort: function (columnName, direction, comparator) {
 
-    comparator = comparator || this._idComparator;
+    comparator = comparator || this._cidComparator;
 
     var collection = this.collection;
 
     if (collection instanceof Backbone.PageableCollection) {
+      var order;
+      if (direction === "ascending") order = -1;
+      else if (direction === "descending") order = 1;
+      else order = null;
 
-      var state = collection.state;
-      state.sortKey = columnName;
+      collection.setSorting(order ? columnName : null, order);
 
-      if (direction === "ascending") {
-        state.order = -1;
-      }
-      else if (direction === "descending") {
-        state.order = 1;
-      }
-      else {
-        state.order = null;
-      }
-
-      if (collection.mode === "client") {
-        var oldComparator = collection.fullCollection.comparator;
-        try {
-          if (!(collection.fullCollection.comparator = collection.makeComparator())) {
-            collection.fullCollection.comparator = comparator;
-          }
-          collection.fullCollection.sort();
+      if (collection.mode == "client") {
+        if (!collection.fullCollection.comparator) {
+          collection.fullCollection.comparator = comparator;
         }
-        finally {
-          collection.fullCollection.comparator = oldComparator;
-        }
+        collection.fullCollection.sort();
       }
-      else {
-        // FIXME: refetch the current page infinite mode
-        collection.fetch();
-      }
+      else collection.fetch();
     }
     else {
-      var oldComparator = collection.comparator;
-      try {
-        collection.comparator = comparator;
-        collection.sort();
-      }
-      finally {
-        collection.comparator = oldComparator;
-      }
+      collection.comparator = comparator;
+      collection.sort();
     }
 
     /**
@@ -223,24 +172,25 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
        @param {string} columnName
        @param {null|"ascending"|"descending"} direction
        @param {function(*, *): number} comparator A Backbone.Collection#comparator.
-       @param {Backgrid.HeaderCell} cell
+       @param {Backbone.Collection} collection
     */
-    Backbone.trigger("backgrid:sort", columnName, direction, comparator, this);
+    Backbone.trigger("backgrid:sort", columnName, direction, comparator, this.collection);
   },
 
   /**
-     Default comparator for Backbone.Collections. Sorts ids in ascending order.
+     Default comparator for Backbone.Collections. Sorts cids in ascending
+     order. The cids of the models are assumed to be in insertion order.
 
      @private
      @param {*} left
      @param {*} right
   */
-  _idComparator: function (left, right) {
-    var lid = left.id, rid = right.id;
+  _cidComparator: function (left, right) {
+    var lcid = left.cid, rcid = right.cid;
 
-    if (!_.isUndefined(lid) && !_.isUndefined(rid)) {
-      if (lid < rid) return -1;
-      else if (lid > rid) return 1;
+    if (!_.isUndefined(lcid) && !_.isUndefined(rcid)) {
+      if (lcid < rcid) return -1;
+      else if (lcid > rcid) return 1;
     }
 
     return 0;

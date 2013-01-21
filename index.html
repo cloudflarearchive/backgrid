@@ -189,7 +189,7 @@
               <ul>
                 <li><a href="http://jquery.com">jquery &gt;= 1.7.0</a></li>
                 <li><a href="http://underscorejs.org">underscore.js ~ 1.4.0</a></li>
-                <li><a href="http://backbonejs.org">backbone.js ~ 0.9.9</a></li>
+                <li><a href="http://backbonejs.org">backbone.js ~ 0.9.10</a></li>
               </ul>
               <aside class="note">
                 <h5>Note:</h5> If you don&apos;t care about having the latest
@@ -971,6 +971,8 @@
                   // You can remap the query parameters from `state` keys from
                   // the default to those your server supports
                   queryParams: {
+                    totalPages: null,
+                    totalRecords: null,
                     sortKey: "sort",
                     order: "direction",
                     directions: {
@@ -1031,9 +1033,10 @@
                     // space.
                     hasFastForward: true, // true is the default
 
-                    //fastForwardHandleLabels: {
-                    //  next: "Next"
-                    //}
+                    fastForwardHandleLabels: {
+                      prev: "<",
+                      next: ">"
+                    }
                   })
                 });
 

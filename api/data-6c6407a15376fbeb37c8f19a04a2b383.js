@@ -1601,10 +1601,10 @@ Docs = {
         "sort": 3
       },
       {
-        "name": "_idComparator",
-        "fullName": "Backgrid.HeaderCell._idComparator",
+        "name": "_cidComparator",
+        "fullName": "Backgrid.HeaderCell._cidComparator",
         "icon": "icon-method",
-        "url": "#!/api/Backgrid.HeaderCell-method-_idComparator",
+        "url": "#!/api/Backgrid.HeaderCell-method-_cidComparator",
         "meta": {
           "private": true
         },

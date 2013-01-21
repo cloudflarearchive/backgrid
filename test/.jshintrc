@@ -12,13 +12,19 @@
   "unused": true,
   "eqnull": true,
 
-  "browser": true,
   "devel": true,
   "jquery": true,
+  "browser": true,
   "nonstandard": true,
 
   "globals": {
+    "expect": false,
+    "describe": false,
+    "beforeEach": false,
+    "afterEach": false,
+    "it": false,
     "Backbone": false,
+    "Backgrid": false,
     "_": false
   }
 }

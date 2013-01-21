@@ -8,6 +8,8 @@
 
 (function ($, _, Backbone, Backgrid) {
 
+  "use strict";
+
   /**
      Paginator is a Footer element that re-renders a large result set in a table
      by splitting it across multiple pages. If the result set is still larger,
@@ -18,7 +20,7 @@
 
      @class Backgrid.Extension.Paginator
   */
-  var Paginator = Backgrid.Extension.Paginator = Backgrid.Footer.extend({
+  Backgrid.Extension.Paginator = Backgrid.Footer.extend({
 
     /** @property */
     className: "paginator",
@@ -53,7 +55,7 @@
        @param {boolean} [options.fastForwardHandleLabels] Whether to render fast forward buttons.
     */
     initialize: function (options) {
-      Backgrid.Footer.prototype.initialize.apply(this, arguments);
+      Backgrid.Footer.prototype.initialize.call(this, options);
       this.listenTo(this.collection, "reset", this.render);
     },
 
@@ -66,36 +68,36 @@
     changePage: function (e) {
       e.preventDefault();
 
-      var $anchors = this.$el.find("a");
-
       var label = $(e.target).text();
       var ffLabels = this.fastForwardHandleLabels;
+
+      var collection = this.collection;
 
       if (ffLabels) {
         switch (label) {
         case ffLabels.first:
-          this.collection.getFirstPage();
+          collection.getFirstPage();
           return;
         case ffLabels.prev:
-          this.collection.getPreviousPage();
+          if (collection.hasPrevious()) collection.getPreviousPage();
           return;
         case ffLabels.next:
-          this.collection.getNextPage();
+          if (collection.hasNext()) collection.getNextPage();
           return;
         case ffLabels.last:
-          this.collection.getLastPage();
+          collection.getLastPage();
           return;
         }
       }
 
-      var pageIndexInWindow = $anchors.index(e.target);
-      var state = this.collection.state;
+      var pageIndexInWindow = $(e.target).text() * 1 - collection.state.firstPage;
+      var state = collection.state;
       var currentPage = state.firstPage === 0 ?
         state.currentPage :
         state.currentPage - 1;
       var windowStart = Math.floor(currentPage / this.windowSize) * this.windowSize;
       var pageIndex = windowStart + pageIndexInWindow;
-      this.collection.getPage(state.firstPage === 0 ? pageIndex : pageIndex + 1);
+      collection.getPage(state.firstPage === 0 ? pageIndex : pageIndex + 1);
     },
 
     /**
@@ -130,47 +132,33 @@
       var ffLabels = this.fastForwardHandleLabels;
       if (ffLabels) {
 
-        var mode = this.collection.mode;
-        var links = this.collection.links;
-
-        var classNames;
-
-        if (mode == "infinite") {
-          classNames = {
-            first: links && links.first ? undefined : "disabled",
-            prev: links && links.prev ? undefined : "disabled",
-            next: links && links.next ? undefined : "disabled",
-            last: links && links.last ? undefined : "disabled"
-          };
-        }
-        else {
-          classNames = {
-            first: currentPage - 1 < 0 ? "disabled" : undefined,
-            prev: currentPage - 1 < 0 ? "disabled" : undefined,
-            next: currentPage + 1 > lastPage ? "disabled" : undefined,
-            last: currentPage + 1 > lastPage ? "disabled" : undefined
-          };
+        if (ffLabels.prev) {
+          handles.unshift({
+            label: ffLabels.prev,
+            className: collection.hasPrevious() ? void 0 : "disabled"
+          });
         }
 
-        handles.unshift({
-          label: ffLabels.prev,
-          className: classNames.prev
-        });
+        if (ffLabels.first) {
+          handles.unshift({
+            label: ffLabels.first,
+            className: collection.hasPrevious() ? void 0 : "disabled"
+          });
+        }
 
-        handles.unshift({
-          label: ffLabels.first,
-          className: classNames.first
-        });
+        if (ffLabels.next) {
+          handles.push({
+            label: ffLabels.next,
+            className: collection.hasNext() ? void 0 : "disabled"
+          });
+        }
 
-        handles.push({
-          label: ffLabels.next,
-          className: classNames.next
-        });
-
-        handles.push({
-          label: ffLabels.last,
-          className: classNames.last
-        });
+        if (ffLabels.last) {
+          handles.push({
+            label: ffLabels.last,
+            className: collection.hasNext() ? void 0 : "disabled"
+          });
+        }
       }
 
       return handles;

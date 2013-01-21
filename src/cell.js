@@ -130,7 +130,9 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
         e.preventDefault();
         var valueToSet = this.formatter.toRaw(this.$el.val());
 
-        if (_.isUndefined(valueToSet) || !this.model.set(this.column.get("name"), valueToSet)) {
+        if (_.isUndefined(valueToSet) ||
+            !this.model.set(this.column.get("name"), valueToSet,
+                            {validate: true})) {
           this.trigger("error");
         }
         else {

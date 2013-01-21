@@ -37,6 +37,6 @@ var Footer = Backgrid.Footer = Backbone.View.extend({
     if (!(this.columns instanceof Backbone.Collection)) {
       this.columns = new Backgrid.Columns(this.columns);
     }
-  },
+  }
 
 });
