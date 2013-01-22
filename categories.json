@@ -73,6 +73,13 @@
           "Backgrid.Extension.MomentFormatter",
           "Backgrid.Extension.MomentCell"
         ]
+      },
+      {
+        "name": "Select2Cell",
+        "classes": [
+          "Backgrid.Extension.Select2Cell",
+          "Backgrid.Extension.Select2CellEditor"
+        ]
       }
     ]
   }

@@ -635,7 +635,7 @@ describe("A SelectCellEditor", function () {
     editor.setOptionValues(optionValues);
     editor.render();
     expect(editor.el.tagName).toBe("SELECT");
-    $options = editor.$el.children();
+    var $options = editor.$el.children();
     expect($options.length).toBe(2);
     expect($options.eq(0).val()).toBe("1");
     expect($options.eq(0).prop("selected")).toBe(false);
@@ -663,7 +663,7 @@ describe("A SelectCellEditor", function () {
     });
     editor.render();
     expect(editor.el.tagName).toBe("SELECT");
-    $options = editor.$el.children();
+    var $options = editor.$el.children();
     expect($options.length).toBe(2);
     expect($options.eq(0).val()).toBe("1");
     expect($options.eq(0).prop("selected")).toBe(false);
@@ -688,16 +688,16 @@ describe("A SelectCellEditor", function () {
 
     editor.setOptionValues(optionGroupValues);
     editor.render();
-    $optionGroups = editor.$el.children();
+    var $optionGroups = editor.$el.children();
     expect($optionGroups.length).toBe(2);
 
-    $group1 = $optionGroups.eq(0);
-    $group2 = $optionGroups.eq(1);
+    var $group1 = $optionGroups.eq(0);
+    var $group2 = $optionGroups.eq(1);
 
     expect($group1.attr("label")).toBe("Fruit");
     expect($group2.attr("label")).toBe("Cereal");
 
-    $group1Options = $group1.children();
+    var $group1Options = $group1.children();
     expect($group1Options.eq(0).val()).toBe("a");
     expect($group1Options.eq(0).prop("selected")).toBe(false);
     expect($group1Options.eq(0).text()).toBe("Apple");
@@ -708,7 +708,7 @@ describe("A SelectCellEditor", function () {
     expect($group1Options.eq(2).prop("selected")).toBe(false);
     expect($group1Options.eq(2).text()).toBe("Cantaloupe");
 
-    $group2Options = $group2.children();
+    var $group2Options = $group2.children();
     expect($group2Options.eq(0).val()).toBe("w");
     expect($group2Options.eq(0).prop("selected")).toBe(false);
     expect($group2Options.eq(0).text()).toBe("Wheat");
@@ -737,16 +737,16 @@ describe("A SelectCellEditor", function () {
       return optionGroupValues;
     });
     editor.render();
-    $optionGroups = editor.$el.children();
+    var $optionGroups = editor.$el.children();
     expect($optionGroups.length).toBe(2);
 
-    $group1 = $optionGroups.eq(0);
-    $group2 = $optionGroups.eq(1);
+    var $group1 = $optionGroups.eq(0);
+    var $group2 = $optionGroups.eq(1);
 
     expect($group1.attr("label")).toBe("Fruit");
     expect($group2.attr("label")).toBe("Cereal");
 
-    $group1Options = $group1.children();
+    var $group1Options = $group1.children();
     expect($group1Options.eq(0).val()).toBe("a");
     expect($group1Options.eq(0).prop("selected")).toBe(false);
     expect($group1Options.eq(0).text()).toBe("Apple");
@@ -757,7 +757,7 @@ describe("A SelectCellEditor", function () {
     expect($group1Options.eq(2).prop("selected")).toBe(false);
     expect($group1Options.eq(2).text()).toBe("Cantaloupe");
 
-    $group2Options = $group2.children();
+    var $group2Options = $group2.children();
     expect($group2Options.eq(0).val()).toBe("w");
     expect($group2Options.eq(0).prop("selected")).toBe(false);
     expect($group2Options.eq(0).text()).toBe("Wheat");
@@ -828,7 +828,7 @@ describe("A SelectCell", function () {
   it("throws TypeError is optionValues is undefined", function () {
 
     expect(function () {
-      var cell = new Backgrid.SelectCell({
+      new Backgrid.SelectCell({
         column: {
           name: "gender",
           cell: "select"
@@ -892,6 +892,7 @@ describe("A SelectCell", function () {
   });
 
   it("throws TypeError when rendering a malformed option value list", function () {
+
     expect(function () {
       var cell = new (Backgrid.SelectCell.extend({
         optionValues: []
