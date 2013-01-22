@@ -28,12 +28,14 @@
     
     <link rel="stylesheet" href="assets/css/bootstrap.css" />
     <link rel="stylesheet" href="assets/css/bootstrap-responsive.css" />
+    <link rel="stylesheet" href="assets/css/select2.css" />
     <link rel="stylesheet" href="codemirror/lib/codemirror.css" />
     <link rel="stylesheet" href="codemirror/theme/ambiance.css" />
     <link rel="stylesheet" href="lib/backgrid.css" />
     <link rel="stylesheet" href="lib/extensions/paginator/backgrid-paginator.css" />
     <link rel="stylesheet" href="lib/extensions/text-cell/backgrid-text-cell.css" />
     <link rel="stylesheet" href="lib/extensions/moment-cell/backgrid-moment-cell.css" />
+    <link rel="stylesheet" href="lib/extensions/select2-cell/backgrid-select2-cell.css" />
     <link rel="stylesheet" href="assets/css/doc.css" />
     <!--[if lt IE 9]>
         <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -127,7 +129,7 @@
           <p>
             <a class="btn btn-large btn-success" href="#examples">See Examples</a>
             <a class="btn btn-large btn-primary hidden-phone hidden-tablet"
-               href="https://github.com/wyuenho/backgrid/downloads"
+               href="https://github.com/wyuenho/backgrid/tags"
                target="_blank">Download</a>
           </p>
         </section>
@@ -1192,8 +1194,61 @@
           <div class="row-fluid">
             <div class="span3">
               <h2 id="api-select2-cell">Select2Cell</h2>
+              <ul class="nav navlist">
+                <li><a href="api/index.html#!/api/Backgrid.Extension.Select2Cell">Backgrid.Extension.Select2Cell</a></li>
+                <li><a href="api/index.html#!/api/Backgrid.Extension.Select2CellEditor">Backgrid.Extension.Select2CellEditor</a></li>
+              </ul>
+              <h4>Best Used On</h4>
+              <ul>
+                <li>Desktop</li>
+              </ul>
             </div>
             <div class="span9">
+              <h3>When to Use</h3>
+              <p>When you have a relatively large number of available options
+              for a column, or want to use a select box with autocomplete
+              capability.</p>
+              <h3>Prerequisites</h3>
+              <p>Select2Cell uses
+              the <a href="http://ivaynberg.github.com/select2/"
+              title="select2">Select2</a> jQuery plugin to render its select
+              box.</p>
+              <textarea class="code-snippet" data-mode="htmlmixed">
+                &lt;link rel="stylesheet" href="assets/css/select2.css" /&gt;
+                &lt;link rel="stylesheet" href="lib/extensions/select2-cell/backgrid-select2-cell.css" /&gt;
+                &lt;script src="assets/js/select2.js"&gt;&lt;/script&gt;
+                &lt;script src="lib/extensions/select2-cell/backgrid-select2-cell.js"&gt;&lt;/script&gt;</textarea>
+              <h3>Usage</h3>
+              <p>Select2Cell is a very simple extension of the default
+              SelectCell. You can configure individual instances by supplying
+              a <code>select2Options</code> object hash during extension, in
+              addition to the options SelectCell supports.</p>
+              <textarea class="code-snippet" data-mode="javascript" data-eval="yes">
+                
+                var data = new Backbone.Collection([{number: 5}]);
+
+                // Just like SelectCell, Select2Cell supports option lists and groups
+                var numbers = [{name: 10, values: [
+                  [1, 1], [2, 2], [3, 3], [4, 4], [5, 5],
+                  [6, 6], [7, 7], [8, 8], [9, 9], [10, 10]
+                ]}];
+
+                var grid = new Backgrid.Grid({
+                  columns: [{
+                    name: "number",
+                    cell: Backgrid.Extension.Select2Cell.extend({
+                      select2Options: {
+                        // any options specific to `select2` goes here
+                      },
+                      optionValues: numbers
+                    })
+                  }],
+                  collection: data
+                });
+
+                $("#example-6-result").append(grid.render().el);</textarea>
+              <h3>Result</h3>
+              <div id="example-6-result" class="backgrid-container" style="height: auto;"></div>
             </div>
           </div>
           <div class="row-fluid">
@@ -1399,11 +1454,13 @@
     <script src="assets/js/backbone.js"></script>
     <script src="assets/js/backbone-pageable.js"></script>
     <script src="assets/js/bootstrap.js"></script>
+    <script src="assets/js/select2.js"></script>
     <script src="assets/js/moment/moment.js"></script>
     <script src="lib/backgrid.js"></script>
     <script src="lib/extensions/paginator/backgrid-paginator.js"></script>
     <script src="lib/extensions/text-cell/backgrid-text-cell.js"></script>
     <script src="lib/extensions/moment-cell/backgrid-moment-cell.js"></script>
+    <script src="lib/extensions/select2-cell/backgrid-select2-cell.js"></script>
     <script src="codemirror/lib/codemirror.js"></script>
     <script src="codemirror/lib/util/formatting.js"></script>
     <script src="codemirror/mode/xml/xml.js"></script>

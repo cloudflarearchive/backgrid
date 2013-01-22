@@ -668,7 +668,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
       options = options + this.template({
         text: nvps[i][0],
         value: nvps[i][1],
-        selected: currentValue === nvps[i][1]
+        selected: currentValue == nvps[i][1]
       });
     }
     return options;
@@ -704,7 +704,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
         this.$el.append(this.template({
           text: optionText,
           value: optionValue,
-          selected: optionValue === currentValue
+          selected: optionValue == currentValue
         }));
       }
       else if (_.isObject(optionValue)) {
@@ -722,8 +722,8 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
   },
 
   /**
-     Saves the value of the selected option to the model attribute. Triggers
-     `done` event.
+     Saves the value of the selected option to the model attribute. Triggers a
+     `done` Backbone event.
   */
   save: function (e) {
     this.model.set(this.column.get("name"), this.formatter.toRaw(this.$el.val()));
@@ -797,8 +797,7 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
     var rawData = this.formatter.fromRaw(this.model.get(this.column.get("name")));
 
     try {
-
-      if (optionValues == false || optionValues == null) throw new TypeError;
+      if (!_.isArray(optionValues) || _.isEmpty(optionValues)) throw new TypeError;
 
       for (var i = 0; i < optionValues.length; i++) {
         var optionValue = optionValues[i];
@@ -807,7 +806,7 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
           var optionText  = optionValue[0];
           var optionValue = optionValue[1];
 
-          if (optionValue === rawData) {
+          if (optionValue == rawData) {
             this.$el.append(optionText);
             break;
           }
@@ -816,7 +815,7 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
           var optionGroupValues = optionValue.values;
           for (var j = 0; j < optionGroupValues.length; j++) {
             var optionGroupValue = optionGroupValues[j];
-            if (optionGroupValue[1] === rawData) {
+            if (optionGroupValue[1] == rawData) {
               this.$el.append(optionGroupValue[0]);
               break;
             }

@@ -23,6 +23,7 @@
     "beforeEach": false,
     "afterEach": false,
     "it": false,
+    "spyOn": false,
     "Backbone": false,
     "Backgrid": false,
     "_": false
