@@ -106,10 +106,10 @@ Are you kidding me? This is a README file. Go to the [documentation](http://wyue
 
 ### 0.1
 
-- In Progress
+- Initial Release
 
 ## License
-Copyright (c) 2012 Jimmy Yuen Ho Wong  
+Copyright (c) 2013 Jimmy Yuen Ho Wong  
 Source code licensed under the [MIT license](LICENSE-MIT "MIT License").
 
 Documentation licenses under [GPLv3](http://www.gnu.org/licenses/gpl-3.0.html "GPLv3")

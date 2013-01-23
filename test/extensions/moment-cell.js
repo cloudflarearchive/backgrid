@@ -1,3 +1,10 @@
+/*
+  backgrid
+  http://github.com/wyuenho/backgrid
+
+  Copyright (c) 2013 Jimmy Yuen Ho Wong
+  Licensed under the MIT @license.
+*/
 describe("A MomentFormatter", function () {
 
   it(".fromRaw() can convert an ISO datetime string in UTC to a datetime " +
