@@ -19,10 +19,7 @@ CSS_OUTFILE = $(PROJECT_NAME).css
 CSS_OUTFILE_MIN = $(PROJECT_NAME).min.css
 
 UGLIFY = uglifyjs
-UGLIFY_BEAUTIFY_FLAGS = --beautify indent-level=2,indent-start=2,bracketize=true \
-						--compress sequences=false,properties=false,dead-code=false,unsafe=false,conditionals=false,comparisons=false,evaluate=false,booleans=false,loops=false,unused=false,hoist-funs=false,hoist-vars=false,join-vars=false,cascade=false,warnings=true \
-						--comments '/^(?!jshint|global)([.\s\S](?!@license))+$$/'
-UGLIFY_MINIFY_FLAGS = --compress --mangle
+UGLIFY_FLAGS = --compress --mangle
 
 
 all: clean dist test
@@ -38,7 +35,7 @@ FORCE:
 	*/" | cat - $@ > "/tmp/`basename $@`" && mv -f "/tmp/`basename $@`" $@
 
 js:
-	$(UGLIFY) $(JS_FILES) $(UGLIFY_BEAUTIFY_FLAGS) --output $(JS_OUTFILE)
+	cat $(JS_FILES) > $(JS_OUTFILE)
 	echo "(function (root, $$, _, Backbone) {\n\n  \"use strict\";\n" | cat - $(JS_OUTFILE) > /tmp/$(JS_OUTFILE) && mv -f /tmp/$(JS_OUTFILE) $(JS_OUTFILE)
 	echo "}(this, $$, _, Backbone));" >> $(JS_OUTFILE)
 	make $(JS_OUTFILE)
@@ -47,7 +44,7 @@ csslint:
 	recess $(CSS_FILES) --noIDS --noUniversalSelectors --compile > /tmp/$(CSS_OUTFILE) && mv -f /tmp/$(CSS_OUTFILE) $(CSS_OUTFILE);
 
 minify: js
-	$(UGLIFY) $(JS_OUTFILE) $(UGLIFY_MINIFY_FLAGS) --output $(JS_OUTFILE_MIN)
+	$(UGLIFY) $(JS_OUTFILE) $(UGLIFY_FLAGS) --output $(JS_OUTFILE_MIN)
 	recess $(CSS_FILES) --noIDS --noUniversalSelectors --compress > /tmp/$(CSS_OUTFILE_MIN) && mv -f /tmp/$(CSS_OUTFILE_MIN) $(CSS_OUTFILE_MIN);
 
 build: minify
