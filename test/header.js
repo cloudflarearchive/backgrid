@@ -190,6 +190,20 @@ describe("A HeaderRow", function () {
     expect(row.$el.find("a").eq(1).hasClass("ascending")).toBe(false);
   });
 
+  it("inserts or removes a cell if a column is added or removed", function () {
+    row.columns.add({name: "price", cell: "number"});
+    expect(row.$el.children().length).toBe(3);
+    expect(row.$el.children().last()[0].outerHTML).toBe('<th><a>price<b class="sort-caret"></b></a></th>');
+
+    row.columns.add({name: "publisher", cell: "string"}, {render: false});
+    expect(row.$el.children().length).toBe(3);
+    expect(row.$el.children().last()[0].outerHTML).toBe('<th><a>price<b class="sort-caret"></b></a></th>');
+
+    row.columns.remove(row.columns.first());
+    expect(row.$el.children().length).toBe(2);
+    expect(row.$el.children().first()[0].outerHTML).toBe('<th><a>year<b class="sort-caret"></b></a></th>');
+  });
+
 });
 
 describe("A Header", function () {

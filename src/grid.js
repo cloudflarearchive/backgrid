@@ -126,6 +126,39 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
   },
 
   /**
+     Delegates to Backgrid.Columns#add for adding a column. Subviews can listen
+     to the `add` event from their internal `columns` if rerendering needs to
+     happen.
+
+     @param {Object} [options] Options for `Backgrid.Columns#add`.
+     @param {boolean} [options.render=true] Whether to render the column
+     immediately after insertion.
+
+     @chainable
+   */
+  insertColumn: function (column, options) {
+    var self = this;
+    options = options || {render: true};
+    self.columns.add(column, options);
+    return self;
+  },
+
+  /**
+     Delegates to Backgrid.Columns#remove for removing a column. Subviews can
+     listen to the `remove` event from the internal `columns` if rerendering
+     needs to happen.
+
+     @param {Object} [options] Options for `Backgrid.Columns#remove`.
+
+     @chainable
+   */
+  removeColumn: function (column, options) {
+    var self = this;
+    self.columns.remove(column, options);
+    return self;
+  },
+
+  /**
      Renders the grid's header, then footer, then finally the body.
    */
   render: function () {

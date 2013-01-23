@@ -94,4 +94,35 @@ describe("A Row", function () {
     expect($tds.eq(2).text()).toBe("1987-06-05");
   });
 
+  it("inserts or removes a cell if a column is added or removed", function () {
+    var row = new Backgrid.Row({
+      model: new Backbone.Model({
+        name: "name",
+        age: 18,
+        birthday: "1987-06-05"
+      }),
+      columns: [{
+        name: "name",
+        cell: "string"
+      }]
+    });
+
+    row.render();
+
+    row.columns.add({name: "age", cell: "integer"});
+    var $tds = row.$el.children();
+    expect($tds.length).toBe(2);
+    expect($tds.eq(1).text()).toBe("18");
+
+    row.columns.add({name: "birthday", cell: "date"}, {render: false});
+    $tds = row.$el.children();
+    expect($tds.length).toBe(2);
+    expect($tds.last().text()).toBe("18");
+
+    row.columns.remove(row.columns.first());
+    $tds = row.$el.children();
+    expect($tds.length).toBe(1);
+    expect($tds.last().text()).toBe("18");
+  });
+
 });
