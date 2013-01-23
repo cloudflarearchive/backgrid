@@ -1603,6 +1603,26 @@ Docs = {
         "sort": 3
       },
       {
+        "name": "insertColumn",
+        "fullName": "Backgrid.Grid.insertColumn",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Grid-method-insertColumn",
+        "meta": {
+          "chainable": true
+        },
+        "sort": 3
+      },
+      {
+        "name": "removeColumn",
+        "fullName": "Backgrid.Grid.removeColumn",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Grid-method-removeColumn",
+        "meta": {
+          "chainable": true
+        },
+        "sort": 3
+      },
+      {
         "name": "render",
         "fullName": "Backgrid.Grid.render",
         "icon": "icon-method",

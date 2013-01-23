@@ -49,7 +49,7 @@ describe("A Body", function () {
 
   it("renders table rows using the given column definitions and collection", function () {
     expect(body.el.tagName).toBe("TBODY");
-    $trs = body.$el.children();
+    var $trs = body.$el.children();
     expect($trs.length).toBe(3);
     expect(body.el.innerHTML).toBe('<tr><td class="string-cell">Alice\'s Adventures in Wonderland</td></tr>' +
                                    '<tr><td class="string-cell">A Tale of Two Cities</td></tr>' +
@@ -60,7 +60,7 @@ describe("A Body", function () {
     body.collection.add({
       title: "The Great Gatsby"
     });
-    $trs = body.$el.children();
+    var $trs = body.$el.children();
     expect($trs.length).toBe(4);
     expect($trs[3].outerHTML).toBe('<tr><td class="string-cell">The Great Gatsby</td></tr>');
   });
@@ -69,7 +69,7 @@ describe("A Body", function () {
     body.insertRow({
       title: "The Great Gatsby"
     });
-    $trs = body.$el.children();
+    var $trs = body.$el.children();
     expect($trs.length).toBe(4);
     expect($trs[3].outerHTML).toBe('<tr><td class="string-cell">The Great Gatsby</td></tr>');
   });
@@ -77,7 +77,7 @@ describe("A Body", function () {
   it("will remove a row from the DOM if a model is removed from its collection", function () {
     var twocities = body.collection.at(1);
     body.collection.remove(twocities);
-    $trs = body.$el.children();
+    var $trs = body.$el.children();
     expect($trs.length).toBe(2);
     expect(body.el.innerHTML).toBe('<tr><td class="string-cell">Alice\'s Adventures in Wonderland</td></tr>' +
                                    '<tr><td class="string-cell">The Catcher in the Rye</td></tr>');
@@ -86,7 +86,7 @@ describe("A Body", function () {
   it("will remove a row from the DOM is removeRow is called directly with a model", function () {
     var twocities = body.collection.at(1);
     body.removeRow(twocities);
-    $trs = body.$el.children();
+    var $trs = body.$el.children();
     expect($trs.length).toBe(2);
     expect(body.el.innerHTML).toBe('<tr><td class="string-cell">Alice\'s Adventures in Wonderland</td></tr>' +
                                    '<tr><td class="string-cell">The Catcher in the Rye</td></tr>');
@@ -96,7 +96,7 @@ describe("A Body", function () {
     body.collection.reset([{
       title: "Oliver Twist"
     }]);
-    $trs = body.$el.children();
+    var $trs = body.$el.children();
     expect($trs.length).toBe(1);
     expect(body.el.innerHTML).toBe('<tr><td class="string-cell">Oliver Twist</td></tr>');
   });

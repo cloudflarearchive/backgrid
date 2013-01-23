@@ -29,21 +29,38 @@ var Row = Backgrid.Row = Backbone.View.extend({
      @throws {TypeError} If options.columns or options.model is undefined.
    */
   initialize: function (options) {
-    requireOptions(options, ["columns", "model"]);
-    this.columns = options.columns;
-    if (!(this.columns instanceof Backbone.Collection)) {
-      this.columns = new Columns(this.columns);
-    }
-    this.listenTo(this.columns, "change:renderable", this.renderColumn);
+    var self = this;
 
-    var cells = this.cells = [];
-    for (var i = 0; i < this.columns.length; i++) {
-      var column = this.columns.at(i);
+    requireOptions(options, ["columns", "model"]);
+
+    var columns = self.columns = options.columns;
+    if (!(columns instanceof Backbone.Collection)) {
+      columns = self.columns = new Columns(columns);
+    }
+    self.listenTo(columns, "change:renderable", self.renderColumn);
+
+    var cells = self.cells = [];
+    for (var i = 0; i < columns.length; i++) {
+      var column = columns.at(i);
       cells.push(new (column.get("cell"))({
         column: column,
-        model: this.model
+        model: self.model
       }));
     }
+
+    self.listenTo(columns, "add", function (column, columns, options) {
+      options = _.defaults(options || {}, {render: true});
+      var at = columns.indexOf(column);
+      var cell = new (column.get("cell"))({
+        column: column,
+        model: self.model
+      });
+      cells.splice(at, 0, cell);
+      self.renderColumn(column, column.get("renderable") && options.render);
+    });
+    self.listenTo(columns, "remove", function (column) {
+      self.renderColumn(column, false);
+    });
   },
 
   /**
@@ -54,21 +71,34 @@ var Row = Backgrid.Row = Backbone.View.extend({
      @param {boolean} renderable
    */
   renderColumn: function (column, renderable) {
-    var spliceIndex = this.columns.indexOf(column);
-    if (renderable) {
-      var cell = this.cells[spliceIndex];
-      if (spliceIndex === 0) {
-        this.$el.prepend(cell.render().$el);
-      }
-      else if (spliceIndex === this.columns.length - 1) {
-        this.$el.append(cell.render().$el);
-      }
-      else {
-        this.$el.children().eq(spliceIndex).before(cell.render().$el);
+    var self = this;
+    var cells = self.cells;
+    var columns = self.columns;
+    var spliceIndex = -1;
+    for (var i = 0; i < cells.length; i++) {
+      var cell = cells[i];
+      if (cell.column.get("name") == column.get("name")) {
+        spliceIndex = i;
+        break;
       }
     }
-    else {
-      this.$el.children().eq(spliceIndex).detach();
+    if (spliceIndex != -1) {
+      var $el = self.$el;
+      if (renderable) {
+        var cell = cells[spliceIndex];
+        if (spliceIndex === 0) {
+          $el.prepend(cell.render().$el);
+        }
+        else if (spliceIndex === columns.length - 1) {
+          $el.append(cell.render().$el);
+        }
+        else {
+          $el.children().eq(spliceIndex).before(cell.render().$el);
+        }
+      }
+      else {
+        $el.children().eq(spliceIndex).detach();
+      }
     }
   },
 

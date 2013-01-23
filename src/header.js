@@ -229,23 +229,40 @@ var HeaderRow = Backgrid.HeaderRow = Backgrid.Row.extend({
      @throws {TypeError} If options.columns or options.collection is undefined.
    */
   initialize: function (options) {
+    var self = this;
+
     requireOptions(options, ["columns", "collection"]);
 
-    this.columns = options.columns;
-    if (!(this.columns instanceof Backbone.Collection)) {
-      this.columns = new Columns(this.columns);
+    var columns = self.columns = options.columns;
+    if (!(columns instanceof Backbone.Collection)) {
+      columns = self.columns = new Columns(columns);
     }
-    this.listenTo(this.columns, "change:renderable", this.renderColumn);
+    self.listenTo(columns, "change:renderable", self.renderColumn);
 
-    var cells = this.cells = [];
-    for (var i = 0; i < this.columns.length; i++) {
-      var column = this.columns.at(i);
+    var cells = self.cells = [];
+    for (var i = 0; i < columns.length; i++) {
+      var column = columns.at(i);
       var headerCell = column.get("headerCell") || options.headerCell || HeaderCell;
       cells.push(new headerCell({
         column: column,
-        collection: this.collection
+        collection: self.collection
       }));
     }
+
+    self.listenTo(columns, "add", function (column, columns, opts) {
+      opts = _.defaults(opts || {}, {render: true});
+      var at = columns.indexOf(column);
+      var headerCell = column.get("headerCell") || options.headerCell || HeaderCell;
+      headerCell = new headerCell({
+        column: column,
+        collection: self.collection
+      });
+      cells.splice(at, 0, headerCell);
+      self.renderColumn(column, column.get("renderable") && opts.render);
+    });
+    self.listenTo(columns, "remove", function (column) {
+      self.renderColumn(column, false);
+    });
   }
 
 });

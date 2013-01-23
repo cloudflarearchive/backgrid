@@ -25,6 +25,15 @@ describe("A Paginator", function () {
     paginator.render();
     expect(paginator.el.tagName).toBe("TFOOT");
     expect(paginator.$el.find("tr > td[colspan=1]").length).toBe(1);
+
+    paginator.columns.add({name: "year", cell: "integer"});
+    expect(paginator.$el.find("tr > td[colspan=2]").length).toBe(1);
+
+    paginator.columns.add({name: "price", cell: "number"}, {render: false});
+    expect(paginator.$el.find("tr > td[colspan=2]").length).toBe(1);
+
+    paginator.columns.remove(paginator.columns.last());
+    expect(paginator.$el.find("tr > td[colspan=1]").length).toBe(1);
   });
 
   it("renders page handles <= windowSize if not in infinite mode", function () {
