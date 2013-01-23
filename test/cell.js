@@ -1,3 +1,10 @@
+/*
+  backgrid
+  http://github.com/wyuenho/backgrid
+
+  Copyright (c) 2013 Jimmy Yuen Ho Wong
+  Licensed under the MIT @license.
+*/
 describe("An CellEditor", function () {
 
   it("throws TypeError if a formatter is not given", function () {
