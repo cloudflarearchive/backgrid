@@ -9,7 +9,7 @@
 var window = root;
 
 var Backgrid = root.Backgrid = {
-  VERSION: "0.1",
+  VERSION: "0.1.1",
   Extension: {}
 };
 
