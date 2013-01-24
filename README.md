@@ -104,6 +104,11 @@ Are you kidding me? This is a README file. Go to the [documentation](http://wyue
 
 ## Release History
 
+### 0.1.1
+
+- Fix issue where the default comparator is sorting incorrectly for
+  models. [Issue #23](https://github.com/wyuenho/backgrid/issues/23).
+
 ### 0.1
 
 - Initial Release
