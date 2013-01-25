@@ -27,13 +27,10 @@ functionalities easy.
 - Chrome 4+
 - Safari 4+
 - Firefox 4+
-- Opera 9+ [[2]](#note-2)
 
 ### Notes:
 
 <span id="note-1">[1]</span>: Both the desktop and mobile versions of the above browsers are supported.
-
-<span id="note-2">[2]</span>: Currently needs to double click on a cell to gain focus.
 
 ## Example
 
