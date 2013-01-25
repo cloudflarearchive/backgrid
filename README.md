@@ -17,7 +17,7 @@ functionalities easy.
 - Solid foundation. Based on Backbone.js.
 - Semantic and easily stylable. Just style with plain CSS like you would a normal HTML table.
 - Low learning curve. Works with plain old Backbone models and collections. Easy things are easy, hards things possible.
-- Highly modular and customizable. Componenets are just simple Backbone View classes, customization is easy if you already know Backbone.
+- Highly modular and customizable. Components are just simple Backbone View classes, customization is easy if you already know Backbone.
 - Lightweight. Extra features are separated into extensions, which keeps the bloat away.
 - Good documentation.
 
