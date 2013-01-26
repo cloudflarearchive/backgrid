@@ -20,7 +20,9 @@
       }, {
         "name": "CellEditors",
         "classes": [
-          "Backgrid.*CellEditor"
+          "Backgrid.CellEditor",
+          "Backgrid.InputCellEditor",
+          "Backgrid.SelectCellEditor"
         ]
       }, {
         "name": "Formatters",
