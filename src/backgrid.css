@@ -43,7 +43,7 @@
 
 .backgrid th {
   font-weight: bold;
-  pointer: cursor;
+  cursor: pointer;
 }
 
 .backgrid th a {
