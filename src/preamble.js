@@ -14,10 +14,13 @@ var Backgrid = root.Backgrid = {
 };
 
 function trim(s) {
-  if (String.prototype.trim) {
+  if (s === null || s === void(0)) {
+    return '';
+  }
+  else if (String.prototype.trim) {
     return String.prototype.trim.call(s, s);
   }
-
+  
   return s.replace(/^\s+|\s+$/g, "");
 }
 
