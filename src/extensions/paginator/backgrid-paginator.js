@@ -103,13 +103,8 @@
         }
       }
 
-      var pageIndexInWindow = $(e.target).text() * 1 - collection.state.firstPage;
       var state = collection.state;
-      var currentPage = state.firstPage === 0 ?
-        state.currentPage :
-        state.currentPage - 1;
-      var windowStart = Math.floor(currentPage / this.windowSize) * this.windowSize;
-      var pageIndex = windowStart + pageIndexInWindow;
+      var pageIndex = $(e.target).text() * 1 - state.firstPage;
       collection.getPage(state.firstPage === 0 ? pageIndex : pageIndex + 1);
     },
 
