@@ -73,12 +73,27 @@ describe("A Body", function () {
   });
 
   it("will render a new row by calling insertRow directly with a new model", function () {
+    books = new Books();
+
+    body = new Backgrid.Body({
+      columns: [{
+        name: "title",
+        cell: "string"
+      }],
+      collection: books
+    });
+
+    body.render();
+
     body.insertRow({
       title: "The Great Gatsby"
     });
+
+    console.dir(body.rows);
+
     var $trs = body.$el.children();
-    expect($trs.length).toBe(4);
-    expect($trs[3].outerHTML).toBe('<tr><td class="string-cell">The Great Gatsby</td></tr>');
+    expect($trs.length).toBe(1);
+    expect($trs[0].outerHTML).toBe('<tr><td class="string-cell">The Great Gatsby</td></tr>');
   });
 
   it("will remove a row from the DOM if a model is removed from its collection", function () {

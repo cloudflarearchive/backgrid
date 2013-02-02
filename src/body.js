@@ -34,27 +34,25 @@ var Body = Backgrid.Body = Backbone.View.extend({
   initialize: function (options) {
     requireOptions(options, ["columns", "collection"]);
 
-    var self = this;
-
-    self.columns = options.columns;
-    if (!(self.columns instanceof Backbone.Collection)) {
-      self.columns = new Columns(self.columns);
+    this.columns = options.columns;
+    if (!(this.columns instanceof Backbone.Collection)) {
+      this.columns = new Columns(this.columns);
     }
 
-    self.row = options.row || Row;
-    self.rows = self.collection.map(function (model) {
-      var row = new self.row({
-        columns: self.columns,
+    this.row = options.row || Row;
+    this.rows = this.collection.map(function (model) {
+      var row = new this.row({
+        columns: this.columns,
         model: model
       });
 
       return row;
-    });
+    }, this);
 
-    self.listenTo(self.collection, "add", self.insertRow);
-    self.listenTo(self.collection, "remove", self.removeRow);
-    self.listenTo(self.collection, "sort", self.refresh);
-    self.listenTo(self.collection, "reset", self.refresh);
+    this.listenTo(this.collection, "add", this.insertRow);
+    this.listenTo(this.collection, "remove", this.removeRow);
+    this.listenTo(this.collection, "sort", this.refresh);
+    this.listenTo(this.collection, "reset", this.refresh);
   },
 
   /**
@@ -82,14 +80,13 @@ var Body = Backgrid.Body = Backbone.View.extend({
   */
   insertRow: function (model, collection, options) {
 
-
     // insertRow() is called directly
     if (!(collection instanceof Backbone.Collection) && !options) {
       this.collection.add(model, (options = collection));
       return;
     }
 
-    options = options || {};
+    options = _.extend({render: true}, options || {});
 
     var row = new this.row({
       columns: this.columns,
@@ -100,15 +97,16 @@ var Body = Backgrid.Body = Backbone.View.extend({
 
     this.rows.splice(index, 0, row);
 
-    if (_.isUndefined(options.render) || options.render) {
+    var $rowEl = row.render().$el;
+
+    if (options.render) {
       if (index >= this.$el.children().length) {
-        this.$el.children().last().after(row.render().$el);
+        this.$el.append($rowEl);
       }
       else {
-        this.$el.children().eq(index).before(row.render().$el);
+        this.$el.children().eq(index).before($rowEl);
       }
     }
-
   },
 
   /**
