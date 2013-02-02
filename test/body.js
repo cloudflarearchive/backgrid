@@ -89,8 +89,6 @@ describe("A Body", function () {
       title: "The Great Gatsby"
     });
 
-    console.dir(body.rows);
-
     var $trs = body.$el.children();
     expect($trs.length).toBe(1);
     expect($trs[0].outerHTML).toBe('<tr><td class="string-cell">The Great Gatsby</td></tr>');
