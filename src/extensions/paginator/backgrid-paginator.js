@@ -55,19 +55,18 @@
        @param {boolean} [options.fastForwardHandleLabels] Whether to render fast forward buttons.
     */
     initialize: function (options) {
-      var self = this;
-      Backgrid.Footer.prototype.initialize.call(self, options);
-      self.listenTo(self.collection, "reset", self.render);
-      var columns = self.columns;
-      self.listenTo(columns, "add", function (column, columns, options) {
+      Backgrid.Footer.prototype.initialize.call(this, options);
+      this.listenTo(this.collection, "reset", this.render);
+      var columns = this.columns;
+      this.listenTo(columns, "add", function (column, columns, options) {
         options = _.defaults(options || {}, {render: true});
         if (column.get("renderable") && options.render) {
-          var $td = self.$el.find("td[colspan]");
+          var $td = this.$el.find("td[colspan]");
           $td.prop("colspan", $td.prop("colspan") + 1);
         }
       });
-      self.listenTo(columns, "remove", function () {
-        var $td = self.$el.find("td[colspan]");
+      this.listenTo(columns, "remove", function () {
+        var $td = this.$el.find("td[colspan]");
         $td.prop("colspan", $td.prop("colspan") - 1);
       });
     },
