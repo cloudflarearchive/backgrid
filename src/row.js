@@ -47,13 +47,12 @@ var Row = Backgrid.Row = Backbone.View.extend({
       }));
     }
 
-    var self = this;
     this.listenTo(columns, "add", function (column, columns, options) {
       options = _.defaults(options || {}, {render: true});
       var at = columns.indexOf(column);
       var cell = new (column.get("cell"))({
         column: column,
-        model: self.model
+        model: this.model
       });
       cells.splice(at, 0, cell);
       this.renderColumn(column, column.get("renderable") && options.render);
