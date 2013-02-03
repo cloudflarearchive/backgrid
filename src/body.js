@@ -180,12 +180,16 @@ var Body = Backgrid.Body = Backbone.View.extend({
      Renders all the rows inside this body.
   */
   render: function () {
-    var self = this;
-    self.$el.empty();
 
-    _.each(self.rows, function (row) {
-      self.$el.append(row.render().$el);
-    });
+    this.$el.empty();
+
+    var fragment = document.createDocumentFragment();
+    for (var i = 0; i < this.rows.length; i++) {
+      var row = this.rows[i];
+      fragment.appendChild(row.render().el);
+    }
+
+    this.el.appendChild(fragment);
 
     return this;
   }
