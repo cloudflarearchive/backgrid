@@ -61,6 +61,7 @@
   var _isArray = _.isArray;
   var _isFunction = _.isFunction;
   var _keys = _.keys;
+  var _isUndefined = _.isUndefined;
   var ceil = Math.ceil;
 
   var BBColProto = Backbone.Collection.prototype;
@@ -353,7 +354,7 @@
       var proto = {};
       for (i = 0, length = properties.length; i < length; i++) {
         prop = properties[i];
-        if (!_.isUndefined(thisProto[prop])) {
+        if (!_isUndefined(thisProto[prop])) {
           proto[prop] = thisProto[prop];
         }
       }
@@ -1075,7 +1076,8 @@
 
           // make sure the caller's intent is obeyed
           opts = opts || {};
-          opts.silent = options.silent;
+          if (_isUndefined(options.silent)) delete opts.silent;
+          else opts.silent = options.silent;
 
           var models = col.models;
           var currentPage = state.currentPage;
