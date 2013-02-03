@@ -97,14 +97,16 @@ var Body = Backgrid.Body = Backbone.View.extend({
 
     this.rows.splice(index, 0, row);
 
+    var $el = this.$el;
+    var $children = $el.children();
     var $rowEl = row.render().$el;
 
     if (options.render) {
-      if (index >= this.$el.children().length) {
-        this.$el.append($rowEl);
+      if (index >= $children.length) {
+        $el.append($rowEl);
       }
       else {
-        this.$el.children().eq(index).before($rowEl);
+        $children.eq(index).before($rowEl);
       }
     }
   },

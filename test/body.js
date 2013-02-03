@@ -70,6 +70,13 @@ describe("A Body", function () {
     var $trs = body.$el.children();
     expect($trs.length).toBe(4);
     expect($trs[3].outerHTML).toBe('<tr><td class="string-cell">The Great Gatsby</td></tr>');
+
+    body.collection.add({
+      title: "Les Misérables"
+    }, {at: 1});
+    $trs = body.$el.children();
+    expect($trs.length).toBe(5);
+    expect($trs[1].outerHTML).toBe('<tr><td class="string-cell">Les Misérables</td></tr>');
   });
 
   it("will render a new row by calling insertRow directly with a new model", function () {
@@ -92,6 +99,13 @@ describe("A Body", function () {
     var $trs = body.$el.children();
     expect($trs.length).toBe(1);
     expect($trs[0].outerHTML).toBe('<tr><td class="string-cell">The Great Gatsby</td></tr>');
+
+    body.insertRow({
+      title: "Les Misérables"
+    }, {at: 0});
+    $trs = body.$el.children();
+    expect($trs.length).toBe(2);
+    expect($trs[0].outerHTML).toBe('<tr><td class="string-cell">Les Misérables</td></tr>');
   });
 
   it("will remove a row from the DOM if a model is removed from its collection", function () {
