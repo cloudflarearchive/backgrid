@@ -135,4 +135,24 @@ describe("A Body", function () {
     expect(body.el.innerHTML).toBe('<tr><td class="string-cell">Oliver Twist</td></tr>');
   });
 
+  it("will render rows using the Row class supplied in the constructor options", function () {
+
+    var CustomRow = Backgrid.Row.extend({});
+
+    spyOn(CustomRow.prototype, "render").andCallThrough();
+
+    body = new Backgrid.Body({
+      columns: [{
+        name: "title",
+        cell: "string"
+      }],
+      collection: books,
+      row: CustomRow
+    });
+
+    body.render();
+
+    expect(CustomRow.prototype.render).toHaveBeenCalled();
+  });
+
 });

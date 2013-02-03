@@ -78,6 +78,7 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
      @param {Backbone.Collection} options.collection The collection of tabular model data to display.
      @param {Backgrid.Header} [options.header=Backgrid.Header] An optional Header class to override the default.
      @param {Backgrid.Body} [options.body=Backgrid.Body] An optional Body class to override the default.
+     @param {Backgrid.Row} [options.row=Backgrid.Row] An optional Row class to override the default.
      @param {Backgrid.Footer} [options.footer=Backgrid.Footer] An optional Footer class.
    */
   initialize: function (options) {
@@ -85,29 +86,20 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
 
     // Convert the list of column objects here first so the subviews don't have
     // to.
-    this.columns = options.columns;
-    if (!(this.columns instanceof Backbone.Collection)) {
-      this.columns = new Backgrid.Columns(this.columns);
+    if (!(options.columns instanceof Backbone.Collection)) {
+      options.columns = new Backgrid.Columns(options.columns);
     }
+    this.columns = options.columns;
 
     this.header = options.header || this.header;
-    this.header = new this.header({
-      columns: this.columns,
-      collection: this.collection
-    });
+    this.header = new this.header(options);
 
     this.body = options.body || this.body;
-    this.body = new this.body({
-      columns: this.columns,
-      collection: this.collection
-    });
+    this.body = new this.body(options);
 
     this.footer = options.footer || this.footer;
     if (this.footer) {
-      this.footer = new this.footer({
-        columns: this.columns,
-        collection: this.collection
-      });
+      this.footer = new this.footer(options);
     }
   },
 

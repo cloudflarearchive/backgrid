@@ -786,12 +786,25 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
             </div>
             <div class="span10">
               <h3>Customizing Row</h3>
+              <p class="label label-warning">Advanced Usage</p>
               <p>A row is simply an intermediary view class that constructs the
                 appropriate Cell class instances for rendering the model
                 columns.</p>
               <p>If you would like to override how a row is rendered, you may
-                define your own Row subclass and give it to a Body described
-                below.</p>
+                define your own Row subclass and give it to the Grid constructor
+                as an option:</p>
+              <textarea class="code-snippet" data-mode="javascript" data-eval="no">
+                var ZebraStrippingRow = Backgrid.Row.extend({
+                  // ...
+                });
+
+                var grid = new Backgrid.Grid({
+                  row: ZebraStrippingRow, // <-- Tell the new Body class to use ZebraStrippingRow to render rows.
+                  columns: [{
+                    //...
+                  }],
+                  collection: col
+                });</textarea>
             </div>
           </div>
           <div class="row-fluid">
@@ -802,27 +815,8 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
               </ul>
             </div>
             <div class="span10">
-              <h3>Using a Custom Row</h3>
-              <p class="label label-warning">Advanced Usage</p>
-              <p>If you have a custom Row class that you would like to use in
-                place of the default Row, you may supply it to the Body
-                constructor as follows:</p>
-              <textarea class="code-snippet" data-mode="javascript" data-eval="no">
-                var ZebraStrippingRow = Backgrid.Row.extend({
-                  // ...
-                });
-
-                var grid = new Backgrid.Grid({
-                  body: Backgrid.Body.extend({ // <-- Supplies a new Body class created on the spot to the grid.
-                    row: ZebraStrippingRow // <-- Tell the new Body class to use ZebraStrippingRow to render rows.
-                  }),
-                  columns: [{
-                    //...
-                  }],
-                  collection: col
-                });</textarea>
               <h3>Customizing Body</h3>
-              <p class="label label-warning">Advanced Usage</p>
+              <p class="label label-important">Truely Advanced Hacking</p>
               <p>Body is the intermediary view that coordinates between the
                 various parts of the grid. Specifically, the default
                 implementation is responsible for re-rendering the rows when any
@@ -830,6 +824,18 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
                 underlying collection. See
                 the <a href="api/index.html#!/api/Backgrid.Body">JSDoc</a> for
                 details.</p>
+              <textarea class="code-snippet" data-mode="javascript" data-eval="no">
+                var MyBody = Backgrid.Body.extend({
+                  // I really don't know why you would do this, but you can if you want
+                });
+
+                var grid = new Backgrid.Grid({
+                  body: MyBody,
+                  columns: [{
+                    // ...
+                  }],
+                  collection: col
+                });</textarea>
             </div>
           </div>
           <div class="row-fluid">
@@ -990,11 +996,7 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
                   }
                 });
 
-                var issues = new Issues();
-
-                // If you aren't bootstrapping your data via the constructor, you
-                // need to issue a fetch first.
-                issues.getFirstPage().done(function () { // Do work only after the fetching is done</textarea>
+                var issues = new Issues();</textarea>
               <h3>Configuring Backgrid.Extention.Paginator</h3>
               <p>Backgrid.Extension.Paginator supports a few configuration
                 options to adjust to the size of the result set.</p>
@@ -1049,7 +1051,8 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
                 });
 
                 $("#example-3-result").append(issueGrid.render().el);
-              });</textarea>
+
+                issues.getFirstPage();</textarea>
             </div>
             <div class="span12">
               <h3>Result</h3>

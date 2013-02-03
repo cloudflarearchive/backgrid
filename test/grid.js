@@ -68,4 +68,37 @@ describe("A Grid", function () {
     expect(grid.trigger.calls.length).toBe(1);
     expect(grid.trigger).toHaveBeenCalledWith("rendered");
   });
+
+  it("will render a table with the header, body, footer and row classes supplied in the constructor options", function () {
+
+    var CustomHeader = Backgrid.Header.extend({});
+    var CustomBody = Backgrid.Body.extend({});
+    var CustomRow = Backgrid.Row.extend({});
+    var CustomFooter = Backgrid.Footer.extend({});
+
+    spyOn(CustomHeader.prototype, "render").andCallThrough();
+    spyOn(CustomBody.prototype, "render").andCallThrough();
+    spyOn(CustomRow.prototype, "render").andCallThrough();
+    spyOn(CustomFooter.prototype, "render").andCallThrough();
+
+    grid = new Backgrid.Grid({
+      columns: [{
+        name: "title",
+        cell: "string"
+      }],
+      collection: books,
+      header: CustomHeader,
+      body: CustomBody,
+      row: CustomRow,
+      footer: CustomFooter
+    });
+
+    grid.render();
+
+    expect(CustomHeader.prototype.render).toHaveBeenCalled();
+    expect(CustomBody.prototype.render).toHaveBeenCalled();
+    expect(CustomRow.prototype.render).toHaveBeenCalled();
+    expect(CustomFooter.prototype.render).toHaveBeenCalled();
+  });
+
 });
