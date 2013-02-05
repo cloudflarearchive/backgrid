@@ -446,6 +446,11 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
                 // Remove a column
                 var genderCol = grid.columns.where({ name: "gender" });
                 grid.removeColumn(genderCol);</textarea>
+              <p>Sometimes you might also want to access the individual rows and
+                cells directly. You can traverse into the views like so:</p>
+              <textarea class="code-snippet" data-mode="javascript">
+                // *beware* the cells arrays contain hidden columns too
+                grid.body.rows[3].cells[2].render();</textarea>
               <h3>Customization</h3>
               <p>The various ways of customizing a grid are described in the
                 following sections.</p>
