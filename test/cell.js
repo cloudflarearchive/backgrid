@@ -505,6 +505,16 @@ describe("A DatetimeCell", function () {
     expect(cell.editor.prototype.attributes.placeholder).toBe("YYYY-MM-DDTHH:mm:ss.SSS");
   });
 
+  it("is blank when the date value is null", function() {
+    cell = new (Backgrid.DatetimeCell.extend({
+      includeMilli: true
+    }))({
+      model: new Backbone.Model({ datetime: null }),
+      column: column
+    });
+    expect(cell.$el.html()).toBe('');
+  });
+
 });
 
 describe("A DateCell", function () {
@@ -522,7 +532,6 @@ describe("A DateCell", function () {
     cell.render();
     expect(cell.$el.hasClass("date-cell")).toBe(true);
   });
-
 });
 
 describe("A TimeCell", function () {
@@ -540,7 +549,6 @@ describe("A TimeCell", function () {
     cell.render();
     expect(cell.$el.hasClass("time-cell")).toBe(true);
   });
-
 });
 
 describe("A BooleanCell", function () {
@@ -845,7 +853,7 @@ describe("A SelectCell", function () {
         })
       });
     }).toThrow(new TypeError("'optionValues' is required"));
-    
+
   });
 
   it("applies a select-cell class to the cell", function () {

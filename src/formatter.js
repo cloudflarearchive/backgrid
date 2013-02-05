@@ -190,12 +190,14 @@ _.extend(DatetimeFormatter.prototype, {
   ISO_SPLITTER_RE: /T|Z| +/,
 
   _convert: function (data, validate) {
-    data = trim(data);
+    if (_.isNull(data) || _.isUndefined(data)) return data;
+
+    data = trim(_.isString(data) ? data : '');
     var parts = data.split(this.ISO_SPLITTER_RE) || [];
 
     var date = this.DATE_RE.test(parts[0]) ? parts[0] : '';
     var time = date && parts[1] ? parts[1] : this.TIME_RE.test(parts[0]) ? parts[0] : '';
-    
+
     var YYYYMMDD = this.DATE_RE.exec(date) || [];
     var HHmmssSSS = this.TIME_RE.exec(time) || [];
 
