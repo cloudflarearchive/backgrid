@@ -242,7 +242,7 @@ _.extend(DatetimeFormatter.prototype, {
 
      @member Backgrid.DatetimeFormatter
      @param {string} rawData
-     @return {string} ISO-8601 string in UTC.
+     @return {string|null|undefined} ISO-8601 string in UTC. Null and undefined values are returned as is.
   */
   fromRaw: function (rawData) {
     return this._convert(rawData);
