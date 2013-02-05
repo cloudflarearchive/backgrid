@@ -70,9 +70,8 @@ var Row = Backgrid.Row = Backbone.View.extend({
      @param {boolean} renderable
    */
   renderColumn: function (column, renderable) {
-    var self = this;
-    var cells = self.cells;
-    var columns = self.columns;
+    var cells = this.cells;
+    var columns = this.columns;
     var spliceIndex = -1;
     for (var i = 0; i < cells.length; i++) {
       var cell = cells[i];
@@ -82,7 +81,7 @@ var Row = Backgrid.Row = Backbone.View.extend({
       }
     }
     if (spliceIndex != -1) {
-      var $el = self.$el;
+      var $el = this.$el;
       if (renderable) {
         var cell = cells[spliceIndex];
         if (spliceIndex === 0) {
