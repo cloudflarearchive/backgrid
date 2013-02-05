@@ -177,7 +177,7 @@ describe("A DatetimeFormatter", function () {
 
     expect(function() {
       formatter.fromRaw(false);
-    }).toThrow(new TypeError("Invalid value type. Expected a String"));
+    }).toThrow();
   });
 
   it(".toRaw() returns undefined when converting an ISO datetime string to an ISO date string", function () {

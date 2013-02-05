@@ -121,7 +121,7 @@ _.extend(NumberFormatter.prototype, {
   toRaw: function (formattedData) {
     var rawData = '';
 
-    var thousands = trim(formattedData).split(this.orderSeparator);
+    var thousands = formattedData.trim().split(this.orderSeparator);
     for (var i = 0; i < thousands.length; i++) {
       rawData += thousands[i];
     }
@@ -191,7 +191,7 @@ _.extend(DatetimeFormatter.prototype, {
 
   _convert: function (data, validate) {
     if (_.isNull(data) || _.isUndefined(data)) return data;
-    data = trim(data);
+    data = data.trim();
     var parts = data.split(this.ISO_SPLITTER_RE) || [];
 
     var date = this.DATE_RE.test(parts[0]) ? parts[0] : '';
