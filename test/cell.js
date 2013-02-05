@@ -281,6 +281,27 @@ describe("A Cell", function () {
     expect(cell.$el.hasClass("editor")).toBe(true);
   });
 
+  describe("when the model value has changed", function () {
+    it("refreshes during display mode", function () {
+      cell.render();
+      book.set("title", "another title");
+      expect(cell.$el.text()).toBe("another title");
+    });
+
+    it("does not refresh during display mode if the change was silenced", function () {
+      cell.render();
+      book.set("title", "another title", {silent: true});
+      expect(cell.$el.text()).toBe("title");
+    });
+
+    it("does not refresh during edit mode", function () {
+      cell.render();
+      cell.$el.click();
+      book.set("title", "another title");
+      expect(cell.$el.find("input[type=text]").val(), "title");
+    });
+  });
+
 });
 
 describe("A StringCell", function () {
@@ -596,6 +617,27 @@ describe("A BooleanCell", function () {
     expect(cell.model.get(cell.column.get("name"))).toBe(false);
   });
 
+  describe("when the model value has changed", function () {
+    it("refreshes during display mode", function () {
+      cell.render();
+      model.set("ate", false);
+      expect(cell.$el.find("input[type=checkbox]").prop("checked")).toBe(false);
+    });
+
+    it("does not refresh during display mode if the change was silenced", function () {
+      cell.render();
+      model.set("ate", false, {silent: true});
+      expect(cell.$el.find("input[type=checkbox]").prop("checked")).toBe(true);
+    });
+
+    it("does not refresh during edit mode", function () {
+      cell.render();
+      cell.$el.click();
+      model.set("ate", false);
+      expect(cell.$el.find("input[type=checkbox]").prop("checked")).toBe(true);
+    });
+  });
+
 });
 
 describe("A SelectCellEditor", function () {
@@ -857,7 +899,7 @@ describe("A SelectCell", function () {
         cell: "select"
       },
       model: new Backbone.Model({
-        gender: "m"
+        gender: 2
       })
     });
 
@@ -916,6 +958,53 @@ describe("A SelectCell", function () {
       cell.render();
 
     }).toThrow(new TypeError("'optionValues' must be of type {Array.<Array>|Array.<{name: string, values: Array.<Array>}>}"));
+  });
+
+  describe("when the model value has changed", function () {
+
+    var cell;
+    var model;
+
+    var optionValues = [
+      ["Boy", 1],
+      ["Girl", 2]
+    ];
+
+    beforeEach(function () {
+      model = new Backbone.Model({
+        gender: 2
+      });
+
+      cell = new (Backgrid.SelectCell.extend({
+        optionValues: optionValues
+      }))({
+        column: {
+          name: "gender",
+          cell: "select"
+        },
+        model: model
+      });
+    });
+
+    it("refreshes during display mode", function () {
+      cell.render();
+      model.set("gender", 1);
+      expect(cell.$el.text()).toBe("Boy");
+    });
+
+    it("does not refresh during display mode if the change was silenced", function () {
+      cell.render();
+      model.set("gender", 1, {silent: true});
+      expect(cell.$el.text()).toBe("Girl");
+    });
+
+    it("does not refresh during edit mode", function () {
+      cell.render();
+      cell.$el.click();
+      model.set("gender", 1);
+      expect(cell.$el.find("option[selected]").val()).toBe("2");
+      expect(cell.$el.find("option[selected]").text()).toBe("Girl");
+    });
   });
 
 });
