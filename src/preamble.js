@@ -14,6 +14,8 @@ var Backgrid = root.Backgrid = {
 };
 
 function trim(s) {
+  if (!_.isString(s)) throw new TypeError("Invalid value type. Expected a String");
+
   if (String.prototype.trim) {
     return String.prototype.trim.call(s, s);
   }

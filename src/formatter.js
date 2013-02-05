@@ -191,8 +191,7 @@ _.extend(DatetimeFormatter.prototype, {
 
   _convert: function (data, validate) {
     if (_.isNull(data) || _.isUndefined(data)) return data;
-
-    data = trim(_.isString(data) ? data : '');
+    data = trim(data);
     var parts = data.split(this.ISO_SPLITTER_RE) || [];
 
     var date = this.DATE_RE.test(parts[0]) ? parts[0] : '';

@@ -170,11 +170,14 @@ describe("A DatetimeFormatter", function () {
     expect(formatter.fromRaw(undefined)).toBeUndefined();
   });
 
-  it(".fromRaw() treats invalid values as empty strings", function () {
+  it(".fromRaw() throws an exception on invalid values", function () {
     var formatter = new Backgrid.DatetimeFormatter({
       includeDate: true
     });
-    expect(formatter.fromRaw(false)).toBe('1899-12-31T00:00:00Z');
+
+    expect(function() {
+      formatter.fromRaw(false);
+    }).toThrow(new TypeError("Invalid value type. Expected a String"));
   });
 
   it(".toRaw() returns undefined when converting an ISO datetime string to an ISO date string", function () {
@@ -278,19 +281,4 @@ describe("A DatetimeFormatter", function () {
     });
     expect(formatter.toRaw("05:30:29.123")).toBe("05:30:29.123");
   });
-
-  it(".toRaw() ignores null values", function () {
-    var formatter = new Backgrid.DatetimeFormatter({
-      includeDate: true
-    });
-    expect(formatter.toRaw(null)).toBeNull();
-  });
-
-  it(".toRaw() ignores undefined values", function () {
-    var formatter = new Backgrid.DatetimeFormatter({
-      includeDate: true
-    });
-    expect(formatter.toRaw(undefined)).toBeUndefined();
-  });
-
 });
