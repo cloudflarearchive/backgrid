@@ -16,7 +16,7 @@ describe("A CellFormatter", function () {
   });
 
   it("must have a function toRaw that accepts 1 parameter and passes the argument thru", function () {
-    
+
     var formatter = new Backgrid.CellFormatter;
 
     expect(formatter.toRaw).toBeDefined();
@@ -74,7 +74,7 @@ describe("A NumberFormatter", function () {
   it(".toRaw() can convert a number string with any number of decimals, 1000s" +
      " separated by any string and the decimal part separated by any string to" +
      " a number", function () {
-    
+
     var formatter = new Backgrid.NumberFormatter({
       decimals: 3,
       orderSeparator: '.',
@@ -154,6 +154,30 @@ describe("A DatetimeFormatter", function () {
       includeMilli: true
     });
     expect(formatter.fromRaw("05:30:29.123")).toBe("05:30:29.123");
+  });
+
+  it(".fromRaw() ignores null values", function () {
+    var formatter = new Backgrid.DatetimeFormatter({
+      includeDate: true
+    });
+    expect(formatter.fromRaw(null)).toBeNull();
+  });
+
+  it(".fromRaw() ignores undefined values", function () {
+    var formatter = new Backgrid.DatetimeFormatter({
+      includeDate: true
+    });
+    expect(formatter.fromRaw(undefined)).toBeUndefined();
+  });
+
+  it(".fromRaw() throws an exception on invalid values", function () {
+    var formatter = new Backgrid.DatetimeFormatter({
+      includeDate: true
+    });
+
+    expect(function() {
+      formatter.fromRaw(false);
+    }).toThrow(new TypeError("Invalid value type. Expected a String"));
   });
 
   it(".toRaw() returns undefined when converting an ISO datetime string to an ISO date string", function () {
@@ -257,5 +281,4 @@ describe("A DatetimeFormatter", function () {
     });
     expect(formatter.toRaw("05:30:29.123")).toBe("05:30:29.123");
   });
-
 });
