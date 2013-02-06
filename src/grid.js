@@ -71,7 +71,7 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
   footer: null,
 
   /**
-     Initializes the a Grid instance.
+     Initializes a Grid instance.
 
      @param {Object} options
      @param {Backbone.Collection.<Backgrid.Column>|Array.<Backgrid.Column>|Array.<Object>} options.columns Column metadata.
@@ -87,7 +87,7 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
     // Convert the list of column objects here first so the subviews don't have
     // to.
     if (!(options.columns instanceof Backbone.Collection)) {
-      options.columns = new Backgrid.Columns(options.columns);
+      options.columns = new Columns(options.columns);
     }
     this.columns = options.columns;
 
@@ -172,6 +172,18 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
     this.trigger("rendered");
 
     return this;
+  },
+
+  /**
+     Clean up this grid and its subviews.
+
+     @chainable
+   */
+  remove: function () {
+    this.header.remove.apply(this.header, arguments);
+    this.body.remove.apply(this.body, arguments);
+    this.footer && this.footer.remove.apply(this.footer, arguments);
+    return Backbone.View.prototype.remove.apply(this, arguments);
   }
 
 });

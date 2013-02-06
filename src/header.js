@@ -308,6 +308,16 @@ var Header = Backgrid.Header = Backbone.View.extend({
   render: function () {
     this.$el.append(this.row.render().$el);
     return this;
+  },
+
+  /**
+     Clean up this header and its row.
+
+     @chainable
+   */
+  remove: function () {
+    this.row.remove.apply(this.row, arguments);
+    return Backbone.View.prototype.remove.apply(this, arguments);
   }
 
 });

@@ -101,4 +101,8 @@ describe("A Grid", function () {
     expect(CustomFooter.prototype.render).toHaveBeenCalled();
   });
 
+  it("will clean up all its decendant views when remove is called", function () {
+    expect(grid.remove().constructor).toBe(Backgrid.Grid);
+  });
+
 });

@@ -118,6 +118,19 @@ var Row = Backgrid.Row = Backbone.View.extend({
     this.el.appendChild(fragment);
 
     return this;
+  },
+
+  /**
+     Clean up this row and its cells.
+
+     @chainable
+   */
+  remove: function () {
+    for (var i = 0; i < this.cells.length; i++) {
+      var cell = this.cells[i];
+      cell.remove.apply(cell, arguments);
+    }
+    return Backbone.View.prototype.remove.apply(this, arguments);
   }
 
 });

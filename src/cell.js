@@ -311,12 +311,17 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
     this.delegateEvents();
   },
 
+  /**
+     Clean up this cell.
+
+     @chainable
+   */
   remove: function () {
-    Backbone.View.prototype.remove.apply(this, arguments);
     if (this.currentEditor) {
-      this.currentEditor.remove();
+      this.currentEditor.remove.apply(this, arguments);
       delete this.currentEditor;
     }
+    return Backbone.View.prototype.remove.apply(this, arguments);
   }
 
 });
