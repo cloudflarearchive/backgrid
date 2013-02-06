@@ -204,7 +204,7 @@
        @property {string} [queryParams.currentPage="page"]
        @property {string} [queryParams.pageSize="per_page"]
        @property {string} [queryParams.totalPages="total_pages"]
-       @property {string} [queryParams.totalRecords="total"]
+       @property {string} [queryParams.totalRecords="total_entries"]
        @property {string} [queryParams.sortKey="sort_by"]
        @property {string} [queryParams.order="order"]
        @property {string} [queryParams.directions={"-1": "asc", "1": "desc"}] A
@@ -415,8 +415,9 @@
           else {
             fullIndex = pageStart + pageCol.indexOf(model);
             colToAdd = fullCol;
-            var at = options && options.at || fullIndex;
-            addAt = (at < pageStart || at >= pageEnd) ? at : fullIndex;
+            var addAt = options && !_.isUndefined(options.at) ?
+              options.at + pageStart :
+              fullIndex;
           }
 
           ++state.totalRecords;
@@ -424,7 +425,7 @@
 
           if (colToAdd) {
             colToAdd.add(model, _extend({}, options || {}, {at: addAt}));
-            pageCol.pop();
+            if (pageCol.length > pageSize) pageCol.pop();
           }
         }
 
@@ -468,7 +469,11 @@
           }
 
           if (event == "reset" || collection == fullCol) {
-            state.totalRecords = fullCol.models.length;
+            if (!(state.totalRecords = fullCol.models.length)) {
+              state.totalRecords = null;
+              state.totalPages = null;
+              state.lastPage = state.currentPage = state.firstPage;
+            }
             pageCol.state = pageCol._checkState(state);
             if (collection == pageCol) fullCol.trigger(event, fullCol, options);
             resetQuickly(pageCol, fullCol.models.slice(pageStart, pageEnd),
@@ -479,19 +484,9 @@
         _each(_keys(handlers), function (event) {
           var handler = handlers[event];
           _each([pageCol, fullCol], function (col) {
-            if (col._events) {
-              col.on(event, handler);
-              var callbacks = col._events[event];
-              callbacks.unshift(callbacks.pop());
-            }
-            else {
-              var list = col._callbacks[event] || {};
-              var tail = _isEmpty(list) ?
-                tail = list.next = list.tail = {} :
-                tail = list.tail;
-              var node = {next: list.next, context: void 0, callback: handler};
-              col._callbacks[event] = {tail: tail, next: node};
-            }
+            col.on(event, handler);
+            var callbacks = col._events[event];
+            callbacks.unshift(callbacks.pop());
           });
         });
       };
@@ -1092,13 +1087,10 @@
             var head = fullModels.slice(0, pageStart);
             var tail = fullModels.slice(pageStart + pageSize);
             fullModels = head.concat(models).concat(tail);
-            if (_isFunction(fullCollection.update)) {
-              fullCollection.update(fullModels,
-                                    _extend({silent: true, sort: false}, opts));
-              if (fullCollection.comparator) fullCollection.sort();
-              fullCollection.trigger("reset", fullCollection, opts);
-            }
-            else resetQuickly(fullCollection, fullModels, opts);
+            fullCollection.update(fullModels,
+                                  _extend({silent: true, sort: false}, opts));
+            if (fullCollection.comparator) fullCollection.sort();
+            fullCollection.trigger("reset", fullCollection, opts);
           }
           else { // fetching new page
             fullCollection.add(models, _extend({at: fullCollection.length,
