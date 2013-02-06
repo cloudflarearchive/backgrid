@@ -16,10 +16,13 @@ describe("A Grid", function () {
   var grid;
   beforeEach(function () {
     books = new Books([{
+      id: 1,
       title: "Alice's Adventures in Wonderland"
     }, {
+      id: 2,
       title: "A Tale of Two Cities"
     }, {
+      id: 3,
       title: "The Catcher in the Rye"
     }]);
 
@@ -103,6 +106,19 @@ describe("A Grid", function () {
 
   it("will clean up all its decendant views when remove is called", function () {
     expect(grid.remove().constructor).toBe(Backgrid.Grid);
+  });
+
+  it("will refresh on columns reset", function () {
+    grid.render();
+    grid.columns.reset([{
+      name: "id",
+      cell: "integer"
+    }]);
+    expect(grid.el.innerHTML).toBe('<thead><tr><th><a>id<b class="sort-caret"></b></a></th></tr></thead>' +
+                                   '<tfoot></tfoot>' +
+                                   '<tbody><tr><td class="integer-cell">1</td></tr>' +
+                                   '<tr><td class="integer-cell">2</td></tr>' +
+                                   '<tr><td class="integer-cell">3</td></tr></tbody>');
   });
 
 });

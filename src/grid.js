@@ -101,6 +101,13 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
     if (this.footer) {
       this.footer = new this.footer(options);
     }
+
+    this.listenTo(this.columns, "reset", function () {
+      this.header = new (this.header.remove().constructor)(options);
+      this.body = new (this.body.remove().constructor)(options);
+      if (this.footer) this.footer = new (this.footer.remove().constructor)(options);
+      this.render();
+    });
   },
 
   /**
