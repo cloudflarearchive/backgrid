@@ -230,7 +230,7 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
     this.editor = resolveNameToClass(this.editor, "CellEditor");
     this.listenTo(this.model, "change:" + this.column.get("name"), function () {
       if (!this.$el.hasClass("editor")) this.render();
-    }, this);
+    });
   },
 
   /**
