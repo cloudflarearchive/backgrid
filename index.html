@@ -23,29 +23,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <meta name="keywords" content="backgrid,backgrid.js,backbone,backbone.js,datagrid,grid,paginator,javascript" />
     <meta name="description" content="Finally, an easily stylable semantic HTML data grid widget with a Javascript API that doesn&apos;t suck." />
-    
+
     <title>Backgrid.js</title>
-    
-    <link rel="stylesheet" href="assets/css/bootstrap.css" />
-    <link rel="stylesheet" href="assets/css/bootstrap-responsive.css" />
-    <link rel="stylesheet" href="assets/css/select2.css" />
+
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.2.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.2.2/css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/3.2/select2.css" />
     <link rel="stylesheet" href="codemirror/lib/codemirror.css" />
     <link rel="stylesheet" href="codemirror/theme/ambiance.css" />
-    <link rel="stylesheet" href="lib/backgrid.css" />
-    <link rel="stylesheet" href="lib/extensions/paginator/backgrid-paginator.css" />
-    <link rel="stylesheet" href="lib/extensions/text-cell/backgrid-text-cell.css" />
-    <link rel="stylesheet" href="lib/extensions/moment-cell/backgrid-moment-cell.css" />
-    <link rel="stylesheet" href="lib/extensions/select2-cell/backgrid-select2-cell.css" />
+    <link rel="stylesheet" href="lib/backgrid.min.css" />
+    <link rel="stylesheet" href="lib/extensions/paginator/backgrid-paginator.min.css" />
+    <link rel="stylesheet" href="lib/extensions/text-cell/backgrid-text-cell.min.css" />
+    <link rel="stylesheet" href="lib/extensions/moment-cell/backgrid-moment-cell.min.css" />
+    <link rel="stylesheet" href="lib/extensions/select2-cell/backgrid-select2-cell.min.css" />
     <link rel="stylesheet" href="assets/css/doc.css" />
     <!--[if lt IE 9]>
         <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
         <![endif]-->
-
-<!-- start Mixpanel --><script type="text/javascript">(function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;a=e.createElement("script");a.type="text/javascript";a.async=!0;a.src=("https:"===e.location.protocol?"https:":"http:")+'//cdn.mxpnl.com/libs/mixpanel-2.2.min.js';f=e.getElementsByTagName("script")[0];f.parentNode.insertBefore(a,f);b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==
-typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.increment people.append people.track_charge people.clear_charges people.delete_user".split(" ");for(g=0;g<i.length;g++)f(c,i[g]);b._i.push([a,
-e,d])};b.__SV=1.2}})(document,window.mixpanel||[]);
-mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
-
   </head>
   <body>
     <div id="main">
@@ -68,9 +62,9 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
                       <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
-                      <li><a href="#features" onclick="mixpanel.track('Features')">Features</a></li>
-                      <li><a href="#getting-started" onclick="mixpanel.track('Getting Started')">Getting Started</a></li>
-                      <li><a href="#examples" onclick="mixpanel.track('Examples')">Examples</a></li>
+                      <li><a href="#features">Features</a></li>
+                      <li><a href="#getting-started">Getting Started</a></li>
+                      <li><a href="#examples">Examples</a></li>
                     </ul>
                   </li>
                   <li class="dropdown">
@@ -79,22 +73,22 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
                       <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
-                      <li><a href="#api-grid" onclick="mixpanel.track('Grid')">Grid</a></li>
-                      <li><a href="#api-column" onclick="mixpanel.track('Column')">Column</a></li>
-                      <li><a href="#api-cell" onclick="mixpanel.track('Cell')">Cell</a></li>
-                      <li><a href="#api-formatter" onclick="mixpanel.track('Formatter')">Formatter</a></li>
-                      <li><a href="#api-header" onclick="mixpanel.track('Header')">Header</a></li>
-                      <li><a href="#api-row" onclick="mixpanel.track('Row')">Row</a></li>
-                      <li><a href="#api-body" onclick="mixpanel.track('Body')">Body</a></li>
-                      <li><a href="#api-footer" onclick="mixpanel.track('Footer')">Footer</a></li>
+                      <li><a href="#api-grid">Grid</a></li>
+                      <li><a href="#api-column">Column</a></li>
+                      <li><a href="#api-cell">Cell</a></li>
+                      <li><a href="#api-formatter">Formatter</a></li>
+                      <li><a href="#api-header">Header</a></li>
+                      <li><a href="#api-row">Row</a></li>
+                      <li><a href="#api-body">Body</a></li>
+                      <li><a href="#api-footer">Footer</a></li>
                       <li class="divider"></li>
                       <li><a href="#extensions"><strong class="muted">Extensions</strong></a></li>
                       <li class="divider"></li>
-                      <li><a href="#api-paginator" onclick="mixpanel.track('Paginator')">Paginator</a></li>
-                      <li><a href="#api-text-cell" onclick="mixpanel.track('TextCell')">TextCell</a></li>
-                      <li><a href="#api-moment-cell" onclick="mixpanel.track('MomentCell')">MomentCell</a></li>
-                      <li><a href="#api-select2-cell" onclick="mixpanel.track('Select2Cell')">Select2Cell</a></li>
-                      <li><a href="#api-latlng-cell" onclick="mixpanel.track('LatLngCell')">LatLngCell</a></li>
+                      <li><a href="#api-paginator">Paginator</a></li>
+                      <li><a href="#api-text-cell">TextCell</a></li>
+                      <li><a href="#api-moment-cell">MomentCell</a></li>
+                      <li><a href="#api-select2-cell">Select2Cell</a></li>
+                      <li><a href="#api-latlng-cell">LatLngCell</a></li>
                     </ul>
                   </li>
                   <li class="dropdown">
@@ -103,20 +97,20 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
                       <b class="caret"></b>
                     </a>
                     <ul class="dropdown-menu">
-                      <li><a href="#styling" onclick="mixpanel.track('Styling')">Styling</a></li>
+                      <li><a href="#styling">Styling</a></li>
                       <li class="divider"></li>
-                      <li><a href="#faq" onclick="mixpanel.track('FAQ')">FAQ</a></li>
-                      <li><a href="#changelog" onclick="mixpanel.track('Change Log')">Change Log</a></li>
-                      <li><a href="#license" onclick="mixpanel.track('License')">License</a></li>
+                      <li><a href="#faq">FAQ</a></li>
+                      <li><a href="https://github.com/wyuenho/backgrid/blob/master/CHANGELOG.md" target="_blank">Change Log</a></li>
+                      <li><a href="#license">License</a></li>
                     </ul>
                   </li>
                   <li>
-                    <a href="https://coderwall.com/wyuenho" onclick="mixpanel.track('Endorse')"><img alt="Endorse wyuenho on Coderwall" src="http://api.coderwall.com/wyuenho/endorsecount.png" /></a>
+                    <a href="https://coderwall.com/wyuenho"><img alt="Endorse wyuenho on Coderwall" src="http://api.coderwall.com/wyuenho/endorsecount.png" /></a>
                   </li>
                 </ul>
               </div>
             </div>
-            <a class="visible-desktop" href="https://github.com/wyuenho/backgrid" onclick="mixpanel.track('Fork me on Github')">
+            <a class="visible-desktop" href="https://github.com/wyuenho/backgrid">
               <img style="position: absolute; top: 0; right: 0; border: 0;" src="assets/img/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub">
             </a>
           </div>
@@ -129,14 +123,14 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
             Backgrid.js is a set of components for
             building <strong>semantic</strong> and <strong>easily
             stylable</strong> <strong>data grid</strong> widgets.</p>
-          <p class="lead">It offers a simple, intuitive 
-              programming interface that makes easy things easy, but <em>hard things possible</em> 
+          <p class="lead">It offers a simple, intuitive
+              programming interface that makes easy things easy, but <em>hard things possible</em>
               when dealing with tabular data.</p>
           <p>
-            <a class="btn btn-large btn-success" href="#examples" onclick="mixpanel.track('See Example')">See Examples</a>
+            <a class="btn btn-large btn-success" href="#examples">See Examples</a>
             <a class="btn btn-large btn-primary hidden-phone hidden-tablet"
                href="https://github.com/wyuenho/backgrid/tags"
-               target="_blank" onclick="mixpanel.track('Download')">Download</a>
+               target="_blank">Download v0.1.2</a>
           </p>
         </section>
         <div id="features">
@@ -239,12 +233,12 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
                 <div class="span6">
                   <textarea class="code-snippet" data-mode="javascript" data-eval="yes">
                     var Territory = Backbone.Model.extend({});
-                    
+
                     var Territories = Backbone.Collection.extend({
                       model: Territory,
                       url: "examples/territories.json"
                     });
-                    
+
                     var territories = new Territories();</textarea>
                 </div>
               </div>
@@ -290,17 +284,17 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
                       cell: "uri" // Renders the value in an HTML &lt;a&gt; element
                     }];
 
-                    // Fetch some countries from the url
-                    territories.fetch().done(function () {
-                      // Initialize a new Grid instance
-                      var grid = new Backgrid.Grid({
-                        columns: columns,
-                        collection: territories
-                      });
+                    // Initialize a new Grid instance
+                    var grid = new Backgrid.Grid({
+                      columns: columns,
+                      collection: territories
+                    });
 
-                      // Render the grid and attach the root to your HTML document
-                      $("#example-1-result").append(grid.render().$el);
-                    });</textarea>
+                    // Render the grid and attach the root to your HTML document
+                    $("#example-1-result").append(grid.render().$el);
+
+                    // Fetch some countries from the url
+                    territories.fetch();</textarea>
                 </div>
               </div>
               <div class="row-fluid">
@@ -364,19 +358,18 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
                       },
                       mode: "client" // page entirely on the client side
                     });
-                    
+
                     var pageableTerritories = new PageableTerritories();
 
-                    pageableTerritories.fetch().done(function () {
+                    var pageableGrid = new Backgrid.Grid({
+                      columns: columns,
+                      collection: pageableTerritories,
+                      footer: Backgrid.Extension.Paginator
+                    });
 
-                      var pageableGrid = new Backgrid.Grid({
-                        columns: columns,
-                        collection: pageableTerritories,
-                        footer: Backgrid.Extension.Paginator
-                      });
-                    
-                      $("#example-2-result").append(pageableGrid.render().$el);
-                    });</textarea>
+                    $("#example-2-result").append(pageableGrid.render().$el);
+
+                    pageableTerritories.fetch();</textarea>
                 </div>
               </div>
               <div class="row-fluid">
@@ -751,7 +744,7 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
               <h3>Customizing the Header</h3>
               <p class="label label-warning">Advanced Usage</p>
               <p>You are allow to use a different header cell class on
-                columns. There is no restriction on what a header cell must do. In fact, 
+                columns. There is no restriction on what a header cell must do. In fact,
                 any <a href="http://backbonejs.org/#View"
                 title="Backbone.View">Backbone.View</a> class can be
                 used. However, if you wish to modify how the sorter behaves, you
@@ -786,12 +779,25 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
             </div>
             <div class="span10">
               <h3>Customizing Row</h3>
+              <p class="label label-warning">Advanced Usage</p>
               <p>A row is simply an intermediary view class that constructs the
                 appropriate Cell class instances for rendering the model
                 columns.</p>
               <p>If you would like to override how a row is rendered, you may
-                define your own Row subclass and give it to a Body described
-                below.</p>
+                define your own Row subclass and give it to the Grid constructor
+                as an option:</p>
+              <textarea class="code-snippet" data-mode="javascript" data-eval="no">
+                var ZebraStrippingRow = Backgrid.Row.extend({
+                  // ...
+                });
+
+                var grid = new Backgrid.Grid({
+                  row: ZebraStrippingRow, // <-- Tell the new Body class to use ZebraStrippingRow to render rows.
+                  columns: [{
+                    //...
+                  }],
+                  collection: col
+                });</textarea>
             </div>
           </div>
           <div class="row-fluid">
@@ -802,27 +808,8 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
               </ul>
             </div>
             <div class="span10">
-              <h3>Using a Custom Row</h3>
-              <p class="label label-warning">Advanced Usage</p>
-              <p>If you have a custom Row class that you would like to use in
-                place of the default Row, you may supply it to the Body
-                constructor as follows:</p>
-              <textarea class="code-snippet" data-mode="javascript" data-eval="no">
-                var ZebraStrippingRow = Backgrid.Row.extend({
-                  // ...
-                });
-
-                var grid = new Backgrid.Grid({
-                  body: Backgrid.Body.extend({ // <-- Supplies a new Body class created on the spot to the grid.
-                    row: ZebraStrippingRow // <-- Tell the new Body class to use ZebraStrippingRow to render rows.
-                  }),
-                  columns: [{
-                    //...
-                  }],
-                  collection: col
-                });</textarea>
               <h3>Customizing Body</h3>
-              <p class="label label-warning">Advanced Usage</p>
+              <p class="label label-important">Truely Advanced Hacking</p>
               <p>Body is the intermediary view that coordinates between the
                 various parts of the grid. Specifically, the default
                 implementation is responsible for re-rendering the rows when any
@@ -830,6 +817,18 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
                 underlying collection. See
                 the <a href="api/index.html#!/api/Backgrid.Body">JSDoc</a> for
                 details.</p>
+              <textarea class="code-snippet" data-mode="javascript" data-eval="no">
+                var MyBody = Backgrid.Body.extend({
+                  // I really don't know why you would do this, but you can if you want
+                });
+
+                var grid = new Backgrid.Grid({
+                  body: MyBody,
+                  columns: [{
+                    // ...
+                  }],
+                  collection: col
+                });</textarea>
             </div>
           </div>
           <div class="row-fluid">
@@ -990,11 +989,7 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
                   }
                 });
 
-                var issues = new Issues();
-
-                // If you aren't bootstrapping your data via the constructor, you
-                // need to issue a fetch first.
-                issues.getFirstPage().done(function () { // Do work only after the fetching is done</textarea>
+                var issues = new Issues();</textarea>
               <h3>Configuring Backgrid.Extention.Paginator</h3>
               <p>Backgrid.Extension.Paginator supports a few configuration
                 options to adjust to the size of the result set.</p>
@@ -1049,7 +1044,8 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
                 });
 
                 $("#example-3-result").append(issueGrid.render().el);
-              });</textarea>
+
+                issues.getFirstPage();</textarea>
             </div>
             <div class="span12">
               <h3>Result</h3>
@@ -1078,8 +1074,9 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
               <h3>Prerequisites</h3>
               <p>TextCell
                 require <a href="http://twitter.github.com/bootstrap/javascript.html#modals"
-                           title="bootstrap-modal.js">bootstrap-modal.js</a> to render
-                it&apos;s modal dialog.</p>
+                title="bootstrap-modal.js">bootstrap-modal.js</a> to render
+                it&apos;s modal dialog. TextCell is tested against Bootstrap
+                version 2.2.2.</p>
               <textarea class="code-snippet" data-mode="htmlmixed">
                 &lt;link rel="stylesheet" href="assets/css/bootstrap.css" /&gt;
                 <!-- include this if you want to use TextCell on mobile browsers -->
@@ -1130,7 +1127,8 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
               <h3>Prerequisites</h3>
               <p>MomentCell uses <a href="http://moment.js/"
                 title="Moment.js">Moment.js</a> to render a very powerful
-                datetime cell.</p>
+                datetime cell. MomentCell is tested against Moment.js version
+                1.7.2.</p>
               <textarea class="code-snippet" data-mode="htmlmixed">
                 &lt;link rel="stylesheet" href="lib/extensions/moment-cell/backgrid-moment-cell.css" /&gt;
                 &lt;script src="assets/js/moment/moment.js"&gt;&lt;/script&gt;
@@ -1153,11 +1151,11 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
                 simply by extending it.</p>
               <textarea class="code-snippet" data-mode="javascript" data-eval="yes">
                 var Datum = Backbone.Model.extend({});
-                
+
                 var Data = Backbone.Collection.extend({
                   model: Datum
                 });
-                
+
                 var data = new Data([{
                   date: "270/3/1",
                   time: "12:34:56.789",
@@ -1175,7 +1173,7 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
                       modelFormat: "YYYY/M/D",
                       // You can specify the locales of the model and display formats too
                       displayLang: "zh-tw",
-                      displayFormat: "YYYY-MMM-DD" 
+                      displayFormat: "YYYY-MMM-DD"
                     })
                   }, {
                     name: "time",
@@ -1207,6 +1205,7 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
               <h4>Best Used On</h4>
               <ul>
                 <li>Desktop</li>
+                <li>Mobile</li>
               </ul>
             </div>
             <div class="span9">
@@ -1216,9 +1215,9 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
               capability.</p>
               <h3>Prerequisites</h3>
               <p>Select2Cell uses
-              the <a href="http://ivaynberg.github.com/select2/"
-              title="select2">Select2</a> jQuery plugin to render its select
-              box.</p>
+                the <a href="http://ivaynberg.github.com/select2/"
+                title="select2">Select2</a> jQuery plugin to render its select
+                box. Select2Cell is tested against Select2 version 3.2.</p>
               <textarea class="code-snippet" data-mode="htmlmixed">
                 &lt;link rel="stylesheet" href="assets/css/select2.css" /&gt;
                 &lt;link rel="stylesheet" href="lib/extensions/select2-cell/backgrid-select2-cell.css" /&gt;
@@ -1230,7 +1229,7 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
               a <code>select2Options</code> object hash during extension, in
               addition to the options SelectCell supports.</p>
               <textarea class="code-snippet" data-mode="javascript" data-eval="yes">
-                
+
                 var data = new Backbone.Collection([{number: 5}]);
 
                 // Just like SelectCell, Select2Cell supports option lists and groups
@@ -1381,13 +1380,8 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
                 as you may probably know more than I do about packaging
                 Javascripts.</p>
               <h2>Where do I go to ask questions?</h2>
-              <p>Ask on
-                the <a href="https://groups.google.com/forum/?fromgroups#!forum/backgridjs"
-                title="backgridjs Google Group">Google Group mailing list</a> or
-                go to <a href="http://stackoverflow.com/questions/ask"
-                title="Stackoverflow">Stackoverflow</a> with the
-                tag <em>backgrid</em> where either I or fellow users can help
-                you.</p>
+              <p>Just ask away
+                on <a href="https://github.com/wyuenho/backgrid/issues">Github</a>.</p>
               <h2>Does Backgrid.js support adaptive scrolling?</h2>
               <p>Some data grid widgets out there support a technique
                 called adaptive scrolling, meaning the DOM elements will be
@@ -1415,9 +1409,17 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
                   return accum + num;
                 });</textarea>
               <h2>Does Backgrid.js support multi-user editing?</h2>
-              <p>Again, it is out of the scope of this project as this
-                functionality requires a broker to arbitrage between users and
-                is mostly found in web-based online spreadsheet products.</p>
+              <p>Inside a Backgrid grid, every cell listens to the change event
+                for its model value. The cells will rerender themselves during
+                display mode upon changes in the model values. However, this
+                functionality is only meant for synchronizing data automatically
+                across multiple grids on the same page. If you are attempting to
+                synchronize data changes across multiple processes, you will
+                need some kind of a locking mechanism for the individual cells,
+                Backgrid.js provides no help for that and you have to do this
+                yourself. Implementing such web-based spreadsheet-like broker
+                system is outside of the scope of this project, pull requests
+                are welcome however.</p>
               <h2>Does Backgrid.js support feature (X)?</h2>
               <p>If the feature you have in mind isn&apos;t found here in this
                 Backgrid.js version, it could either be in the works or under
@@ -1432,19 +1434,6 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
             </div>
           </div>
         </section>
-        <section id="changelog">
-          <h1>Changelog</h1>
-          <dl>
-            <dt>0.1.1</dt>
-            <dd>Fix issue where the default comparator is sorting incorrectly
-            for models. (<a href="https://github.com/wyuenho/backgrid/issues/23"
-            title="Issue #23">Issue #23</a>)</dd>
-          </dl>
-          <dl>
-            <dt>0.1</dt>
-            <dd>Initial Release</dd>
-          </dl>
-        </section>
         <section id="license">
           <div class="page-header">
             <h1>License</h1>
@@ -1456,24 +1445,22 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
           <p>Documentation licensed
             under <a href="http://www.gnu.org/licenses/gpl-3.0.html"
                      title="GPLv3">GPLv3</a>.</p>
-          <a href="https://mixpanel.com/f/partner"><img src="//cdn.mxpnl.com/site_media/images/partner/badge_light.png" alt="Mobile Analytics" /></a>
         </section>
       </div>
     </div>
     <script src="assets/js/scale.fix.js"></script>
-    <script src="assets/js/jquery.js"></script>
-    <script src="assets/js/detectmobilebrowser.js"></script>
-    <script src="assets/js/underscore.js"></script>
-    <script src="assets/js/backbone.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/0.9.10/backbone-min.js"></script>
     <script src="assets/js/backbone-pageable.js"></script>
-    <script src="assets/js/bootstrap.js"></script>
-    <script src="assets/js/select2.js"></script>
-    <script src="assets/js/moment/moment.js"></script>
-    <script src="lib/backgrid.js"></script>
-    <script src="lib/extensions/paginator/backgrid-paginator.js"></script>
-    <script src="lib/extensions/text-cell/backgrid-text-cell.js"></script>
-    <script src="lib/extensions/moment-cell/backgrid-moment-cell.js"></script>
-    <script src="lib/extensions/select2-cell/backgrid-select2-cell.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.2.2/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/select2/3.2/select2.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/1.7.2/moment.min.js"></script>
+    <script src="lib/backgrid.min.js"></script>
+    <script src="lib/extensions/paginator/backgrid-paginator.min.js"></script>
+    <script src="lib/extensions/text-cell/backgrid-text-cell.min.js"></script>
+    <script src="lib/extensions/moment-cell/backgrid-moment-cell.min.js"></script>
+    <script src="lib/extensions/select2-cell/backgrid-select2-cell.min.js"></script>
     <script src="codemirror/lib/codemirror.js"></script>
     <script src="codemirror/lib/util/formatting.js"></script>
     <script src="codemirror/mode/xml/xml.js"></script>
@@ -1481,16 +1468,16 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
     <script src="codemirror/mode/javascript/javascript.js"></script>
     <script src="codemirror/mode/htmlmixed/htmlmixed.js"></script>
     <script src="codemirror/mode/shell/shell.js"></script>
-    <script src="assets/js/moment/lang/zh-tw.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/1.7.2/lang/zh-tw.js"></script>
     <script>
       (function () {
 
         moment.lang("en");
-        
+
         $(document).ready(function () {
 
           var codestr = '';
-          
+
           $("textarea.code-snippet").each(function (index, elm) {
             var $elm = $(elm);
 
@@ -1501,18 +1488,18 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
               theme: "ambiance",
               tabindex: -1
             });
-            
+
             var start = { line: 0, ch: 0 };
             var end = codemirror.posFromIndex(codemirror.getValue().length - 1);
-            
+
             codemirror.autoIndentRange(start, end);
-              
+
             if ($elm.data("eval") === "yes") {
               if ($elm.data("mode") === "javascript") {
                 codestr = codestr + "\n" + codemirror.getValue();
               }
             }
-              
+
             $elm.data("codemirror", codemirror);
           });
 
@@ -1523,17 +1510,15 @@ mixpanel.init("ffa7283b3308d860eeda39e3499a6fe9");</script><!-- end Mixpanel -->
 
         $(document).ready(function () {
           $("a[href^='#']").click(function (e) {
-            if (!$.browser.mobile) {
-              e.preventDefault();
-              var target = this.hash;
-              if (target) {
-                var $target = $(target);
-                $("html, body").stop().animate({
-                  "scrollTop": $target.offset().top - 55
-                }, 500, "swing", function() {
-                  window.location.hash = target;
-                });
-              }
+            e.preventDefault();
+            var target = this.hash;
+            if (target) {
+              var $target = $(target);
+              $("html, body").stop().animate({
+                "scrollTop": $target.offset().top - 55
+              }, 500, "swing", function() {
+                window.location.hash = target;
+              });
             }
           });
         });

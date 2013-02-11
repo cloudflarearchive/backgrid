@@ -27,11 +27,11 @@ clean:
 extension:
 	@read -p "Please specify your extension name: " extension; \
 	mkdir -p src/extensions/$$extension; \
-	for filename in .gitignore README.md Makefile $$extension.js $$extension.css; do \
+	for filename in .gitignore README.md Makefile backgrid-$$extension.js backgrid-$$extension.css; do \
 		touch src/extensions/$$extension/$$filename; \
 	done; \
 	echo "Extension directory $$extension has been created under src/extensions/$$extension ."; \
-	touch test/$$extension.js; \
+	touch test/extensions/$$extension.js; \
 	echo "Test for $$extension has been created in test/$$extension.js .";
 
 doc:

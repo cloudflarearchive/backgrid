@@ -228,6 +228,9 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
     }
     this.formatter = resolveNameToClass(this.formatter, "Formatter");
     this.editor = resolveNameToClass(this.editor, "CellEditor");
+    this.listenTo(this.model, "change:" + this.column.get("name"), function () {
+      if (!this.$el.hasClass("editor")) this.render();
+    });
   },
 
   /**
@@ -308,12 +311,17 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
     this.delegateEvents();
   },
 
+  /**
+     Clean up this cell.
+
+     @chainable
+   */
   remove: function () {
-    Backbone.View.prototype.remove.apply(this, arguments);
     if (this.currentEditor) {
-      this.currentEditor.remove();
+      this.currentEditor.remove.apply(this, arguments);
       delete this.currentEditor;
     }
+    return Backbone.View.prototype.remove.apply(this, arguments);
   }
 
 });

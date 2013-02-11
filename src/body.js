@@ -34,27 +34,26 @@ var Body = Backgrid.Body = Backbone.View.extend({
   initialize: function (options) {
     requireOptions(options, ["columns", "collection"]);
 
-    var self = this;
-
-    self.columns = options.columns;
-    if (!(self.columns instanceof Backbone.Collection)) {
-      self.columns = new Columns(self.columns);
+    this.columns = options.columns;
+    if (!(this.columns instanceof Backbone.Collection)) {
+      this.columns = new Columns(this.columns);
     }
 
-    self.row = options.row || Row;
-    self.rows = self.collection.map(function (model) {
-      var row = new self.row({
-        columns: self.columns,
+    this.row = options.row || Row;
+    this.rows = this.collection.map(function (model) {
+      var row = new this.row({
+        columns: this.columns,
         model: model
       });
 
       return row;
-    });
+    }, this);
 
-    self.listenTo(self.collection, "add", self.insertRow);
-    self.listenTo(self.collection, "remove", self.removeRow);
-    self.listenTo(self.collection, "sort", self.refresh);
-    self.listenTo(self.collection, "reset", self.refresh);
+    var collection = this.collection;
+    this.listenTo(collection, "add", this.insertRow);
+    this.listenTo(collection, "remove", this.removeRow);
+    this.listenTo(collection, "sort", this.refresh);
+    this.listenTo(collection, "reset", this.refresh);
   },
 
   /**
@@ -82,14 +81,13 @@ var Body = Backgrid.Body = Backbone.View.extend({
   */
   insertRow: function (model, collection, options) {
 
-
     // insertRow() is called directly
     if (!(collection instanceof Backbone.Collection) && !options) {
       this.collection.add(model, (options = collection));
       return;
     }
 
-    options = options || {};
+    options = _.extend({render: true}, options || {});
 
     var row = new this.row({
       columns: this.columns,
@@ -97,18 +95,20 @@ var Body = Backgrid.Body = Backbone.View.extend({
     });
 
     var index = collection.indexOf(model);
-
     this.rows.splice(index, 0, row);
 
-    if (_.isUndefined(options.render) || options.render) {
-      if (index >= this.$el.children().length) {
-        this.$el.children().last().after(row.render().$el);
+    var $el = this.$el;
+    var $children = $el.children();
+    var $rowEl = row.render().$el;
+
+    if (options.render) {
+      if (index >= $children.length) {
+        $el.append($rowEl);
       }
       else {
-        this.$el.children().eq(index).before(row.render().$el);
+        $children.eq(index).before($rowEl);
       }
     }
-
   },
 
   /**
@@ -182,14 +182,31 @@ var Body = Backgrid.Body = Backbone.View.extend({
      Renders all the rows inside this body.
   */
   render: function () {
-    var self = this;
-    self.$el.empty();
 
-    _.each(self.rows, function (row) {
-      self.$el.append(row.render().$el);
-    });
+    this.$el.empty();
+
+    var fragment = document.createDocumentFragment();
+    for (var i = 0; i < this.rows.length; i++) {
+      var row = this.rows[i];
+      fragment.appendChild(row.render().el);
+    }
+
+    this.el.appendChild(fragment);
 
     return this;
+  },
+
+  /**
+     Clean up this body and it's rows.
+
+     @chainable
+   */
+  remove: function () {
+    for (var i = 0; i < this.rows.length; i++) {
+      var row = this.rows[i];
+      row.remove.apply(row, arguments);
+    }
+    return Backbone.View.prototype.remove.apply(this, arguments);
   }
 
 });

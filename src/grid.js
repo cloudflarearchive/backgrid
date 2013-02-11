@@ -71,13 +71,14 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
   footer: null,
 
   /**
-     Initializes the a Grid instance.
+     Initializes a Grid instance.
 
      @param {Object} options
      @param {Backbone.Collection.<Backgrid.Column>|Array.<Backgrid.Column>|Array.<Object>} options.columns Column metadata.
      @param {Backbone.Collection} options.collection The collection of tabular model data to display.
      @param {Backgrid.Header} [options.header=Backgrid.Header] An optional Header class to override the default.
      @param {Backgrid.Body} [options.body=Backgrid.Body] An optional Body class to override the default.
+     @param {Backgrid.Row} [options.row=Backgrid.Row] An optional Row class to override the default.
      @param {Backgrid.Footer} [options.footer=Backgrid.Footer] An optional Footer class.
    */
   initialize: function (options) {
@@ -85,30 +86,28 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
 
     // Convert the list of column objects here first so the subviews don't have
     // to.
-    this.columns = options.columns;
-    if (!(this.columns instanceof Backbone.Collection)) {
-      this.columns = new Backgrid.Columns(this.columns);
+    if (!(options.columns instanceof Backbone.Collection)) {
+      options.columns = new Columns(options.columns);
     }
+    this.columns = options.columns;
 
     this.header = options.header || this.header;
-    this.header = new this.header({
-      columns: this.columns,
-      collection: this.collection
-    });
+    this.header = new this.header(options);
 
     this.body = options.body || this.body;
-    this.body = new this.body({
-      columns: this.columns,
-      collection: this.collection
-    });
+    this.body = new this.body(options);
 
     this.footer = options.footer || this.footer;
     if (this.footer) {
-      this.footer = new this.footer({
-        columns: this.columns,
-        collection: this.collection
-      });
+      this.footer = new this.footer(options);
     }
+
+    this.listenTo(this.columns, "reset", function () {
+      this.header = new (this.header.remove().constructor)(options);
+      this.body = new (this.body.remove().constructor)(options);
+      if (this.footer) this.footer = new (this.footer.remove().constructor)(options);
+      this.render();
+    });
   },
 
   /**
@@ -180,6 +179,18 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
     this.trigger("rendered");
 
     return this;
+  },
+
+  /**
+     Clean up this grid and its subviews.
+
+     @chainable
+   */
+  remove: function () {
+    this.header.remove.apply(this.header, arguments);
+    this.body.remove.apply(this.body, arguments);
+    this.footer && this.footer.remove.apply(this.footer, arguments);
+    return Backbone.View.prototype.remove.apply(this, arguments);
   }
 
 });

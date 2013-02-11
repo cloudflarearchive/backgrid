@@ -16,10 +16,13 @@ describe("A Grid", function () {
   var grid;
   beforeEach(function () {
     books = new Books([{
+      id: 1,
       title: "Alice's Adventures in Wonderland"
     }, {
+      id: 2,
       title: "A Tale of Two Cities"
     }, {
+      id: 3,
       title: "The Catcher in the Rye"
     }]);
 
@@ -68,4 +71,54 @@ describe("A Grid", function () {
     expect(grid.trigger.calls.length).toBe(1);
     expect(grid.trigger).toHaveBeenCalledWith("rendered");
   });
+
+  it("will render a table with the header, body, footer and row classes supplied in the constructor options", function () {
+
+    var CustomHeader = Backgrid.Header.extend({});
+    var CustomBody = Backgrid.Body.extend({});
+    var CustomRow = Backgrid.Row.extend({});
+    var CustomFooter = Backgrid.Footer.extend({});
+
+    spyOn(CustomHeader.prototype, "render").andCallThrough();
+    spyOn(CustomBody.prototype, "render").andCallThrough();
+    spyOn(CustomRow.prototype, "render").andCallThrough();
+    spyOn(CustomFooter.prototype, "render").andCallThrough();
+
+    grid = new Backgrid.Grid({
+      columns: [{
+        name: "title",
+        cell: "string"
+      }],
+      collection: books,
+      header: CustomHeader,
+      body: CustomBody,
+      row: CustomRow,
+      footer: CustomFooter
+    });
+
+    grid.render();
+
+    expect(CustomHeader.prototype.render).toHaveBeenCalled();
+    expect(CustomBody.prototype.render).toHaveBeenCalled();
+    expect(CustomRow.prototype.render).toHaveBeenCalled();
+    expect(CustomFooter.prototype.render).toHaveBeenCalled();
+  });
+
+  it("will clean up all its decendant views when remove is called", function () {
+    expect(grid.remove().constructor).toBe(Backgrid.Grid);
+  });
+
+  it("will refresh on columns reset", function () {
+    grid.render();
+    grid.columns.reset([{
+      name: "id",
+      cell: "integer"
+    }]);
+    expect(grid.el.innerHTML).toBe('<thead><tr><th><a>id<b class="sort-caret"></b></a></th></tr></thead>' +
+                                   '<tfoot></tfoot>' +
+                                   '<tbody><tr><td class="integer-cell">1</td></tr>' +
+                                   '<tr><td class="integer-cell">2</td></tr>' +
+                                   '<tr><td class="integer-cell">3</td></tr></tbody>');
+  });
+
 });

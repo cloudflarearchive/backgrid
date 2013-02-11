@@ -51,25 +51,18 @@
        @param {Backbone.Collection.<Backgrid.Column>|Array.<Backgrid.Column>|Array.<Object>} options.columns
        Column metadata.
        @param {Backbone.Collection} options.collection
-       @param {number} [options.windowSize] The number of page handles to display per sliding window.
        @param {boolean} [options.fastForwardHandleLabels] Whether to render fast forward buttons.
     */
     initialize: function (options) {
-      var self = this;
-      Backgrid.Footer.prototype.initialize.call(self, options);
-      self.listenTo(self.collection, "reset", self.render);
-      var columns = self.columns;
-      self.listenTo(columns, "add", function (column, columns, options) {
-        options = _.defaults(options || {}, {render: true});
-        if (column.get("renderable") && options.render) {
-          var $td = self.$el.find("td[colspan]");
-          $td.prop("colspan", $td.prop("colspan") + 1);
-        }
-      });
-      self.listenTo(columns, "remove", function () {
-        var $td = self.$el.find("td[colspan]");
-        $td.prop("colspan", $td.prop("colspan") - 1);
-      });
+      Backgrid.Footer.prototype.initialize.call(this, options);
+      var columns = this.columns;
+      var fullCollection = this.collection.fullCollection;
+      this.listenTo(columns, "add", this.render);
+      this.listenTo(columns, "remove", this.render);
+      this.listenTo(columns, "change:renderable", this.render);
+      this.listenTo(fullCollection, "add", this.render);
+      this.listenTo(fullCollection, "remove", this.render);
+      this.listenTo(fullCollection, "reset", this.render);
     },
 
     /**
@@ -103,13 +96,8 @@
         }
       }
 
-      var pageIndexInWindow = $(e.target).text() * 1 - collection.state.firstPage;
       var state = collection.state;
-      var currentPage = state.firstPage === 0 ?
-        state.currentPage :
-        state.currentPage - 1;
-      var windowStart = Math.floor(currentPage / this.windowSize) * this.windowSize;
-      var pageIndex = windowStart + pageIndexInWindow;
+      var pageIndex = $(e.target).text() * 1 - state.firstPage;
       collection.getPage(state.firstPage === 0 ? pageIndex : pageIndex + 1);
     },
 
@@ -126,7 +114,8 @@
       var state = collection.state;
 
       // convert all indices to 0-based here
-      var lastPage = state.firstPage === 0 ? state.lastPage : state.lastPage - 1;
+      var lastPage = state.lastPage ? state.lastPage : state.firstPage;
+      lastPage = state.firstPage === 0 ? lastPage : lastPage - 1;
       var currentPage = state.firstPage === 0 ? state.currentPage : state.currentPage - 1;
       var windowStart = Math.floor(currentPage / this.windowSize) * this.windowSize;
       var windowEnd = windowStart + this.windowSize;
@@ -188,7 +177,7 @@
       var colspan = _.reduce(
         this.columns.pluck("renderable"),
         function (accum, renderable) {
-          return renderable ? accum + 1 : 0;
+          return renderable ? accum + 1 : accum;
         }, 0);
 
       this.$el.append($(this.template({

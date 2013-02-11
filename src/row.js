@@ -29,37 +29,36 @@ var Row = Backgrid.Row = Backbone.View.extend({
      @throws {TypeError} If options.columns or options.model is undefined.
    */
   initialize: function (options) {
-    var self = this;
 
     requireOptions(options, ["columns", "model"]);
 
-    var columns = self.columns = options.columns;
+    var columns = this.columns = options.columns;
     if (!(columns instanceof Backbone.Collection)) {
-      columns = self.columns = new Columns(columns);
+      columns = this.columns = new Columns(columns);
     }
-    self.listenTo(columns, "change:renderable", self.renderColumn);
+    this.listenTo(columns, "change:renderable", this.renderColumn);
 
-    var cells = self.cells = [];
+    var cells = this.cells = [];
     for (var i = 0; i < columns.length; i++) {
       var column = columns.at(i);
       cells.push(new (column.get("cell"))({
         column: column,
-        model: self.model
+        model: this.model
       }));
     }
 
-    self.listenTo(columns, "add", function (column, columns, options) {
+    this.listenTo(columns, "add", function (column, columns, options) {
       options = _.defaults(options || {}, {render: true});
       var at = columns.indexOf(column);
       var cell = new (column.get("cell"))({
         column: column,
-        model: self.model
+        model: this.model
       });
       cells.splice(at, 0, cell);
-      self.renderColumn(column, column.get("renderable") && options.render);
+      this.renderColumn(column, column.get("renderable") && options.render);
     });
-    self.listenTo(columns, "remove", function (column) {
-      self.renderColumn(column, false);
+    this.listenTo(columns, "remove", function (column) {
+      this.renderColumn(column, false);
     });
   },
 
@@ -71,9 +70,8 @@ var Row = Backgrid.Row = Backbone.View.extend({
      @param {boolean} renderable
    */
   renderColumn: function (column, renderable) {
-    var self = this;
-    var cells = self.cells;
-    var columns = self.columns;
+    var cells = this.cells;
+    var columns = this.columns;
     var spliceIndex = -1;
     for (var i = 0; i < cells.length; i++) {
       var cell = cells[i];
@@ -83,7 +81,7 @@ var Row = Backgrid.Row = Backbone.View.extend({
       }
     }
     if (spliceIndex != -1) {
-      var $el = self.$el;
+      var $el = this.$el;
       if (renderable) {
         var cell = cells[spliceIndex];
         if (spliceIndex === 0) {
@@ -107,13 +105,32 @@ var Row = Backgrid.Row = Backbone.View.extend({
    */
   render: function () {
     this.$el.empty();
+
+    var fragment = document.createDocumentFragment();
+
     for (var i = 0; i < this.cells.length; i++) {
       var cell = this.cells[i];
       if (cell.column.get("renderable")) {
-        this.$el.append(cell.render().$el);
+        fragment.appendChild(cell.render().el);
       }
     }
+
+    this.el.appendChild(fragment);
+
     return this;
+  },
+
+  /**
+     Clean up this row and its cells.
+
+     @chainable
+   */
+  remove: function () {
+    for (var i = 0; i < this.cells.length; i++) {
+      var cell = this.cells[i];
+      cell.remove.apply(cell, arguments);
+    }
+    return Backbone.View.prototype.remove.apply(this, arguments);
   }
 
 });

@@ -61,6 +61,7 @@
   var _isArray = _.isArray;
   var _isFunction = _.isFunction;
   var _keys = _.keys;
+  var _isUndefined = _.isUndefined;
   var ceil = Math.ceil;
 
   var BBColProto = Backbone.Collection.prototype;
@@ -203,7 +204,7 @@
        @property {string} [queryParams.currentPage="page"]
        @property {string} [queryParams.pageSize="per_page"]
        @property {string} [queryParams.totalPages="total_pages"]
-       @property {string} [queryParams.totalRecords="total"]
+       @property {string} [queryParams.totalRecords="total_entries"]
        @property {string} [queryParams.sortKey="sort_by"]
        @property {string} [queryParams.order="order"]
        @property {string} [queryParams.directions={"-1": "asc", "1": "desc"}] A
@@ -353,7 +354,7 @@
       var proto = {};
       for (i = 0, length = properties.length; i < length; i++) {
         prop = properties[i];
-        if (!_.isUndefined(thisProto[prop])) {
+        if (!_isUndefined(thisProto[prop])) {
           proto[prop] = thisProto[prop];
         }
       }
@@ -403,7 +404,7 @@
         var pageStart = currentPage * pageSize, pageEnd = pageStart + pageSize;
 
         if (event == "add") {
-          var fullIndex, addAt, colToAdd;
+          var fullIndex, addAt, colToAdd, options = options || {};
           if (collection == fullCol) {
             fullIndex = fullCol.indexOf(model);
             if (fullIndex >= pageStart && fullIndex < pageEnd) {
@@ -414,44 +415,65 @@
           else {
             fullIndex = pageStart + pageCol.indexOf(model);
             colToAdd = fullCol;
-            var at = options && options.at || fullIndex;
-            addAt = (at < pageStart || at >= pageEnd) ? at : fullIndex;
+            var addAt = options && !_.isUndefined(options.at) ?
+              options.at + pageStart :
+              fullIndex;
           }
+
 
           ++state.totalRecords;
           pageCol.state = pageCol._checkState(state);
 
           if (colToAdd) {
             colToAdd.add(model, _extend({}, options || {}, {at: addAt}));
-            pageCol.pop();
+            if (pageCol.length > pageSize) {
+              var addHandlers = collection._events.add,
+              popOptions = {onAdd: true};
+              if (addHandlers.length) {
+                var lastAddHandler = addHandlers[addHandlers.length - 1];
+                var oldCallback = lastAddHandler.callback;
+                lastAddHandler.callback = function () {
+                  try {
+                    oldCallback.apply(this, arguments);
+                    pageCol.pop(popOptions);
+                  }
+                  finally {
+                    lastAddHandler.callback = oldCallback;
+                  }
+                };
+              }
+              else pageCol.pop(popOptions);
+            }
           }
         }
 
         // remove the model from the other collection as well
         if (event == "remove") {
+          if (!options.onAdd) {
+            // decrement totalRecords and update totalPages and lastPage
+            if (!--state.totalRecords) {
+              state.totalRecords = null;
+              state.totalPages = null;
+            }
+            else {
+              var totalPages = state.totalPages = ceil(state.totalRecords / pageSize);
+              state.lastPage = firstPage === 0 ? totalPages - 1 : totalPages;
+              if (state.currentPage > totalPages) state.currentPage = state.lastPage;
+            }
+            pageCol.state = pageCol._checkState(state);
 
-          // decrement totalRecords and update totalPages and lastPage
-          if (!--state.totalRecords) {
-            state.totalRecords = null;
-            state.totalPages = null;
+            var nextModel, removedIndex = options.index;
+            if (collection == pageCol) {
+              if (nextModel = fullCol.at(pageEnd)) pageCol.push(nextModel);
+              fullCol.remove(model);
+            }
+            else if (removedIndex >= pageStart && removedIndex < pageEnd) {
+              pageCol.remove(model);
+              nextModel = fullCol.at(currentPage * (pageSize + removedIndex));
+              if (nextModel) pageCol.push(nextModel);
+            }
           }
-          else {
-            var totalPages = state.totalPages = ceil(state.totalRecords / pageSize);
-            state.lastPage = firstPage === 0 ? totalPages - 1 : totalPages;
-            if (state.currentPage > totalPages) state.currentPage = state.lastPage;
-          }
-          pageCol.state = pageCol._checkState(state);
-
-          var nextModel;
-          if (collection == pageCol) {
-            if (nextModel = fullCol.at(pageEnd)) pageCol.push(nextModel);
-            fullCol.remove(model);
-          }
-          else if (options.index >= pageStart && options.index < pageEnd) {
-            pageCol.remove(model);
-            nextModel = fullCol.at(currentPage * (pageSize + options.index));
-            if (nextModel) pageCol.push(nextModel);
-          }
+          else delete options.onAdd;
         }
 
         if (event == "reset" || event == "sort") {
@@ -467,7 +489,11 @@
           }
 
           if (event == "reset" || collection == fullCol) {
-            state.totalRecords = fullCol.models.length;
+            if (!(state.totalRecords = fullCol.models.length)) {
+              state.totalRecords = null;
+              state.totalPages = null;
+              state.lastPage = state.currentPage = state.firstPage;
+            }
             pageCol.state = pageCol._checkState(state);
             if (collection == pageCol) fullCol.trigger(event, fullCol, options);
             resetQuickly(pageCol, fullCol.models.slice(pageStart, pageEnd),
@@ -478,19 +504,9 @@
         _each(_keys(handlers), function (event) {
           var handler = handlers[event];
           _each([pageCol, fullCol], function (col) {
-            if (col._events) {
-              col.on(event, handler);
-              var callbacks = col._events[event];
-              callbacks.unshift(callbacks.pop());
-            }
-            else {
-              var list = col._callbacks[event] || {};
-              var tail = _isEmpty(list) ?
-                tail = list.next = list.tail = {} :
-                tail = list.tail;
-              var node = {next: list.next, context: void 0, callback: handler};
-              col._callbacks[event] = {tail: tail, next: node};
-            }
+            col.on(event, handler);
+            var callbacks = col._events[event];
+            callbacks.unshift(callbacks.pop());
           });
         });
       };
@@ -684,7 +700,7 @@
       else if (self.links) delete self.links;
 
       return options.fetch ?
-        self.fetch(_omit(options, ["fetch", "resetState"])) :
+        self.fetch(_omit(options, "fetch", "resetState")) :
         self;
     },
 
@@ -1075,7 +1091,8 @@
 
           // make sure the caller's intent is obeyed
           opts = opts || {};
-          opts.silent = options.silent;
+          if (_isUndefined(options.silent)) delete opts.silent;
+          else opts.silent = options.silent;
 
           var models = col.models;
           var currentPage = state.currentPage;
@@ -1090,13 +1107,10 @@
             var head = fullModels.slice(0, pageStart);
             var tail = fullModels.slice(pageStart + pageSize);
             fullModels = head.concat(models).concat(tail);
-            if (_isFunction(fullCollection.update)) {
-              fullCollection.update(fullModels,
-                                    _extend({silent: true, sort: false}, opts));
-              if (fullCollection.comparator) fullCollection.sort();
-              fullCollection.trigger("reset", fullCollection, opts);
-            }
-            else resetQuickly(fullCollection, fullModels, opts);
+            fullCollection.update(fullModels,
+                                  _extend({silent: true, sort: false}, opts));
+            if (fullCollection.comparator) fullCollection.sort();
+            fullCollection.trigger("reset", fullCollection, opts);
           }
           else { // fetching new page
             fullCollection.add(models, _extend({at: fullCollection.length,

@@ -121,7 +121,7 @@ _.extend(NumberFormatter.prototype, {
   toRaw: function (formattedData) {
     var rawData = '';
 
-    var thousands = trim(formattedData).split(this.orderSeparator);
+    var thousands = formattedData.trim().split(this.orderSeparator);
     for (var i = 0; i < thousands.length; i++) {
       rawData += thousands[i];
     }
@@ -190,12 +190,13 @@ _.extend(DatetimeFormatter.prototype, {
   ISO_SPLITTER_RE: /T|Z| +/,
 
   _convert: function (data, validate) {
-    data = trim(data);
+    if (_.isNull(data) || _.isUndefined(data)) return data;
+    data = data.trim();
     var parts = data.split(this.ISO_SPLITTER_RE) || [];
 
     var date = this.DATE_RE.test(parts[0]) ? parts[0] : '';
     var time = date && parts[1] ? parts[1] : this.TIME_RE.test(parts[0]) ? parts[0] : '';
-    
+
     var YYYYMMDD = this.DATE_RE.exec(date) || [];
     var HHmmssSSS = this.TIME_RE.exec(time) || [];
 
@@ -241,7 +242,7 @@ _.extend(DatetimeFormatter.prototype, {
 
      @member Backgrid.DatetimeFormatter
      @param {string} rawData
-     @return {string} ISO-8601 string in UTC.
+     @return {string|null|undefined} ISO-8601 string in UTC. Null and undefined values are returned as is.
   */
   fromRaw: function (rawData) {
     return this._convert(rawData);

@@ -143,7 +143,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
 
     var collection = this.collection;
 
-    if (collection instanceof Backbone.PageableCollection) {
+    if (Backbone.PageableCollection && collection instanceof Backbone.PageableCollection) {
       var order;
       if (direction === "ascending") order = -1;
       else if (direction === "descending") order = 1;
@@ -221,7 +221,7 @@ var HeaderRow = Backgrid.HeaderRow = Backgrid.Row.extend({
 
      @param {Object} options
      @param {Backbone.Collection.<Backgrid.Column>|Array.<Backgrid.Column>|Array.<Object>} options.columns
-     @param {Backgrid.HeaderCell} options.headerCell Customized default
+     @param {Backgrid.HeaderCell} [options.headerCell] Customized default
      HeaderCell for all the columns. Supply a HeaderCell class or instance to a
      the `headerCell` key in a column definition for column-specific header
      rendering.
@@ -229,39 +229,38 @@ var HeaderRow = Backgrid.HeaderRow = Backgrid.Row.extend({
      @throws {TypeError} If options.columns or options.collection is undefined.
    */
   initialize: function (options) {
-    var self = this;
 
     requireOptions(options, ["columns", "collection"]);
 
-    var columns = self.columns = options.columns;
+    var columns = this.columns = options.columns;
     if (!(columns instanceof Backbone.Collection)) {
-      columns = self.columns = new Columns(columns);
+      columns = this.columns = new Columns(columns);
     }
-    self.listenTo(columns, "change:renderable", self.renderColumn);
+    this.listenTo(columns, "change:renderable", this.renderColumn);
 
-    var cells = self.cells = [];
+    var cells = this.cells = [];
     for (var i = 0; i < columns.length; i++) {
       var column = columns.at(i);
       var headerCell = column.get("headerCell") || options.headerCell || HeaderCell;
       cells.push(new headerCell({
         column: column,
-        collection: self.collection
+        collection: this.collection
       }));
     }
 
-    self.listenTo(columns, "add", function (column, columns, opts) {
+    this.listenTo(columns, "add", function (column, columns, opts) {
       opts = _.defaults(opts || {}, {render: true});
       var at = columns.indexOf(column);
       var headerCell = column.get("headerCell") || options.headerCell || HeaderCell;
       headerCell = new headerCell({
         column: column,
-        collection: self.collection
+        collection: this.collection
       });
       cells.splice(at, 0, headerCell);
-      self.renderColumn(column, column.get("renderable") && opts.render);
+      this.renderColumn(column, column.get("renderable") && opts.render);
     });
-    self.listenTo(columns, "remove", function (column) {
-      self.renderColumn(column, false);
+    this.listenTo(columns, "remove", function (column) {
+      this.renderColumn(column, false);
     });
   }
 
@@ -309,6 +308,16 @@ var Header = Backgrid.Header = Backbone.View.extend({
   render: function () {
     this.$el.append(this.row.render().$el);
     return this;
+  },
+
+  /**
+     Clean up this header and its row.
+
+     @chainable
+   */
+  remove: function () {
+    this.row.remove.apply(this.row, arguments);
+    return Backbone.View.prototype.remove.apply(this, arguments);
   }
 
 });
