@@ -49,10 +49,11 @@ var Body = Backgrid.Body = Backbone.View.extend({
       return row;
     }, this);
 
-    this.listenTo(this.collection, "add", this.insertRow);
-    this.listenTo(this.collection, "remove", this.removeRow);
-    this.listenTo(this.collection, "sort", this.refresh);
-    this.listenTo(this.collection, "reset", this.refresh);
+    var collection = this.collection;
+    this.listenTo(collection, "add", this.insertRow);
+    this.listenTo(collection, "remove", this.removeRow);
+    this.listenTo(collection, "sort", this.refresh);
+    this.listenTo(collection, "reset", this.refresh);
   },
 
   /**
@@ -94,7 +95,6 @@ var Body = Backgrid.Body = Backbone.View.extend({
     });
 
     var index = collection.indexOf(model);
-
     this.rows.splice(index, 0, row);
 
     var $el = this.$el;
