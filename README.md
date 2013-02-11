@@ -82,7 +82,7 @@ var columns = [{
 // Initialize a new Grid instance
 var grid = new Backgrid.Grid({
   columns: columns,
-  collection: pageableTerritories,
+  collection: territories,
   footer: Backgrid.Paginator
 });
 
@@ -98,17 +98,6 @@ Take a look [here](http://wyuenho.github.com/backgrid/#examples).
 
 Are you kidding me? This is a README file. Go to the [documentation](http://wyuenho.github.com/backgrid/
 "Backbone.js Documentation") to find out more :)
-
-## Release History
-
-### 0.1.1
-
-- Fix issue where the default comparator is sorting incorrectly for
-  models. [Issue #23](https://github.com/wyuenho/backgrid/issues/23).
-
-### 0.1
-
-- Initial Release
 
 ## License
 Copyright (c) 2013 Jimmy Yuen Ho Wong  
