@@ -276,6 +276,16 @@ Docs = {
         "sort": 3
       },
       {
+        "name": "remove",
+        "fullName": "Backgrid.Body.remove",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Body-method-remove",
+        "meta": {
+          "chainable": true
+        },
+        "sort": 3
+      },
+      {
         "name": "CellEditor",
         "fullName": "Backgrid.CellEditor",
         "icon": "icon-class",
@@ -475,6 +485,16 @@ Docs = {
         "icon": "icon-method",
         "url": "#!/api/Backgrid.Cell-method-exitEditMode",
         "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "remove",
+        "fullName": "Backgrid.Cell.remove",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Cell-method-remove",
+        "meta": {
+          "chainable": true
         },
         "sort": 3
       },
@@ -1642,6 +1662,16 @@ Docs = {
         "sort": 3
       },
       {
+        "name": "remove",
+        "fullName": "Backgrid.Grid.remove",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Grid-method-remove",
+        "meta": {
+          "chainable": true
+        },
+        "sort": 3
+      },
+      {
         "name": "HeaderCell",
         "fullName": "Backgrid.HeaderCell",
         "icon": "icon-class",
@@ -1808,6 +1838,16 @@ Docs = {
         "sort": 3
       },
       {
+        "name": "remove",
+        "fullName": "Backgrid.Header.remove",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Header-method-remove",
+        "meta": {
+          "chainable": true
+        },
+        "sort": 3
+      },
+      {
         "name": "Row",
         "fullName": "Backgrid.Row",
         "icon": "icon-class",
@@ -1848,6 +1888,16 @@ Docs = {
         "fullName": "Backgrid.Row.render",
         "icon": "icon-method",
         "url": "#!/api/Backgrid.Row-method-render",
+        "meta": {
+          "chainable": true
+        },
+        "sort": 3
+      },
+      {
+        "name": "remove",
+        "fullName": "Backgrid.Row.remove",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Row-method-remove",
         "meta": {
           "chainable": true
         },
