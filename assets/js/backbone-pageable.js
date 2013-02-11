@@ -404,7 +404,7 @@
         var pageStart = currentPage * pageSize, pageEnd = pageStart + pageSize;
 
         if (event == "add") {
-          var fullIndex, addAt, colToAdd;
+          var fullIndex, addAt, colToAdd, options = options || {};
           if (collection == fullCol) {
             fullIndex = fullCol.indexOf(model);
             if (fullIndex >= pageStart && fullIndex < pageEnd) {
@@ -420,40 +420,60 @@
               fullIndex;
           }
 
+
           ++state.totalRecords;
           pageCol.state = pageCol._checkState(state);
 
           if (colToAdd) {
             colToAdd.add(model, _extend({}, options || {}, {at: addAt}));
-            if (pageCol.length > pageSize) pageCol.pop();
+            if (pageCol.length > pageSize) {
+              var addHandlers = collection._events.add,
+              popOptions = {onAdd: true};
+              if (addHandlers.length) {
+                var lastAddHandler = addHandlers[addHandlers.length - 1];
+                var oldCallback = lastAddHandler.callback;
+                lastAddHandler.callback = function () {
+                  try {
+                    oldCallback.apply(this, arguments);
+                    pageCol.pop(popOptions);
+                  }
+                  finally {
+                    lastAddHandler.callback = oldCallback;
+                  }
+                };
+              }
+              else pageCol.pop(popOptions);
+            }
           }
         }
 
         // remove the model from the other collection as well
         if (event == "remove") {
+          if (!options.onAdd) {
+            // decrement totalRecords and update totalPages and lastPage
+            if (!--state.totalRecords) {
+              state.totalRecords = null;
+              state.totalPages = null;
+            }
+            else {
+              var totalPages = state.totalPages = ceil(state.totalRecords / pageSize);
+              state.lastPage = firstPage === 0 ? totalPages - 1 : totalPages;
+              if (state.currentPage > totalPages) state.currentPage = state.lastPage;
+            }
+            pageCol.state = pageCol._checkState(state);
 
-          // decrement totalRecords and update totalPages and lastPage
-          if (!--state.totalRecords) {
-            state.totalRecords = null;
-            state.totalPages = null;
+            var nextModel, removedIndex = options.index;
+            if (collection == pageCol) {
+              if (nextModel = fullCol.at(pageEnd)) pageCol.push(nextModel);
+              fullCol.remove(model);
+            }
+            else if (removedIndex >= pageStart && removedIndex < pageEnd) {
+              pageCol.remove(model);
+              nextModel = fullCol.at(currentPage * (pageSize + removedIndex));
+              if (nextModel) pageCol.push(nextModel);
+            }
           }
-          else {
-            var totalPages = state.totalPages = ceil(state.totalRecords / pageSize);
-            state.lastPage = firstPage === 0 ? totalPages - 1 : totalPages;
-            if (state.currentPage > totalPages) state.currentPage = state.lastPage;
-          }
-          pageCol.state = pageCol._checkState(state);
-
-          var nextModel;
-          if (collection == pageCol) {
-            if (nextModel = fullCol.at(pageEnd)) pageCol.push(nextModel);
-            fullCol.remove(model);
-          }
-          else if (options.index >= pageStart && options.index < pageEnd) {
-            pageCol.remove(model);
-            nextModel = fullCol.at(currentPage * (pageSize + options.index));
-            if (nextModel) pageCol.push(nextModel);
-          }
+          else delete options.onAdd;
         }
 
         if (event == "reset" || event == "sort") {
@@ -680,7 +700,7 @@
       else if (self.links) delete self.links;
 
       return options.fetch ?
-        self.fetch(_omit(options, ["fetch", "resetState"])) :
+        self.fetch(_omit(options, "fetch", "resetState")) :
         self;
     },
 
