@@ -1,9 +1,15 @@
-.beta {
-  vertical-align: super;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 18px;
-  line-height: 30px;
-  padding: 0px 10px;
+#social-media {
+  padding: 10px 0;
+}
+
+#social-media * {
+  vertical-align: middle;
+}
+
+#social-media > a {
+  padding: 0;
+  margin: 0;
+  display: inline-block;
 }
 
 .page-header {

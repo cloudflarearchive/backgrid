@@ -22,9 +22,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1" />
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
     <meta name="keywords" content="backgrid,backgrid.js,backbone,backbone.js,datagrid,grid,paginator,javascript" />
-    <meta name="description" content="Finally, an easily stylable semantic HTML data grid widget with a Javascript API that doesn&apos;t suck." />
+    <meta name="description" content="A powerful widget set for building data grids with Backbone.js" />
 
-    <title>Backgrid.js</title>
+    <title>Backgrid.js - A powerful widget set for building data grids with Backbone.js</title>
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.2.2/css/bootstrap.min.css" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.2.2/css/bootstrap-responsive.min.css" />
@@ -48,7 +48,7 @@
           <div class="navbar-inner">
             <div class="container">
               <a href="."
-                 class="brand" title="Finally, an easily stylable semantic HTML data grid widget with a Javascript API that doesn&apos;t suck.">Backgrid.js</a>
+                 class="brand" title="A powerful widget set for building data grids with Backbone.js">Backgrid.js</a>
               <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
@@ -104,15 +104,13 @@
                       <li><a href="#license">License</a></li>
                     </ul>
                   </li>
-                  <li>
+                  <li id="social-media">
+                    <a href="https://twitter.com/share" class="twitter-share-button" data-via="wong_jim">Tweet</a>
+                    <div class="g-plusone" data-size="medium"></div>
                     <a href="https://coderwall.com/wyuenho"><img alt="Endorse wyuenho on Coderwall" src="http://api.coderwall.com/wyuenho/endorsecount.png" /></a>
-                  </li>
-                  <li>
-                    <a>
-                      <iframe style="border: 0; margin: 0; padding: 0;"
-                              src="https://www.gittip.com/wyuenho/widget.html"
-                              width="48pt" height="22pt"></iframe>
-                    </a>
+                    <iframe allowtransparency="true" frameborder="0" scrolling="no"
+                            style="border: 0; margin: 0 0 0 15px; padding: 0;"
+                            src="https://www.gittip.com/wyuenho/widget.html" width="48pt" height="22pt"></iframe>
                   </li>
                 </ul>
               </div>
@@ -1606,17 +1604,37 @@
 
         });
       }());
-    </script>
-    <script>
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-36403214-1']);
-      _gaq.push(['_trackPageview']);
 
-      (function() {
-        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
+      $(document).ready(function () {
+        // Google Analytics
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-36403214-1']);
+        _gaq.push(['_trackPageview']);
+        
+        (function() {
+          var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+          ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+        // Google +1
+        (function() {
+          var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+          po.src = 'https://apis.google.com/js/plusone.js';
+          var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+        })();
+
+        // Tweet Button
+        !function(d,s,id) {
+          var js,fjs=d.getElementsByTagName(s)[0];
+          if(!d.getElementById(id)){
+            js=d.createElement(s);
+            js.id=id;
+            js.src="//platform.twitter.com/widgets.js";
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document,"script","twitter-wjs");
+      });
     </script>
   </body>
 </html>
