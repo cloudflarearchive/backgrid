@@ -56,13 +56,21 @@
     initialize: function (options) {
       Backgrid.Footer.prototype.initialize.call(this, options);
       var columns = this.columns;
-      var fullCollection = this.collection.fullCollection;
       this.listenTo(columns, "add", this.render);
       this.listenTo(columns, "remove", this.render);
       this.listenTo(columns, "change:renderable", this.render);
-      this.listenTo(fullCollection, "add", this.render);
-      this.listenTo(fullCollection, "remove", this.render);
-      this.listenTo(fullCollection, "reset", this.render);
+      var collection = this.collection;
+      var fullCollection = collection.fullCollection;
+      if (fullCollection) {
+        this.listenTo(fullCollection, "add", this.render);
+        this.listenTo(fullCollection, "remove", this.render);
+        this.listenTo(fullCollection, "reset", this.render);
+      }
+      else {
+        this.listenTo(collection, "add", this.render);
+        this.listenTo(collection, "remove", this.render);
+        this.listenTo(collection, "reset", this.render);
+      }
     },
 
     /**
