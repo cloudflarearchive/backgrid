@@ -660,9 +660,9 @@ describe("A SelectCellEditor", function () {
     ];
 
     optionGroupValues = [{
-      "name": "Fruit",
+      "name": "\" ><script></script>Fruit",
       "values": [
-        ["Apple", "a"],
+        ["Apple<script></script>", "\" ><script></script>a"],
         ["Banana", "b"],
         ["Cantaloupe", "c"]
       ]
@@ -751,13 +751,13 @@ describe("A SelectCellEditor", function () {
     var $group1 = $optionGroups.eq(0);
     var $group2 = $optionGroups.eq(1);
 
-    expect($group1.attr("label")).toBe("Fruit");
+    expect($group1.attr("label")).toBe("\" ><script></script>Fruit");
     expect($group2.attr("label")).toBe("Cereal");
 
     var $group1Options = $group1.children();
-    expect($group1Options.eq(0).val()).toBe("a");
+    expect($group1Options.eq(0).val()).toBe("\" ><script></script>a");
     expect($group1Options.eq(0).prop("selected")).toBe(false);
-    expect($group1Options.eq(0).text()).toBe("Apple");
+    expect($group1Options.eq(0).html()).toBe("Apple&lt;script&gt;&lt;/script&gt;");
     expect($group1Options.eq(1).val()).toBe("b");
     expect($group1Options.eq(1).prop("selected")).toBe(true);
     expect($group1Options.eq(1).text()).toBe("Banana");
@@ -800,13 +800,13 @@ describe("A SelectCellEditor", function () {
     var $group1 = $optionGroups.eq(0);
     var $group2 = $optionGroups.eq(1);
 
-    expect($group1.attr("label")).toBe("Fruit");
+    expect($group1.attr("label")).toBe("\" ><script></script>Fruit");
     expect($group2.attr("label")).toBe("Cereal");
 
     var $group1Options = $group1.children();
-    expect($group1Options.eq(0).val()).toBe("a");
+    expect($group1Options.eq(0).val()).toBe("\" ><script></script>a");
     expect($group1Options.eq(0).prop("selected")).toBe(false);
-    expect($group1Options.eq(0).text()).toBe("Apple");
+    expect($group1Options.eq(0).html()).toBe("Apple&lt;script&gt;&lt;/script&gt;");
     expect($group1Options.eq(1).val()).toBe("b");
     expect($group1Options.eq(1).prop("selected")).toBe(true);
     expect($group1Options.eq(1).text()).toBe("Banana");

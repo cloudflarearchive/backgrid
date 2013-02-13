@@ -37,7 +37,7 @@ describe("A TextareaEditor", function () {
     editor = new Backgrid.Extension.TextareaEditor({
       formatter: Backgrid.Extension.TextCell.prototype.formatter,
       model: new Backbone.Model({
-        name: "name"
+        name: "name <script></script>"
       }),
       column: {
         name: "name",
@@ -59,6 +59,7 @@ describe("A TextareaEditor", function () {
   it("renders a dialog form with a textarea, a submit button and close button according to config", function () {
     expect(editor.$el.find("form").length).toBe(1);
     expect(editor.$el.find("form textarea").length).toBe(1);
+    expect(editor.$el.find("form textarea").html()).toBe("name &lt;script&gt;&lt;/script&gt;");
     expect(editor.$el.find("form input[type=submit]").length).toBe(1);
     expect(editor.$el.find("button.close").length).toBe(1);
     expect(editor.$el.find("form textarea").prop("cols")).toBe(Backgrid.Extension.TextareaEditor.prototype.cols);
