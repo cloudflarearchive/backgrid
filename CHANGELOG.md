@@ -1,3 +1,9 @@
+### 0.1.3
+
+- Fixed 2 security vulnerabilities in SelectCellEditor and TextareaCellEditor.
+- Fixed a paginator regression TypeError when a server mode PageableCollection
+  is supplied. [Issue #52](https://github.com/wyuenho/backgrid/issues/52)
+
 ### 0.1.2
 
 - Grids can now be initialized synchronously under any pagination
