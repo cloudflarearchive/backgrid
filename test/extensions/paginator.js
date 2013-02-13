@@ -139,6 +139,40 @@ describe("A Paginator", function () {
       expect(paginator.$el.find("tr > td[colspan=2]").length).toBe(1);
     });
 
+    it("renders page handles <= windowSize", function () {
+      expect(paginator.$el.find("a").length).toBe(7);
+
+      paginator.windowSize = 1;
+      paginator.render();
+
+      expect(paginator.$el.find("a").length).toBe(5);
+
+      books.url = "url";
+
+      var oldAjax = Backbone.ajax;
+      Backbone.ajax = function (settings) {
+        settings.success([{
+          title: "The Catcher in the Rye"
+        }]);
+      };
+
+      paginator.$el.find("a").eq(4).click();
+      expect(paginator.$el.find("a").eq(2).html()).toBe('3');
+      expect(books.state.currentPage).toBe(3);
+
+      Backbone.ajax = function (settings) {
+        settings.success([{
+          title: "A Tale of Two Cities"
+        }]);
+      };
+
+      paginator.$el.find("a").eq(1).click();
+      expect(paginator.$el.find("a").eq(2).html()).toBe('2');
+      expect(books.state.currentPage).toBe(2);
+
+      Backbone.ajax = oldAjax;
+    });
+
     it("displays a single page handler number 1 when the collection is empty and totalRecords is null", function () {
       paginator = new Backgrid.Extension.Paginator({
         collection: new Books(),
@@ -150,6 +184,16 @@ describe("A Paginator", function () {
       expect(paginator.$el.find("a").length).toBe(5);
       expect(paginator.$el.find("a[title='No. 1']").length).toBe(1);
       expect(paginator.$el.find("a[title='No. 2']").length).toBe(0);
+    });
+
+    it("refreshes upon collection reset", function () {
+      books.reset([{
+        title: "Alice's Adventures in Wonderland"
+      }]);
+      expect(paginator.$el.find("a").length).toBe(7);
+      expect(paginator.$el.find("a[title='No. 1']").length).toBe(1);
+      expect(paginator.$el.find("a[title='No. 2']").length).toBe(1);
+      expect(paginator.$el.find("a[title='No. 3']").length).toBe(1);
     });
 
   });

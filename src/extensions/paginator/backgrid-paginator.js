@@ -59,11 +59,17 @@
       this.listenTo(columns, "add", this.render);
       this.listenTo(columns, "remove", this.render);
       this.listenTo(columns, "change:renderable", this.render);
-      var fullCollection = this.collection.fullCollection;
+      var collection = this.collection;
+      var fullCollection = collection.fullCollection;
       if (fullCollection) {
         this.listenTo(fullCollection, "add", this.render);
         this.listenTo(fullCollection, "remove", this.render);
         this.listenTo(fullCollection, "reset", this.render);
+      }
+      else {
+        this.listenTo(collection, "add", this.render);
+        this.listenTo(collection, "remove", this.render);
+        this.listenTo(collection, "reset", this.render);
       }
     },
 
