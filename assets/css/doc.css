@@ -3,7 +3,7 @@
 }
 
 #social-media * {
-  vertical-align: middle;
+  vertical-align: middle !important;
 }
 
 #social-media > a {
