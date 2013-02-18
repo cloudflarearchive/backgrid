@@ -35,7 +35,7 @@
   overflow: hidden;
   line-height: 20px;
   text-align: left;
-  text-overflow: ellipses;
+  text-overflow: ellipsis;
   white-space: nowrap;
   vertical-align: middle;
   border: 1px solid #DDD;
