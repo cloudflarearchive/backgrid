@@ -136,10 +136,9 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
      @chainable
    */
   insertColumn: function (column, options) {
-    var self = this;
     options = options || {render: true};
-    self.columns.add(column, options);
-    return self;
+    this.columns.add(column, options);
+    return this;
   },
 
   /**
@@ -152,9 +151,8 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
      @chainable
    */
   removeColumn: function (column, options) {
-    var self = this;
-    self.columns.remove(column, options);
-    return self;
+    this.columns.remove(column, options);
+    return this;
   },
 
   /**
