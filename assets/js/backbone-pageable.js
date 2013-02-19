@@ -2,7 +2,7 @@
   backbone-pageable
   http://github.com/wyuenho/backbone-pageable
 
-  Copyright (c) 2012 Jimmy Yuen Ho Wong
+  Copyright (c) 2013 Jimmy Yuen Ho Wong
   Licensed under the MIT @license.
 */
 
@@ -282,20 +282,19 @@
 
       options = options || {};
 
-      var self = this;
-      var mode = self.mode = options.mode || self.mode || PageableProto.mode;
+      var mode = this.mode = options.mode || this.mode || PageableProto.mode;
 
-      var queryParams = _extend({}, PageableProto.queryParams, self.queryParams,
+      var queryParams = _extend({}, PageableProto.queryParams, this.queryParams,
                                 options.queryParams || {});
 
       queryParams.directions = _extend({},
                                        PageableProto.queryParams.directions,
-                                       self.queryParams.directions,
+                                       this.queryParams.directions,
                                        queryParams.directions || {});
 
-      self.queryParams = queryParams;
+      this.queryParams = queryParams;
 
-      var state = self.state = _extend({}, PageableProto.state, self.state,
+      var state = this.state = _extend({}, PageableProto.state, this.state,
                                        options.state || {});
 
       state.currentPage = state.currentPage == null ?
@@ -306,21 +305,21 @@
         state.totalRecords = models.length;
       }
 
-      self.switchMode(mode, _extend({fetch: false,
+      this.switchMode(mode, _extend({fetch: false,
                                      resetState: false,
                                      models: models}, options));
 
       var comparator = options.comparator;
 
       if (state.sortKey && !comparator) {
-        self.setSorting(state.sortKey, state.order, options);
+        this.setSorting(state.sortKey, state.order, options);
       }
 
       if (mode != "server") {
 
         if (comparator && options.full) {
-          delete self.comparator;
-          var fullCollection = self.fullCollection;
+          delete this.comparator;
+          var fullCollection = this.fullCollection;
           fullCollection.comparator = comparator;
           fullCollection.sort();
         }
@@ -328,12 +327,12 @@
         // make sure the models in the current page and full collection have the
         // same references
         if (models && !_isEmpty(models)) {
-          self.getPage(state.currentPage);
-          models.splice.apply(models, [0, models.length].concat(self.models));
+          this.getPage(state.currentPage);
+          models.splice.apply(models, [0, models.length].concat(this.models));
         }
       }
 
-      self._initState = _clone(self.state);
+      this._initState = _clone(this.state);
     },
 
     /**
@@ -346,9 +345,8 @@
     */
     _makeFullCollection: function (models, options) {
 
-      var self = this;
       var properties = ["url", "model", "sync", "comparator"];
-      var thisProto = self.constructor.prototype;
+      var thisProto = this.constructor.prototype;
       var i, length, prop;
 
       var proto = {};
@@ -363,7 +361,7 @@
 
       for (i = 0, length = properties.length; i < length; i++) {
         prop = properties[i];
-        if (self[prop] !== thisProto[prop]) {
+        if (this[prop] !== thisProto[prop]) {
           fullCollection[prop] = prop;
         }
       }
@@ -404,29 +402,34 @@
         var pageStart = currentPage * pageSize, pageEnd = pageStart + pageSize;
 
         if (event == "add") {
-          var fullIndex, addAt, colToAdd, options = options || {};
+          var pageIndex, fullIndex, addAt, colToAdd, options = options || {};
           if (collection == fullCol) {
             fullIndex = fullCol.indexOf(model);
             if (fullIndex >= pageStart && fullIndex < pageEnd) {
               colToAdd = pageCol;
-              addAt = fullIndex - pageStart;
+              pageIndex = addAt = fullIndex - pageStart;
             }
           }
           else {
-            fullIndex = pageStart + pageCol.indexOf(model);
+            pageIndex = pageCol.indexOf(model);
+            fullIndex = pageStart + pageIndex;
             colToAdd = fullCol;
-            var addAt = options && !_.isUndefined(options.at) ?
+            var addAt = !_isUndefined(options.at) ?
               options.at + pageStart :
               fullIndex;
           }
-
 
           ++state.totalRecords;
           pageCol.state = pageCol._checkState(state);
 
           if (colToAdd) {
             colToAdd.add(model, _extend({}, options || {}, {at: addAt}));
-            if (pageCol.length > pageSize) {
+            var modelToRemove = pageIndex >= pageSize ?
+              model :
+              !_isUndefined(options.at) && addAt < pageEnd && pageCol.length > pageSize ?
+              pageCol.at(pageSize) :
+              null;
+            if (modelToRemove) {
               var addHandlers = collection._events.add,
               popOptions = {onAdd: true};
               if (addHandlers.length) {
@@ -435,14 +438,14 @@
                 lastAddHandler.callback = function () {
                   try {
                     oldCallback.apply(this, arguments);
-                    pageCol.pop(popOptions);
+                    pageCol.remove(modelToRemove, popOptions);
                   }
                   finally {
                     lastAddHandler.callback = oldCallback;
                   }
                 };
               }
-              else pageCol.pop(popOptions);
+              else pageCol.remove(modelToRemove, popOptions);
             }
           }
         }
@@ -531,9 +534,8 @@
     */
     _checkState: function (state) {
 
-      var self = this;
-      var mode = self.mode;
-      var links = self.links;
+      var mode = this.mode;
+      var links = this.links;
       var totalRecords = state.totalRecords;
       var pageSize = state.pageSize;
       var currentPage = state.currentPage;
@@ -603,18 +605,16 @@
        from fetch or this.
     */
     setPageSize: function (pageSize, options) {
-      var self = this;
-
       pageSize = finiteInt(pageSize, "pageSize");
 
       options = options || {};
 
-      self.state = self._checkState(_extend({}, self.state, {
+      this.state = this._checkState(_extend({}, this.state, {
         pageSize: pageSize,
-        totalPages: ceil(self.state.totalRecords / pageSize)
+        totalPages: ceil(this.state.totalRecords / pageSize)
       }));
 
-      return self.getPage(self.state.currentPage, options);
+      return this.getPage(this.state.currentPage, options);
     },
 
     /**
@@ -649,33 +649,32 @@
     */
     switchMode: function (mode, options) {
 
-      var self = this;
-
       if (!_contains(["server", "client", "infinite"], mode)) {
         throw new TypeError('`mode` must be one of "server", "client" or "infinite"');
       }
 
       options = options || {fetch: true, resetState: true};
 
-      var state = self.state = options.resetState ?
-        _clone(self._initState) :
-        self._checkState(_extend({}, self.state));
+      var state = this.state = options.resetState ?
+        _clone(this._initState) :
+        this._checkState(_extend({}, this.state));
 
-      self.mode = mode;
+      this.mode = mode;
 
-      var fullCollection = self.fullCollection;
-      var handlers = self._handlers = self._handlers || {}, handler;
+      var self = this;
+      var fullCollection = this.fullCollection;
+      var handlers = this._handlers = this._handlers || {}, handler;
       if (mode != "server" && !fullCollection) {
-        fullCollection = self._makeFullCollection(options.models || []);
-        fullCollection.pageableCollection = self;
-        self.fullCollection = fullCollection;
-        var allHandler = self._makeCollectionEventHandler(self, fullCollection);
+        fullCollection = this._makeFullCollection(options.models || []);
+        fullCollection.pageableCollection = this;
+        this.fullCollection = fullCollection;
+        var allHandler = this._makeCollectionEventHandler(this, fullCollection);
         _each(["add", "remove", "reset", "sort"], function (event) {
           handlers[event] = handler = _.bind(allHandler, {}, event);
           self.on(event, handler);
           fullCollection.on(event, handler);
         });
-        fullCollection.comparator = self._fullComparator;
+        fullCollection.comparator = this._fullComparator;
       }
       else if (mode == "server" && fullCollection) {
         _each(_keys(handlers), function (event) {
@@ -683,25 +682,25 @@
           self.off(event, handler);
           fullCollection.off(event, handler);
         });
-        delete self._handlers;
-        self._fullComparator = fullCollection.comparator;
-        delete self.fullCollection;
+        delete this._handlers;
+        this._fullComparator = fullCollection.comparator;
+        delete this.fullCollection;
       }
 
       if (mode == "infinite") {
-        var links = self.links = {};
+        var links = this.links = {};
         var firstPage = state.firstPage;
         var totalPages = ceil(state.totalRecords / state.pageSize);
         var lastPage = firstPage === 0 ? totalPages - 1 : totalPages || firstPage;
         for (var i = state.firstPage; i <= lastPage; i++) {
-          links[i] = self.url;
+          links[i] = this.url;
         }
       }
-      else if (self.links) delete self.links;
+      else if (this.links) delete this.links;
 
       return options.fetch ?
-        self.fetch(_omit(options, "fetch", "resetState")) :
-        self;
+        this.fetch(_omit(options, "fetch", "resetState")) :
+        this;
     },
 
     /**
@@ -709,10 +708,10 @@
        otherwise.
     */
     hasPrevious: function () {
-      var self = this, state = self.state;
+      var state = this.state;
       var currentPage = state.currentPage;
-      if (self.mode != "infinite") return currentPage > state.firstPage;
-      return !!self.links[currentPage - 1];
+      if (this.mode != "infinite") return currentPage > state.firstPage;
+      return !!this.links[currentPage - 1];
     },
 
     /**
@@ -720,10 +719,10 @@
        otherwise.
     */
     hasNext: function () {
-      var self = this, state = self.state;
-      var currentPage = self.state.currentPage;
-      if (self.mode != "infinite") return currentPage < state.lastPage;
-      return !!self.links[currentPage + 1];
+      var state = this.state;
+      var currentPage = this.state.currentPage;
+      if (this.mode != "infinite") return currentPage < state.lastPage;
+      return !!this.links[currentPage + 1];
     },
 
     /**
@@ -812,11 +811,11 @@
     */
     getPage: function (index, options) {
 
-      var self = this, mode = self.mode, fullCollection = self.fullCollection;
+      var mode = this.mode, fullCollection = this.fullCollection;
 
       options = options || {fetch: false};
 
-      var state = self.state,
+      var state = this.state,
       firstPage = state.firstPage,
       currentPage = state.currentPage,
       lastPage = state.lastPage,
@@ -831,7 +830,7 @@
         default: pageNum = finiteInt(index, "index");
       }
 
-      self.state = self._checkState(_extend({}, state, {currentPage: pageNum}));
+      this.state = this._checkState(_extend({}, state, {currentPage: pageNum}));
 
       var pageStart = (firstPage === 0 ? pageNum : pageNum - 1) * pageSize;
       var pageModels = fullCollection && fullCollection.length ?
@@ -839,12 +838,12 @@
         [];
       if ((mode == "client" || (mode == "infinite" && !_isEmpty(pageModels))) &&
           !options.fetch) {
-        return resetQuickly(self, pageModels, _omit(options, "fetch"));
+        return resetQuickly(this, pageModels, _omit(options, "fetch"));
       }
 
-      if (mode == "infinite") options.url = self.links[pageNum];
+      if (mode == "infinite") options.url = this.links[pageNum];
 
-      return self.fetch(_omit(options, "fetch"));
+      return this.fetch(_omit(options, "fetch"));
     },
 
     /**
@@ -900,7 +899,6 @@
        @return {Object}
     */
     parseLinks: function (resp, options) {
-      var self = this;
       var linkHeader = options.xhr.getResponseHeader("Link");
       var relations = ["first", "prev", "previous", "next", "last"];
       var links = {};
@@ -923,8 +921,8 @@
       if (qs = (qsi = last.indexOf('?')) ? last.slice(qsi + 1) : '') {
         var params = queryStringToParams(qs);
 
-        var state = _.clone(self.state);
-        var queryParams = self.queryParams;
+        var state = _clone(this.state);
+        var queryParams = this.queryParams;
         var pageSize = state.pageSize;
 
         var totalRecords = params[queryParams.totalRecords] * 1;
@@ -940,7 +938,7 @@
 
         if (totalRecords) state.totalRecords = totalRecords;
 
-        self.state = self._checkState(state);
+        this.state = this._checkState(state);
       }
 
       delete links.last;
@@ -980,16 +978,14 @@
     */
     parse: function (resp) {
 
-      var self = this;
-
       if (!_isArray(resp)) {
         return new TypeError("The server response must be an array");
       }
 
       if (resp.length === 2 && _.isObject(resp[0]) && _isArray(resp[1])) {
 
-        var queryParams = self.queryParams;
-        var newState = _clone(self.state);
+        var queryParams = this.queryParams;
+        var newState = _clone(this.state);
         var serverState = resp[0];
 
         _each(_pairs(_omit(queryParams, "directions")), function (kvp) {
@@ -1001,7 +997,7 @@
           newState.order = _invert(queryParams.directions)[serverState.order] * 1;
         }
 
-        self.state = self._checkState(newState);
+        this.state = this._checkState(newState);
 
         return resp[1];
       }
@@ -1026,22 +1022,20 @@
     */
     fetch: function (options) {
 
-      var self = this;
-
       options = options || {};
 
-      var state = self._checkState(self.state);
+      var state = this._checkState(this.state);
 
-      var mode = self.mode;
+      var mode = this.mode;
 
       if (mode == "infinite" && !options.url) {
-        options.url = self.links[state.currentPage];
+        options.url = this.links[state.currentPage];
       }
 
       var data = options.data || {};
 
       // dedup query params
-      var url = options.url || _.result(self, "url") || '';
+      var url = options.url || _.result(this, "url") || '';
       var qsi = url.indexOf('?');
       if (qsi != -1) {
         _extend(data, queryStringToParams(url.slice(qsi + 1)));
@@ -1052,12 +1046,12 @@
       options.data = data;
 
       // map params except directions
-      var queryParams = self.mode == "client" ?
-        _pick(self.queryParams, "sortKey", "order") :
-        _omit(_pick(self.queryParams, _keys(PageableProto.queryParams)),
+      var queryParams = this.mode == "client" ?
+        _pick(this.queryParams, "sortKey", "order") :
+        _omit(_pick(this.queryParams, _keys(PageableProto.queryParams)),
               "directions");
 
-      var i, kvp, k, v, kvps = _pairs(queryParams), thisCopy = _clone(self);
+      var i, kvp, k, v, kvps = _pairs(queryParams), thisCopy = _clone(this);
       for (i = 0; i < kvps.length; i++) {
         kvp = kvps[i], k = kvp[0], v = kvp[1];
         v = _isFunction(v) ? v.call(thisCopy) : v;
@@ -1068,12 +1062,12 @@
 
       // fix up sorting parameters
       if (state.sortKey && state.order) {
-        data[queryParams.order] = self.queryParams.directions[state.order + ""];
+        data[queryParams.order] = this.queryParams.directions[state.order + ""];
       }
       else if (!state.sortKey) delete data[queryParams.order];
 
       // map extra query parameters
-      var extraKvps = _pairs(_omit(self.queryParams,
+      var extraKvps = _pairs(_omit(this.queryParams,
                                    _keys(PageableProto.queryParams)));
       for (i = 0; i < extraKvps.length; i++) {
         kvp = extraKvps[i];
@@ -1082,10 +1076,11 @@
         data[kvp[0]] = v;
       }
 
-      var fullCollection = self.fullCollection, links = self.links;
+      var fullCollection = this.fullCollection, links = this.links;
 
       if (mode != "server") {
 
+        var self = this;
         var success = options.success;
         options.success = function (col, resp, opts) {
 
@@ -1125,7 +1120,7 @@
         return BBColProto.fetch.call(self, _extend({}, options, {silent: true}));
       }
 
-      return BBColProto.fetch.call(self, options);
+      return BBColProto.fetch.call(this, options);
     },
 
     /**
@@ -1194,22 +1189,22 @@
     */
     setSorting: function (sortKey, order, options) {
 
-      var self = this, state = self.state;
+      var state = this.state;
 
       state.sortKey = sortKey;
       state.order = order = order || state.order;
 
-      var fullCollection = self.fullCollection;
+      var fullCollection = this.fullCollection;
 
       var delComp = false, delFullComp = false;
 
       if (!sortKey) delComp = delFullComp = true;
 
-      var mode = self.mode;
+      var mode = this.mode;
       options = _extend({side: mode == "client" ? mode : "server", full: true},
                         options);
 
-      var comparator = self._makeComparator(sortKey, order);
+      var comparator = this._makeComparator(sortKey, order);
 
       var full = options.full, side = options.side;
 
@@ -1219,18 +1214,18 @@
           delComp = true;
         }
         else {
-          self.comparator = comparator;
+          this.comparator = comparator;
           delFullComp = true;
         }
       }
       else if (side == "server" && !full) {
-        self.comparator = comparator;
+        this.comparator = comparator;
       }
 
-      if (delComp) delete self.comparator;
+      if (delComp) delete this.comparator;
       if (delFullComp && fullCollection) delete fullCollection.comparator;
 
-      return self;
+      return this;
     }
 
   });
