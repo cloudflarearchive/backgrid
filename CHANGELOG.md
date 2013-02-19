@@ -1,3 +1,11 @@
+### 0.1.4
+- Fixed text-overflow: ellipsis in backgrid.css.
+  [Issue #57](https://github.com/wyuenho/backgrid/pull/57)
+- Fixed bug where removing a hidden column removes the wrong column of
+  cells. [Issue #58](https://github.com/wyuenho/backgrid/issues/58)
+- A hidden column is now hidden from the DOM instead of
+  detached. [Issue #60](https://github.com/wyuenho/backgrid/issues/60)
+
 ### 0.1.3
 
 - Fixed 2 security vulnerabilities in SelectCellEditor and TextareaCellEditor.
