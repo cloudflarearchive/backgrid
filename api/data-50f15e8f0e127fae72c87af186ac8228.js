@@ -1875,11 +1875,12 @@ Docs = {
         "sort": 3
       },
       {
-        "name": "renderColumn",
-        "fullName": "Backgrid.Row.renderColumn",
+        "name": "makeCell",
+        "fullName": "Backgrid.Row.makeCell",
         "icon": "icon-method",
-        "url": "#!/api/Backgrid.Row-method-renderColumn",
+        "url": "#!/api/Backgrid.Row-method-makeCell",
         "meta": {
+          "protected": true
         },
         "sort": 3
       },

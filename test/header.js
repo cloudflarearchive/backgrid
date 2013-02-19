@@ -202,12 +202,13 @@ describe("A HeaderRow", function () {
     expect(row.$el.children().length).toBe(3);
     expect(row.$el.children().last()[0].outerHTML).toBe('<th><a>price<b class="sort-caret"></b></a></th>');
 
-    row.columns.add({name: "publisher", cell: "string"}, {render: false});
-    expect(row.$el.children().length).toBe(3);
-    expect(row.$el.children().last()[0].outerHTML).toBe('<th><a>price<b class="sort-caret"></b></a></th>');
+    row.columns.add({name: "publisher", cell: "string", renderable: false});
+    expect(row.$el.children().length).toBe(4);
+    expect(row.$el.children().last().find("a").text()).toBe("publisher");
+    expect(row.$el.children().last().css("display")).toBe("none");
 
     row.columns.remove(row.columns.first());
-    expect(row.$el.children().length).toBe(2);
+    expect(row.$el.children().length).toBe(3);
     expect(row.$el.children().first()[0].outerHTML).toBe('<th><a>year<b class="sort-caret"></b></a></th>');
   });
 

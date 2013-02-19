@@ -50,55 +50,33 @@ describe("A Row", function () {
     expect($tds.eq(1).text()).toBe("18");
   });
 
-  it("inserts or removes a cell if a column's renderable attribute changes", function () {
+  it("hides or shows a cell if a column's renderable attribute changes", function () {
 
     var row = new Backgrid.Row({
       model: new Backbone.Model({
-        name: "name",
-        age: 18,
-        birthday: "1987-06-05"
+        name: "name"
       }),
       columns: [{
         name: "name",
         cell: "string"
-      }, {
-        name: "age",
-        cell: "integer",
-        renderable: false
-      }, {
-        name: "birthday",
-        cell: "date"
       }]
     });
 
     row.render();
 
     var $tds = row.$el.children();
-    expect($tds.length).toBe(2);
     expect($tds.eq(0).text()).toBe("name");
-    expect($tds.eq(1).text()).toBe("1987-06-05");
-
-    row.columns.at(1).set("renderable", true);
-    $tds = row.$el.children();
-    expect($tds.eq(0).text()).toBe("name");
-    expect($tds.eq(1).text()).toBe("18");
-    expect($tds.eq(2).text()).toBe("1987-06-05");
+    expect($tds.eq(0).css("display")).not.toBe("none");
 
     row.columns.at(0).set("renderable", false);
     $tds = row.$el.children();
-    expect($tds.eq(0).text()).toBe("18");
-    expect($tds.eq(1).text()).toBe("1987-06-05");
-
-    row.columns.at(2).set("renderable", false);
-    $tds = row.$el.children();
-    expect($tds.eq(0).text()).toBe("18");
+    expect($tds.eq(0).text()).toBe("name");
+    expect($tds.eq(0).css("display")).toBe("none");
 
     row.columns.at(0).set("renderable", true);
-    row.columns.at(2).set("renderable", true);
     $tds = row.$el.children();
     expect($tds.eq(0).text()).toBe("name");
-    expect($tds.eq(1).text()).toBe("18");
-    expect($tds.eq(2).text()).toBe("1987-06-05");
+    expect($tds.eq(0).css("display")).not.toBe("none");
   });
 
   it("inserts or removes a cell if a column is added or removed", function () {
@@ -121,15 +99,16 @@ describe("A Row", function () {
     expect($tds.length).toBe(2);
     expect($tds.eq(1).text()).toBe("18");
 
-    row.columns.add({name: "birthday", cell: "date"}, {render: false});
+    row.columns.add({name: "birthday", cell: "date", renderable: false});
     $tds = row.$el.children();
-    expect($tds.length).toBe(2);
-    expect($tds.last().text()).toBe("18");
+    expect($tds.length).toBe(3);
+    expect($tds.last().text()).toBe("1987-06-05");
 
     row.columns.remove(row.columns.first());
     $tds = row.$el.children();
-    expect($tds.length).toBe(1);
-    expect($tds.last().text()).toBe("18");
+    expect($tds.length).toBe(2);
+    expect($tds.first().text()).toBe("18");
+    expect($tds.last().text()).toBe("1987-06-05");
   });
 
 });
