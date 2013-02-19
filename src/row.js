@@ -19,6 +19,8 @@ var Row = Backgrid.Row = Backbone.View.extend({
   /** @property */
   tagName: "tr",
 
+  initOptionRequires: ["columns", "model"],
+
   /**
      Initializes a row view instance.
 
@@ -30,74 +32,68 @@ var Row = Backgrid.Row = Backbone.View.extend({
    */
   initialize: function (options) {
 
-    requireOptions(options, ["columns", "model"]);
+    requireOptions(options, this.initOptionRequires);
 
     var columns = this.columns = options.columns;
     if (!(columns instanceof Backbone.Collection)) {
       columns = this.columns = new Columns(columns);
     }
-    this.listenTo(columns, "change:renderable", this.renderColumn);
 
     var cells = this.cells = [];
     for (var i = 0; i < columns.length; i++) {
-      var column = columns.at(i);
-      cells.push(new (column.get("cell"))({
-        column: column,
-        model: this.model
-      }));
+      cells.push(this.makeCell(columns.at(i), options));
     }
 
-    this.listenTo(columns, "add", function (column, columns, options) {
-      options = _.defaults(options || {}, {render: true});
-      var at = columns.indexOf(column);
-      var cell = new (column.get("cell"))({
-        column: column,
-        model: this.model
-      });
-      cells.splice(at, 0, cell);
-      this.renderColumn(column, column.get("renderable") && options.render);
+    this.listenTo(columns, "change:renderable", function (column, renderable) {
+      for (var i = 0; i < cells.length; i++) {
+        var cell = cells[i];
+        if (cell.column.get("name") == column.get("name")) {
+          if (renderable) cell.$el.show(); else cell.$el.hide();
+        }
+      }
     });
-    this.listenTo(columns, "remove", function (column) {
-      this.renderColumn(column, false);
+
+    this.listenTo(columns, "add", function (column, columns) {
+      var i = columns.indexOf(column);
+      var cell = this.makeCell(column, options);
+      cells.splice(i, 0, cell);
+
+      if (!cell.column.get("renderable")) cell.$el.hide();
+
+      var $el = this.$el;
+      if (i === 0) {
+        $el.prepend(cell.render().$el);
+      }
+      else if (i === columns.length - 1) {
+        $el.append(cell.render().$el);
+      }
+      else {
+        $el.children().eq(i).before(cell.render().$el);
+      }
+    });
+
+    this.listenTo(columns, "remove", function (column, columns, opts) {
+      cells[opts.index].remove();
+      cells.splice(opts.index, 1);
     });
   },
 
   /**
-     Backbone event handler. Insert a table cell to the right column in the row
-     if renderable is true, detach otherwise.
+     Factory method for making a cell. Used by #initialize internally. Override
+     this to provide an appropriate cell instance for a custom Row subclass.
+
+     @protected
 
      @param {Backgrid.Column} column
-     @param {boolean} renderable
+     @param {Object} options The options passed to #initialize.
+
+     @return {Backgrid.Cell}
    */
-  renderColumn: function (column, renderable) {
-    var cells = this.cells;
-    var columns = this.columns;
-    var spliceIndex = -1;
-    for (var i = 0; i < cells.length; i++) {
-      var cell = cells[i];
-      if (cell.column.get("name") == column.get("name")) {
-        spliceIndex = i;
-        break;
-      }
-    }
-    if (spliceIndex != -1) {
-      var $el = this.$el;
-      if (renderable) {
-        var cell = cells[spliceIndex];
-        if (spliceIndex === 0) {
-          $el.prepend(cell.render().$el);
-        }
-        else if (spliceIndex === columns.length - 1) {
-          $el.append(cell.render().$el);
-        }
-        else {
-          $el.children().eq(spliceIndex).before(cell.render().$el);
-        }
-      }
-      else {
-        $el.children().eq(spliceIndex).detach();
-      }
-    }
+  makeCell: function (column) {
+    return new (column.get("cell"))({
+      column: column,
+      model: this.model
+    });
   },
 
   /**
@@ -110,9 +106,8 @@ var Row = Backgrid.Row = Backbone.View.extend({
 
     for (var i = 0; i < this.cells.length; i++) {
       var cell = this.cells[i];
-      if (cell.column.get("renderable")) {
-        fragment.appendChild(cell.render().el);
-      }
+      fragment.appendChild(cell.render().el);
+      if (!cell.column.get("renderable")) cell.$el.hide();
     }
 
     this.el.appendChild(fragment);
