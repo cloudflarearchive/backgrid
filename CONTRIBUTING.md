@@ -100,7 +100,7 @@ CSS
 ---
 
 Please make sure you use `recess` to lint your CSS files before you submit a
-pull request. There's a make rule is put in every Makefile for this purpose.
+pull request. There's a make rule put in every Makefile for this purpose.
 
 ```shell
 $ make csslint
