@@ -1,7 +1,8 @@
 SUBDIRS = moment-cell \
 	paginator \
 	select2-cell \
-	text-cell
+	text-cell \
+	select-all
 
 all:
 	for subdir in $(SUBDIRS);\
