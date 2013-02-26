@@ -54,10 +54,19 @@
         this.column = new Backgrid.Column(this.column);
       }
 
-      this.listenTo(this.collection, "selected", function (model, selected) {
+      var collection = this.collection;
+      this.listenTo(collection, "selected", function (model, selected) {
         if (!selected) {
           this.$el.find(":checkbox").prop("checked", selected);
           this.allSelected = selected;
+        }
+      });
+
+      this.listenTo(Backbone, "backgrid:refresh", function () {
+        if (this.allSelected) {
+          collection.each(function (model) {
+            model.trigger("select", model, true);
+          });
         }
       });
 
