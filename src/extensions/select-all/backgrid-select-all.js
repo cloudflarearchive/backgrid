@@ -62,6 +62,12 @@
         }
       });
 
+      this.listenTo(collection, "all", function () {
+        if (!collection.length) {
+          this.$el.find("input[type='checkbox']").prop("checked", false);
+        }
+      });
+
       this.listenTo(Backbone, "backgrid:refresh", function () {
         if (this.allSelected) {
           collection.each(function (model) {
