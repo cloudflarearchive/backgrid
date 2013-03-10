@@ -62,6 +62,8 @@
   var _isFunction = _.isFunction;
   var _keys = _.keys;
   var _isUndefined = _.isUndefined;
+  var _result = _.result;
+  var _bind = _.bind;
   var ceil = Math.ceil;
 
   var BBColProto = Backbone.Collection.prototype;
@@ -670,7 +672,7 @@
         this.fullCollection = fullCollection;
         var allHandler = this._makeCollectionEventHandler(this, fullCollection);
         _each(["add", "remove", "reset", "sort"], function (event) {
-          handlers[event] = handler = _.bind(allHandler, {}, event);
+          handlers[event] = handler = _bind(allHandler, {}, event);
           self.on(event, handler);
           fullCollection.on(event, handler);
         });
@@ -970,22 +972,58 @@
        [Backbone.Collection#parse](http://backbonejs.org/#Collection-parse)
        default.
 
-       @param {Array} resp The deserialized response data from the server.
+       **Note:** this method has been further simplified since 1.1.7. While
+       existing #parse implementations will continue to work, new code is
+       encouraged to override #parseState and #parseRecords instead.
 
-       @throws {TypeError} If the `resp` is not an array.
+       @param {Object} resp The deserialized response data from the server.
 
        @return {Array.<Object>} An array of model objects
     */
     parse: function (resp) {
+      var newState = this.parseState(resp, _clone(this.queryParams), _clone(this.state));
+      if (newState) this.state = this._checkState(_extend({}, this.state, newState));
+      return this.parseRecords(resp);
+    },
 
-      if (!_isArray(resp)) {
-        return new TypeError("The server response must be an array");
-      }
+    /**
+       Parse server response for server pagination state updates.
 
-      if (resp.length === 2 && _.isObject(resp[0]) && _isArray(resp[1])) {
+       This default implementation first checks whether the response has any
+       state object as documented in #parse. If it exists, a state object is
+       returned by mapping the server state keys to this pageable collection
+       instance's query parameter keys using `queryParams`.
 
-        var queryParams = this.queryParams;
-        var newState = _clone(this.state);
+       It is __NOT__ neccessary to return a full state object complete with all
+       the mappings defined in #queryParams. Any state object resulted is merged
+       with a copy of the current pageable collection state and checked for
+       sanity before actually updating. Most of the time, simply providing a new
+       `totalRecords` value is enough to trigger a full pagination state
+       recalculation.
+
+           parseState: function (resp, queryParams, state) {
+             return {totalRecords: resp.total_entries};
+           }
+
+       __Note__: `totalRecords` cannot be set to 0 for compatibility reasons,
+       use `null` instead of 0 for all cases where you would like to set it to
+       0. You can do this either on the server-side or in your overridden #parseState
+       method.
+
+       This method __MUST__ return a new state object instead of directly
+       modifying the #state object. The behavior of directly modifying #state is
+       undefined.
+
+       @param {Object} resp The deserialized response data from the server.
+       @param {Object} queryParams A copy of #queryParams.
+       @param {Object} state A copy of #state.
+
+       @return {Object} A new (partial) state object.
+     */
+    parseState: function (resp, queryParams, state) {
+      if (resp && resp.length === 2 && _.isObject(resp[0]) && _isArray(resp[1])) {
+
+        var newState = _clone(state);
         var serverState = resp[0];
 
         _each(_pairs(_omit(queryParams, "directions")), function (kvp) {
@@ -997,8 +1035,24 @@
           newState.order = _invert(queryParams.directions)[serverState.order] * 1;
         }
 
-        this.state = this._checkState(newState);
+        return newState;
+      }
+    },
 
+    /**
+       Parse server response for an array of model objects.
+
+       This default implementation first checks whether the response has any
+       state object as documented in #parse. If it exists, the array of model
+       objects is assumed to be the second element, otherwise the entire
+       response is returned directly.
+
+       @param {Object} resp The deserialized response data from the server.
+
+       @return {Array.<Object>} An array of model objects
+     */
+    parseRecords: function (resp) {
+      if (resp && resp.length === 2 && _.isObject(resp[0]) && _isArray(resp[1])) {
         return resp[1];
       }
 
@@ -1035,7 +1089,7 @@
       var data = options.data || {};
 
       // dedup query params
-      var url = options.url || _.result(this, "url") || '';
+      var url = _result(options, "url") || _result(this, "url") || '';
       var qsi = url.indexOf('?');
       if (qsi != -1) {
         _extend(data, queryStringToParams(url.slice(qsi + 1)));
