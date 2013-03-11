@@ -105,15 +105,15 @@
       }
 
       var state = collection.state;
-      var pageIndex = $(e.target).text() * 1 - state.firstPage;
-      collection.getPage(state.firstPage === 0 ? pageIndex : pageIndex + 1);
+      var pageIndex = $(e.target).text() * 1;
+      collection.getPage(state.firstPage === 0 ? pageIndex - 1 : pageIndex);
     },
 
     /**
        Internal method to create a list of page handle objects for the template
        to render them.
 
-       @return Array.<Object> an array of page handle objects hashes
+       @return {Array.<Object>} an array of page handle objects hashes
      */
     makeHandles: function () {
 
