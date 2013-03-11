@@ -39,6 +39,8 @@ var CellEditor = Backgrid.CellEditor = Backbone.View.extend({
     if (this.parent && _.isFunction(this.parent.on)) {
       this.listenTo(this.parent, "editing", this.postRender);
     }
+
+    this.listenTo(this, "done", this.remove);
   },
 
   /**
@@ -93,8 +95,6 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
     if (options.placeholder) {
       this.$el.attr("placeholder", options.placeholder);
     }
-
-    this.listenTo(this, "done", this.remove);
   },
 
   /**

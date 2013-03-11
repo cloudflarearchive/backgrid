@@ -14,15 +14,13 @@
      @class Backgrid.Extension.TextareaEditor
      @extends Backgrid.InputCellEditor
    */
-  var TextareaEditor = Backgrid.Extension.TextareaEditor = Backgrid.InputCellEditor.extend({
+  var TextareaEditor = Backgrid.Extension.TextareaEditor = Backgrid.CellEditor.extend({
 
     /** @property */
     tagName: "div",
 
     /** @property */
     className: "modal hide fade",
-
-    attributes: {},
 
     /** @property {function(Object, ?Object=): string} template */
     template: _.template('<form><div class="modal-header"><button type="button" class="close" data-dismiss="modal">&times;</button><h3><%- column.get("label") %></h3></div><div class="modal-body"><textarea cols="<%= cols %>" rows="<%= rows %>"><%- content %></textarea></div><div class="modal-footer"><input class="btn" type="submit" value="Save"/></div></form>'),
