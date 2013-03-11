@@ -210,6 +210,8 @@ describe("A Paginator", function () {
         columns: [{name: "title", cell: "string"}]
       });
 
+      paginator.render();
+
       paginator.$el.find("a").eq("3").click();
       expect(books.state.currentPage).toBe(1);
       paginator.$el.find("a").eq("2").click();
