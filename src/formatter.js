@@ -242,7 +242,8 @@ _.extend(DatetimeFormatter.prototype, {
 
      @member Backgrid.DatetimeFormatter
      @param {string} rawData
-     @return {string|null|undefined} ISO-8601 string in UTC. Null and undefined values are returned as is.
+     @return {string|null|undefined} ISO-8601 string in UTC. Null and undefined
+     values are returned as is.
   */
   fromRaw: function (rawData) {
     return this._convert(rawData);
@@ -258,9 +259,9 @@ _.extend(DatetimeFormatter.prototype, {
      @member Backgrid.DatetimeFormatter
      @param {string} formattedData
      @return {string|undefined} ISO-8601 string in UTC. Undefined if a date is
-     found `includeDate` is false, or a time is found if `includeTime` is false,
-     or if `includeDate` is true and a date is not found, or if `includeTime` is
-     true and a time is not found.
+     found when `includeDate` is false, or a time is found when `includeTime` is
+     false, or if `includeDate` is true and a date is not found, or if
+     `includeTime` is true and a time is not found.
   */
   toRaw: function (formattedData) {
     return this._convert(formattedData, true);
