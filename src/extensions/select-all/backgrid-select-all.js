@@ -55,14 +55,14 @@
       }
 
       var collection = this.collection;
-      this.listenTo(collection, "selected", function (model, selected) {
+      this.listenTo(collection.fullCollection || collection, "selected", function (model, selected) {
         if (!selected) {
           this.$el.find(":checkbox").prop("checked", selected);
           this.allSelected = selected;
         }
       });
 
-      this.listenTo(collection, "all", function () {
+      this.listenTo(collection.fullCollection || collection, "all", function () {
         if (!collection.length) {
           this.$el.find("input[type='checkbox']").prop("checked", false);
         }
@@ -82,7 +82,8 @@
     onChange: function (e) {
       var selected = $(e.target).prop("checked");
 
-      this.collection.each(function (model) {
+      var collection = this.collection.fullCollection || this.collection;
+      collection.each(function (model) {
         model.trigger("select", model, selected);
       });
 
