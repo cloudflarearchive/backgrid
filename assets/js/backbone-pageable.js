@@ -65,6 +65,7 @@
   var _result = _.result;
   var _bind = _.bind;
   var ceil = Math.ceil;
+  var max = Math.max;
 
   var BBColProto = Backbone.Collection.prototype;
 
@@ -562,7 +563,7 @@
           throw new RangeError("`firstPage must be 0 or 1`");
         }
 
-        state.lastPage = firstPage === 0 ? totalPages - 1 : totalPages;
+        state.lastPage = firstPage === 0 ? max(0, totalPages - 1) : totalPages;
 
         if (mode == "infinite") {
           if (!links[currentPage + '']) {
@@ -570,7 +571,7 @@
           }
         }
         else {
-          if (firstPage === 0 && (currentPage < firstPage || currentPage >= totalPages)) {
+          if (firstPage === 0 && (currentPage < firstPage || (currentPage >= totalPages && totalPages > 0))) {
             throw new RangeError("`currentPage` must be firstPage <= currentPage < totalPages if 0-based. Got " + currentPage + '.');
           }
           else if (firstPage === 1 && (currentPage < firstPage || currentPage > totalPages)) {
@@ -693,7 +694,7 @@
         var links = this.links = {};
         var firstPage = state.firstPage;
         var totalPages = ceil(state.totalRecords / state.pageSize);
-        var lastPage = firstPage === 0 ? totalPages - 1 : totalPages || firstPage;
+        var lastPage = firstPage === 0 ? max(0, totalPages - 1) : totalPages || firstPage;
         for (var i = state.firstPage; i <= lastPage; i++) {
           links[i] = this.url;
         }
@@ -1028,7 +1029,8 @@
 
         _each(_pairs(_omit(queryParams, "directions")), function (kvp) {
           var k = kvp[0], v = kvp[1];
-          newState[k] = serverState[v];
+          var serverVal = serverState[v];
+          if (!_isUndefined(serverVal) && !_.isNull(serverVal)) newState[k] = serverState[v];
         });
 
         if (serverState.order) {
