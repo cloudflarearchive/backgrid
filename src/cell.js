@@ -124,39 +124,36 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
      @param {Event} e
   */
   saveOrCancel: function (e) {
-    if (e.type === "keydown") {
-      // enter or tab
-      if (e.keyCode === 13 || e.keyCode === 9) {
-        e.preventDefault();
-        var valueToSet = this.formatter.toRaw(this.$el.val());
 
-        if (_.isUndefined(valueToSet) ||
-            !this.model.set(this.column.get("name"), valueToSet,
-                            {validate: true})) {
-          this.trigger("error");
-        }
-        else {
-          this.trigger("done");
+    var formatter = this.formatter;
+    var model = this.model;
+    var column = this.column;
+
+    // enter or tab or blur
+    if (e.keyCode === 13 || e.keyCode === 9 || e.type === "blur") {
+      e.preventDefault();
+      var newValue = formatter.toRaw(this.$el.val());
+      if (_.isUndefined(newValue) ||
+          !model.set(column.get("name"), newValue, {validate: true})) {
+        this.trigger("error");
+
+        if (e.type === "blur") {
+          var self = this;
+          var timeout = window.setTimeout(function () {
+            self.$el.focus();
+            window.clearTimeout(timeout);
+          }, 1);
         }
       }
-      // esc
-      else if (e.keyCode === 27) {
-        // undo
-        e.stopPropagation();
+      else {
         this.trigger("done");
       }
     }
-    else if (e.type === "blur") {
-      if (this.formatter.fromRaw(this.model.get(this.column.get("name"))) === this.$el.val()) {
-        this.trigger("done");
-      }
-      else {
-        var self = this;
-        var timeout = window.setTimeout(function () {
-          self.$el.focus();
-          window.clearTimeout(timeout);
-        }, 1);
-      }
+    // esc
+    else if (e.keyCode === 27) {
+      // undo
+      e.stopPropagation();
+      this.trigger("done");
     }
   },
 

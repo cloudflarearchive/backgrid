@@ -159,8 +159,15 @@ describe("An InputCellEditor", function () {
 
     editor.trigger.reset();
     editor.formatter.toRaw.reset();
-    editor.$el.trigger(enter);
     editor.model.validate = function () { return "error found"; };
+    var tab = $.Event("keydown", { keyCode: 9 });
+    editor.$el.trigger(tab);
+    expect(editor.trigger.calls.length).toBe(1);
+    expect(editor.trigger).toHaveBeenCalledWith("error");
+
+    editor.trigger.reset();
+    editor.formatter.toRaw.reset();
+    editor.$el.blur();
     expect(editor.trigger.calls.length).toBe(1);
     expect(editor.trigger).toHaveBeenCalledWith("error");
   });
@@ -183,12 +190,12 @@ describe("An InputCellEditor", function () {
     expect(editor.model.get(editor.column.get("name"))).toBe("title");
   });
 
-  it("stays in focus when the value has changed but going out of focus", function () {
+  it("saves the value if the value is valid when going out of focus", function () {
     editor.render();
     editor.$el.val("another title");
     editor.$el.blur();
-    expect(editor.trigger).not.toHaveBeenCalled();
-    expect(editor.model.get(editor.column.get("name"))).toBe("title");
+    expect(editor.trigger).toHaveBeenCalledWith("done");
+    expect(editor.model.get(editor.column.get("name"))).toBe("another title");
   });
 
 });
