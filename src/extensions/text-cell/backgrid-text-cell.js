@@ -12,7 +12,7 @@
      Renders a form with a text area and a save button in a modal dialog.
 
      @class Backgrid.Extension.TextareaEditor
-     @extends Backgrid.InputCellEditor
+     @extends Backgrid.CellEditor
    */
   var TextareaEditor = Backgrid.Extension.TextareaEditor = Backgrid.CellEditor.extend({
 
