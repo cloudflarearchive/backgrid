@@ -300,8 +300,7 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
   */
   exitEditMode: function () {
     this.$el.removeClass("error");
-    this.currentEditor.off(null, null, this);
-    this.currentEditor.remove();
+    this.stopListening(this.currentEditor);
     delete this.currentEditor;
     this.$el.removeClass("editor");
     this.render();
