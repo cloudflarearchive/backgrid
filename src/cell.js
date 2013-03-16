@@ -656,7 +656,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
   /** @property */
   events: {
     "change": "save",
-    "blur": "save"
+    "blur": "close"
   },
 
   /** @property {function(Object, ?Object=): string} template */
@@ -731,6 +731,10 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
   */
   save: function (e) {
     this.model.set(this.column.get("name"), this.formatter.toRaw(this.$el.val()));
+    this.trigger("done");
+  },
+
+  close: function () {
     this.trigger("done");
   }
 
