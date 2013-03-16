@@ -152,30 +152,26 @@ var Body = Backgrid.Body = Backbone.View.extend({
 
   /**
      Reinitialize all the rows inside the body and re-render them.
-
-     @chainable
   */
   refresh: function () {
-    var self = this;
+    for (var i = 0; i < this.rows.length; i++) {
+      this.rows[i].remove();
+    }
 
-    _.each(self.rows, function (row) {
-      row.remove();
-    });
-
-    self.rows = self.collection.map(function (model) {
-      var row = new self.row({
-        columns: self.columns,
+    this.rows = this.collection.map(function (model) {
+      var row = new this.row({
+        columns: this.columns,
         model: model
       });
 
       return row;
-    });
+    }, this);
 
-    self.render();
+    this.render();
 
     Backbone.trigger("backgrid:refresh");
 
-    return self;
+    return this;
   },
 
   /**
