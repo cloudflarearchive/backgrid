@@ -42,7 +42,7 @@
       }
 
       this.listenTo(this.model, "select", function (model, selected) {
-        this.$el.find(":checkbox").prop("checked", selected);
+        this.$el.find(":checkbox").prop("checked", selected).change();
       });
 
     },
