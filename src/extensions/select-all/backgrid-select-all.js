@@ -23,12 +23,12 @@
 
     /** @property */
     events: {
-      "change": "onChange"
+      "change :checkbox": "onChange"
     },
 
     /**
-       Initializer. Listens to the model's `select` event and check or uncheck
-       this cell's checkbox accordingly.
+       Initializer. If the underlying model triggers a `select` event, this cell
+       will change its checked value according to the event's `selected` value.
 
        @param {Object} options
        @param {Backgrid.Column} options.column
@@ -49,7 +49,7 @@
 
     /**
        When the checkbox's value changes, this method will trigger a Backbone
-       `selected` event with a reference of the model and the checkbox''
+       `selected` event with a reference of the model and the checkbox's
        `checked` value.
      */
     onChange: function (e) {
@@ -60,7 +60,7 @@
        Renders a checkbox in a table cell.
      */
     render: function () {
-      this.$el.empty().append("<input type='checkbox' />");
+      this.$el.empty().append('<input type="checkbox" />');
       return this;
     }
 
@@ -81,14 +81,17 @@
     tagName: "th",
 
     /**
-       Initializer.
-
-       If all of the models on the current page has been selected, this header
-       cell will check its checkbox. If the underlying collection has been
-       emptied, the checkbox will uncheck. If the checkbox is checked when the
-       entire grid refreshes itself, this header cell will trigger a Backbone
-       `select` event on each model in the underlying collection, passing the
-       model and the current `checked` checkbox value in each event.
+       Initializer. When this cell's checkbox is checked, a Backbone `select`
+       event will be triggered for each model for the current page in the
+       underlying collection. If a `SelectRowCell` instance exists for the rows
+       representing the models, they will check themselves. If any of the
+       SelectRowCell instances trigger a Backbone `selected` event with a
+       `false` value, this cell will uncheck its checkbox. In the event of a
+       Backbone `backgrid:refresh` event, which is triggered when the body
+       refreshes its rows, which can happen under a number of conditions such as
+       paging or the columns were reset, this cell will still remember the
+       previously selected models and trigger a Backbone `select` event on them
+       such that the SelectRowCells can recheck themselves upon refreshing.
 
        @param {Object} options
        @param {Backgrid.Column} options.column
@@ -102,34 +105,26 @@
       }
 
       var collection = this.collection;
-      var selectedCount = 0;
+      var selectedModels = this.selectedModels = {};
       this.listenTo(collection, "selected", function (model, selected) {
-        if (!selected) {
-          this.$el.find(":checkbox").prop("checked", selected);
-          selectedCount--;
-        }
+        if (selected) selectedModels[model.id || model.cid] = model;
         else {
-          selectedCount++;
-        }
-
-        if (collection.length && selectedCount === collection.length) {
-          this.undelegateEvents();
-          this.$el.find(":checkbox").prop("checked", true);
-          this.delegateEvents();
-        }
-      });
-
-      this.listenTo(collection, "remove reset", function () {
-        if (!collection.length) {
+          delete selectedModels[model.id || model.cid];
           this.$el.find(":checkbox").prop("checked", false);
         }
       });
 
+      this.listenTo(collection, "remove", function (model) {
+        delete selectedModels[model.cid];
+      });
+
       this.listenTo(Backbone, "backgrid:refresh", function () {
-        if (this.$el.find(":checkbox").prop("checked")) {
-          collection.each(function (model) {
-            model.trigger("select", model, true);
-          });
+        this.$el.find(":checkbox").prop("checked", false);
+        for (var i = 0; i < collection.length; i++) {
+          var model = collection.at(i);
+          if (selectedModels[model.id || model.cid]) {
+            model.trigger('select', model, true);
+          }
         }
       });
     },

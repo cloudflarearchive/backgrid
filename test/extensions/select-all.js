@@ -79,37 +79,30 @@ describe("A SelectAllHeaderCell", function () {
     expect(selectTriggerArgs[1][1]).toBe(true);
   });
 
-  it("unchecks itself when the collection empties, and checkes itself when all the models on current page are selected", function () {
-    cell.$el.find(":checkbox").prop("checked", true);
-    collection.remove(collection.first());
-    expect(cell.$el.find(":checkbox").prop("checked")).toBe(true);
-    collection.remove(collection.first());
-    expect(cell.$el.find(":checkbox").prop("checked")).toBe(false);
-    collection.add({id: 3}, {id: 4});
-    collection.each(function (model) {
+  it("unchecks itself when a model triggers a `selected` event with a false value", function () {
+    cell.$el.find(":checkbox").prop("checked", true).change();
+    collection.at(0).trigger("selected", collection.at(0), false);
+    expect(cell.$el.find(":checkbox").prop("checked"), false);
+  });
+
+  it("will trigger a `select` event on each previously selected model after a `backgrid:refresh` event", function () {
+    var ids1 = '';
+    collection.on("select", function (model) {
+      ids1 = ids1 + model.id;
       model.trigger("selected", model, true);
     });
-    expect(cell.$el.find(":checkbox").prop("checked")).toBe(true);
-    collection.reset();
-    expect(cell.$el.find(":checkbox").prop("checked")).toBe(false);
-  });
+    cell.$el.find(":checkbox").prop("checked", true).change();
+    collection.off("select");
 
-  it("triggers `select` on each model on `backgrid:refresh` if checkbox checked", function () {
-    var selectTriggerArgs = [];
-    collection.on("select", function () {
-      selectTriggerArgs.push(Array.prototype.slice.apply(arguments));
+    var ids2 = '';
+    collection.on("select", function (model) {
+      ids2 = ids2 + model.id;
     });
-
-    Backbone.trigger("backgrid:refresh");
-    expect(selectTriggerArgs.length).toBe(0);
-
-    cell.$el.find(":checkbox").prop("checked", true);
     Backbone.trigger("backgrid:refresh");
 
-    expect(selectTriggerArgs.length).toBe(2);
-    expect(selectTriggerArgs[0][0]).toBe(collection.at(0));
-    expect(selectTriggerArgs[0][1]).toBe(true);
-    expect(selectTriggerArgs[1][0]).toBe(collection.at(1));
-    expect(selectTriggerArgs[1][1]).toBe(true);
+    expect(ids1).not.toBe('');
+    expect(ids2).not.toBe('');
+    expect(ids1).toBe(ids2);
   });
+
 });
