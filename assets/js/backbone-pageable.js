@@ -1,5 +1,5 @@
 /*
-  backbone-pageable
+  backbone-pageable 1.2.0
   http://github.com/wyuenho/backbone-pageable
 
   Copyright (c) 2013 Jimmy Yuen Ho Wong
@@ -63,7 +63,6 @@
   var _keys = _.keys;
   var _isUndefined = _.isUndefined;
   var _result = _.result;
-  var _bind = _.bind;
   var ceil = Math.ceil;
   var max = Math.max;
 
@@ -365,7 +364,7 @@
       for (i = 0, length = properties.length; i < length; i++) {
         prop = properties[i];
         if (this[prop] !== thisProto[prop]) {
-          fullCollection[prop] = prop;
+          fullCollection[prop] = this[prop];
         }
       }
 
@@ -374,8 +373,9 @@
 
     /**
        Factory method that returns a Backbone event handler that responses to
-       the `all` event. The returned event handler will synchronize the current
-       page collection and the full collection's models.
+       the `add`, `remove`, `reset`, and the `sort` events. The returned event
+       handler will synchronize the current page collection and the full
+       collection's models.
 
        @private
 
@@ -388,7 +388,6 @@
     _makeCollectionEventHandler: function (pageCol, fullCol) {
 
       return function collectionEventHandler (event, model, collection, options) {
-
         var handlers = pageCol._handlers;
         _each(_keys(handlers), function (event) {
           var handler = handlers[event];
@@ -433,7 +432,7 @@
               pageCol.at(pageSize) :
               null;
             if (modelToRemove) {
-              var addHandlers = collection._events.add,
+              var addHandlers = collection._events.add || [],
               popOptions = {onAdd: true};
               if (addHandlers.length) {
                 var lastAddHandler = addHandlers[addHandlers.length - 1];
@@ -511,7 +510,7 @@
           var handler = handlers[event];
           _each([pageCol, fullCol], function (col) {
             col.on(event, handler);
-            var callbacks = col._events[event];
+            var callbacks = col._events[event] || [];
             callbacks.unshift(callbacks.pop());
           });
         });
@@ -673,7 +672,7 @@
         this.fullCollection = fullCollection;
         var allHandler = this._makeCollectionEventHandler(this, fullCollection);
         _each(["add", "remove", "reset", "sort"], function (event) {
-          handlers[event] = handler = _bind(allHandler, {}, event);
+          handlers[event] = handler = _.bind(allHandler, {}, event);
           self.on(event, handler);
           fullCollection.on(event, handler);
         });
@@ -1158,8 +1157,9 @@
             var head = fullModels.slice(0, pageStart);
             var tail = fullModels.slice(pageStart + pageSize);
             fullModels = head.concat(models).concat(tail);
-            fullCollection.update(fullModels,
-                                  _extend({silent: true, sort: false}, opts));
+            var updateFunc = fullCollection.set || fullCollection.update;
+            updateFunc.call(fullCollection, fullModels,
+                            _extend({silent: true, sort: false}, opts));
             if (fullCollection.comparator) fullCollection.sort();
             fullCollection.trigger("reset", fullCollection, opts);
           }
