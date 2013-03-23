@@ -236,8 +236,7 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
   */
   render: function () {
     this.$el.empty();
-    var rawValue = this.formatter.fromRaw(this.model.get(this.column.get("name")));
-    if (!_.isUndefined(rawValue) && !_.isNull(rawValue)) this.$el.text(rawValue);
+    this.$el.text(this.formatter.fromRaw(this.model.get(this.column.get("name"))));
     return this;
   },
 
@@ -327,16 +326,19 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
 var StringCell = Backgrid.StringCell = Cell.extend({
 
   /** @property */
-  className: "string-cell"
+  className: "string-cell",
 
-  // No formatter needed. Strings call auto-escaped by jQuery on insertion.
+  formatter: new StringFormatter()
 
 });
 
 /**
    UriCell renders an HTML `<a>` anchor for the value and accepts URIs as user
-   input values. A URI input is URI encoded using `encodeURI()` before writing
-   to the underlying model.
+   input values. No type conversion or URL validation is done by the formatter
+   of this cell. Users who need URL validation are encourage to subclass UriCell
+   to take advantage of the parsing capabilities of the HTMLAnchorElement
+   available on HTML5-capable browsers or using a third-party library like
+   [URI.js](https://github.com/medialize/URI.js).
 
    @class Backgrid.UriCell
    @extends Backgrid.Cell
@@ -345,16 +347,6 @@ var UriCell = Backgrid.UriCell = Cell.extend({
 
   /** @property */
   className: "uri-cell",
-
-  formatter: {
-    fromRaw: function (rawData) {
-      return rawData;
-    },
-    toRaw: function (formattedData) {
-      var result = encodeURI(formattedData);
-      return result === "undefined" ? undefined : result;
-    }
-  },
 
   render: function () {
     this.$el.empty();
@@ -375,24 +367,14 @@ var UriCell = Backgrid.UriCell = Cell.extend({
    complain if the user enters a string that doesn't contain the `@` sign.
 
    @class Backgrid.EmailCell
-   @extends Backgrid.Cell
+   @extends Backgrid.StringCell
 */
-var EmailCell = Backgrid.EmailCell = Cell.extend({
+var EmailCell = Backgrid.EmailCell = StringCell.extend({
 
   /** @property */
   className: "email-cell",
 
-  formatter: {
-    fromRaw: function (rawData) {
-      return rawData;
-    },
-    toRaw: function (formattedData) {
-      var parts = formattedData.split("@");
-      if (parts.length === 2 && _.all(parts)) {
-        return formattedData;
-      }
-    }
-  },
+  formatter: new EmailFormatter(),
 
   render: function () {
     this.$el.empty();
@@ -451,8 +433,8 @@ var NumberCell = Backgrid.NumberCell = Cell.extend({
 });
 
 /**
-   An IntegerCell is just a Backgrid.NumberCell with 0 decimals. If a floating point
-   number is supplied, the number is simply rounded the usual way when
+   An IntegerCell is just a Backgrid.NumberCell with 0 decimals. If a floating
+   point number is supplied, the number is simply rounded the usual way when
    displayed.
 
    @class Backgrid.IntegerCell
@@ -755,6 +737,15 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
    returns one of the above. If the options are static, it is recommended the
    returned values to be memoized. _.memoize() is a good function to help with
    that.
+
+   Lastly, since this class uses the default CellFormatter, during display mode,
+   the raw model value is compared with the `optionValues` values using
+   Ecmascript's implicit type conversion rules. When exiting edit mode, no type
+   conversion is performed when saving into the model. This behavior is not
+   always desirable when the value type is anything other than string. To
+   control type conversion on the client-side, you should subclass SelectCell to
+   provide a custom formatter or provide the formatter to your column
+   definition.
 
    @class Backgrid.SelectCell
    @extends Backgrid.Cell

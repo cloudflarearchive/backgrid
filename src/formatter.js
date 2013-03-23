@@ -21,11 +21,13 @@ var CellFormatter = Backgrid.CellFormatter = function () {};
 _.extend(CellFormatter.prototype, {
 
   /**
-     Takes a raw value from a model and returns a formatted string for display.
+     Takes a raw value from a model and returns an optionally formatted string
+     for display. The default implementation simply returns the supplied value
+     as is without any type conversion.
 
      @member Backgrid.CellFormatter
      @param {*} rawData
-     @return {string}
+     @return {*}
   */
   fromRaw: function (rawData) {
     return rawData;
@@ -64,7 +66,7 @@ var NumberFormatter = Backgrid.NumberFormatter = function (options) {
     throw new RangeError("decimals must be between 0 and 20");
   }
 };
-NumberFormatter.prototype = new CellFormatter;
+NumberFormatter.prototype = new CellFormatter();
 _.extend(NumberFormatter.prototype, {
 
   /**
@@ -98,7 +100,7 @@ _.extend(NumberFormatter.prototype, {
      @return {string}
   */
   fromRaw: function (number) {
-    if (isNaN(number) || number === null) return '';
+    if (_.isNull(number) || _.isUndefined(number)) return '';
 
     number = number.toFixed(~~this.decimals);
 
@@ -162,7 +164,7 @@ var DatetimeFormatter = Backgrid.DatetimeFormatter = function (options) {
     throw new Error("Either includeDate or includeTime must be true");
   }
 };
-DatetimeFormatter.prototype = new CellFormatter;
+DatetimeFormatter.prototype = new CellFormatter();
 _.extend(DatetimeFormatter.prototype, {
 
   /**
@@ -190,7 +192,6 @@ _.extend(DatetimeFormatter.prototype, {
   ISO_SPLITTER_RE: /T|Z| +/,
 
   _convert: function (data, validate) {
-    if (_.isNull(data) || _.isUndefined(data)) return data;
     data = data.trim();
     var parts = data.split(this.ISO_SPLITTER_RE) || [];
 
@@ -246,6 +247,7 @@ _.extend(DatetimeFormatter.prototype, {
      values are returned as is.
   */
   fromRaw: function (rawData) {
+    if (_.isNull(rawData) || _.isUndefined(rawData)) return '';
     return this._convert(rawData);
   },
 
@@ -269,3 +271,54 @@ _.extend(DatetimeFormatter.prototype, {
 
 });
 
+/**
+   Formatter to convert any value to string.
+
+   @class Backgrid.StringFormatter
+   @extends Backgrid.CellFormatter
+   @constructor
+ */
+var StringFormatter = Backgrid.StringFormatter = function () {};
+StringFormatter.prototype = new CellFormatter();
+_.extend(StringFormatter.prototype, {
+  /**
+     Converts any value to a string using Ecmascript's implicit type
+     conversion. If the given value is `null` or `undefined`, an empty string is
+     returned instead.
+
+     @member Backgrid.StringFormatter
+     @param {*} rawValue
+     @return {string}
+   */
+  fromRaw: function (rawValue) {
+    if (_.isUndefined(rawValue) || _.isNull(rawValue)) return '';
+    return rawValue + '';
+  }
+});
+
+/**
+   Simple email validation formatter.
+
+   @class Backgrid.EmailFormatter
+   @extends Backgrid.CellFormatter
+   @constructor
+ */
+var EmailFormatter = Backgrid.EmailFormatter = function () {};
+EmailFormatter.prototype = new CellFormatter();
+_.extend(EmailFormatter.prototype, {
+  /**
+     Return the input if it is a string that contains an '@' character and if
+     the strings before and after '@' are non-empty. If the input does not
+     validate, `undefined` is returned.
+
+     @member Backgrid.EmailFormatter
+     @param {*} formattedData
+     @return {string|undefined}
+   */
+  toRaw: function (formattedData) {
+    var parts = formattedData.trim().split("@");
+    if (parts.length === 2 && _.all(parts)) {
+      return formattedData;
+    }
+  }
+});

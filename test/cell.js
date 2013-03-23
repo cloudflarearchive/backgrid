@@ -367,15 +367,6 @@ describe("A UriCell", function () {
     expect(cell.$el.find("a").text()).toBe("http://www.example.com");
   });
 
-  it(".formatter.fromRaw() accepts any string without conversion", function () {
-    expect(cell.formatter.fromRaw("whatever")).toBe("whatever");
-  });
-
-  it(".formatter.toRaw() URI encode the values", function () {
-    expect(cell.formatter.toRaw()).toBeUndefined();
-    expect(cell.formatter.toRaw(" ")).toBe("%20");
-  });
-
 });
 
 describe("An EmailCell", function () {
@@ -408,22 +399,6 @@ describe("An EmailCell", function () {
     cell.render();
     expect(cell.$el.find("a").attr("href")).toBe("mailto:email@host");
     expect(cell.$el.find("a").text()).toBe("email@host");
-  });
-
-  it(".formatter.fromRaw() accepts any string without conversion", function () {
-    expect(cell.formatter.fromRaw("whatever")).toBe("whatever");
-  });
-
-  it(".formatter.toRaw() returns undefined if the value does not contain '@' or the strings before and after '@' are not empty", function () {
-    expect(cell.formatter.toRaw("")).toBeUndefined();
-    expect(cell.formatter.toRaw("@")).toBeUndefined();
-    expect(cell.formatter.toRaw("a@")).toBeUndefined();
-    expect(cell.formatter.toRaw("@b")).toBeUndefined();
-    expect(cell.formatter.toRaw("a@b@")).toBeUndefined();
-  });
-
-  it(".formatter.toRaw() returns the input if it contains a '@' and the strings before and after '@' are not empty", function () {
-    expect(cell.formatter.toRaw("a@b")).toBe("a@b");
   });
 
 });
