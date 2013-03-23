@@ -41,7 +41,7 @@
         this.column = new Backgrid.Column(this.column);
       }
 
-      this.listenTo(this.model, "select", function (model, selected) {
+      this.listenTo(this.model, "backgrid:select", function (model, selected) {
         this.$el.find(":checkbox").prop("checked", selected).change();
       });
 
@@ -49,11 +49,11 @@
 
     /**
        When the checkbox's value changes, this method will trigger a Backbone
-       `selected` event with a reference of the model and the checkbox's
-       `checked` value.
+       `backgrid:selected` event with a reference of the model and the
+       checkbox's `checked` value.
      */
     onChange: function (e) {
-      this.model.trigger("selected", this.model, $(e.target).prop("checked"));
+      this.model.trigger("backgrid:selected", this.model, $(e.target).prop("checked"));
     },
 
     /**
@@ -81,17 +81,18 @@
     tagName: "th",
 
     /**
-       Initializer. When this cell's checkbox is checked, a Backbone `select`
-       event will be triggered for each model for the current page in the
-       underlying collection. If a `SelectRowCell` instance exists for the rows
-       representing the models, they will check themselves. If any of the
-       SelectRowCell instances trigger a Backbone `selected` event with a
-       `false` value, this cell will uncheck its checkbox. In the event of a
-       Backbone `backgrid:refresh` event, which is triggered when the body
-       refreshes its rows, which can happen under a number of conditions such as
-       paging or the columns were reset, this cell will still remember the
-       previously selected models and trigger a Backbone `select` event on them
-       such that the SelectRowCells can recheck themselves upon refreshing.
+       Initializer. When this cell's checkbox is checked, a Backbone
+       `backgrid:select` event will be triggered for each model for the current
+       page in the underlying collection. If a `SelectRowCell` instance exists
+       for the rows representing the models, they will check themselves. If any
+       of the SelectRowCell instances trigger a Backbone `backgrid:selected`
+       event with a `false` value, this cell will uncheck its checkbox. In the
+       event of a Backbone `backgrid:refresh` event, which is triggered when the
+       body refreshes its rows, which can happen under a number of conditions
+       such as paging or the columns were reset, this cell will still remember
+       the previously selected models and trigger a Backbone `backgrid:select`
+       event on them such that the SelectRowCells can recheck themselves upon
+       refreshing.
 
        @param {Object} options
        @param {Backgrid.Column} options.column
@@ -106,7 +107,7 @@
 
       var collection = this.collection;
       var selectedModels = this.selectedModels = {};
-      this.listenTo(collection, "selected", function (model, selected) {
+      this.listenTo(collection, "backgrid:selected", function (model, selected) {
         if (selected) selectedModels[model.id || model.cid] = model;
         else {
           delete selectedModels[model.id || model.cid];
@@ -123,7 +124,7 @@
         for (var i = 0; i < collection.length; i++) {
           var model = collection.at(i);
           if (selectedModels[model.id || model.cid]) {
-            model.trigger('select', model, true);
+            model.trigger('backgrid:select', model, true);
           }
         }
       });
@@ -131,16 +132,16 @@
 
     /**
        Progagates the checked value of this checkbox to all the models of the
-       underlying collection by triggering a Backbone `select` event on the
-       models themselves, passing each model and the current `checked` value of
-       the checkbox in each event.
+       underlying collection by triggering a Backbone `backgrid:select` event on
+       the models themselves, passing each model and the current `checked` value
+       of the checkbox in each event.
      */
     onChange: function (e) {
       var checked = $(e.target).prop("checked");
 
       var collection = this.collection;
       collection.each(function (model) {
-        model.trigger("select", model, checked);
+        model.trigger("backgrid:select", model, checked);
       });
     }
 

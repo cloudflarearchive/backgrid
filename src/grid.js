@@ -156,7 +156,9 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
   },
 
   /**
-     Renders the grid's header, then footer, then finally the body.
+     Renders the grid's header, then footer, then finally the body. Triggers a
+     Backbone `backgrid:rendered` event along with a reference to the grid when
+     the it has successfully been rendered.
    */
   render: function () {
     this.$el.empty();
@@ -169,12 +171,7 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
 
     this.$el.append(this.body.render().$el);
 
-    /**
-       Backbone event. Fired when the grid has been successfully rendered.
-
-       @event rendered
-     */
-    this.trigger("rendered");
+    this.trigger("backgrid:rendered", this);
 
     return this;
   },

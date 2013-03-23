@@ -39,7 +39,7 @@ describe("An CellEditor", function () {
     }).toThrow(new TypeError("'model' is required"));
   });
 
-  it("calls postRender when parent triggers 'editing'", function () {
+  it("calls postRender when parent triggers 'backgrid:editing'", function () {
 
     var parent = new Backbone.View();
 
@@ -62,7 +62,7 @@ describe("An CellEditor", function () {
 
     editor.render();
 
-    parent.trigger("editing");
+    parent.trigger("backgrid:editing");
 
     expect(editor.postRender).toHaveBeenCalled();
     expect(editor.postRender.calls.length).toBe(1);
@@ -116,32 +116,32 @@ describe("An InputCellEditor", function () {
     expect(editor.$el.val()).toBe("title");
   });
 
-  it("saves a formatted value in the input box to the model and triggers 'done' when tab is pressed", function () {
+  it("saves a formatted value in the input box to the model and triggers 'backgrid:done' when tab is pressed", function () {
     editor.render();
     editor.$el.val("another title");
     var tab = $.Event("keydown", { keyCode: 9 });
     editor.$el.trigger(tab);
     expect(editor.model.get(editor.column.get("name"))).toBe("another title");
     expect(editor.trigger.calls.length).toBe(1);
-    expect(editor.trigger).toHaveBeenCalledWith("done");
+    expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor);
   });
 
-  it("saves a formatted value in the input box to the model and triggers 'done' when enter is pressed", function () {
+  it("saves a formatted value in the input box to the model and triggers 'backgrid:done' when enter is pressed", function () {
     editor.render();
     editor.$el.val("another title");
     var enter = $.Event("keydown", { keyCode: 13 });
     editor.$el.trigger(enter);
     expect(editor.model.get(editor.column.get("name"))).toBe("another title");
     expect(editor.trigger.calls.length).toBe(1);
-    expect(editor.trigger).toHaveBeenCalledWith("done");
+    expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor);
   });
 
-  it("removes itself when it triggers 'done'", function () {
-    editor.trigger("done");
+  it("removes itself when it triggers 'backgrid:done'", function () {
+    editor.trigger("backgrid:done");
     expect(editor.remove.calls.length).toBe(1);
   });
 
-  it("triggers 'error' when trying to save an invalid value", function () {
+  it("triggers 'backgrid:error' when trying to save an invalid value", function () {
     editor.formatter = {
       fromRaw: jasmine.createSpy("fromRaw").andCallFake(function (d) {
         return d;
@@ -155,7 +155,7 @@ describe("An InputCellEditor", function () {
     expect(editor.formatter.toRaw.calls.length).toBe(1);
     expect(editor.formatter.toRaw).toHaveBeenCalledWith("invalid value");
     expect(editor.trigger.calls.length).toBe(1);
-    expect(editor.trigger).toHaveBeenCalledWith("error");
+    expect(editor.trigger).toHaveBeenCalledWith("backgrid:error", editor);
 
     editor.trigger.reset();
     editor.formatter.toRaw.reset();
@@ -163,30 +163,30 @@ describe("An InputCellEditor", function () {
     var tab = $.Event("keydown", { keyCode: 9 });
     editor.$el.trigger(tab);
     expect(editor.trigger.calls.length).toBe(1);
-    expect(editor.trigger).toHaveBeenCalledWith("error");
+    expect(editor.trigger).toHaveBeenCalledWith("backgrid:error", editor);
 
     editor.trigger.reset();
     editor.formatter.toRaw.reset();
     editor.$el.blur();
     expect(editor.trigger.calls.length).toBe(1);
-    expect(editor.trigger).toHaveBeenCalledWith("error");
+    expect(editor.trigger).toHaveBeenCalledWith("backgrid:error", editor);
   });
 
-  it("discards changes and triggers 'done' when esc is pressed'", function () {
+  it("discards changes and triggers 'backgrid:done' when esc is pressed'", function () {
     editor.render();
     editor.$el.val("new value");
     var esc = $.Event("keydown", { keyCode: 27 });
     editor.$el.trigger(esc);
     expect(editor.trigger.calls.length).toBe(1);
-    expect(editor.trigger).toHaveBeenCalledWith("done");
+    expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor);
     expect(editor.model.get(editor.column.get("name"))).toBe("title");
   });
 
-  it("triggers 'done' when value hasn't changed and focus is lose", function () {
+  it("triggers 'backgrid:done' when value hasn't changed and focus is lose", function () {
     editor.render();
     editor.$el.blur();
     expect(editor.trigger.calls.length).toBe(1);
-    expect(editor.trigger).toHaveBeenCalledWith("done");
+    expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor);
     expect(editor.model.get(editor.column.get("name"))).toBe("title");
   });
 
@@ -194,7 +194,7 @@ describe("An InputCellEditor", function () {
     editor.render();
     editor.$el.val("another title");
     editor.$el.blur();
-    expect(editor.trigger).toHaveBeenCalledWith("done");
+    expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor);
     expect(editor.model.get(editor.column.get("name"))).toBe("another title");
   });
 
@@ -258,7 +258,7 @@ describe("A Cell", function () {
     expect(cell.$el.hasClass("editor")).toBe(true);
   });
 
-  it("goes back into display mode when the editor triggers 'done'", function () {
+  it("goes back into display mode when enter triggers 'backgrid:done'", function () {
     cell.render();
     cell.$el.click();
     var editor = cell.currentEditor;
@@ -268,7 +268,7 @@ describe("A Cell", function () {
     expect(cell.$el.text()).toBe("title");
   });
 
-  it("renders error when the editor triggers 'error'", function () {
+  it("renders error when the editor triggers 'backgrid:error'", function () {
 
     cell.formatter = {
       fromRaw: function () {},
@@ -856,7 +856,7 @@ describe("A SelectCellEditor", function () {
     expect(editor.formatter.toRaw).toHaveBeenCalledWith("1");
     expect(editor.formatter.toRaw.calls.length).toBe(1);
     expect(editor.model.get(editor.column.get("name"))).toBe("1");
-    expect(editor.trigger).toHaveBeenCalledWith("done");
+    expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor);
     expect(editor.trigger.calls.length).toBe(1);
   });
 
