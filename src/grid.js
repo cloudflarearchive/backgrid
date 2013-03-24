@@ -171,6 +171,8 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
 
     this.$el.append(this.body.render().$el);
 
+    this.delegateEvents();
+
     this.trigger("backgrid:rendered", this);
 
     return this;

@@ -193,6 +193,8 @@
         handles: this.makeHandles()
       })));
 
+      this.delegateEvents();
+
       return this;
     }
 

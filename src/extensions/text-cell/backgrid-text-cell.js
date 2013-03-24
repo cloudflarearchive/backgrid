@@ -57,6 +57,8 @@
         content: this.formatter.fromRaw(this.model.get(this.column.get("name")))
       })));
 
+      this.delegateEvents();
+
       this.$el.modal(this.modalOptions);
 
       return this;

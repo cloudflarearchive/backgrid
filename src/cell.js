@@ -237,6 +237,7 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
   render: function () {
     this.$el.empty();
     this.$el.text(this.formatter.fromRaw(this.model.get(this.column.get("name"))));
+    this.delegateEvents();
     return this;
   },
 
@@ -356,6 +357,7 @@ var UriCell = Backgrid.UriCell = Cell.extend({
       title: formattedValue,
       target: "_blank"
     }).text(formattedValue));
+    this.delegateEvents();
     return this;
   }
 
@@ -383,6 +385,7 @@ var EmailCell = Backgrid.EmailCell = StringCell.extend({
       href: "mailto:" + formattedValue,
       title: formattedValue
     }).text(formattedValue));
+    this.delegateEvents();
     return this;
   }
 
@@ -591,6 +594,7 @@ var BooleanCell = Backgrid.BooleanCell = Cell.extend({
       checked: this.formatter.fromRaw(this.model.get(this.column.get("name")))
     }));
     this.$el.append(this.currentEditor);
+    this.delegateEvents();
     return this;
   },
 
@@ -699,6 +703,8 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
         throw TypeError("optionValues elements must be a name-value pair or an object hash of { name: 'optgroup label', value: [option name-value pairs] }");
       }
     }
+
+    this.delegateEvents();
 
     return this;
   },
@@ -830,6 +836,8 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
       }
       throw ex;
     }
+
+    this.delegateEvents();
 
     return this;
   }

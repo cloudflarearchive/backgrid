@@ -91,6 +91,7 @@
         placeholder: this.placeholder,
         value: this.value
       }));
+      this.delegateEvents();
       return this;
     }
 

@@ -61,6 +61,7 @@
      */
     render: function () {
       this.$el.empty().append('<input type="checkbox" />');
+      this.delegateEvents();
       return this;
     }
 

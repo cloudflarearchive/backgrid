@@ -191,6 +191,8 @@ var Body = Backgrid.Body = Backbone.View.extend({
 
     this.el.appendChild(fragment);
 
+    this.delegateEvents();
+
     return this;
   },
 
