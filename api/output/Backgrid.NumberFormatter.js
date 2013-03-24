@@ -75,7 +75,7 @@ Ext.data.JsonP.Backgrid_NumberFormatter({
 
     ]
   },
-  "linenr": 51,
+  "linenr": 53,
   "files": [
     {
       "filename": "formatter.js",
