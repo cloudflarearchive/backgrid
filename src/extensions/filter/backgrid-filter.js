@@ -107,10 +107,16 @@
 
     /** @property */
     events: {
-      "click .close": "clear",
+      "click .close": function (e) {
+        e.preventDefault();
+        this.clear.apply(this, arguments);
+      },
       "change :text": "filter",
       "keyup :text": "filter",
-      "submit": "filter"
+      "submit": function (e) {
+        e.preventDefault();
+        this.filter.apply(this, arguments);
+      }
     },
 
     /** @property */
@@ -118,6 +124,14 @@
 
     /** @property */
     fields: null,
+
+    /**
+       @property wait The time in milliseconds to wait since for since the last
+       change to the search box's value before searching. This value can be
+       adjusted depending on how often the search box is used and how large the
+       search index is.
+    */
+    wait: 150,
 
     /**
        Initializer. Indexes the underlying collection on construction. The index
@@ -129,17 +143,37 @@
        @param {Backbone.Collection} options.collection
        @param {Object} options.fields A hash of `lunrjs` index field names and
        boost value.
-       @param {String} [options.ref]
+       @param {string} [options.ref]
+       @param {number} [options.wait]
      */
     initialize: function (options) {
       ServerSideFilter.prototype.initialize.apply(this, arguments);
+
       this.fields = options.fields || this.fields;
       this.ref = options.ref || this.ref;
+      this.wait = options.wait || this.wait;
+
+      this._debounceMethods(["filter", "clear"]);
+
       var collection = this.collection.fullCollection || this.collection;
       this.resetIndex(collection);
       this.listenTo(collection, "reset", this.resetIndex);
-      this.listenTo(collection, "remove", this.removeIndex);
+      this.listenTo(collection, "remove", this.removeFromIndex);
       this.listenTo(collection, "change", this.updateIndex);
+    },
+
+    _debounceMethods: function (methodNames) {
+      if (_.isString(methodNames)) methodNames = [methodNames];
+
+      this.undelegateEvents();
+
+      for (var i = 0, l = methodNames.length; i < l; i++) {
+        var methodName = methodNames[i];
+        var method = this[methodName];
+        this[methodName] = _.debounce(method, this.wait);
+      }
+
+      this.delegateEvents();
     },
 
     /**
@@ -175,7 +209,7 @@
 
        @param {Backbone.Model} model
      */
-    removeIndex: function (model) {
+    removeFromIndex: function (model) {
       var index = this.index;
       var doc = model.toJSON();
       if (doc[this.ref] && index.documentStore.has(doc[this.ref])) {
@@ -198,8 +232,7 @@
        underlying collection to the models after interrogating the index for the
        results for the query.
      */
-    filter: function (e) {
-      e.preventDefault();
+    filter: function () {
       var searchResults = this.index.search(this.$el.find(":text").val());
       var models = [];
       for (var i = 0; i < searchResults.length; i++) {
@@ -211,14 +244,12 @@
     },
 
     /**
-       Event handler for the close button. Clears the search box and refetch the
-       collection.
+       Clears the search box and reset the collection to its original.
      */
-    clear: function (e) {
-      e.preventDefault();
+    clear: function () {
       this.$el.find(":text").val(null);
       var collection = this.collection.fullCollection || this.collection;
-      collection.reset(this.shadowCollection.models);
+      collection.reset(this.shadowCollection.models, {reindex: false});
     }
 
   });

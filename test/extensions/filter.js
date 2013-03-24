@@ -1,3 +1,10 @@
+/*
+  backgrid
+  http://github.com/wyuenho/backgrid
+
+  Copyright (c) 2013 Jimmy Yuen Ho Wong
+  Licensed under the MIT @license.
+*/
 describe("A ServerSideFilter", function () {
 
   var ajax, collection;
@@ -149,28 +156,48 @@ describe("A ClientSideFilter", function () {
     expect(collection.at(0).id).toBe(1);
     expect(collection.at(1).id).toBe(2);
 
-    filter.$el.find(":text").val("crap").change();
-    expect(collection.length).toBe(1);
-    expect(collection.at(0).id).toBe(2);
+    runs(function () {
+      filter.$el.find(":text").val("crap").change();
+    });
+    waitsFor(function () {
+      return collection.length === 1;
+    }, "collection.length to become 1", 160);
+    runs(function () {
+      expect(collection.at(0).id).toBe(2);
+    });
 
-    filter.$el.find(".close").click();
-    expect(collection.length).toBe(2);
-    expect(collection.at(0).id).toBe(1);
-    expect(collection.at(1).id).toBe(2);
+    runs(function () {
+      filter.$el.find(".close").click();
+    });
+    waitsFor(function () {
+      return collection.length === 2;
+    }, "collection.length to become 2", 160);
+    runs(function () {
+      expect(collection.at(0).id).toBe(1);
+      expect(collection.at(1).id).toBe(2);
+    });
 
-    var a = $.Event("keyup", { keyCode: 65 });
-    var t = $.Event("keyup", { keyCode: 84 });
-    filter.$el.trigger(a);
-    filter.$el.trigger(t);
+    runs(function () {
+      filter.$el.find(":text").val("alice");
+      filter.$el.submit();
+    });
+    waitsFor(function () {
+      return collection.length === 1;
+    }, "collection.length to become 1", 160);
+    runs(function () {
+      expect(collection.at(0).id).toBe(1);
+    });
 
-    expect(collection.length).toBe(2);
-    expect(collection.at(0).id).toBe(1);
-    expect(collection.at(1).id).toBe(2);
-
-    filter.$el.find(":text").val("alice");
-    filter.$el.submit();
-    expect(collection.length).toBe(1);
-    expect(collection.at(0).id).toBe(1);
+    runs(function () {
+      filter.$el.find(":text").val("fat").keyup();
+    });
+    waitsFor(function () {
+      return collection.length === 2;
+    }, "collection.length to become 2", 160);
+    runs(function () {
+      expect(collection.at(0).id).toBe(2);
+      expect(collection.at(1).id).toBe(1);
+    });
   });
 
   it("will reindex on reset", function () {
@@ -182,22 +209,39 @@ describe("A ClientSideFilter", function () {
     collection.reset([{id: 3, name: "charlie", bio: "The cat scared the bat and sat on the mat."},
                       {id: 4, name: "doug", bio: "The snail hid in his shell. It heard a bell. He went to see it was the church bell."}]);
 
-    filter.$el.find(":text").val("crap").change();
-    expect(collection.length).toBe(0);
+    runs(function () {
+      filter.$el.find(":text").val("crap").change();
+    });
+    waitsFor(function () {
+      return collection.length === 0;
+    }, "collection.length to become 0", 160);
 
-    filter.$el.find(":text").val("alice").change();
-    expect(collection.length).toBe(0);
+    runs(function () {
+      filter.$el.find(":text").val("alice").change();
+    });
+    waitsFor(function () {
+      return collection.length === 0;
+    }, "collection.length to become 0", 160);
 
-    filter.$el.find(":text").val("charlie").change();
-    expect(collection.length).toBe(1);
-    expect(collection.at(0).id).toBe(3);
+    runs(function () {
+      filter.$el.find(":text").val("charlie").change();
+    });
+    waitsFor(function () {
+      return collection.length === 1;
+    }, "collection.length to become 1", 160);
+    runs(function () {
+      expect(collection.at(0).id).toBe(3);
+    });
 
-    filter.$el.find(":text").val("doug").change();
-    expect(collection.length).toBe(1);
-    expect(collection.at(0).id).toBe(4);
+    runs(function () {
+      filter.$el.find(":text").val("doug").change();
+    });
+    waitsFor(function () {
+      return collection.length === 1 && collection.at(0).id === 4;
+    }, "colleciton.length to become 1 and collection.at(0).id to become 4", 160);
   });
 
-  it("will updae the index on remove", function () {
+  it("will update the index on remove", function () {
     var filter = new Backgrid.Extension.ClientSideFilter({
       collection: collection,
       fields: {name: 1, bio: 10}
@@ -205,12 +249,23 @@ describe("A ClientSideFilter", function () {
     filter.render();
 
     collection.remove(collection.last());
-    filter.$el.find(":text").val("bob").change();
-    expect(collection.length).toBe(0);
 
-    filter.$el.find(":text").val("alice").change();
-    expect(collection.length).toBe(1);
-    expect(collection.at(0).id).toBe(1);
+    runs(function () {
+      filter.$el.find(":text").val("bob").change();
+    });
+    waitsFor(function () {
+      return collection.length === 0;
+    }, "collection.length to become 0", 160);
+
+    runs(function () {
+      filter.$el.find(":text").val("alice").change();
+    });
+    waitsFor(function () {
+      return collection.length === 1;
+    });
+    runs(function () {
+      expect(collection.at(0).id).toBe(1);
+    });
   });
 
   it("will update the index on change", function () {
@@ -221,27 +276,51 @@ describe("A ClientSideFilter", function () {
     filter.render();
 
     collection.at(0).set("name", "charlie");
-    filter.$el.find(":text").val("alice").change();
-    expect(collection.length).toBe(0);
 
-    filter.$el.find(":text").val("charlie").change();
-    expect(collection.length).toBe(1);
-    expect(collection.at(0).id).toBe(1);
+    runs(function () {
+      filter.$el.find(":text").val("alice").change();
+    });
+    waitsFor(function () {
+      return collection.length === 0;
+    }, "collection.length to become 0", 160);
+
+    runs(function () {
+      filter.$el.find(":text").val("charlie").change();
+    });
+    waitsFor(function () {
+      return collection.length === 1;
+    }, "collection.length to become 1", 160);
+
+    runs(function () {
+      expect(collection.at(0).id).toBe(1);
+    });
   });
 
-  it("can clear the search box and reindex upon clicking the cross", function () {
+  it("can clear the search box and reindex upon clicking the close button", function () {
     var filter = new Backgrid.Extension.ClientSideFilter({
       collection: collection,
       fields: {name: 1, bio: 10}
     });
     filter.render();
 
-    filter.$el.find(":text").val("crap").change();
-    filter.$el.find(".close").click();
-    expect(filter.$el.find(":text").val()).toBe("");
-    expect(collection.length).toBe(2);
-    expect(collection.at(0).id).toBe(1);
-    expect(collection.at(1).id).toBe(2);
+    runs(function() {
+      filter.$el.find(":text").val("crap").change();
+    });
+    waitsFor(function () {
+      return collection.length === 1;
+    }, "collection.length to become 1", 160);
+
+    runs(function () {
+      filter.$el.find(".close").click();
+    });
+    waitsFor(function () {
+      return collection.length === 2;
+    }, "collection.length to become 2", 160);
+    runs(function () {
+      expect(filter.$el.find(":text").val()).toBe('');
+      expect(collection.at(0).id).toBe(1);
+      expect(collection.at(1).id).toBe(2);
+    });
   });
 
 });
