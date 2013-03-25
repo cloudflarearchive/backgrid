@@ -76,7 +76,8 @@ describe("A ServerSideFilter", function () {
       collection: collection
     });
     filter.render();
-    filter.$el.find(":text").val("query").submit();
+    filter.$el.find(":text").val("query");
+    filter.$el.submit();
     expect(url).toBe("http://www.example.com");
     expect(data).toEqual({q: "query"});
     expect(collection.length).toBe(1);

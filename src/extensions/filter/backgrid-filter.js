@@ -65,7 +65,7 @@
      */
     filter: function (e) {
       e.preventDefault();
-      var $text = $(e.target);
+      var $text = $(e.target).find(":text");
       var data = {};
       data[$text.attr("name")] = $text.val();
       this.collection.fetch({data: data});
