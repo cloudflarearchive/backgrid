@@ -371,6 +371,57 @@ describe("A UriCell", function () {
 
 });
 
+describe("A UriCell with custom display text", function () {
+
+  var model;
+  var column;
+  var cell;
+
+  UriCellWithDisplayText = Backgrid.UriCell.extend({
+      displayText: function() {
+          return this.model.get('displayText');
+      }
+  });
+
+  beforeEach(function () {
+    model = new Backbone.Model({
+      url: "http://www.example.com",
+      displayText: "example display text with a \u0a85 Gujarati character"
+    });
+
+    column = {
+      name: "url",
+      cell: UriCellWithDisplayText
+    };
+
+    cell = new UriCellWithDisplayText({
+      model: model,
+      column: column
+    });
+  });
+
+  it("applies a uri-cell class to the cell", function () {
+    cell.render();
+    expect(cell.$el.hasClass("uri-cell")).toBe(true);
+  });
+
+  it("renders the model value in an anchor", function () {
+    cell.render();
+    expect(cell.$el.find("a").attr("href")).toBe("http://www.example.com");
+    expect(cell.$el.find("a").text()).toBe("example display text with a \u0a85 Gujarati character");
+  });
+
+  it(".formatter.fromRaw() accepts any string without conversion", function () {
+    expect(cell.formatter.fromRaw("whatever")).toBe("whatever");
+  });
+
+  it(".formatter.toRaw() URI encode the values", function () {
+    expect(cell.formatter.toRaw()).toBeUndefined();
+    expect(cell.formatter.toRaw(" ")).toBe("%20");
+  });
+
+});
+
 describe("An EmailCell", function () {
 
   var model;
