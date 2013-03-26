@@ -73,7 +73,7 @@
      @class Backgrid.Extension.SelectAllHeaderCell
      @extends Backgrid.Extension.SelectRowCell
    */
-  Backgrid.Extension.SelectAllHeaderCell = SelectRowCell.extend({
+  var SelectAllHeaderCell = Backgrid.Extension.SelectAllHeaderCell = SelectRowCell.extend({
 
     /** @property */
     className: "select-all-header-cell",
@@ -147,5 +147,33 @@
     }
 
   });
+
+  /**
+     Convenient method to retrieve a list of selected models. This method only
+     exists when the `SelectAll` extension has been included.
+
+     @member Backgrid.Grid
+     @return {Array.<Backbone.Model>}
+   */
+  Backgrid.Grid.prototype.getSelectedModels = function () {
+    var selectAllHeaderCell;
+    var headerCells = this.header.row.cells;
+    for (var i = 0, l = headerCells.length; i < l; i++) {
+      var headerCell = headerCells[i];
+      if (headerCell instanceof SelectAllHeaderCell) {
+        selectAllHeaderCell = headerCell;
+        break;
+      }
+    }
+
+    var result = [];
+    if (selectAllHeaderCell) {
+      for (var modelId in selectAllHeaderCell.selectedModels) {
+        result.push(this.collection.get(modelId));
+      }
+    }
+
+    return result;
+  };
 
 }(window, jQuery, _, Backbone, Backgrid));
