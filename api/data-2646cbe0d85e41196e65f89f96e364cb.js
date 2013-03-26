@@ -1949,6 +1949,15 @@ Docs = {
         "sort": 1
       },
       {
+        "name": "getSelectedModels",
+        "fullName": "Backgrid.Grid.getSelectedModels",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Grid-method-getSelectedModels",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
         "name": "tagName",
         "fullName": "Backgrid.Grid.tagName",
         "icon": "icon-property",
