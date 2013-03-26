@@ -127,9 +127,16 @@ describe("A Body", function () {
   });
 
   it("refresh its rendering if its collection is reset", function () {
+    var eventFired = false;
+    var handler = function () {
+      eventFired = true;
+    };
+    Backbone.on("backgrid:refresh", handler);
     body.collection.reset([{
       title: "Oliver Twist"
     }]);
+    Backbone.off("backgrid:refresh", handler);
+    expect(eventFired).toBe(true);
     var $trs = body.$el.children();
     expect($trs.length).toBe(1);
     expect(body.el.innerHTML).toBe('<tr><td class="string-cell">Oliver Twist</td></tr>');

@@ -82,7 +82,7 @@
     initialize: function (options) {
       Backgrid.SelectCell.prototype.initialize.apply(this, arguments);
       this.select2Options = options.select2Options || this.select2Options;
-      this.listenTo(this, "edit", this.setSelect2Options);
+      this.listenTo(this, "backgrid:edit", this.setSelect2Options);
     },
 
     /**

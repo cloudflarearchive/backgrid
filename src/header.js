@@ -203,6 +203,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
     this.$el.empty();
     var $label = $("<a>").text(this.column.get("label")).append("<b class='sort-caret'></b>");
     this.$el.append($label);
+    this.delegateEvents();
     return this;
   }
 
@@ -286,6 +287,7 @@ var Header = Backgrid.Header = Backbone.View.extend({
    */
   render: function () {
     this.$el.append(this.row.render().$el);
+    this.delegateEvents();
     return this;
   },
 
