@@ -28,6 +28,8 @@
         "name": "Formatters",
         "classes": [
           "Backgrid.CellFormatter",
+          "Backgrid.StringFormatter",
+          "Backgrid.EmailFormatter",
           "Backgrid.NumberFormatter",
           "Backgrid.DatetimeFormatter"
         ]
@@ -81,6 +83,20 @@
         "classes": [
           "Backgrid.Extension.Select2Cell",
           "Backgrid.Extension.Select2CellEditor"
+        ]
+      },
+      {
+        "name": "SelectAll",
+        "classes": [
+          "Backgrid.Extension.SelectAllHeaderCell",
+          "Backgrid.Extension.SelectRowCell"
+        ]
+      },
+      {
+        "name": "Filter",
+        "classes": [
+          "Backgrid.Extension.ServerSideFilter",
+          "Backgrid.Extension.ClientSideFilter"
         ]
       }
     ]

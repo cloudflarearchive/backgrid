@@ -151,31 +151,29 @@ var Body = Backgrid.Body = Backbone.View.extend({
   },
 
   /**
-     Reinitialize all the rows inside the body and re-render them.
-
-     @chainable
+     Reinitialize all the rows inside the body and re-render them. Triggers a
+     Backbone `backgrid:refresh` event along with the body instance as its event
+     parameter when done.
   */
   refresh: function () {
-    var self = this;
+    for (var i = 0; i < this.rows.length; i++) {
+      this.rows[i].remove();
+    }
 
-    _.each(self.rows, function (row) {
-      row.remove();
-    });
-
-    self.rows = self.collection.map(function (model) {
-      var row = new self.row({
-        columns: self.columns,
+    this.rows = this.collection.map(function (model) {
+      var row = new this.row({
+        columns: this.columns,
         model: model
       });
 
       return row;
-    });
+    }, this);
 
-    self.render();
+    this.render();
 
-    Backbone.trigger("backgrid:refresh");
+    Backbone.trigger("backgrid:refresh", this);
 
-    return self;
+    return this;
   },
 
   /**
@@ -192,6 +190,8 @@ var Body = Backgrid.Body = Backbone.View.extend({
     }
 
     this.el.appendChild(fragment);
+
+    this.delegateEvents();
 
     return this;
   },

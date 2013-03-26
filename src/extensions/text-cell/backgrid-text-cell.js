@@ -12,17 +12,15 @@
      Renders a form with a text area and a save button in a modal dialog.
 
      @class Backgrid.Extension.TextareaEditor
-     @extends Backgrid.InputCellEditor
+     @extends Backgrid.CellEditor
    */
-  var TextareaEditor = Backgrid.Extension.TextareaEditor = Backgrid.InputCellEditor.extend({
+  var TextareaEditor = Backgrid.Extension.TextareaEditor = Backgrid.CellEditor.extend({
 
     /** @property */
     tagName: "div",
 
     /** @property */
     className: "modal hide fade",
-
-    attributes: {},
 
     /** @property {function(Object, ?Object=): string} template */
     template: _.template('<form><div class="modal-header"><button type="button" class="close" data-dismiss="modal">&times;</button><h3><%- column.get("label") %></h3></div><div class="modal-body"><textarea cols="<%= cols %>" rows="<%= rows %>"><%- content %></textarea></div><div class="modal-footer"><input class="btn" type="submit" value="Save"/></div></form>'),
@@ -59,6 +57,8 @@
         content: this.formatter.fromRaw(this.model.get(this.column.get("name")))
       })));
 
+      this.delegateEvents();
+
       this.$el.modal(this.modalOptions);
 
       return this;
@@ -67,10 +67,10 @@
     /**
        Event handler. Saves the text in the text area to the model.
 
-       Triggers a Backbone `error` event if the value cannot be
-       converted. Classes listening to the `error` event, usually the Cell
-       classes, should respond appropriately, usually by rendering some kind of
-       error feedback.
+       Triggers a Backbone `backgrid:error` event along with the editor as the
+       parameter if the value cannot be converted. Classes listening to the
+       `backgrid:error` event, usually the Cell classes, should respond
+       appropriately, usually by rendering some kind of error feedback.
 
        @param {Event} e
     */
@@ -81,7 +81,7 @@
 
       if (_.isUndefined(content) ||
           !this.model.set(this.column.get("name"), content, {validate: true})) {
-        this.trigger("error");
+        this.trigger("backgrid:error", this);
       }
       else {
         this.$el.modal("hide");
@@ -108,10 +108,11 @@
     },
 
     /**
-       Triggers a `done` event after the modal is hidden.
+       Triggers a `backgrid:done` event along with the cell editor as the
+       parameter after the modal is hidden.
      */
     close: function () {
-      this.trigger("done");
+      this.trigger("backgrid:done", this);
     }
 
   });

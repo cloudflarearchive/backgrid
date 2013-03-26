@@ -63,8 +63,9 @@ var Column = Backgrid.Column = Backbone.Model.extend({
       this.set({ label: this.get("name") }, { silent: true });
     }
 
+    var headerCell = resolveNameToClass(this.get("headerCell"), "HeaderCell");
     var cell = resolveNameToClass(this.get("cell"), "Cell");
-    this.set({ cell: cell }, { silent: true });
+    this.set({ cell: cell, headerCell: headerCell }, { silent: true });
   }
 
 });

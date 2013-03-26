@@ -106,7 +106,7 @@ describe("A TextareaEditor", function () {
     editor.$el.find("textarea").val("another name");
     editor.$el.find("form").submit();
     expect(editor.trigger.calls.length).toBe(1);
-    expect(editor.trigger).toHaveBeenCalledWith("error");
+    expect(editor.trigger).toHaveBeenCalledWith("backgrid:error", editor);
 
     editor.formatter.toRaw = oldToRaw;
     editor.model.validate = function () { return "error found"; };
@@ -114,7 +114,7 @@ describe("A TextareaEditor", function () {
     editor.$el.find("textarea").val("another name");
     editor.$el.find("form").submit();
     expect(editor.trigger.calls.length).toBe(1);
-    expect(editor.trigger).toHaveBeenCalledWith("error");
+    expect(editor.trigger).toHaveBeenCalledWith("backgrid:error", editor);
   });
 
 });
