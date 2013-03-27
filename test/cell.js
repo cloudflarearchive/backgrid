@@ -409,15 +409,6 @@ describe("A UriCell with custom display text", function () {
     expect(cell.$el.find("a").text()).toBe("example display text with a \u0a85 Gujarati character");
   });
 
-  it(".formatter.fromRaw() accepts any string without conversion", function () {
-    expect(cell.formatter.fromRaw("whatever")).toBe("whatever");
-  });
-
-  it(".formatter.toRaw() URI encode the values", function () {
-    expect(cell.formatter.toRaw()).toBeUndefined();
-    expect(cell.formatter.toRaw(" ")).toBe("%20");
-  });
-
 });
 
 describe("An EmailCell", function () {
