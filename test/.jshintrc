@@ -20,10 +20,14 @@
   "globals": {
     "expect": false,
     "describe": false,
+    "xdescribe": false,
     "beforeEach": false,
     "afterEach": false,
     "it": false,
+    "xit": false,
     "spyOn": false,
+    "runs": false,
+    "waitsFor": false,
     "Backbone": false,
     "Backgrid": false,
     "_": false

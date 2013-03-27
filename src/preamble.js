@@ -9,7 +9,7 @@
 var window = root;
 
 var Backgrid = root.Backgrid = {
-  VERSION: "0.1.4",
+  VERSION: "0.2.0",
   Extension: {}
 };
 
@@ -61,7 +61,7 @@ function requireOptions(options, requireOptionKeys) {
 
 function resolveNameToClass(name, suffix) {
   if (_.isString(name)) {
-    var key = capitalize(name) + suffix;
+    var key = _.map(name.split('-'), function (e) { return capitalize(e); }).join('') + suffix;
     var klass = Backgrid[key] || Backgrid.Extension[key];
     if (_.isUndefined(klass)) {
       throw new ReferenceError("Class '" + key + "' not found");

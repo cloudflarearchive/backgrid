@@ -112,6 +112,8 @@ var Row = Backgrid.Row = Backbone.View.extend({
 
     this.el.appendChild(fragment);
 
+    this.delegateEvents();
+
     return this;
   },
 

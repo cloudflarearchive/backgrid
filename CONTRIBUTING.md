@@ -72,15 +72,10 @@ When you are ready to make your awesome extension available to the world, don't
 forget to add your extension to the `SUBDIRS` variable in
 `src/extensions/Makefile`.
 
-Branching
-=========
-
-If you are filing a pull request, you should be working on the `<version>-wip`
-branch which should be the only work-in-progress branch for this project. The
-`master` branch is reserved for stable releases.
 
 Code Style
 ==========
+If you are filing a pull request, you should follow the guidelines below:
 
 Javascript
 ----------

@@ -37,8 +37,10 @@ var CellEditor = Backgrid.CellEditor = Backbone.View.extend({
       this.column = new Column(this.column);
     }
     if (this.parent && _.isFunction(this.parent.on)) {
-      this.listenTo(this.parent, "editing", this.postRender);
+      this.listenTo(this.parent, "backgrid:editing", this.postRender);
     }
+
+    this.listenTo(this, "backgrid:done", this.remove);
   },
 
   /**
@@ -93,8 +95,6 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
     if (options.placeholder) {
       this.$el.attr("placeholder", options.placeholder);
     }
-
-    this.listenTo(this, "done", this.remove);
   },
 
   /**
@@ -116,47 +116,44 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
      is intercepted, cancelled so the cell remains in focus pending for further
      action.
 
-     Triggers a Backbone `done` event when successful. `error` if the value
-     cannot be converted. Classes listening to the `error` event, usually the
-     Cell classes, should respond appropriately, usually by rendering some kind
-     of error feedback.
+     Triggers a Backbone `backgrid:done` event when successful. `backgrid:error`
+     if the value cannot be converted. Classes listening to the `error` event,
+     usually the Cell classes, should respond appropriately, usually by
+     rendering some kind of error feedback.
 
      @param {Event} e
   */
   saveOrCancel: function (e) {
-    if (e.type === "keydown") {
-      // enter or tab
-      if (e.keyCode === 13 || e.keyCode === 9) {
-        e.preventDefault();
-        var valueToSet = this.formatter.toRaw(this.$el.val());
 
-        if (_.isUndefined(valueToSet) ||
-            !this.model.set(this.column.get("name"), valueToSet,
-                            {validate: true})) {
-          this.trigger("error");
+    var formatter = this.formatter;
+    var model = this.model;
+    var column = this.column;
+
+    // enter or tab or blur
+    if (e.keyCode === 13 || e.keyCode === 9 || e.type === "blur") {
+      e.preventDefault();
+      var newValue = formatter.toRaw(this.$el.val());
+      if (_.isUndefined(newValue) ||
+          !model.set(column.get("name"), newValue, {validate: true})) {
+        this.trigger("backgrid:error", this);
+
+        if (e.type === "blur") {
+          var self = this;
+          var timeout = window.setTimeout(function () {
+            self.$el.focus();
+            window.clearTimeout(timeout);
+          }, 1);
         }
-        else {
-          this.trigger("done");
-        }
-      }
-      // esc
-      else if (e.keyCode === 27) {
-        // undo
-        e.stopPropagation();
-        this.trigger("done");
-      }
-    }
-    else if (e.type === "blur") {
-      if (this.formatter.fromRaw(this.model.get(this.column.get("name"))) === this.$el.val()) {
-        this.trigger("done");
       }
       else {
-        var self = this;
-        var timeout = window.setTimeout(function () {
-          self.$el.focus();
-          window.clearTimeout(timeout);
-        }, 1);
+        this.trigger("backgrid:done", this);
       }
+    }
+    // esc
+    else if (e.keyCode === 27) {
+      // undo
+      e.stopPropagation();
+      this.trigger("backgrid:done", this);
     }
   },
 
@@ -238,19 +235,31 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
      model's raw value for this cell's column.
   */
   render: function () {
-    this.$el.empty().text(this.formatter.fromRaw(this.model.get(this.column.get("name"))));
+    this.$el.empty();
+    this.$el.text(this.formatter.fromRaw(this.model.get(this.column.get("name"))));
+    this.delegateEvents();
     return this;
   },
 
   /**
      If this column is editable, a new CellEditor instance is instantiated with
-     its required parameters and listens on the editor's `done` and `error`
-     events. When the editor is `done`, edit mode is exited. When the editor
-     triggers an `error` event, it means the editor is unable to convert the
-     current user input to an apprpriate value for the model's column. An
-     `editor` CSS class is added to the cell upon entering edit mode.
+     its required parameters and listens on the editor's `backgrid:done` and
+     `backgrid:error` events. When the editor is `done`, edit mode is
+     exited. When the editor triggers an `backgrid:error` event, it means the
+     editor is unable to convert the current user input to an apprpriate value
+     for the model's column. An `editor` CSS class is added to the cell upon
+     entering edit mode.
+
+     This method triggers a Backbone `backgrid:edit` event when the cell is
+     entering edit mode and an editor instance has been constructed, but before
+     it is rendered and inserted into the DOM. The cell and the constructed cell
+     editor instance are sent as event parameters when this event is triggered.
+
+     When this cell has finished switching to edit mode, a Backbone
+     `backgrid:editing` event is triggered. The cell and the constructed cell
+     instance are also sent as parameters in the event.
   */
-  enterEditMode: function (e) {
+  enterEditMode: function () {
     if (this.column.get("editable")) {
 
       this.currentEditor = new this.editor({
@@ -260,19 +269,10 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
         formatter: this.formatter
       });
 
-      /**
-         Backbone Event. Fired when a cell is entering edit mode and an editor
-         instance has been constructed, but before it is rendered and inserted
-         into the DOM.
+      this.trigger("backgrid:edit", this, this.currentEditor);
 
-         @event edit
-         @param {Backgrid.Cell} cell This cell instance.
-         @param {Backgrid.CellEditor} editor The cell editor constructed.
-      */
-      this.trigger("edit", this, this.currentEditor);
-
-      this.listenTo(this.currentEditor, "done", this.exitEditMode);
-      this.listenTo(this.currentEditor, "error", this.renderError);
+      this.listenTo(this.currentEditor, "backgrid:done", this.exitEditMode);
+      this.listenTo(this.currentEditor, "backgrid:error", this.renderError);
 
       this.$el.empty();
       this.undelegateEvents();
@@ -280,14 +280,7 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
       this.currentEditor.render();
       this.$el.addClass("editor");
 
-      /**
-         Backbone Event. Fired when a cell has finished switching to edit mode.
-
-         @event editing
-         @param {Backgrid.Cell} cell This cell instance.
-         @param {Backgrid.CellEditor} editor The cell editor constructed.
-      */
-      this.trigger("editing", this, this.currentEditor);
+      this.trigger("backgrid:editing", this, this.currentEditor);
     }
   },
 
@@ -303,8 +296,7 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
   */
   exitEditMode: function () {
     this.$el.removeClass("error");
-    this.currentEditor.off(null, null, this);
-    this.currentEditor.remove();
+    this.stopListening(this.currentEditor);
     delete this.currentEditor;
     this.$el.removeClass("editor");
     this.render();
@@ -335,16 +327,19 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
 var StringCell = Backgrid.StringCell = Cell.extend({
 
   /** @property */
-  className: "string-cell"
+  className: "string-cell",
 
-  // No formatter needed. Strings call auto-escaped by jQuery on insertion.
+  formatter: new StringFormatter()
 
 });
 
 /**
    UriCell renders an HTML `<a>` anchor for the value and accepts URIs as user
-   input values. A URI input is URI encoded using `encodeURI()` before writing
-   to the underlying model.
+   input values. No type conversion or URL validation is done by the formatter
+   of this cell. Users who need URL validation are encourage to subclass UriCell
+   to take advantage of the parsing capabilities of the HTMLAnchorElement
+   available on HTML5-capable browsers or using a third-party library like
+   [URI.js](https://github.com/medialize/URI.js).
 
    @class Backgrid.UriCell
    @extends Backgrid.Cell
@@ -354,16 +349,6 @@ var UriCell = Backgrid.UriCell = Cell.extend({
   /** @property */
   className: "uri-cell",
 
-  formatter: {
-    fromRaw: function (rawData) {
-      return rawData;
-    },
-    toRaw: function (formattedData) {
-      var result = encodeURI(formattedData);
-      return result === "undefined" ? undefined : result;
-    }
-  },
-
   render: function () {
     this.$el.empty();
     var formattedValue = this.formatter.fromRaw(this.model.get(this.column.get("name")));
@@ -372,6 +357,7 @@ var UriCell = Backgrid.UriCell = Cell.extend({
       title: formattedValue,
       target: "_blank"
     }).text(formattedValue));
+    this.delegateEvents();
     return this;
   }
 
@@ -383,24 +369,14 @@ var UriCell = Backgrid.UriCell = Cell.extend({
    complain if the user enters a string that doesn't contain the `@` sign.
 
    @class Backgrid.EmailCell
-   @extends Backgrid.Cell
+   @extends Backgrid.StringCell
 */
-var EmailCell = Backgrid.EmailCell = Cell.extend({
+var EmailCell = Backgrid.EmailCell = StringCell.extend({
 
   /** @property */
   className: "email-cell",
 
-  formatter: {
-    fromRaw: function (rawData) {
-      return rawData;
-    },
-    toRaw: function (formattedData) {
-      var parts = formattedData.split("@");
-      if (parts.length === 2 && _.all(parts)) {
-        return formattedData;
-      }
-    }
-  },
+  formatter: new EmailFormatter(),
 
   render: function () {
     this.$el.empty();
@@ -409,6 +385,7 @@ var EmailCell = Backgrid.EmailCell = Cell.extend({
       href: "mailto:" + formattedValue,
       title: formattedValue
     }).text(formattedValue));
+    this.delegateEvents();
     return this;
   }
 
@@ -459,8 +436,8 @@ var NumberCell = Backgrid.NumberCell = Cell.extend({
 });
 
 /**
-   An IntegerCell is just a Backgrid.NumberCell with 0 decimals. If a floating point
-   number is supplied, the number is simply rounded the usual way when
+   An IntegerCell is just a Backgrid.NumberCell with 0 decimals. If a floating
+   point number is supplied, the number is simply rounded the usual way when
    displayed.
 
    @class Backgrid.IntegerCell
@@ -617,6 +594,7 @@ var BooleanCell = Backgrid.BooleanCell = Cell.extend({
       checked: this.formatter.fromRaw(this.model.get(this.column.get("name")))
     }));
     this.$el.append(this.currentEditor);
+    this.delegateEvents();
     return this;
   },
 
@@ -660,7 +638,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
   /** @property */
   events: {
     "change": "save",
-    "blur": "save"
+    "blur": "close"
   },
 
   /** @property {function(Object, ?Object=): string} template */
@@ -726,16 +704,25 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
       }
     }
 
+    this.delegateEvents();
+
     return this;
   },
 
   /**
      Saves the value of the selected option to the model attribute. Triggers a
-     `done` Backbone event.
+     `backgrid:done` Backbone event.
   */
-  save: function (e) {
+  save: function () {
     this.model.set(this.column.get("name"), this.formatter.toRaw(this.$el.val()));
-    this.trigger("done");
+    this.trigger("backgrid:done", this);
+  },
+
+  /**
+     Triggers a `backgrid:done` event so the parent can close this editor.
+   */
+  close: function () {
+    this.trigger("backgrid:done", this);
   }
 
 });
@@ -756,6 +743,15 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
    returns one of the above. If the options are static, it is recommended the
    returned values to be memoized. _.memoize() is a good function to help with
    that.
+
+   Lastly, since this class uses the default CellFormatter, during display mode,
+   the raw model value is compared with the `optionValues` values using
+   Ecmascript's implicit type conversion rules. When exiting edit mode, no type
+   conversion is performed when saving into the model. This behavior is not
+   always desirable when the value type is anything other than string. To
+   control type conversion on the client-side, you should subclass SelectCell to
+   provide a custom formatter or provide the formatter to your column
+   definition.
 
    @class Backgrid.SelectCell
    @extends Backgrid.Cell
@@ -786,7 +782,7 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
     Cell.prototype.initialize.apply(this, arguments);
     requireOptions(this, ["optionValues"]);
     this.optionValues = _.result(this, "optionValues");
-    this.listenTo(this, "edit", this.setOptionValues);
+    this.listenTo(this, "backgrid:edit", this.setOptionValues);
   },
 
   setOptionValues: function (cell, editor) {
@@ -840,6 +836,8 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
       }
       throw ex;
     }
+
+    this.delegateEvents();
 
     return this;
   }

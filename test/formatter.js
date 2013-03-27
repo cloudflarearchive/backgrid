@@ -62,13 +62,18 @@ describe("A NumberFormatter", function () {
     expect(formatter.fromRaw(1000003.1415926)).toBe("1.000.003,142");
   });
 
+  it(".fromRaw() returns an empty string if the input is null or undefined", function () {
+    var formatter = new Backgrid.NumberFormatter();
+    expect(formatter.fromRaw()).toBe('');
+    expect(formatter.fromRaw(undefined)).toBe('');
+  });
+
   it(".toRaw() converts a number string with any number of decimals, with " +
      "1000s separated by ',' and the decimal part separated by '.' to a " +
      "number by default", function () {
 
     var formatter = new Backgrid.NumberFormatter();
     expect(formatter.toRaw("1,000,003.141592653589793238462")).toBe(1000003.14);
-
   });
 
   it(".toRaw() can convert a number string with any number of decimals, 1000s" +
@@ -82,7 +87,12 @@ describe("A NumberFormatter", function () {
     });
 
     expect(formatter.toRaw("1.000.003,141592653589793238462")).toBe(1000003.142);
+  });
 
+  it(".toRaw() returns undefined for empty strings or strings of whitespaces", function () {
+    var formatter = new Backgrid.NumberFormatter();
+    expect(formatter.toRaw('')).toBe(0);
+    expect(formatter.toRaw(' ')).toBe(0);
   });
 
 });
@@ -156,18 +166,18 @@ describe("A DatetimeFormatter", function () {
     expect(formatter.fromRaw("05:30:29.123")).toBe("05:30:29.123");
   });
 
-  it(".fromRaw() ignores null values", function () {
+  it(".fromRaw() returns an empty string for a null value", function () {
     var formatter = new Backgrid.DatetimeFormatter({
       includeDate: true
     });
-    expect(formatter.fromRaw(null)).toBeNull();
+    expect(formatter.fromRaw(null)).toBe('');
   });
 
-  it(".fromRaw() ignores undefined values", function () {
+  it(".fromRaw() returns an empty string for an undefined value", function () {
     var formatter = new Backgrid.DatetimeFormatter({
       includeDate: true
     });
-    expect(formatter.fromRaw(undefined)).toBeUndefined();
+    expect(formatter.fromRaw(undefined)).toBe('');
   });
 
   it(".fromRaw() throws an exception on invalid values", function () {
@@ -281,4 +291,67 @@ describe("A DatetimeFormatter", function () {
     });
     expect(formatter.toRaw("05:30:29.123")).toBe("05:30:29.123");
   });
+
+  it(".toRaw() returns undefined when converting an empty string or a string of whitespaces", function () {
+    var formatter = new Backgrid.DatetimeFormatter();
+    expect(formatter.toRaw('')).toBeUndefined();
+    expect(formatter.toRaw(' ')).toBeUndefined();
+  });
+});
+
+describe("A StringFormatter", function () {
+
+  var formatter;
+  beforeEach(function () {
+    formatter = new Backgrid.StringFormatter();
+  });
+
+  it(".fromRaw() converts anything besides null and undefind to a string", function () {
+    expect(formatter.fromRaw(1)).toBe("1");
+    expect(formatter.fromRaw(1.1)).toBe("1.1");
+    expect(formatter.fromRaw("string")).toBe("string");
+    expect(formatter.fromRaw('')).toBe('');
+    expect(formatter.fromRaw(NaN)).toBe('NaN');
+  });
+
+  it(".fromRaw() converts null and undefind to a empty string", function () {
+    expect(formatter.fromRaw(null)).toBe('');
+    expect(formatter.fromRaw(undefined)).toBe('');
+  });
+
+  it(".toRaw() pass any string thru", function () {
+    expect(formatter.toRaw("string")).toBe("string");
+    expect(formatter.toRaw("")).toBe('');
+    expect(formatter.toRaw(" ")).toBe(' ');
+  });
+
+});
+
+describe("An EmailFormatter", function () {
+  var formatter;
+
+  beforeEach(function () {
+    formatter = new Backgrid.EmailFormatter();
+  });
+
+  it(".fromRaw() accepts any string without conversion", function () {
+    expect(formatter.fromRaw("abc@example.com")).toBe("abc@example.com");
+    expect(formatter.fromRaw('')).toBe('');
+    expect(formatter.fromRaw(" ")).toBe(" ");
+  });
+
+  it(".toRaw() returns undefined for invalid email addresses", function () {
+    expect(formatter.toRaw('')).toBeUndefined();
+    expect(formatter.toRaw(' ')).toBeUndefined();
+    expect(formatter.toRaw('@')).toBeUndefined();
+    expect(formatter.toRaw(' @ ')).toBeUndefined();
+    expect(formatter.toRaw("a@")).toBeUndefined();
+    expect(formatter.toRaw("@b")).toBeUndefined();
+    expect(formatter.toRaw("a@b@")).toBeUndefined();
+  });
+
+  it(".toRaw() returns the input if it contains a '@' and the strings before and after '@' are not empty", function () {
+    expect(formatter.toRaw("a@b")).toBe("a@b");
+  });
+
 });
