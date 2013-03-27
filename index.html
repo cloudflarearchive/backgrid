@@ -638,27 +638,27 @@
                 <code>&lt;input type="text" /&gt;</code>, will not be suitable
                 and a new <a href="api/index.html#!/api/Backgrid.CellEditor"
                 title="CellEditor">CellEditor</a> must be defined.</p>
-              <p>A custom cell editor should
-                subclass <a href="api/index.html#!/api/Backgrid.CellEditor">CellEditor</a>
+              <p>A custom cell editor should subclass <a
+                href="api/index.html#!/api/Backgrid.CellEditor">CellEditor</a>
                 as it defines a number of required parameters in its initializer
                 and clean up operations that are necessary for most cell
                 editors. When a cell class enters edit mode, a new editor
                 instance is constructed by given it the required parameters, and
-                then a Backbone event <code>edit</code> is fired from the cell
-                instance itself. A custom cell class can act on this event to do
-                anything before the cell editor is rendered.</p>
-              <p>Once the cell has entered edit mode, a Backbone
-                event <code>editing</code> is fired. A custom cell class can
+                then a Backbone event <code>backgrid:edit</code> is fired from
+                the cell instance itself. A custom cell class can act on this
+                event to do anything before the cell editor is rendered.</p>
+              <p>Once the cell has entered edit mode, a Backbone event
+                <code>backgrid:editing</code> is fired. A custom cell class can
                 then act on it to do anything after the cell editor has been
                 rendered, e.g. placing the focus inside the editor.</p>
-              <p>During editing, if an error is encountered (see
-                the <a href="#api-formatter">formatter protocol</a> below), a
-                cell editor should fire a Backbone event <code>error</code> so that
-                listeners&mdash;usually a cell instance&mdash;can respond
-                appropriately. When editing is done, a cell editor should fire a
-                Backbone <code>done</code> event. A cell should be listening to
-                this event so it can remove its editor and re-render itsef in
-                display mode.</p>
+              <p>During editing, if an error is encountered (see the <a
+                href="#api-formatter">formatter protocol</a> below), a cell
+                editor should fire a Backbone event <code>backgrid:error</code>
+                so that listeners&mdash;usually a cell instance&mdash;can
+                respond appropriately. When editing is done, a cell editor
+                should fire a Backbone <code>backgrid:done</code> event. A cell
+                should be listening to this event so it can remove its editor
+                and re-render itsef in display mode.</p>
               <p class="label label-important">Truely Advanced Hacking</p>
               <p>At the most basic level, Cells and CellEditors are simply
                 <a href="http://backbonejs.org/#View"
@@ -974,6 +974,12 @@
           </div>
           <div class="row-fluid">
             <div class="span9 offset3">
+              <h3>Result</h3>
+              <div id="select-all-example-result" class="backgrid-container" style="height: auto"></div>
+            </div>
+          </div>
+          <div class="row-fluid">
+            <div class="span9 offset3">
               <h3>Getting to the Selected Models</h3>
               <p>At any point during the lifetime of your program, if you'd like
               to get an array of the currently selected models after you've
@@ -986,8 +992,14 @@
           </div>
           <div class="row-fluid">
             <div class="span9 offset3">
-              <h3>Result</h3>
-              <div id="select-all-example-result" class="backgrid-container" style="height: auto"></div>
+              <p class="label label-info">Pro Tip</p>
+              <p>Each SelectRowCell will trigger a <code>backgrid:select</code>
+              event directly from the selected models when its checkbox value
+              changes, so if you want to react to those events, you can attach
+              your event handlers on the collection.</p>
+              <p>See the <a
+              href="api/index.html#!/api/Backgrid.Extension.SelectRowCell">API
+              documentation</a> for details.</p>
             </div>
           </div>
           <div class="row-fluid">
@@ -1144,10 +1156,13 @@
               <h3>Prerequisites</h3>
               <p>Both ServerSideFilter and ClientSideFilter have an optional
               dependency on <a href="http://twitter.github.com/bootstrap/"
-              title="Twitter Bootstrap">Twitter Bootstrap's
-              CSS</a>. ClientSideFilter has an additional dependency on <a
-              href="http://lunrjs.com/" title="lunr.js">lunr.js</a>.
-              </p>
+              title="Twitter Bootstrap">Twitter Bootstrap's CSS</a>. This
+              dependency is optional because the filter extension only uses its
+              CSS for rendering. You are free to override the default template
+              and CSS if you don't like it.</p>
+              <p>For ClientSideFilter, it has a hard dependency on <a
+              href="http://lunrjs.com/" title="lunr.js">lunr.js</a> for
+              full-text searching.</p>
               <textarea class="code-snippet" data-mode="htmlmixed">
                 &lt;link rel="stylesheet" href="assets/css/bootstrap.css" /&gt;
                 &lt;link rel="stylesheet" href="lib/extensions/filter/backgrid-filter.css" /&gt;
