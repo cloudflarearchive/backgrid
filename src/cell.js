@@ -128,10 +128,16 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
     var formatter = this.formatter;
     var model = this.model;
     var column = this.column;
+    var blurred = (e.type === "blur");
+    var entered = (e.keyCode === 13);
+    var tabbed = (e.keyCode === 9);
+    var shifted = (e.shiftKey);
+    var mods = { blurred: blurred, entered: entered, tabbed: tabbed, shifted: shifted};
 
     // enter or tab or blur
     if (e.keyCode === 13 || e.keyCode === 9 || e.type === "blur") {
       e.preventDefault();
+      // Check if the shift key was down
       var newValue = formatter.toRaw(this.$el.val());
       if (_.isUndefined(newValue) ||
           !model.set(column.get("name"), newValue, {validate: true})) {
@@ -146,7 +152,7 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
         }
       }
       else {
-        this.trigger("backgrid:done", this);
+        this.trigger("backgrid:done", this, mods);
       }
     }
     // esc
@@ -219,6 +225,7 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
   */
   initialize: function (options) {
     requireOptions(options, ["model", "column"]);
+    this.row = options.row;
     this.column = options.column;
     if (!(this.column instanceof Column)) {
       this.column = new Column(this.column);
@@ -294,13 +301,21 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
   /**
      Removes the editor and re-render in display mode.
   */
-  exitEditMode: function () {
+  exitEditMode: function (cbCell, cbMods) {
+    console.log("exitEditMode", this, cbCell, cbMods);
     this.$el.removeClass("error");
     this.stopListening(this.currentEditor);
     delete this.currentEditor;
     this.$el.removeClass("editor");
     this.render();
     this.delegateEvents();
+    if (cbMods.tabbed) {
+        if (cbMods.shifted) {
+            this.row.editPrevCell(this);
+        } else {
+            this.row.editNextCell(this);
+        }
+    }
   },
 
   /**
