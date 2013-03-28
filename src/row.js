@@ -19,7 +19,7 @@ var Row = Backgrid.Row = Backbone.View.extend({
   /** @property */
   tagName: "tr",
 
-  initOptionRequires: ["columns", "model"],
+  initOptionRequires: ["body", "columns", "model"],
 
   /**
      Initializes a row view instance.
@@ -33,6 +33,8 @@ var Row = Backgrid.Row = Backbone.View.extend({
   initialize: function (options) {
 
     requireOptions(options, this.initOptionRequires);
+    
+    var body = this.body = options.body;
 
     var columns = this.columns = options.columns;
     if (!(columns instanceof Backbone.Collection)) {
@@ -91,11 +93,30 @@ var Row = Backgrid.Row = Backbone.View.extend({
    */
   makeCell: function (column) {
     return new (column.get("cell"))({
+      row: this,
       column: column,
       model: this.model
     });
   },
 
+
+  editNextCell: function(exitedCell) {
+    /* Determine which column we exited from */
+    var exitidx = this.columns.indexOf(exitedCell.column);
+    //console.log("editNextCell Exited Column Index", exitidx);
+    
+    /* Determine if there is another editable column */
+    for (var i = exitidx + 1; i < this.columns.length; i++) {
+        var col = this.columns.at(i);
+        //console.log("editNextCell Editable Column", col);
+        if (col.get("editable")) {
+            /* Figure out which cell to start editing */
+            var nextCell = this.cells[i];
+            //console.log("editNextCell Editable Cell", nextCell);
+            nextCell.enterEditMode();
+        }
+    }
+  },
   /**
      Renders a row of cells for this row's model.
    */
