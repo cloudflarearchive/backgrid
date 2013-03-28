@@ -302,7 +302,7 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
     this.$el.removeClass("editor");
     this.render();
     this.delegateEvents();
-    console.log("exitEditMode", this);
+    //console.log("exitEditMode", this);
     this.row.editNextCell(this);
   },
 
