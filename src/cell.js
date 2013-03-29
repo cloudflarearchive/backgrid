@@ -132,10 +132,14 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
     var entered = (e.keyCode === 13);
     var tabbed = (e.keyCode === 9);
     var shifted = (e.shiftKey);
-    var mods = { blurred: blurred, entered: entered, tabbed: tabbed, shifted: shifted};
+    var up = (e.keyCode === 38);
+    var down = (e.keyCode === 40);
+    var escaped = (e.keyCode === 27);
+    var mods = { blurred: blurred, entered: entered, tabbed: tabbed, shifted: shifted, up: up, down: down, escaped: escaped};
 
     // enter or tab or blur
-    if (e.keyCode === 13 || e.keyCode === 9 || e.type === "blur") {
+    // if (e.keyCode === 13 || e.keyCode === 9 || e.type === "blur") {
+    if (entered || tabbed || up || down || blurred) {
       e.preventDefault();
       // Check if the shift key was down
       var newValue = formatter.toRaw(this.$el.val());
@@ -156,7 +160,7 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
       }
     }
     // esc
-    else if (e.keyCode === 27) {
+    else if (escaped) {
       // undo
       e.stopPropagation();
       this.trigger("backgrid:done", this);
@@ -308,7 +312,11 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
     this.$el.removeClass("editor");
     this.render();
     this.delegateEvents();
-    if (cbMods.tabbed) {
+    if (cbMods.up) {
+        this.row.body.editPrevRow(this);
+    } else if (cbMods.down) {
+        this.row.body.editNextRow(this);
+    } else if (cbMods.tabbed) {
         if (cbMods.shifted) {
             this.row.editPrevCell(this);
         } else {
