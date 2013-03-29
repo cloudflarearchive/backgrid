@@ -14,7 +14,7 @@ all: clean dist test
 FORCE:
 
 %.js %.css: FORCE
-	echo "/*\n\
+	printf "/*\n\
 	  $(PROJECT_NAME)\n\
 	  $(PROJECT_URL)\n\n\
 	  Copyright (c) `date +%Y` $(AUTHOR)\n\
