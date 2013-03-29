@@ -2,7 +2,7 @@
   backgrid-select2-cell
   http://github.com/wyuenho/backgrid
 
-  Copyright (c) 2013 Jimmy Yuen Ho Wong
+  Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
   Licensed under the MIT @license.
 */
 
