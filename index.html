@@ -1474,8 +1474,29 @@
           </div>
           <div class="row-fluid">
             <div class="span12">
+              <h2>How do I add or remove a row?</h2>
+              <p>You can either use <a
+              href="http://backbonejs.org/#Collection-add"
+              title="Backbone.Collection#add">Backbone.Collection#add</a> or <a
+              href="#api-grid" title="Grid#insertRow">Grid#insertRow</a> for
+              insertion. Similarly, use <a
+              href="http://backbonejs.org/#Collection-remove"
+              title="Backbone.Collection#remove">Backbone.Collection#remove</a>
+              or <a href="#api-grid" title="Grid#removeRow">Grid#removeRow</a>
+              to remove rows.</p>
               <h2>How do I validate user input?</h2>
               <p>See <a href="#api-formatter" title="Formatter">Formatter</a>.</p>
+              <h2>How do I save my row changes to the server immediately?</h2>
+              <textarea class="code-snippet" data-mode="javascript">
+                var MyModel = Backbone.Model.extend({
+                  initialize: function () {
+                    Backbone.Model.prototype.initialize.apply(this, arguments);
+                    this.on("change", function (model, options) {
+                      if (options && options.save === false) return;
+                      model.save();
+                    });
+                  }
+                });</textarea>
               <h2>Why doesn&apos;t Backgrid.js support AMD (or NPM)?</h2>
               <p>The same question can be asked for volo, bower, ender,
                 browserify and many other competing solutions. The number one
