@@ -1,6 +1,6 @@
 PROJECT_NAME = backgrid
 PROJECT_URL = http://github.com/wyuenho/backgrid
-AUTHOR = Jimmy Yuen Ho Wong
+AUTHOR = Jimmy Yuen Ho Wong and contributors
 
 FORCE:
 

@@ -1,6 +1,6 @@
 PROJECT_NAME = backgrid-$(notdir $(CURDIR))
 PROJECT_URL = http://github.com/wyuenho/backgrid
-AUTHOR = Jimmy Yuen Ho Wong
+AUTHOR = Jimmy Yuen Ho Wong and contributors
 
 JS_FILE = $(PROJECT_NAME).js
 CSS_FILE = $(PROJECT_NAME).css
