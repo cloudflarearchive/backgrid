@@ -302,7 +302,6 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
      Removes the editor and re-render in display mode.
   */
   exitEditMode: function (cbCell, cbMods) {
-    console.log("exitEditMode", this, cbCell, cbMods);
     this.$el.removeClass("error");
     this.stopListening(this.currentEditor);
     delete this.currentEditor;

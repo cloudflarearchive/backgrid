@@ -101,35 +101,29 @@ var Row = Backgrid.Row = Backbone.View.extend({
 
 
   editPrevCell: function(exitedCell) {
-    /* Determine which column we exited from */
+    // Determine which column we exited from 
     var exitidx = this.columns.indexOf(exitedCell.column);
-    //console.log("editNextCell Exited Column Index", exitidx);
     
-    /* Determine if there is another editable column */
+    // Determine if there is another editable column 
     for (var i = exitidx - 1; i > 0; i--) {
         var col = this.columns.at(i);
-        //console.log("editNextCell Editable Column", col);
         if (col.get("editable")) {
-            /* Figure out which cell to start editing */
+            // Figure out which cell to start editing 
             var prevCell = this.cells[i];
-            //console.log("editNextCell Editable Cell", prevCell);
             prevCell.enterEditMode();
         }
     }
   },
   editNextCell: function(exitedCell) {
-    /* Determine which column we exited from */
+    // Determine which column we exited from
     var exitidx = this.columns.indexOf(exitedCell.column);
-    //console.log("editNextCell Exited Column Index", exitidx);
     
-    /* Determine if there is another editable column */
+    // Determine if there is another editable column 
     for (var i = exitidx + 1; i < this.columns.length; i++) {
         var col = this.columns.at(i);
-        //console.log("editNextCell Editable Column", col);
         if (col.get("editable")) {
-            /* Figure out which cell to start editing */
+            // Figure out which cell to start editing 
             var nextCell = this.cells[i];
-            //console.log("editNextCell Editable Cell", nextCell);
             nextCell.enterEditMode();
         }
     }
