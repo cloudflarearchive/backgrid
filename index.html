@@ -1,21 +1,11 @@
 <!doctype html>
-<!--
-    Backgrid.js
-    Copyright (C) 2013 Jimmy Yuen Ho Wong
+<!-- 
+  backgrid
+  http://github.com/wyuenho/backgrid
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
--->
+  Copyright (c) 2013 Jimmy Yuen Ho Wong
+  Licensed under the MIT @license.
+ -->
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -605,22 +595,16 @@
                 title="Formatter">formatter</a>. In fact, most of the core cell
                 classes are done this way.</p>
               <textarea class="code-snippet" data-mode="javascript" data-eval="no">
-                // This is the verbatim Backgrid.StringCell definition
+                // This is how the StringCell is defined.
 
-                var StringCell = Backgrid.StringCell = Cell.extend({
+                Backgrid.StringCell = Cell.extend({
 
                   // Cell default class names are the lower-cased and dasherized
                   // form of the the cell class names by convention.
-                  className: "string-cell",
+                  className: "string-cell"
 
-                  formatter: {
-                    fromRaw: function (rawData) {
-                      return rawData;
-                    },
-                    toRaw: function (formattedData) {
-                      return formattedData;
-                    }
-                  }
+                  formatter: Backgrid.StringFormatter
+
                 });</textarea>
               <p>If your cell class will render differently in display mode, you
                 may simply
@@ -1578,11 +1562,7 @@
           </div>
           <p>Copyright &copy; 2013 Jimmy Yuen Ho Wong and
             Contributors.</p>
-          <p>Backgrid.js Javascript and CSS source code licensed
-            under the <a href="LICENSE-MIT">MIT license</a>.</p>
-          <p>Documentation licensed
-            under <a href="http://www.gnu.org/licenses/gpl-3.0.html"
-                     title="GPLv3">GPLv3</a>.</p>
+          <p>Licensed under the <a href="LICENSE-MIT">MIT license</a>.</p>
         </section>
       </div>
     </div>
