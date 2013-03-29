@@ -10,4 +10,4 @@ FORCE:
 	  $(PROJECT_URL)\n\n\
 	  Copyright (c) `date +%Y` $(AUTHOR)\n\
 	  Licensed under the MIT @license.\n\
-	*/" | cat - $@ > "/tmp/`basename $@`" && mv -f "/tmp/`basename $@`" $@
+	*/\n" | cat - $@ > "/tmp/`basename $@`" && mv -f "/tmp/`basename $@`" $@

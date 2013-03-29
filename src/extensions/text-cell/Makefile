@@ -19,7 +19,7 @@ FORCE:
 	  $(PROJECT_URL)\n\n\
 	  Copyright (c) `date +%Y` $(AUTHOR)\n\
 	  Licensed under the MIT @license.\n\
-	*/" | cat - $@ > "/tmp/`basename $@`" && mv -f "/tmp/`basename $@`" $@
+	*/\n" | cat - $@ > "/tmp/`basename $@`" && mv -f "/tmp/`basename $@`" $@
 
 csslint:
 	recess $(CSS_FILE) --noIDS --noUniversalSelectors --compile > /tmp/$(CSS_FILE) && mv -f /tmp/$(CSS_FILE) $(CSS_FILE);
