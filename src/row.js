@@ -119,14 +119,19 @@ var Row = Backgrid.Row = Backbone.View.extend({
     var exitidx = this.columns.indexOf(exitedCell.column);
     
     // Determine if there is another editable column 
+    var foundCell = false;
     for (var i = exitidx + 1; i < this.columns.length; i++) {
         var col = this.columns.at(i);
         if (col.get("editable")) {
             // Figure out which cell to start editing 
             var nextCell = this.cells[i];
             nextCell.enterEditMode();
+            foundCell = true;
         }
     }
+
+    // Go to next row if we are tabbing out of last cell
+    if (!foundCell) this.body.editNextRow(exitedCell, true); // 2nd param true means: go to the first column of next row
   },
   /**
      Renders a row of cells for this row's model.
