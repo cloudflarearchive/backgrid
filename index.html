@@ -701,8 +701,11 @@
                 var grid = new Backgrid.Grid({
                   columns: [{
                     name: "url",
-                    cell: UriCell.extend({
-                      formatter: new MyURLFormatter() // As a cell class attribute
+                    cell: "uri",
+                    formatter: _.extend({}, Backgrid.CellFormatter.prototype, {
+                      fromRaw: function (rawValue) {
+                        return rawValue.replace("http://", '');
+                      }
                     })
                   }],
                   collection: col
