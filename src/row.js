@@ -111,6 +111,7 @@ var Row = Backgrid.Row = Backbone.View.extend({
             // Figure out which cell to start editing 
             var prevCell = this.cells[i];
             prevCell.enterEditMode();
+            break;
         }
     }
   },
@@ -127,6 +128,7 @@ var Row = Backgrid.Row = Backbone.View.extend({
             var nextCell = this.cells[i];
             nextCell.enterEditMode();
             foundCell = true;
+            break;
         }
     }
 
