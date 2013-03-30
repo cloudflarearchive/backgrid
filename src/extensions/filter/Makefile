@@ -1,6 +1,6 @@
 PROJECT_NAME = backgrid-$(notdir $(CURDIR))
 PROJECT_URL = http://github.com/wyuenho/backgrid
-AUTHOR = Jimmy Yuen Ho Wong
+AUTHOR = Jimmy Yuen Ho Wong and contributors
 
 JS_FILE = $(PROJECT_NAME).js
 CSS_FILE = $(PROJECT_NAME).css
@@ -14,12 +14,12 @@ all: clean dist test
 FORCE:
 
 %.js %.css: FORCE
-	echo "/*\n\
+	printf "/*\n\
 	  $(PROJECT_NAME)\n\
 	  $(PROJECT_URL)\n\n\
 	  Copyright (c) `date +%Y` $(AUTHOR)\n\
 	  Licensed under the MIT @license.\n\
-	*/" | cat - $@ > "/tmp/`basename $@`" && mv -f "/tmp/`basename $@`" $@
+	*/\n" | cat - $@ > "/tmp/`basename $@`" && mv -f "/tmp/`basename $@`" $@
 
 csslint:
 	recess $(CSS_FILE) --noIDS --noUniversalSelectors --compile > /tmp/$(CSS_FILE) && mv -f /tmp/$(CSS_FILE) $(CSS_FILE);
