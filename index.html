@@ -1,21 +1,11 @@
 <!doctype html>
-<!--
-    Backgrid.js
-    Copyright (C) 2013 Jimmy Yuen Ho Wong
+<!-- 
+  backgrid
+  http://github.com/wyuenho/backgrid
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
--->
+  Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
+  Licensed under the MIT @license.
+ -->
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -29,8 +19,8 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.2.2/css/bootstrap.min.css" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.2.2/css/bootstrap-responsive.min.css" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/3.2/select2.css" />
-    <link rel="stylesheet" href="codemirror/lib/codemirror.css" />
-    <link rel="stylesheet" href="codemirror/theme/ambiance.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/codemirror.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/ambiance.css" />
     <link rel="stylesheet" href="lib/backgrid.min.css" />
     <link rel="stylesheet" href="lib/extensions/paginator/backgrid-paginator.min.css" />
     <link rel="stylesheet" href="lib/extensions/text-cell/backgrid-text-cell.min.css" />
@@ -605,22 +595,16 @@
                 title="Formatter">formatter</a>. In fact, most of the core cell
                 classes are done this way.</p>
               <textarea class="code-snippet" data-mode="javascript" data-eval="no">
-                // This is the verbatim Backgrid.StringCell definition
+                // This is how the StringCell is defined.
 
-                var StringCell = Backgrid.StringCell = Cell.extend({
+                Backgrid.StringCell = Cell.extend({
 
                   // Cell default class names are the lower-cased and dasherized
                   // form of the the cell class names by convention.
-                  className: "string-cell",
+                  className: "string-cell"
 
-                  formatter: {
-                    fromRaw: function (rawData) {
-                      return rawData;
-                    },
-                    toRaw: function (formattedData) {
-                      return formattedData;
-                    }
-                  }
+                  formatter: Backgrid.StringFormatter
+
                 });</textarea>
               <p>If your cell class will render differently in display mode, you
                 may simply
@@ -717,8 +701,11 @@
                 var grid = new Backgrid.Grid({
                   columns: [{
                     name: "url",
-                    cell: UriCell.extend({
-                      formatter: new MyURLFormatter() // As a cell class attribute
+                    cell: "uri",
+                    formatter: _.extend({}, Backgrid.CellFormatter.prototype, {
+                      fromRaw: function (rawValue) {
+                        return rawValue.replace("http://", '');
+                      }
                     })
                   }],
                   collection: col
@@ -1490,8 +1477,29 @@
           </div>
           <div class="row-fluid">
             <div class="span12">
+              <h2>How do I add or remove a row?</h2>
+              <p>You can either use <a
+              href="http://backbonejs.org/#Collection-add"
+              title="Backbone.Collection#add">Backbone.Collection#add</a> or <a
+              href="#api-grid" title="Grid#insertRow">Grid#insertRow</a> for
+              insertion. Similarly, use <a
+              href="http://backbonejs.org/#Collection-remove"
+              title="Backbone.Collection#remove">Backbone.Collection#remove</a>
+              or <a href="#api-grid" title="Grid#removeRow">Grid#removeRow</a>
+              to remove rows.</p>
               <h2>How do I validate user input?</h2>
               <p>See <a href="#api-formatter" title="Formatter">Formatter</a>.</p>
+              <h2>How do I save my row changes to the server immediately?</h2>
+              <textarea class="code-snippet" data-mode="javascript">
+                var MyModel = Backbone.Model.extend({
+                  initialize: function () {
+                    Backbone.Model.prototype.initialize.apply(this, arguments);
+                    this.on("change", function (model, options) {
+                      if (options && options.save === false) return;
+                      model.save();
+                    });
+                  }
+                });</textarea>
               <h2>Why doesn&apos;t Backgrid.js support AMD (or NPM)?</h2>
               <p>The same question can be asked for volo, bower, ender,
                 browserify and many other competing solutions. The number one
@@ -1578,11 +1586,7 @@
           </div>
           <p>Copyright &copy; 2013 Jimmy Yuen Ho Wong and
             Contributors.</p>
-          <p>Backgrid.js Javascript and CSS source code licensed
-            under the <a href="LICENSE-MIT">MIT license</a>.</p>
-          <p>Documentation licensed
-            under <a href="http://www.gnu.org/licenses/gpl-3.0.html"
-                     title="GPLv3">GPLv3</a>.</p>
+          <p>Licensed under the <a href="LICENSE-MIT">MIT license</a>.</p>
         </section>
       </div>
     </div>
@@ -1614,13 +1618,13 @@
     <script src="lib/extensions/select2-cell/backgrid-select2-cell.js"></script>
     <script src="lib/extensions/select-all/backgrid-select-all.min.js"></script>
     <script src="lib/extensions/filter/backgrid-filter.min.js"></script>
-    <script src="codemirror/lib/codemirror.js"></script>
-    <script src="codemirror/lib/util/formatting.js"></script>
-    <script src="codemirror/mode/xml/xml.js"></script>
-    <script src="codemirror/mode/css/css.js"></script>
-    <script src="codemirror/mode/javascript/javascript.js"></script>
-    <script src="codemirror/mode/htmlmixed/htmlmixed.js"></script>
-    <script src="codemirror/mode/shell/shell.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/codemirror.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/formatting.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/xml.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/css.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/javascript.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/htmlmixed.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/shell.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/1.7.2/lang/zh-tw.js"></script>
     <script>
       (function () {

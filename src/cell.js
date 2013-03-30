@@ -2,7 +2,7 @@
   backgrid
   http://github.com/wyuenho/backgrid
 
-  Copyright (c) 2013 Jimmy Yuen Ho Wong
+  Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
   Licensed under the MIT @license.
 */
 
@@ -380,25 +380,14 @@ var UriCell = Backgrid.UriCell = Cell.extend({
   /** @property */
   className: "uri-cell",
 
-  // Override this to change the link display text (the text contents
-  // of the `<a>` element). The function has access to the current row
-  // via `this.model`.
-  displayText: function () {
-      return undefined;
-  },
-
   render: function () {
     this.$el.empty();
     var formattedValue = this.formatter.fromRaw(this.model.get(this.column.get("name")));
-    var displayText = this.displayText();
-    if (_.isNull(displayText) || _.isUndefined(displayText)) {
-        displayText = formattedValue;
-    }
     this.$el.append($("<a>", {
       href: formattedValue,
       title: formattedValue,
       target: "_blank"
-    }).text(displayText));
+    }).text(formattedValue));
     this.delegateEvents();
     return this;
   }

@@ -1,6 +1,6 @@
 PROJECT_NAME = backgrid
 PROJECT_URL = http://github.com/wyuenho/backgrid
-AUTHOR = Jimmy Yuen Ho Wong
+AUTHOR = Jimmy Yuen Ho Wong and contributors
 
 JS_FILES = preamble.js\
 	formatter.js \
@@ -32,7 +32,7 @@ FORCE:
 	  $(PROJECT_URL)\n\n\
 	  Copyright (c) `date +%Y` $(AUTHOR)\n\
 	  Licensed under the MIT @license.\n\
-	*/" | cat - $@ > "/tmp/`basename $@`" && mv -f "/tmp/`basename $@`" $@
+	*/\n" | cat - $@ > "/tmp/`basename $@`" && mv -f "/tmp/`basename $@`" $@
 
 js:
 	cat $(JS_FILES) > $(JS_OUTFILE)

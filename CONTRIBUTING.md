@@ -73,6 +73,14 @@ forget to add your extension to the `SUBDIRS` variable in
 `src/extensions/Makefile`.
 
 
+Branching
+=========
+
+For every issue, there should be a branch for fixing that issue. When you are
+happy with your changes, you can file a pull request from your feature branch
+against Backgrid's master.
+
+
 Code Style
 ==========
 If you are filing a pull request, you should follow the guidelines below:
