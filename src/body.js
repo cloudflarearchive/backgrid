@@ -228,7 +228,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
       }
       else if (keys.tab) {
         var shifted = keys.shift;
-        for (var offset = i * l + j + (keys.shift ? -1 : 1);
+        for (var offset = i * l + j + (shifted ? -1 : 1);
              offset >= 0;
              shifted ? offset-- : offset++) {
           var m = ~~(offset / l);
