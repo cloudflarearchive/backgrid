@@ -26,7 +26,8 @@ var Column = Backgrid.Column = Backbone.Model.extend({
     renderable: true,
     formatter: undefined,
     cell: undefined,
-    headerCell: undefined
+    headerCell: undefined,
+    validate: undefined
   },
 
   /**
@@ -41,6 +42,7 @@ var Column = Backgrid.Column = Backbone.Model.extend({
      instance is supplied, it is used directly.
      @param {string|Backgrid.HeaderCell} [attrs.headerCell] The header cell type.
      @param {string} [attrs.label] The label to show in the header.
+     @param {function} [attrs.validate] function(newvalue) that returns true if new value is valid for column (prevents moving to updating attribute and moving to another cell if value is not valid)
      @param {boolean} [attrs.sortable=true]
      @param {boolean} [attrs.editable=true]
      @param {boolean} [attrs.renderable=true]
