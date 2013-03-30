@@ -13,13 +13,13 @@
 
    @class Backgrid.Row
    @extends Backbone.View
- */
+*/
 var Row = Backgrid.Row = Backbone.View.extend({
 
   /** @property */
   tagName: "tr",
 
-  initOptionRequires: ["body", "columns", "model"],
+  initOptionRequires: ["columns", "model"],
 
   /**
      Initializes a row view instance.
@@ -29,12 +29,10 @@ var Row = Backgrid.Row = Backbone.View.extend({
      @param {Backbone.Model} options.model The model instance to render.
 
      @throws {TypeError} If options.columns or options.model is undefined.
-   */
+  */
   initialize: function (options) {
 
     requireOptions(options, this.initOptionRequires);
-    
-    var body = this.body = options.body;
 
     var columns = this.columns = options.columns;
     if (!(columns instanceof Backbone.Collection)) {
@@ -90,54 +88,17 @@ var Row = Backgrid.Row = Backbone.View.extend({
      @param {Object} options The options passed to #initialize.
 
      @return {Backgrid.Cell}
-   */
+  */
   makeCell: function (column) {
     return new (column.get("cell"))({
-      row: this,
       column: column,
       model: this.model
     });
   },
 
-
-  editPrevCell: function(exitedCell) {
-    // Determine which column we exited from 
-    var exitidx = this.columns.indexOf(exitedCell.column);
-    
-    // Determine if there is another editable column 
-    for (var i = exitidx - 1; i > 0; i--) {
-        var col = this.columns.at(i);
-        if (col.get("editable")) {
-            // Figure out which cell to start editing 
-            var prevCell = this.cells[i];
-            prevCell.enterEditMode();
-            break;
-        }
-    }
-  },
-  editNextCell: function(exitedCell) {
-    // Determine which column we exited from
-    var exitidx = this.columns.indexOf(exitedCell.column);
-    
-    // Determine if there is another editable column 
-    var foundCell = false;
-    for (var i = exitidx + 1; i < this.columns.length; i++) {
-        var col = this.columns.at(i);
-        if (col.get("editable")) {
-            // Figure out which cell to start editing 
-            var nextCell = this.cells[i];
-            nextCell.enterEditMode();
-            foundCell = true;
-            break;
-        }
-    }
-
-    // Go to next row if we are tabbing out of last cell
-    if (!foundCell) this.body.editNextRow(exitedCell, true); // 2nd param true means: go to the first column of next row
-  },
   /**
      Renders a row of cells for this row's model.
-   */
+  */
   render: function () {
     this.$el.empty();
 
@@ -160,7 +121,7 @@ var Row = Backgrid.Row = Backbone.View.extend({
      Clean up this row and its cells.
 
      @chainable
-   */
+  */
   remove: function () {
     for (var i = 0; i < this.cells.length; i++) {
       var cell = this.cells[i];

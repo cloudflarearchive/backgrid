@@ -206,7 +206,14 @@ describe("A Select2CellEditor", function () {
     expect(editor.formatter.toRaw).toHaveBeenCalledWith("1");
     expect(editor.formatter.toRaw.calls.length).toBe(1);
     expect(editor.model.get(editor.column.get("name"))).toBe("1");
-    expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor);
+    expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor, {
+      enter: false,
+      tab: false,
+      shift: false,
+      up: false,
+      down: false,
+      escape : false
+    });
     expect(editor.trigger.calls.length).toBe(1);
   });
 
