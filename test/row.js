@@ -10,6 +10,7 @@ describe("A Row", function () {
   it("throws TypeError if a model is not given", function () {
     expect(function () {
       new Backgrid.Row({
+        body: "fakebody",
         columns: [{
           name: "name",
           cell: "string"
@@ -18,9 +19,22 @@ describe("A Row", function () {
     }).toThrow(new TypeError("'model' is required"));
   });
 
+  it("throws TypeError if a body is not given", function () {
+    expect(function () {
+      new Backgrid.Row({
+        columns: [{
+          name: "name",
+          cell: "string"
+        }],
+        model: new Backbone.Model()
+      });
+    }).toThrow(new TypeError("'body' is required"));
+  });
+
   it("throws TypeError if a list of column definitions is not given", function () {
     expect(function () {
       new Backgrid.Row({
+        body: "fakebody",
         model: new Backbone.Model()
       });
     }).toThrow(new TypeError("'columns' is required"));
@@ -28,6 +42,7 @@ describe("A Row", function () {
 
   it("renders a row of cells using a model's values and a list of column definitions", function () {
     var row = new Backgrid.Row({
+      body: "fakebody",
       model: new Backbone.Model({
         name: "name",
         age: 18
@@ -53,6 +68,7 @@ describe("A Row", function () {
   it("hides or shows a cell if a column's renderable attribute changes", function () {
 
     var row = new Backgrid.Row({
+      body: "fakebody",
       model: new Backbone.Model({
         name: "name"
       }),
@@ -81,6 +97,7 @@ describe("A Row", function () {
 
   it("inserts or removes a cell if a column is added or removed", function () {
     var row = new Backgrid.Row({
+      body: "fakebody",
       model: new Backbone.Model({
         name: "name",
         age: 18,

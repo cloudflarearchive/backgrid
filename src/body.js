@@ -42,6 +42,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
     this.row = options.row || Row;
     this.rows = this.collection.map(function (model) {
       var row = new this.row({
+        body: this,
         columns: this.columns,
         model: model
       });
@@ -90,6 +91,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
     options = _.extend({render: true}, options || {});
 
     var row = new this.row({
+      body: this,
       columns: this.columns,
       model: model
     });
@@ -162,6 +164,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
 
     this.rows = this.collection.map(function (model) {
       var row = new this.row({
+        body: this,
         columns: this.columns,
         model: model
       });
@@ -194,6 +197,77 @@ var Body = Backgrid.Body = Backbone.View.extend({
     this.delegateEvents();
 
     return this;
+  },
+
+  /**
+    Determines index of first editable column
+   */
+  firstEditableColumnIdx: function() {
+    // See which is the first editable column
+    for (var i = 0; i < this.columns.length; i++) {
+        var col = this.columns.at(i);
+        if (col.get("editable")) {
+            return i;
+        }
+    }
+    return undefined;
+  },
+
+
+  /**
+    Start editing paricular row, column
+   */
+  editRowCol: function(rowIdx, colIdx) {
+    var targetRow = this.rows[rowIdx];
+    if (targetRow !== undefined) {
+        var targetCell = targetRow.cells[colIdx];
+        if (targetCell !== undefined) {
+            targetCell.enterEditMode();
+        }
+    }
+  },
+
+  /** 
+    Starts editing a cell on the previous row before the exitedCell (same column)
+  */
+  editPrevRow: function(exitedCell, forceFirstColumn) {
+    // Determine which row we exited from
+    var exitRowIdx = this.rows.indexOf(exitedCell.row);
+    
+    // Determine which column we exited from
+    var exitColIdx = this.columns.indexOf(exitedCell.column);
+
+    
+    // Determine target row/col
+    var targetRowIdx = exitRowIdx - 1;
+    var targetColIdx = exitColIdx;
+    if (forceFirstColumn) {
+        targetColIdx = this.firstEditableColumnIdx();
+    }
+    this.editRowCol(targetRowIdx, targetColIdx);
+
+
+  },
+
+  /** 
+    Starts editing a cell on the next row after the exitedCell (same column)
+  */
+  editNextRow: function(exitedCell, forceFirstColumn) {
+    // Determine which row we exited from
+    var exitRowIdx = this.rows.indexOf(exitedCell.row);
+    
+    // Determine which column we exited from
+    var exitColIdx = this.columns.indexOf(exitedCell.column);
+
+    // Determine target row/col
+    var targetRowIdx = exitRowIdx + 1;
+    var targetColIdx = exitColIdx;
+    if (forceFirstColumn) {
+        targetColIdx = this.firstEditableColumnIdx();
+    }
+    this.editRowCol(targetRowIdx, targetColIdx);
+
+    
   },
 
   /**
