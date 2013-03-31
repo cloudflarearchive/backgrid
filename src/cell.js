@@ -372,6 +372,7 @@ var UriCell = Backgrid.UriCell = Cell.extend({
     this.$el.empty();
     var formattedValue = this.formatter.fromRaw(this.model.get(this.column.get("name")));
     this.$el.append($("<a>", {
+      tabIndex: -1,
       href: formattedValue,
       title: formattedValue,
       target: "_blank"
@@ -401,6 +402,7 @@ var EmailCell = Backgrid.EmailCell = StringCell.extend({
     this.$el.empty();
     var formattedValue = this.formatter.fromRaw(this.model.get(this.column.get("name")));
     this.$el.append($("<a>", {
+      tabIndex: -1,
       href: "mailto:" + formattedValue,
       title: formattedValue
     }).text(formattedValue));
@@ -591,19 +593,17 @@ var BooleanCell = Backgrid.BooleanCell = Cell.extend({
      @property {function(Object, ?Object=): string} editor The Underscore.js template to
      render the editor.
   */
-  editor: _.template("<input type='checkbox'<%= checked ? checked='checked' : '' %> />'"),
+  editor: _.template("<input tabindex='0' type='checkbox'<%= checked ? checked='checked' : '' %> />'"),
 
   /**
      Since the editor is not an instance of a CellEditor subclass, more things
      need to be done in BooleanCell class to listen to editor mode events.
-    
-     It should be noted that just because this view is in focus doesn't mean the checkbox is in focus
-     This it is possible to actually try to keydown and navigate out without ever focusing the checkbox
   */
   events: {
-    "keydown": "checkKeyDown", // necessary for tab movement
     "click": "enterEditMode",
-    "blur input[type=checkbox]": "triggerExitEditMode", // Blur doesn't really have much to save.  Just remove editor class. Also can't directly call exitEditMode() becase it does not take an event as an argument but rather (editor, keys)
+    "focus": "enterEditMode",
+    "keydown": "exitEditMode",
+    "blur": "exitEditMode",
     "change input[type=checkbox]": "save"
   },
 
@@ -622,48 +622,34 @@ var BooleanCell = Backgrid.BooleanCell = Cell.extend({
   },
 
   /**
-     Simple focuses the checkbox and add an `editor` CSS class to the cell.
+     Simply focuses the checkbox and add an `editor` CSS class to the cell.
   */
   enterEditMode: function () {
     this.$el.addClass("editor");
     this.currentEditor.focus();
-    this.listenTo(this, "backgrid:done", this.exitEditMode); /* Because we override, this cell never listens for backgrid:done unless we make it */
+    this.listenTo(this, "backgrid:done", this.exitEditMode);
+  },
+
+  /**
+     Rerenders this cell in display mode and unfocuses itself.
+   */
+  exitEditMode: function(e) {
+    this.$el.removeClass("editor");
+    var keys = Cell.buildKeyMods(e);
+    if (e.type == "blur" || keys.enter || keys.tab || keys.up || keys.down) {
+      e.preventDefault();
+      this.model.trigger("backgrid:edited", this.model, this.column, keys);
+    }
+    else if (keys.escape) this.render();
   },
 
   /**
      Set true to the model attribute if the checkbox is checked, false
      otherwise.
   */
-  save: function (e) {
+  save: function () {
     var val = this.formatter.toRaw(this.currentEditor.prop("checked"));
     this.model.set(this.column.get("name"), val);
-    this.trigger("backgrid:done", this, Cell.buildKeyMods(e));
-  },
-
-  /** 
-    Not much to do here, just stop being an editor when blurring
-  */
-  triggerExitEditMode: function(e) {
-    this.$el.removeClass("editor");
-  },
-
-  /** 
-    Because we override enterEditMode for this class, we have a totally different editor/listener setup.  Lets exit in the BooleanCell Way
-  */
-  exitEditMode: function(cbCell, keys) {
-    this.render();
-    this.model.trigger("backgrid:edited", this.model, this.column, keys);
-  },
-
-  /** 
-    Check the keystroke to see if it's a navigation stroke 
-  */
-  checkKeyDown: function(e) {
-    var keys = Cell.buildKeyMods(e);
-    if (keys.up | keys.down || keys.tab || keys.enter) {
-      e.preventDefault(); // We want the "space" bar for example to continue being able to toggle the value of the checkbox
-      this.trigger("backgrid:done", this, keys);
-    }
   }
 
 });
@@ -682,7 +668,8 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
   /** @property */
   events: {
     "change": "save",
-    "blur": "close"
+    "blur": "close",
+    "keydown": "close"
   },
 
   /** @property {function(Object, ?Object=): string} template */
@@ -766,7 +753,14 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
      Triggers a `backgrid:done` event so the parent can close this editor.
   */
   close: function (e) {
-    this.trigger("backgrid:done", this, Cell.buildKeyMods(e));
+    var keys = Cell.buildKeyMods(e);
+    var blurred = e.type === "blur";
+
+    // enter, tab, up, down or blur
+    if (keys.enter || keys.tab || keys.up || keys.down || blurred) {
+      e.preventDefault();
+      this.trigger("backgrid:done", this, Cell.buildKeyMods(e));
+    }
   }
 
 });
