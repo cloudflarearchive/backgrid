@@ -509,26 +509,8 @@
             <div class="span10">
               <h3>Demo</h3>
               <p class="label label-success">Try them</p>
-              <div class="backgrid-container" style="height: auto">
-                <table class="backgrid">
-                  <tr>
-                    <th>Name (StringCell)</th>
-                    <th>Age (IntegerCell)</th>
-                    <th>Birthday (DateCell)</th>
-                    <th>Gender (SelectCell)</th>
-                    <th>Alive (BooleanCell)</th>
-                  </tr>
-                  <tr id="cell-demo-row-1"></tr>
-                  <tr>
-                    <th>URL (UriCell)</th>
-                    <th>Email (EmailCell)</th>
-                    <th>Next Delivery Time (DateTimeCell)</th>
-                    <th>His Local Time (TimeCell)</th>
-                    <th>Change in Wallet (NumberCell)</th>
-                  </tr>
-                  <tr id="cell-demo-row-2"></tr>
-                </table>
-              </div>
+              <div id="cell-demo-grid-1" class="backgrid-container" style="height: auto"></div>
+              <div id="cell-demo-grid-2" class="backgrid-container" style="height: auto"></div>
               <aside class="note">
                 <h5>Note:</h5>
                 <p>Backgrid.js and its author are not associated with Santa and
@@ -1693,12 +1675,15 @@
             }
           }
 
-          var santa = new Backbone.Model({
+          var santa1 = new Backbone.Model({
             name: "Santa Clause",
             age: new Date().getFullYear() - 270,
             birthday: "0270-03-01",
             gender: "m",
-            alive: true,
+            alive: true
+          });
+
+          var santa2 = new Backbone.Model({
             url: "http://santaclaus.com",
             email: "santa@santaclaus.com",
             nextDeliveryTime: nextChristmas(),
@@ -1708,52 +1693,61 @@
 
           var columns = [{
             name: "name",
-            cell: "string"
+            cell: "string",
+            label: "Name (StringCell)"
           }, {
             name: "age",
-            cell: "integer"
+            cell: "integer",
+            label: "Age (IntegerCell)"
           }, {
             name: "birthday",
-            cell: "date"
+            cell: "date",
+            label: "Birthday (DateCell)"
           }, {
             name: "gender",
             cell: Backgrid.SelectCell.extend({
               optionValues: [["Male", "m"], ["Female", "f"]]
-            })
+            }),
+            label: "Gender (SelectCell)"
           }, {
             name: "alive",
-            cell: "boolean"
+            cell: "boolean",
+            label: "Alive (BooleanCell)"
           }, {
             name: "url",
-            cell: "uri"
+            cell: "uri",
+            label: "URL (UriCell)"
           }, {
             name: "email",
-            cell: "email"
+            cell: "email",
+            label: "Email (EmailCell)"
           }, {
             name: "nextDeliveryTime",
-            cell: "datetime"
+            cell: "datetime",
+            label: "Next Delivery Time (DateTimeCell)"
           }, {
             name: "hisLocalTime", // His local time is your local time, Santa lives at the North Pole.
-            cell: "time"
+            cell: "time",
+            label: "His Local Time (TimeCell)"
           }, {
             name: "moneyInWallet",
-            cell: "number"
+            cell: "number",
+            label: "Change in Wallet (NumberCell)"
           }];
 
-          var cellDemoRow1 = new Backgrid.Row({
+          var cellDemoGrid1 = new Backgrid.Grid({
             columns: columns.slice(0, 5),
-            model: santa
+            collection: new Backbone.Collection([santa1])
           });
 
-          $("#cell-demo-row-1").replaceWith(cellDemoRow1.render().$el);
+          $("#cell-demo-grid-1").append(cellDemoGrid1.render().el);
 
-          var cellDemoRow2 = new Backgrid.Row({
+          var cellDemoGrid2 = new Backgrid.Grid({
             columns: columns.slice(5),
-            model: santa
+            collection: new Backbone.Collection([santa2])
           });
 
-          $("#cell-demo-row-2").replaceWith(cellDemoRow2.render().$el);
-
+          $("#cell-demo-grid-2").append(cellDemoGrid2.render().el);
         });
       }());
     </script>
