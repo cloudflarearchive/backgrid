@@ -639,7 +639,7 @@ var BooleanCell = Backgrid.BooleanCell = Cell.extend({
   },
 
   /** 
-    exitEditMode neds to be called with the right arguments 
+    Not much to do here, just stop being an editor when blurring
   */
   triggerExitEditMode: function(e) {
     this.$el.removeClass("editor");
