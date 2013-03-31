@@ -123,7 +123,14 @@ describe("An InputCellEditor", function () {
     editor.$el.trigger(tab);
     expect(editor.model.get(editor.column.get("name"))).toBe("another title");
     expect(editor.trigger.calls.length).toBe(1);
-    expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor);
+    expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor, {
+      enter: false,
+      tab: true,
+      shift: false,
+      up: false,
+      down: false,
+      escape : false
+    });
   });
 
   it("saves a formatted value in the input box to the model and triggers 'backgrid:done' when enter is pressed", function () {
@@ -133,7 +140,14 @@ describe("An InputCellEditor", function () {
     editor.$el.trigger(enter);
     expect(editor.model.get(editor.column.get("name"))).toBe("another title");
     expect(editor.trigger.calls.length).toBe(1);
-    expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor);
+    expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor, {
+      enter: true,
+      tab: false,
+      shift: false,
+      up: false,
+      down: false,
+      escape : false
+    });
   });
 
   it("removes itself when it triggers 'backgrid:done'", function () {
@@ -178,15 +192,29 @@ describe("An InputCellEditor", function () {
     var esc = $.Event("keydown", { keyCode: 27 });
     editor.$el.trigger(esc);
     expect(editor.trigger.calls.length).toBe(1);
-    expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor);
+    expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor, {
+      enter: false,
+      tab: false,
+      shift: false,
+      up: false,
+      down: false,
+      escape : true
+    });
     expect(editor.model.get(editor.column.get("name"))).toBe("title");
   });
 
-  it("triggers 'backgrid:done' when value hasn't changed and focus is lose", function () {
+  it("triggers 'backgrid:done' when value hasn't changed and focus is lost", function () {
     editor.render();
     editor.$el.blur();
     expect(editor.trigger.calls.length).toBe(1);
-    expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor);
+    expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor, {
+      enter: false,
+      tab: false,
+      shift: false,
+      up: false,
+      down: false,
+      escape : false
+    });
     expect(editor.model.get(editor.column.get("name"))).toBe("title");
   });
 
@@ -194,7 +222,14 @@ describe("An InputCellEditor", function () {
     editor.render();
     editor.$el.val("another title");
     editor.$el.blur();
-    expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor);
+    expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor, {
+      enter: false,
+      tab: false,
+      shift: false,
+      up: false,
+      down: false,
+      escape : false
+    });
     expect(editor.model.get(editor.column.get("name"))).toBe("another title");
   });
 
@@ -831,7 +866,14 @@ describe("A SelectCellEditor", function () {
     expect(editor.formatter.toRaw).toHaveBeenCalledWith("1");
     expect(editor.formatter.toRaw.calls.length).toBe(1);
     expect(editor.model.get(editor.column.get("name"))).toBe("1");
-    expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor);
+    expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor, {
+      enter: false,
+      tab: false,
+      shift: false,
+      up: false,
+      down: false,
+      escape : false
+    });
     expect(editor.trigger.calls.length).toBe(1);
   });
 

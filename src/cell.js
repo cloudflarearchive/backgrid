@@ -107,14 +107,14 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
   },
 
   /**
-     If the key pressed is `enter` or `tab`, converts the value in the editor to
-     a raw value for the model using the formatter.
+     If the key pressed is `enter`, `tab`, `up`, or `down`, converts the value
+     in the editor to a raw value for saving into the model using the formatter.
 
      If the key pressed is `esc` the changes are undone.
 
-     If the editor's value was changed and goes out of focus (`blur`), the event
-     is intercepted, cancelled so the cell remains in focus pending for further
-     action.
+     If the editor goes out of focus (`blur`) but the value is invalid, the
+     event is intercepted and cancelled so the cell remains in focus pending for
+     further action. The changes are saved otherwise.
 
      Triggers a Backbone `backgrid:done` event when successful. `backgrid:error`
      if the value cannot be converted. Classes listening to the `error` event,
@@ -128,18 +128,22 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
     var formatter = this.formatter;
     var model = this.model;
     var column = this.column;
-    var mods = Cell.prototype.buildKeyMods(e);
 
-    // enter or tab or blur
-    if (mods.entered || mods.tabbed || mods.up || mods.down || mods.blurred) {
+    var keys = Cell.buildKeyMods(e);
+    var blurred = e.type === "blur";
+
+    // enter, tab, up, down or blur
+    if (keys.enter || keys.tab || keys.up || keys.down || blurred) {
+
       e.preventDefault();
-      // Check if the shift key was down
+
       var newValue = formatter.toRaw(this.$el.val());
       if (_.isUndefined(newValue) ||
           !model.set(column.get("name"), newValue, {validate: true})) {
+
         this.trigger("backgrid:error", this);
 
-        if (e.type === "blur") {
+        if (blurred) {
           var self = this;
           var timeout = window.setTimeout(function () {
             self.$el.focus();
@@ -147,15 +151,13 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
           }, 1);
         }
       }
-      else {
-        this.trigger("backgrid:done", this, mods);
-      }
+      else this.trigger("backgrid:done", this, keys);
     }
     // esc
-    else if (mods.escaped) {
+    else if (keys.escape) {
       // undo
       e.stopPropagation();
-      this.trigger("backgrid:done", this);
+      this.trigger("backgrid:done", this, keys);
     }
   },
 
@@ -297,48 +299,21 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
   /**
      Removes the editor and re-render in display mode.
   */
-  exitEditMode: function (cbCell, cbMods) {
+  exitEditMode: function (editor, keys) {
     this.$el.removeClass("error");
     this.stopListening(this.currentEditor);
     delete this.currentEditor;
     this.$el.removeClass("editor");
     this.render();
     this.delegateEvents();
-    
-    // cbMods are a result of parsing keystroke events using #buildKeyMods
-    if (cbMods) {
-        if (cbMods.up) {
-            this.row.body.editPrevRow(this);
-        } else if (cbMods.down) {
-            this.row.body.editNextRow(this);
-        } else if (cbMods.tabbed) {
-            if (cbMods.shifted) {
-                this.row.editPrevCell(this);
-            } else {
-                this.row.editNextCell(this);
-            }
-        }
-    }
-  },
-
-  
-  buildKeyMods: function(e) {
-    var blurred = (e.type === "blur");
-    var entered = (e.keyCode === 13);
-    var tabbed = (e.keyCode === 9);
-    var shifted = (e.shiftKey);
-    var up = (e.keyCode === 38);
-    var down = (e.keyCode === 40);
-    var escaped = (e.keyCode === 27);
-    var mods = { blurred: blurred, entered: entered, tabbed: tabbed, shifted: shifted, up: up, down: down, escaped: escaped};
-    return mods;
+    this.model.trigger("backgrid:edited", this.model, this.column, keys);
   },
 
   /**
      Clean up this cell.
 
      @chainable
-   */
+  */
   remove: function () {
     if (this.currentEditor) {
       this.currentEditor.remove.apply(this, arguments);
@@ -347,6 +322,18 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
     return Backbone.View.prototype.remove.apply(this, arguments);
   }
 
+}, {
+  buildKeyMods: function(e) {
+    var keyCode = e.keyCode;
+    return {
+      enter: keyCode === 13,
+      tab: keyCode === 9,
+      shift: !!e.shiftKey,
+      up: keyCode === 38,
+      down: keyCode === 40,
+      escape: keyCode === 27
+    };
+  }
 });
 
 /**
@@ -610,7 +597,6 @@ var BooleanCell = Backgrid.BooleanCell = Cell.extend({
      need to be done in BooleanCell class to listen to editor mode events.
   */
   events: {
-    "keydown": "checkKeyDown",
     "click": "enterEditMode",
     "blur input[type=checkbox]": "exitEditMode",
     "change input[type=checkbox]": "save"
@@ -633,30 +619,9 @@ var BooleanCell = Backgrid.BooleanCell = Cell.extend({
   /**
      Simple focuses the checkbox and add an `editor` CSS class to the cell.
   */
-  enterEditMode: function (e) {
+  enterEditMode: function () {
     this.$el.addClass("editor");
-    this.listenTo(this, "backgrid:done", this.exitEditMode);
     this.currentEditor.focus();
-  },
-
-  /**
-     Removed the `editor` CSS class from the cell.
-  */
-  exitEditMode: function (cbCell, cbMods) {
-    this.$el.removeClass("editor");
-    if (cbMods) {
-        if (cbMods.up) {
-            this.row.body.editPrevRow(this);
-        } else if (cbMods.down) {
-            this.row.body.editNextRow(this);
-        } else if (cbMods.tabbed) {
-            if (cbMods.shifted) {
-                this.row.editPrevCell(this);
-            } else {
-                this.row.editNextCell(this);
-            }
-        }
-    }
   },
 
   /**
@@ -666,22 +631,8 @@ var BooleanCell = Backgrid.BooleanCell = Cell.extend({
   save: function (e) {
     var val = this.formatter.toRaw(this.currentEditor.prop("checked"));
     this.model.set(this.column.get("name"), val);
-  },
-
-  checkKeyDown: function (e) {
-
-    var formatter = this.formatter;
-    var model = this.model;
-    var column = this.column;
-    var mods = Cell.prototype.buildKeyMods(e);
-
-    // We don't save again since any "change" of value based on a click or keystroke (Non navigational) already triggers a save
-    if (mods.entered || mods.tabbed || mods.up || mods.down || mods.blurred) {
-      e.preventDefault();
-      this.trigger("backgrid:done", this, mods);  // I don't know why this doesn't trigger exitEditMode
-    }
+    this.trigger("backgrid:done", this, Cell.buildKeyMods(e));
   }
-
 
 });
 
@@ -774,16 +725,16 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
      Saves the value of the selected option to the model attribute. Triggers a
      `backgrid:done` Backbone event.
   */
-  save: function () {
+  save: function (e) {
     this.model.set(this.column.get("name"), this.formatter.toRaw(this.$el.val()));
-    this.trigger("backgrid:done", this);
+    this.trigger("backgrid:done", this, Cell.buildKeyMods(e));
   },
 
   /**
      Triggers a `backgrid:done` event so the parent can close this editor.
-   */
-  close: function () {
-    this.trigger("backgrid:done", this);
+  */
+  close: function (e) {
+    this.trigger("backgrid:done", this, Cell.buildKeyMods(e));
   }
 
 });

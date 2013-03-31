@@ -55,6 +55,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
     this.listenTo(collection, "remove", this.removeRow);
     this.listenTo(collection, "sort", this.refresh);
     this.listenTo(collection, "reset", this.refresh);
+    this.listenTo(collection, "backgrid:edited", this.moveToNextCell);
   },
 
   /**
@@ -200,87 +201,46 @@ var Body = Backgrid.Body = Backbone.View.extend({
   },
 
   /**
-    Determines index of first editable column
-   */
-  firstEditableColumnIdx: function() {
-    // See which is the first editable column
-    for (var i = 0; i < this.columns.length; i++) {
-        var col = this.columns.at(i);
-        if (col.get("editable")) {
-            return i;
-        }
-    }
-    return undefined;
-  },
-
-
-  /**
-    Start editing paricular row, column
-   */
-  editRowCol: function(rowIdx, colIdx) {
-    var targetRow = this.rows[rowIdx];
-    if (targetRow !== undefined) {
-        var targetCell = targetRow.cells[colIdx];
-        if (targetCell !== undefined) {
-            targetCell.enterEditMode();
-        }
-    }
-  },
-
-  /** 
-    Starts editing a cell on the previous row before the exitedCell (same column)
-  */
-  editPrevRow: function(exitedCell, forceFirstColumn) {
-    // Determine which row we exited from
-    var exitRowIdx = this.rows.indexOf(exitedCell.row);
-    
-    // Determine which column we exited from
-    var exitColIdx = this.columns.indexOf(exitedCell.column);
-
-    
-    // Determine target row/col
-    var targetRowIdx = exitRowIdx - 1;
-    var targetColIdx = exitColIdx;
-    if (forceFirstColumn) {
-        targetColIdx = this.firstEditableColumnIdx();
-    }
-    this.editRowCol(targetRowIdx, targetColIdx);
-
-
-  },
-
-  /** 
-    Starts editing a cell on the next row after the exitedCell (same column)
-  */
-  editNextRow: function(exitedCell, forceFirstColumn) {
-    // Determine which row we exited from
-    var exitRowIdx = this.rows.indexOf(exitedCell.row);
-    
-    // Determine which column we exited from
-    var exitColIdx = this.columns.indexOf(exitedCell.column);
-
-    // Determine target row/col
-    var targetRowIdx = exitRowIdx + 1;
-    var targetColIdx = exitColIdx;
-    if (forceFirstColumn) {
-        targetColIdx = this.firstEditableColumnIdx();
-    }
-    this.editRowCol(targetRowIdx, targetColIdx);
-
-    
-  },
-
-  /**
      Clean up this body and it's rows.
 
      @chainable
-   */
+  */
   remove: function () {
     for (var i = 0; i < this.rows.length; i++) {
       var row = this.rows[i];
       row.remove.apply(row, arguments);
     }
     return Backbone.View.prototype.remove.apply(this, arguments);
+  },
+
+  /**
+     Event handler. Moves focus to the next renderable and editable cell.
+   */
+  moveToNextCell: function (model, column, keys) {
+    if (keys.up || keys.down || keys.tab || keys.enter) {
+      var i = this.collection.indexOf(model);
+      var j = this.columns.indexOf(column);
+      var l = this.columns.length;
+
+      if (keys.up || keys.down) {
+        var row = this.rows[i + (keys.up ? -1 : 1)];
+        if (row) row.cells[j].enterEditMode();
+      }
+      else if (keys.tab) {
+        var shifted = keys.shift;
+        for (var offset = i * l + j + (shifted ? -1 : 1);
+             offset >= 0;
+             shifted ? offset-- : offset++) {
+          var m = ~~(offset / l);
+          var n = offset - m * l;
+          var cell = this.rows[m].cells[n];
+          if (cell.column.get("renderable") && cell.column.get("editable")) {
+            cell.enterEditMode();
+            break;
+          }
+        }
+      }
+    }
   }
 
 });
