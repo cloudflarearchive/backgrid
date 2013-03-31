@@ -13,7 +13,7 @@
 
    @class Backgrid.Row
    @extends Backbone.View
- */
+*/
 var Row = Backgrid.Row = Backbone.View.extend({
 
   /** @property */
@@ -29,7 +29,7 @@ var Row = Backgrid.Row = Backbone.View.extend({
      @param {Backbone.Model} options.model The model instance to render.
 
      @throws {TypeError} If options.columns or options.model is undefined.
-   */
+  */
   initialize: function (options) {
 
     requireOptions(options, this.initOptionRequires);
@@ -88,7 +88,7 @@ var Row = Backgrid.Row = Backbone.View.extend({
      @param {Object} options The options passed to #initialize.
 
      @return {Backgrid.Cell}
-   */
+  */
   makeCell: function (column) {
     return new (column.get("cell"))({
       column: column,
@@ -98,7 +98,7 @@ var Row = Backgrid.Row = Backbone.View.extend({
 
   /**
      Renders a row of cells for this row's model.
-   */
+  */
   render: function () {
     this.$el.empty();
 
@@ -121,7 +121,7 @@ var Row = Backgrid.Row = Backbone.View.extend({
      Clean up this row and its cells.
 
      @chainable
-   */
+  */
   remove: function () {
     for (var i = 0; i < this.cells.length; i++) {
       var cell = this.cells[i];

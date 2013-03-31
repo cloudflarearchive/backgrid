@@ -36,8 +36,8 @@ FORCE:
 
 js:
 	cat $(JS_FILES) > $(JS_OUTFILE)
-	echo "(function (root, $$, _, Backbone) {\n\n  \"use strict\";\n" | cat - $(JS_OUTFILE) > /tmp/$(JS_OUTFILE) && mv -f /tmp/$(JS_OUTFILE) $(JS_OUTFILE)
-	echo "}(this, jQuery, _, Backbone));" >> $(JS_OUTFILE)
+	printf "(function (root, $$, _, Backbone) {\n\n  \"use strict\";\n" | cat - $(JS_OUTFILE) > /tmp/$(JS_OUTFILE) && mv -f /tmp/$(JS_OUTFILE) $(JS_OUTFILE)
+	printf "}(this, jQuery, _, Backbone));" >> $(JS_OUTFILE)
 	make $(JS_OUTFILE)
 
 csslint:

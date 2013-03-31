@@ -42,6 +42,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
     this.row = options.row || Row;
     this.rows = this.collection.map(function (model) {
       var row = new this.row({
+        body: this,
         columns: this.columns,
         model: model
       });
@@ -54,6 +55,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
     this.listenTo(collection, "remove", this.removeRow);
     this.listenTo(collection, "sort", this.refresh);
     this.listenTo(collection, "reset", this.refresh);
+    this.listenTo(collection, "backgrid:edited", this.moveToNextCell);
   },
 
   /**
@@ -90,6 +92,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
     options = _.extend({render: true}, options || {});
 
     var row = new this.row({
+      body: this,
       columns: this.columns,
       model: model
     });
@@ -162,6 +165,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
 
     this.rows = this.collection.map(function (model) {
       var row = new this.row({
+        body: this,
         columns: this.columns,
         model: model
       });
@@ -200,13 +204,43 @@ var Body = Backgrid.Body = Backbone.View.extend({
      Clean up this body and it's rows.
 
      @chainable
-   */
+  */
   remove: function () {
     for (var i = 0; i < this.rows.length; i++) {
       var row = this.rows[i];
       row.remove.apply(row, arguments);
     }
     return Backbone.View.prototype.remove.apply(this, arguments);
+  },
+
+  /**
+     Event handler. Moves focus to the next renderable and editable cell.
+   */
+  moveToNextCell: function (model, column, keys) {
+    if (keys.up || keys.down || keys.tab || keys.enter) {
+      var i = this.collection.indexOf(model);
+      var j = this.columns.indexOf(column);
+      var l = this.columns.length;
+
+      if (keys.up || keys.down) {
+        var row = this.rows[i + (keys.up ? -1 : 1)];
+        if (row) row.cells[j].enterEditMode();
+      }
+      else if (keys.tab) {
+        var shifted = keys.shift;
+        for (var offset = i * l + j + (shifted ? -1 : 1);
+             offset >= 0;
+             shifted ? offset-- : offset++) {
+          var m = ~~(offset / l);
+          var n = offset - m * l;
+          var cell = this.rows[m].cells[n];
+          if (cell.column.get("renderable") && cell.column.get("editable")) {
+            cell.enterEditMode();
+            break;
+          }
+        }
+      }
+    }
   }
 
 });
