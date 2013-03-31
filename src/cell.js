@@ -138,8 +138,7 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
       e.preventDefault();
 
       var newValue = formatter.toRaw(this.$el.val());
-      if (_.isUndefined(newValue) ||
-          !model.set(column.get("name"), newValue, {validate: true})) {
+      if (_.isUndefined(newValue)) {
 
         this.trigger("backgrid:error", this);
 
@@ -151,7 +150,10 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
           }, 1);
         }
       }
-      else this.trigger("backgrid:done", this, keys);
+      else {
+        model.set(column.get("name"), newValue);
+        this.trigger("backgrid:done", this, keys);
+      }
     }
     // esc
     else if (keys.escape) {
