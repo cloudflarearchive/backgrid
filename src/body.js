@@ -221,6 +221,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
       var i = this.collection.indexOf(model);
       var j = this.columns.indexOf(column);
       var l = this.columns.length;
+      var maxOffset = this.columns.length * this.rows.length;
 
       if (keys.up || keys.down) {
         var row = this.rows[i + (keys.up ? -1 : 1)];
@@ -229,7 +230,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
       else if (keys.tab) {
         var shifted = keys.shift;
         for (var offset = i * l + j + (shifted ? -1 : 1);
-             offset >= 0;
+             offset >= 0 && offset < maxOffset;
              shifted ? offset-- : offset++) {
           var m = ~~(offset / l);
           var n = offset - m * l;
