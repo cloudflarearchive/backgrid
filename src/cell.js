@@ -223,7 +223,6 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
   */
   initialize: function (options) {
     requireOptions(options, ["model", "column"]);
-    this.row = options.row;
     this.column = options.column;
     if (!(this.column instanceof Column)) {
       this.column = new Column(this.column);

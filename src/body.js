@@ -42,7 +42,6 @@ var Body = Backgrid.Body = Backbone.View.extend({
     this.row = options.row || Row;
     this.rows = this.collection.map(function (model) {
       var row = new this.row({
-        body: this,
         columns: this.columns,
         model: model
       });
@@ -92,7 +91,6 @@ var Body = Backgrid.Body = Backbone.View.extend({
     options = _.extend({render: true}, options || {});
 
     var row = new this.row({
-      body: this,
       columns: this.columns,
       model: model
     });
@@ -165,7 +163,6 @@ var Body = Backgrid.Body = Backbone.View.extend({
 
     this.rows = this.collection.map(function (model) {
       var row = new this.row({
-        body: this,
         columns: this.columns,
         model: model
       });
