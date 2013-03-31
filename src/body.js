@@ -218,7 +218,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
       var i = this.collection.indexOf(model);
       var j = this.columns.indexOf(column);
       var l = this.columns.length;
-      var maxOffset = this.columns.length * this.rows.length;
+      var maxOffset = l * this.collection.length;
 
       if (keys.up || keys.down) {
         var row = this.rows[i + (keys.up ? -1 : 1)];
