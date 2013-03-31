@@ -596,10 +596,14 @@ var BooleanCell = Backgrid.BooleanCell = Cell.extend({
   /**
      Since the editor is not an instance of a CellEditor subclass, more things
      need to be done in BooleanCell class to listen to editor mode events.
+    
+     It should be noted that just because this view is in focus doesn't mean the checkbox is in focus
+     This it is possible to actually try to keydown and navigate out without ever focusing the checkbox
   */
   events: {
+    "keydown": "checkKeyDown", // necessary for tab movement
     "click": "enterEditMode",
-    "blur input[type=checkbox]": "exitEditMode",
+    "blur input[type=checkbox]": "triggerExitEditMode", // Blur doesn't really have much to save.  Just remove editor class. Also can't directly call exitEditMode() becase it does not take an event as an argument but rather (editor, keys)
     "change input[type=checkbox]": "save"
   },
 
@@ -623,6 +627,7 @@ var BooleanCell = Backgrid.BooleanCell = Cell.extend({
   enterEditMode: function () {
     this.$el.addClass("editor");
     this.currentEditor.focus();
+    this.listenTo(this, "backgrid:done", this.exitEditMode); /* Because we override, this cell never listens for backgrid:done unless we make it */
   },
 
   /**
@@ -633,6 +638,32 @@ var BooleanCell = Backgrid.BooleanCell = Cell.extend({
     var val = this.formatter.toRaw(this.currentEditor.prop("checked"));
     this.model.set(this.column.get("name"), val);
     this.trigger("backgrid:done", this, Cell.buildKeyMods(e));
+  },
+
+  /** 
+    Not much to do here, just stop being an editor when blurring
+  */
+  triggerExitEditMode: function(e) {
+    this.$el.removeClass("editor");
+  },
+
+  /** 
+    Because we override enterEditMode for this class, we have a totally different editor/listener setup.  Lets exit in the BooleanCell Way
+  */
+  exitEditMode: function(cbCell, keys) {
+    this.render();
+    this.model.trigger("backgrid:edited", this.model, this.column, keys);
+  },
+
+  /** 
+    Check the keystroke to see if it's a navigation stroke 
+  */
+  checkKeyDown: function(e) {
+    var keys = Cell.buildKeyMods(e);
+    if (keys.up | keys.down || keys.tab || keys.enter) {
+      e.preventDefault(); // We want the "space" bar for example to continue being able to toggle the value of the checkbox
+      this.trigger("backgrid:done", this, keys);
+    }
   }
 
 });
