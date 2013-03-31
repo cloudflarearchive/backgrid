@@ -133,8 +133,10 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
     if (e.keyCode === 13 || e.keyCode === 9 || e.type === "blur") {
       e.preventDefault();
       var newValue = formatter.toRaw(this.$el.val());
-      if (_.isUndefined(newValue) ||
-          !model.set(column.get("name"), newValue, {validate: true})) {
+      var validate = column.get("validate")
+      var isValid = (validate === undefined) || validate(newValue);
+
+      if (_.isUndefined(newValue) || !isValid) {
         this.trigger("backgrid:error", this);
 
         if (e.type === "blur") {
@@ -146,7 +148,8 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
         }
       }
       else {
-        this.trigger("backgrid:done", this);
+        model.set(column.get("name"), newValue);
+        this.trigger("backgrid:done", this, mods);
       }
     }
     // esc
