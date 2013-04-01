@@ -124,6 +124,7 @@ describe("An InputCellEditor", function () {
     expect(editor.model.get(editor.column.get("name"))).toBe("another title");
     expect(editor.trigger.calls.length).toBe(1);
     expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor, {
+      space: false,
       enter: false,
       tab: true,
       shift: false,
@@ -141,6 +142,7 @@ describe("An InputCellEditor", function () {
     expect(editor.model.get(editor.column.get("name"))).toBe("another title");
     expect(editor.trigger.calls.length).toBe(1);
     expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor, {
+      space: false,
       enter: true,
       tab: false,
       shift: false,
@@ -193,6 +195,7 @@ describe("An InputCellEditor", function () {
     editor.$el.trigger(esc);
     expect(editor.trigger.calls.length).toBe(1);
     expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor, {
+      space: false,
       enter: false,
       tab: false,
       shift: false,
@@ -208,6 +211,7 @@ describe("An InputCellEditor", function () {
     editor.$el.blur();
     expect(editor.trigger.calls.length).toBe(1);
     expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor, {
+      space: false,
       enter: false,
       tab: false,
       shift: false,
@@ -223,6 +227,7 @@ describe("An InputCellEditor", function () {
     editor.$el.val("another title");
     editor.$el.blur();
     expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor, {
+      space: false,
       enter: false,
       tab: false,
       shift: false,
@@ -867,6 +872,7 @@ describe("A SelectCellEditor", function () {
     expect(editor.formatter.toRaw.calls.length).toBe(1);
     expect(editor.model.get(editor.column.get("name"))).toBe("1");
     expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor, {
+      space: false,
       enter: false,
       tab: false,
       shift: false,
