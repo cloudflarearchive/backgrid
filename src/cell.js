@@ -280,9 +280,10 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
       this.listenTo(this.currentEditor, "backgrid:done", this.exitEditMode);
       this.listenTo(this.currentEditor, "backgrid:error", this.renderError);
 
+      // Need to redundantly undelegate events for Firefox
+      this.undelegateEvents();
       this.$el.empty();
       this.$el.append(this.currentEditor.$el);
-      this.delegateEvents();
       this.currentEditor.render();
       this.$el.addClass("editor");
 
