@@ -22,6 +22,7 @@
         "classes": [
           "Backgrid.CellEditor",
           "Backgrid.InputCellEditor",
+          "Backgrid.BooleanCellEditor",
           "Backgrid.SelectCellEditor"
         ]
       }, {
