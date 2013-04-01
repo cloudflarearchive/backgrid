@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- 
+<!--
   backgrid
   http://github.com/wyuenho/backgrid
 
@@ -18,7 +18,7 @@
 
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.2.2/css/bootstrap.min.css" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.2.2/css/bootstrap-responsive.min.css" />
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/3.2/select2.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/3.3.1/select2.css" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/codemirror.css" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/ambiance.css" />
     <link rel="stylesheet" href="lib/backgrid.min.css" />
@@ -1345,7 +1345,7 @@
               addition to the options SelectCell supports.</p>
               <textarea class="code-snippet" data-mode="javascript" data-eval="yes">
 
-                var data = new Backbone.Collection([{number: 5}]);
+                var data = new Backbone.Collection([{number: 5, another: 1}]);
 
                 // Just like SelectCell, Select2Cell supports option lists and groups
                 var numbers = [{name: 10, values: [
@@ -1353,15 +1353,20 @@
                   [6, 6], [7, 7], [8, 8], [9, 9], [10, 10]
                 ]}];
 
+                var MySelect2Cell = Backgrid.Extension.Select2Cell.extend({
+                  select2Options: {
+                    // any options specific to `select2` goes here
+                  },
+                  optionValues: numbers
+                });
+
                 var grid = new Backgrid.Grid({
                   columns: [{
                     name: "number",
-                    cell: Backgrid.Extension.Select2Cell.extend({
-                      select2Options: {
-                        // any options specific to `select2` goes here
-                      },
-                      optionValues: numbers
-                    })
+                    cell: MySelect2Cell
+                  }, {
+                    name: "another",
+                    cell: MySelect2Cell
                   }],
                   collection: data
                 });
@@ -1590,7 +1595,7 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/backbone-pageable/1.2.0/backbone-pageable.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.2.2/bootstrap.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/select2/3.2/select2.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/select2/3.3.1/select2.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/1.7.2/moment.min.js"></script>
     <script src="assets/js/lunr.js"></script>
     <script src="lib/backgrid.min.js"></script>
