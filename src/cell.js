@@ -787,7 +787,8 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
       e.stopPropagation();
       this.trigger("backgrid:done", this, Cell.buildKeyMods(e));
     }
-    else if (keys.enter || keys.tab || keys.up || keys.down) {
+    else if (keys.enter || keys.tab || keys.up || keys.down ||
+             e.type == "blur") {
       e.preventDefault();
       this.trigger("backgrid:done", this, Cell.buildKeyMods(e));
     }
