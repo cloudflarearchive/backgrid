@@ -207,6 +207,7 @@ describe("A Select2CellEditor", function () {
     expect(editor.formatter.toRaw.calls.length).toBe(1);
     expect(editor.model.get(editor.column.get("name"))).toBe("1");
     expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor, {
+      space: false,
       enter: false,
       tab: false,
       shift: false,
@@ -352,7 +353,7 @@ describe("A Select2Cell", function () {
 
     cell.$el.click();
     expect(cell.$el.find(".select2-container").length).toBe(1);
-    expect(cell.currentEditor.select2Options).toEqual({width: "resolve"});
+    expect(cell.currentEditor.select2Options).toEqual({containerCssClass: "select2-container", width: "resolve"});
   });
 
 });
