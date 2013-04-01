@@ -629,14 +629,19 @@ var BooleanCellEditor = Backgrid.BooleanCellEditor = CellEditor.extend({
    */
   saveOrCancel: function (e) {
     var keys = Cell.buildKeyMods(e);
-    if (keys.space) return; // skip ahead to `change`
+    if (keys.space) return true; // skip ahead to `change`
     if (keys.escape) this.trigger("backgrid:done", this, keys);
-    if (keys.enter || keys.tab || keys.up || keys.down) e.preventDefault();
 
-    var val = this.formatter.toRaw(this.$el.prop("checked"));
-    this.model.set(this.column.get("name"), val);
-
-    if (e.type != "change") this.trigger("backgrid:done", this, keys);
+    if (keys.enter || keys.tab || keys.up || keys.down) {
+      e.preventDefault();
+      var val = this.formatter.toRaw(this.$el.prop("checked"));
+      this.model.set(this.column.get("name"), val);
+      this.trigger("backgrid:done", this, keys);
+    }
+    else if (e.type == "change") {
+      var val = this.formatter.toRaw(this.$el.prop("checked"));
+      this.model.set(this.column.get("name"), val);
+    }
   }
 
 });
