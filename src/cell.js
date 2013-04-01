@@ -281,8 +281,8 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
       this.listenTo(this.currentEditor, "backgrid:error", this.renderError);
 
       this.$el.empty();
-      this.undelegateEvents();
       this.$el.append(this.currentEditor.$el);
+      this.delegateEvents();
       this.currentEditor.render();
       this.$el.addClass("editor");
 
@@ -302,6 +302,7 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
   */
   exitEditMode: function (editor, keys) {
     this.$el.removeClass("error");
+    this.currentEditor.remove();
     this.stopListening(this.currentEditor);
     delete this.currentEditor;
     this.$el.removeClass("editor");
