@@ -328,6 +328,7 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
   buildKeyMods: function(e) {
     var keyCode = e.keyCode;
     return {
+      space: keyCode === 32,
       enter: keyCode === 13,
       tab: keyCode === 9,
       shift: !!e.shiftKey,
@@ -575,9 +576,74 @@ var TimeCell = Backgrid.TimeCell = DatetimeCell.extend({
 });
 
 /**
-   BooleanCell is a different kind of cell in that there's no difference between
-   display mode and edit mode and this cell type always renders a checkbox for
-   selection.
+   BooleanCellEditor renders a checkbox as its editor.
+
+   @class Backgrid.BooleanCellEditor
+   @extends Backgrid.CellEditor
+*/
+var BooleanCellEditor = Backgrid.BooleanCellEditor = CellEditor.extend({
+
+  /** @property */
+  tagName: "input",
+
+  /** @property */
+  attributes: {
+    type: "checkbox"
+  },
+
+  /** @property */
+  events: {
+    "blur": "enterOrExitEditMode",
+    "change": "saveOrCancel",
+    "keydown": "saveOrCancel"
+  },
+
+  /**
+     Renders a checkbox and check it if the model value of this column is true,
+     uncheck otherwise.
+  */
+  render: function () {
+    var val = this.formatter.fromRaw(this.model.get(this.column.get("name")));
+    this.$el.prop("checked", val);
+    return this;
+  },
+
+  /**
+     Event handler. Hack to deal with the case where `blur` is fired before
+     `change` and `click` on a checkbox.
+   */
+  enterOrExitEditMode: function (e) {
+    var valBeforeBlur = this.$el.prop("checked");
+    var self = this;
+    var timeout = window.setTimeout(function () {
+      if (self.$el.prop("checked") != valBeforeBlur) self.$el.focus();
+      else self.trigger("backgrid:done", self, Cell.buildKeyMods(e));
+      window.clearTimeout(timeout);
+    }, 50);
+  },
+
+  /**
+     Event handler. Save the value into the model if the event is `change` or
+     one of the keyboard navigation key presses. Exit edit mode without saving
+     if `escape` was pressed.
+   */
+  saveOrCancel: function (e) {
+    var keys = Cell.buildKeyMods(e);
+    if (keys.space) return; // skip ahead to `change`
+    if (keys.escape) this.trigger("backgrid:done", this, keys);
+    if (keys.enter || keys.tab || keys.up || keys.down) e.preventDefault();
+
+    var val = this.formatter.toRaw(this.$el.prop("checked"));
+    this.model.set(this.column.get("name"), val);
+
+    if (e.type != "change") this.trigger("backgrid:done", this, keys);
+  }
+
+});
+
+/**
+   BooleanCell renders a checkbox both during display mode and edit mode. The
+   checkbox is checked if the model value is true, unchecked otherwise.
 
    @class Backgrid.BooleanCell
    @extends Backgrid.Cell
@@ -587,25 +653,12 @@ var BooleanCell = Backgrid.BooleanCell = Cell.extend({
   /** @property */
   className: "boolean-cell",
 
-  /**
-     BooleanCell simple uses a default HTML checkbox template instead of a
-     CellEditor instance.
+  /** @property */
+  editor: BooleanCellEditor,
 
-     @property {function(Object, ?Object=): string} editor The Underscore.js template to
-     render the editor.
-  */
-  editor: _.template("<input tabindex='0' type='checkbox'<%= checked ? checked='checked' : '' %> />'"),
-
-  /**
-     Since the editor is not an instance of a CellEditor subclass, more things
-     need to be done in BooleanCell class to listen to editor mode events.
-  */
+  /** @property */
   events: {
-    "click": "enterEditMode",
-    "focus": "enterEditMode",
-    "keydown": "exitEditMode",
-    "blur": "exitEditMode",
-    "change input[type=checkbox]": "save"
+    "click": "enterEditMode"
   },
 
   /**
@@ -614,43 +667,13 @@ var BooleanCell = Backgrid.BooleanCell = Cell.extend({
   */
   render: function () {
     this.$el.empty();
-    this.currentEditor = $(this.editor({
+    this.$el.append($("<input>", {
+      tabIndex: -1,
+      type: "checkbox",
       checked: this.formatter.fromRaw(this.model.get(this.column.get("name")))
     }));
-    this.$el.append(this.currentEditor);
     this.delegateEvents();
     return this;
-  },
-
-  /**
-     Simply focuses the checkbox and add an `editor` CSS class to the cell.
-  */
-  enterEditMode: function () {
-    this.$el.addClass("editor");
-    this.currentEditor.focus();
-    this.listenTo(this, "backgrid:done", this.exitEditMode);
-  },
-
-  /**
-     Rerenders this cell in display mode and unfocuses itself.
-   */
-  exitEditMode: function(e) {
-    this.$el.removeClass("editor");
-    var keys = Cell.buildKeyMods(e);
-    if (e.type == "blur" || keys.enter || keys.tab || keys.up || keys.down) {
-      e.preventDefault();
-      this.model.trigger("backgrid:edited", this.model, this.column, keys);
-    }
-    else if (keys.escape) this.render();
-  },
-
-  /**
-     Set true to the model attribute if the checkbox is checked, false
-     otherwise.
-  */
-  save: function () {
-    var val = this.formatter.toRaw(this.currentEditor.prop("checked"));
-    this.model.set(this.column.get("name"), val);
   }
 
 });
@@ -755,10 +778,11 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
   */
   close: function (e) {
     var keys = Cell.buildKeyMods(e);
-    var blurred = e.type === "blur";
-
-    // enter, tab, up, down or blur
-    if (keys.enter || keys.tab || keys.up || keys.down || blurred) {
+    if (keys.escape) {
+      e.stopPropagation();
+      this.trigger("backgrid:done", this, Cell.buildKeyMods(e));
+    }
+    else if (keys.enter || keys.tab || keys.up || keys.down) {
       e.preventDefault();
       this.trigger("backgrid:done", this, Cell.buildKeyMods(e));
     }
