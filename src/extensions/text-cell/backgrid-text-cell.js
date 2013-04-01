@@ -13,7 +13,7 @@
 
      @class Backgrid.Extension.TextareaEditor
      @extends Backgrid.CellEditor
-   */
+  */
   var TextareaEditor = Backgrid.Extension.TextareaEditor = Backgrid.CellEditor.extend({
 
     /** @property */
@@ -35,7 +35,8 @@
     events: {
       "submit": "save",
       "hide": "cancel",
-      "hidden": "close"
+      "hidden": "close",
+      "shown": "focus"
     },
 
     /**
@@ -110,9 +111,18 @@
     /**
        Triggers a `backgrid:done` event along with the cell editor as the
        parameter after the modal is hidden.
-     */
-    close: function () {
-      this.trigger("backgrid:done", this);
+
+       @param {Event} e
+    */
+    close: function (e) {
+      this.trigger("backgrid:done", this, Backgrid.Cell.buildKeyMods(e));
+    },
+
+    /**
+       Focuses the textarea when the modal is shown.
+    */
+    focus: function () {
+      this.$el.find("textarea").focus();
     }
 
   });
