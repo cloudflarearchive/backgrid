@@ -136,6 +136,7 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
     if (keys.enter || keys.tab || keys.up || keys.down || blurred) {
 
       e.preventDefault();
+      e.stopPropagation();
 
       var newValue = formatter.toRaw(this.$el.val());
       if (_.isUndefined(newValue)) {
@@ -588,6 +589,7 @@ var BooleanCellEditor = Backgrid.BooleanCellEditor = CellEditor.extend({
 
   /** @property */
   attributes: {
+    tabIndex: -1,
     type: "checkbox"
   },
 
@@ -630,10 +632,14 @@ var BooleanCellEditor = Backgrid.BooleanCellEditor = CellEditor.extend({
   saveOrCancel: function (e) {
     var keys = Cell.buildKeyMods(e);
     if (keys.space) return true; // skip ahead to `change`
-    if (keys.escape) this.trigger("backgrid:done", this, keys);
+    if (keys.escape) {
+      e.stopPropagation();
+      this.trigger("backgrid:done", this, keys);
+    }
 
     if (keys.enter || keys.tab || keys.up || keys.down) {
       e.preventDefault();
+      e.stopPropagation();
       var val = this.formatter.toRaw(this.$el.prop("checked"));
       this.model.set(this.column.get("name"), val);
       this.trigger("backgrid:done", this, keys);
@@ -790,6 +796,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
     else if (keys.enter || keys.tab || keys.up || keys.down ||
              e.type == "blur") {
       e.preventDefault();
+      e.stopPropagation();
       this.trigger("backgrid:done", this, Cell.buildKeyMods(e));
     }
   }
