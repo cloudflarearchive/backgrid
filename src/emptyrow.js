@@ -31,6 +31,8 @@ var EmptyRow = Backgrid.EmptyRow = Backbone.View.extend({
     var td = document.createElement('td') ;
     td.setAttribute('colspan', this.columns.length) ;
     td.textContent = this.text ;
+
+    this.el.setAttribute('class', 'empty') ;
     this.el.appendChild(td);
 
     return this;

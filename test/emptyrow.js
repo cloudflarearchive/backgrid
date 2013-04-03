@@ -26,6 +26,10 @@ describe("A Empty Row", function () {
     expect(row.el.tagName).toEqual("TR") ;
   }) ;
 
+  it("sets a css class", function() {
+    expect($(row.el).hasClass('empty')).toBe(true) ;
+  }) ;
+
   it("renders a single column", function() {
     expect($(row.el).find('td').size()).toEqual(1) ;
   }) ;
