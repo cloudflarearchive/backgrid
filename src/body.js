@@ -49,6 +49,8 @@ var Body = Backgrid.Body = Backbone.View.extend({
       return row;
     }, this);
 
+    this.emptyRow = new Backgrid.EmptyRow(options) ;
+
     var collection = this.collection;
     this.listenTo(collection, "add", this.insertRow);
     this.listenTo(collection, "remove", this.removeRow);
@@ -81,6 +83,9 @@ var Body = Backgrid.Body = Backbone.View.extend({
      - [Backbone.Collection#add](http://backbonejs.org/#Collection-add)
   */
   insertRow: function (model, collection, options) {
+    if (this.collection.isEmpty()) {
+      this.$el.empty();
+    }
 
     // insertRow() is called directly
     if (!(collection instanceof Backbone.Collection) && !options) {
@@ -141,6 +146,11 @@ var Body = Backgrid.Body = Backbone.View.extend({
     // removeRow() is called directly
     if (!options) {
       this.collection.remove(model, (options = collection));
+
+      if (this.rows.length == 0) {
+        this.el.appendChild(this.emptyRow.render().el) ;
+      }
+
       return;
     }
 
@@ -181,13 +191,17 @@ var Body = Backgrid.Body = Backbone.View.extend({
      Renders all the rows inside this body.
   */
   render: function () {
-
     this.$el.empty();
 
     var fragment = document.createDocumentFragment();
+
     for (var i = 0; i < this.rows.length; i++) {
       var row = this.rows[i];
       fragment.appendChild(row.render().el);
+    }
+
+    if (this.rows.length == 0) {
+      fragment.appendChild(this.emptyRow.render().el) ;
     }
 
     this.el.appendChild(fragment);
@@ -240,5 +254,4 @@ var Body = Backgrid.Body = Backbone.View.extend({
       }
     }
   }
-
 });

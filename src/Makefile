@@ -7,6 +7,7 @@ JS_FILES = preamble.js\
 	cell.js \
 	column.js \
 	row.js \
+	emptyrow.js \
 	header.js \
 	body.js \
 	footer.js \
