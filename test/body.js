@@ -104,7 +104,6 @@ describe("A Body", function () {
       title: "Les Misérables"
     }, {at: 0});
     $trs = body.$el.children();
-    console.log($trs) ;
     expect($trs.length).toBe(2);
     expect($trs[0].outerHTML).toBe('<tr><td class="string-cell">Les Misérables</td></tr>');
   });
