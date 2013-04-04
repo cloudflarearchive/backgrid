@@ -59,6 +59,15 @@
   background-color: #f9f9f9;
 }
 
+.backgrid tbody tr.empty {
+  font-style: italic;
+  color: gray;
+}
+
+.backgrid tbody tr.empty td {
+  text-align: center;
+}
+
 .backgrid td.editor,
 .backgrid tbody tr:nth-child(odd) td.editor {
   background-color: rgba(82, 168, 236, 0.1);
