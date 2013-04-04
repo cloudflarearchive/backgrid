@@ -27,12 +27,15 @@ var Body = Backgrid.Body = Backbone.View.extend({
      Column metadata
      @param {Backgrid.Row} [options.row=Backgrid.Row] The Row class to use.
 
+     @param {Function} [options.basemodel=Model] function returning a Backbone Model to use for automatic new row
      @throws {TypeError} If options.columns or options.collection is undefined.
 
      See Backgrid.Row.
   */
   initialize: function (options) {
     requireOptions(options, ["columns", "collection"]);
+
+    this.basemodel = options.basemodel;
 
     this.columns = options.columns;
     if (!(this.columns instanceof Backbone.Collection)) {
@@ -233,19 +236,39 @@ var Body = Backgrid.Body = Backbone.View.extend({
       var j = this.columns.indexOf(column);
       var l = this.columns.length;
       var maxOffset = l * this.collection.length;
+      var addModel = false;
 
       if (keys.up || keys.down) {
-        var row = this.rows[i + (keys.up ? -1 : 1)];
+        var rowIdx = i + (keys.up ? -1 : 1);
+        var row = this.rows[rowIdx];
         if (row) row.cells[j].enterEditMode();
+        else if (rowIdx >= this.collection.length ) { addModel = true; }
       }
       else if (keys.tab) {
         var shifted = keys.shift;
-        for (var offset = i * l + j + (shifted ? -1 : 1);
+        var offset; // Need this offset after loop to see if we went beyond bounds
+        for (offset = i * l + j + (shifted ? -1 : 1);
              offset >= 0 && offset < maxOffset;
              shifted ? offset-- : offset++) {
           var m = ~~(offset / l);
           var n = offset - m * l;
           var cell = this.rows[m].cells[n];
+          if (cell.column.get("renderable") && cell.column.get("editable")) {
+            cell.enterEditMode();
+            break;
+          }
+        }
+        if (offset >= maxOffset) { addModel = true;  }
+      }
+    
+      /* Only if basemodel() is defined, add a new model to the collection when we try to navigate past the last row
+         Do not add a new row if the existing last row is not valid (in otherwords, user never finished entering attributes for the existing "new model")
+         NOTE: To prevent this auto-add , simply do not define a basemodel() function */
+      if (_.isFunction(this.basemodel) && addModel && this.collection.last().isValid()) {
+        this.collection.add(this.basemodel());
+        row = this.rows[this.collection.length - 1];
+        for (var jj = 0; jj < l; jj++) {
+          cell = row.cells[jj]; 
           if (cell.column.get("renderable") && cell.column.get("editable")) {
             cell.enterEditMode();
             break;
