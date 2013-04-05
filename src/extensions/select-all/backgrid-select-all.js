@@ -148,6 +148,14 @@
 
   });
 
+  var getSelectAllHeaderCell = function (grid) {
+    var headerCells = grid.header.row.cells;
+    for (var i = 0, l = headerCells.length; i < l; i++) {
+      var headerCell = headerCells[i];
+      if (headerCell instanceof SelectAllHeaderCell) return headerCell;
+    }
+  };
+
   /**
      Convenient method to retrieve a list of selected models. This method only
      exists when the `SelectAll` extension has been included.
@@ -156,16 +164,7 @@
      @return {Array.<Backbone.Model>}
    */
   Backgrid.Grid.prototype.getSelectedModels = function () {
-    var selectAllHeaderCell;
-    var headerCells = this.header.row.cells;
-    for (var i = 0, l = headerCells.length; i < l; i++) {
-      var headerCell = headerCells[i];
-      if (headerCell instanceof SelectAllHeaderCell) {
-        selectAllHeaderCell = headerCell;
-        break;
-      }
-    }
-
+    var selectAllHeaderCell = getSelectAllHeaderCell(this);
     var result = [];
     if (selectAllHeaderCell) {
       for (var modelId in selectAllHeaderCell.selectedModels) {
@@ -174,6 +173,23 @@
     }
 
     return result;
+  };
+
+  /**
+     Un-select all selected models. This method only
+     exists when the `SelectAll` extension has been included.
+
+     @member Backgrid.Grid
+     @return {Array.<Backbone.Model>}
+   */
+  Backgrid.Grid.prototype.unselectSelectedModels = function () {
+    var selectAllHeaderCell = getSelectAllHeaderCell(this);
+    if (selectAllHeaderCell) {
+      selectAllHeaderCell.$(":checkbox").prop("checked", false);
+      this.collection.each(function (model) {
+        model.trigger("backgrid:select", model, false);
+      });
+    }
   };
 
 }(window, jQuery, _, Backbone, Backgrid));

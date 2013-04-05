@@ -149,3 +149,42 @@ describe("Grid#getSelectedModels", function () {
   });
 
 });
+
+describe("Grid#unselectSelectedModels", function () {
+
+  it("will be attached to Backgrid.Grid's prototype", function () {
+    expect(typeof Backgrid.Grid.prototype.unselectSelectedModels).toBe("function");
+  });
+
+  it("will unselect all selected models", function () {
+    var collection = new Backbone.Collection([{id: 1}, {id: 2}]);
+
+    var grid = new Backgrid.Grid({
+      collection: collection,
+      columns: [{
+        name: "",
+        cell: "select-row",
+        headerCell: "select-all"
+      }, {
+        name: "id",
+        cell: "integer"
+      }]
+    });
+
+    grid.render();
+
+    collection.each(function (model) {
+      model.trigger("backgrid:selected", model, true);
+    });
+
+    var selectedModels = grid.getSelectedModels();
+    expect(selectedModels.length).toBe(2);
+    expect(selectedModels[0].id).toBe(1);
+    expect(selectedModels[1].id).toBe(2);
+
+    grid.unselectSelectedModels();
+    var selectedModels = grid.getSelectedModels();
+    expect(selectedModels.length).toBe(0);
+  });
+
+});
