@@ -180,7 +180,6 @@
      exists when the `SelectAll` extension has been included.
 
      @member Backgrid.Grid
-     @return {Array.<Backbone.Model>}
    */
   Backgrid.Grid.prototype.unselectSelectedModels = function () {
     var selectAllHeaderCell = getSelectAllHeaderCell(this);
