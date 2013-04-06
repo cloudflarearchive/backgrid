@@ -92,11 +92,11 @@ $("#example-1-result").append(grid.render().$el);
 
 # Result:
 
-Take a look [here](http://wyuenho.github.com/backgrid/#examples).
+Take a look [here](http://backgridjs.com/#examples).
 
 ## More Examples
 
-Are you kidding me? This is a README file. Go to the [documentation](http://wyuenho.github.com/backgrid/
+Are you kidding me? This is a README file. Go to the [documentation](http://backgridjs.com/
 "Backbone.js Documentation") to find out more :)
 
 ## License
