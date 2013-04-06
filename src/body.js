@@ -24,8 +24,9 @@ var Body = Backgrid.Body = Backbone.View.extend({
      @param {Object} options
      @param {Backbone.Collection} options.collection
      @param {Backbone.Collection.<Backgrid.Column>|Array.<Backgrid.Column>|Array.<Object>} options.columns
-     Column metadata
+     Column metadata.
      @param {Backgrid.Row} [options.row=Backgrid.Row] The Row class to use.
+     @param {string} [options.emptyText] The text to display in the empty row.
 
      @throws {TypeError} If options.columns or options.collection is undefined.
 
@@ -49,7 +50,8 @@ var Body = Backgrid.Body = Backbone.View.extend({
       return row;
     }, this);
 
-    this.emptyRow = new Backgrid.EmptyRow(options) ;
+    this.emptyText = options.emptyText;
+    this._unshiftEmptyRowMayBe();
 
     var collection = this.collection;
     this.listenTo(collection, "add", this.insertRow);
@@ -57,6 +59,16 @@ var Body = Backgrid.Body = Backbone.View.extend({
     this.listenTo(collection, "sort", this.refresh);
     this.listenTo(collection, "reset", this.refresh);
     this.listenTo(collection, "backgrid:edited", this.moveToNextCell);
+  },
+
+  _unshiftEmptyRowMayBe: function () {
+    if (this.rows.length === 0 && !_.isUndefined(this.emptyText) &&
+        !_.isNull(this.emptyText)) {
+      this.rows.unshift(new EmptyRow({
+        emptyText: this.emptyText,
+        columns: this.columns
+      }));
+    }
   },
 
   /**
@@ -83,9 +95,8 @@ var Body = Backgrid.Body = Backbone.View.extend({
      - [Backbone.Collection#add](http://backbonejs.org/#Collection-add)
   */
   insertRow: function (model, collection, options) {
-    if (this.collection.isEmpty()) {
-      this.$el.empty();
-    }
+
+    if (this.rows[0] instanceof EmptyRow) this.rows.pop().remove();
 
     // insertRow() is called directly
     if (!(collection instanceof Backbone.Collection) && !options) {
@@ -146,11 +157,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
     // removeRow() is called directly
     if (!options) {
       this.collection.remove(model, (options = collection));
-
-      if (this.rows.length == 0) {
-        this.el.appendChild(this.emptyRow.render().el) ;
-      }
-
+      this._unshiftEmptyRowMayBe();
       return;
     }
 
@@ -159,6 +166,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
     }
 
     this.rows.splice(options.index, 1);
+    this._unshiftEmptyRowMayBe();
   },
 
   /**
@@ -179,6 +187,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
 
       return row;
     }, this);
+    this._unshiftEmptyRowMayBe();
 
     this.render();
 
@@ -188,20 +197,17 @@ var Body = Backgrid.Body = Backbone.View.extend({
   },
 
   /**
-     Renders all the rows inside this body.
+     Renders all the rows inside this body. If the collection is empty and
+     `options.emptyText` is defined and not null in the constructor, an empty
+     row is rendered, otherwise no row is rendered.
   */
   render: function () {
     this.$el.empty();
 
     var fragment = document.createDocumentFragment();
-
     for (var i = 0; i < this.rows.length; i++) {
       var row = this.rows[i];
       fragment.appendChild(row.render().el);
-    }
-
-    if (this.rows.length == 0) {
-      fragment.appendChild(this.emptyRow.render().el) ;
     }
 
     this.el.appendChild(fragment);

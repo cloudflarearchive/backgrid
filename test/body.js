@@ -201,42 +201,72 @@ describe("A Body", function () {
 
   });
 
-  describe("no data", function() {
-    it("renders a row", function() {
-      books = new Books([]) ;
+  it("will not display the empty row if collection is not empty", function () {
+    body = new Backgrid.Body({
+      emptyText: " ",
+      columns: [{
+        name: "title",
+        cell: "string"
+      }],
+      collection: books
+    });
+    body.render();
 
-      body = new Backgrid.Body({
-        columns: [{
-          name: "title",
-          cell: "string"
-        },{
-          name: "author",
-          cell: "string"
-        }],
-        collection: books
-      });
+    expect(body.$el.find("tr.empty").length).toBe(0);
+  });
 
-      body.render();
+  it("will not display the empty row if `options.emptyText` is not supplied", function () {
+    expect(body.$el.find("tr.empty").length).toBe(0);
 
-     expect(body.$el.find("tr").length).toBe(1);
-     expect(body.el.innerHTML.indexOf("colspan") > 0).toBe(true);
-    }) ;
+    books.reset();
+    body = new Backgrid.Body({
+      columns: [{
+        name: "title",
+        cell: "string"
+      }],
+      collection: books
+    });
+    body.render();
 
-    it("displays the empty rows if the model is cleared", function() {
-      books.reset([]) ;
+    expect(body.$el.find("tr.empty").length).toBe(0);
+  });
 
-      expect(body.$el.find("tr").length).toBe(1);
-      expect(body.el.innerHTML.indexOf("colspan") > 0).toBe(true);
-    }) ;
+  it("will display the empty row if the collection is empty and `options.emptyText` is supplied", function () {
+    books.reset();
+    body = new Backgrid.Body({
+      emptyText: " ",
+      columns: [{
+        name: "title",
+        cell: "string"
+      }],
+      collection: books
+    });
+    body.render();
 
-    it("will display an empty row if removeRow is called directly on all the models", function () {
-      for(i = 0 ; i < 3 ; i++) {
-        var book = body.collection.at(0);
-        body.removeRow(book);
-      }
+    expect(body.$el.find("tr.empty").length).toBe(1);
+    expect(body.$el.find("tr.empty > td").attr("colspan")).toBe("1");
+  });
 
-      expect(body.$el.find("tr").length).toBe(1);
-      expect(body.el.innerHTML.indexOf("colspan") > 0).toBe(true);
-    }) ;
-  }) ;
+  it("will clear the empty row if a new model is added to an empty collection", function () {
+    books.reset();
+    body = new Backgrid.Body({
+      emptyText: " ",
+      columns: [{
+        name: "title",
+        cell: "string"
+      }],
+      collection: books
+    });
+    body.render();
+    expect(body.$el.find("tr.empty").length).toBe(1);
+
+    books.add({name: "Oliver Twist"});
+    expect(body.$el.find("tr.empty").length).toBe(0);
+
+    books.reset();
+    expect(body.$el.find("tr.empty").length).toBe(1);
+
+    body.insertRow({title: "The Catcher in the Rye"});
+    expect(body.$el.find("tr.empty").length).toBe(0);
+  });
 });
