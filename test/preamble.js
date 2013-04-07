@@ -1,3 +1,10 @@
+/*
+  backgrid
+  http://github.com/wyuenho/backgrid
+
+  Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
+  Licensed under the MIT @license.
+*/
 describe("Backgrid#requireOptions", function () {
 
   it("throws TypeError if a required option is not found", function () {
