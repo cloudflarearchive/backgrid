@@ -54,8 +54,8 @@
   vertical-align: bottom;
 }
 
-.backgrid tbody tr:nth-child(odd) td,
-.backgrid tbody tr:nth-child(odd) th {
+.backgrid.backgrid-striped tbody tr:nth-child(odd) td,
+.backgrid.backgrid-striped tbody tr:nth-child(odd) th {
   background-color: #f9f9f9;
 }
 
