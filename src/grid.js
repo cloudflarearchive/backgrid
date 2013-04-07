@@ -59,7 +59,7 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
   tagName: "table",
 
   /** @property */
-  className: "backgrid",
+  className: "backgrid backgrid-striped",
 
   /** @property */
   header: Header,
