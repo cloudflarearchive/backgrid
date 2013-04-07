@@ -235,7 +235,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
 
      @param {Backbone.Model} model The originating model
      @param {Backgrid.Column} column The originating model column
-     @param {Backgrid.Command} keys The Command object constructed from a DOM
+     @param {Backgrid.Command} command The Command object constructed from a DOM
      Event
   */
   moveToNextCell: function (model, column, command) {
