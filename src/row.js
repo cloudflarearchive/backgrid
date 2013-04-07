@@ -32,7 +32,7 @@ var Row = Backgrid.Row = Backbone.View.extend({
   */
   initialize: function (options) {
 
-    requireOptions(options, this.initOptionRequires);
+    Backgrid.requireOptions(options, this.initOptionRequires);
 
     var columns = this.columns = options.columns;
     if (!(columns instanceof Backbone.Collection)) {
@@ -155,7 +155,7 @@ var EmptyRow = Backgrid.EmptyRow = Backbone.View.extend({
      @param {Backbone.Collection.<Backgrid.Column>|Array.<Backgrid.Column>|Array.<Object>} options.columns Column metadata.
    */
   initialize: function (options) {
-    requireOptions(options, ["emptyText", "columns"]);
+    Backgrid.requireOptions(options, ["emptyText", "columns"]);
 
     this.emptyText = options.emptyText;
     this.columns =  options.columns;

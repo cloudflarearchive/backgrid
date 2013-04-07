@@ -78,13 +78,16 @@
     save: function (e) {
       if (e) e.preventDefault();
 
-      var content = this.formatter.toRaw(this.$el.find("textarea").val());
+      var model = this.model;
+      var column = this.column;
+      var val = this.$el.find("textarea").val();
+      var newValue = this.formatter.toRaw(val);
 
-      if (_.isUndefined(content) ||
-          !this.model.set(this.column.get("name"), content, {validate: true})) {
-        this.trigger("backgrid:error", this);
+      if (_.isUndefined(newValue)) {
+        model.trigger("backgrid:error", model, this.column, val);
       }
       else {
+        this.model.set(column.get("name"), newValue);
         this.$el.modal("hide");
       }
     },
@@ -115,7 +118,9 @@
        @param {Event} e
     */
     close: function (e) {
-      this.trigger("backgrid:done", this, Backgrid.Cell.buildKeyMods(e));
+      var model = this.model;
+      model.trigger("backgrid:edited", model, this.column,
+                    new Backgrid.KeyboardCommand(e));
     },
 
     /**

@@ -202,20 +202,22 @@ describe("A Select2CellEditor", function () {
     spyOn(editor.formatter, "toRaw").andCallThrough();
     spyOn(editor, "trigger").andCallThrough();
 
+    var backgridDoneTriggerCount = 0;
+    var backgridDoneTriggerArgs;
+    editor.model.on("backgrid:edited", function () {
+      backgridDoneTriggerCount++;
+      backgridDoneTriggerArgs = [].slice.call(arguments);
+    });
+
     editor.$el.select2("val", 1).change();
     expect(editor.formatter.toRaw).toHaveBeenCalledWith("1");
     expect(editor.formatter.toRaw.calls.length).toBe(1);
     expect(editor.model.get(editor.column.get("name"))).toBe("1");
-    expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor, {
-      space: false,
-      enter: false,
-      tab: false,
-      shift: false,
-      up: false,
-      down: false,
-      escape : false
-    });
-    expect(editor.trigger.calls.length).toBe(1);
+
+    expect(backgridDoneTriggerCount).toBe(1);
+    expect(backgridDoneTriggerArgs[0]).toEqual(editor.model);
+    expect(backgridDoneTriggerArgs[1]).toEqual(editor.column);
+    expect(backgridDoneTriggerArgs[2].passThru()).toBe(true);
   });
 
 });

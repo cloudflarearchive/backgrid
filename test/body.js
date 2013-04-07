@@ -269,4 +269,62 @@ describe("A Body", function () {
     body.insertRow({title: "The Catcher in the Rye"});
     expect(body.$el.find("tr.empty").length).toBe(0);
   });
+
+  it("will put the next editable and renderable cell in edit mode when a save or one of the navigation commands is triggered via backgrid:edited from the collection", function () {
+    var people = new Backbone.Collection([
+      {name: "alice", age: 28, married: false},
+      {name: "bob", age: 30, married: true}
+    ]);
+    var columns = new Backgrid.Columns([{
+      name: "name",
+      cell: "string"
+    }, {
+      name: "age",
+      cell: "integer",
+      editable: false
+    }, {
+      name: "sex",
+      cell: "boolean",
+      renderable: false
+    }]);
+    var body = new Backgrid.Body({
+      collection: people,
+      columns: columns
+    });
+    body.render();
+
+    body.rows[0].cells[0].enterEditMode();
+
+    // right
+    people.trigger("backgrid:edited", people.at(0), columns.at(0), new Backgrid.Command({keyCode: 9}));
+    expect(body.rows[0].cells[0].$el.hasClass("editor")).toBe(false);
+    expect(body.rows[1].cells[0].$el.hasClass("editor")).toBe(true);
+
+    // left
+    people.trigger("backgrid:edited", people.at(1), columns.at(0), new Backgrid.Command({keyCode: 9, shiftKey: true}));
+    expect(body.rows[0].cells[0].$el.hasClass("editor")).toBe(true);
+    expect(body.rows[1].cells[0].$el.hasClass("editor")).toBe(false);
+
+    // down
+    people.trigger("backgrid:edited", people.at(0), columns.at(0), new Backgrid.Command({keyCode: 40}));
+    expect(body.rows[0].cells[0].$el.hasClass("editor")).toBe(false);
+    expect(body.rows[1].cells[0].$el.hasClass("editor")).toBe(true);
+
+    // up
+    people.trigger("backgrid:edited", people.at(1), columns.at(0), new Backgrid.Command({keyCode: 38}));
+    expect(body.rows[0].cells[0].$el.hasClass("editor")).toBe(true);
+    expect(body.rows[1].cells[0].$el.hasClass("editor")).toBe(false);
+
+    // enter
+    people.trigger("backgrid:edited", people.at(0), columns.at(0), new Backgrid.Command({keyCode: 13}));
+    expect(body.rows[0].cells[0].$el.hasClass("editor")).toBe(false);
+    expect(body.rows[1].cells[0].$el.hasClass("editor")).toBe(false);
+
+    // esc
+    body.rows[1].cells[0].enterEditMode();
+    people.trigger("backgrid:edited", people.at(1), columns.at(0), new Backgrid.Command({keyCode: 27}));
+    expect(body.rows[0].cells[0].$el.hasClass("editor")).toBe(false);
+    expect(body.rows[1].cells[0].$el.hasClass("editor")).toBe(false);
+  });
+
 });

@@ -5,6 +5,7 @@
   Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
   Licensed under the MIT @license.
 */
+
 describe("A SelectRowCell", function () {
 
   var collection;

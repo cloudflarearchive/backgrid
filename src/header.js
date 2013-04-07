@@ -39,7 +39,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
      @throws {TypeError} If options.column or options.collection is undefined.
    */
   initialize: function (options) {
-    requireOptions(options, ["column", "collection"]);
+    Backgrid.requireOptions(options, ["column", "collection"]);
     this.column = options.column;
     if (!(this.column instanceof Column)) {
       this.column = new Column(this.column);
@@ -269,7 +269,7 @@ var Header = Backgrid.Header = Backbone.View.extend({
      @throws {TypeError} If options.columns or options.model is undefined.
    */
   initialize: function (options) {
-    requireOptions(options, ["columns", "collection"]);
+    Backgrid.requireOptions(options, ["columns", "collection"]);
 
     this.columns = options.columns;
     if (!(this.columns instanceof Backbone.Collection)) {

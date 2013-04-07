@@ -52,6 +52,7 @@
        @param {String} [options.value]
      */
     initialize: function (options) {
+      Backgrid.requireOptions(options, ["collection"]);
       Backbone.View.prototype.initialize.apply(this, arguments);
       this.name = options.name || this.name;
       this.placeholder = options.placeholder || this.placeholder;
@@ -153,6 +154,7 @@
        @param {number} [options.wait]
      */
     initialize: function (options) {
+      Backgrid.requireOptions(options, ["collection"]);
       ServerSideFilter.prototype.initialize.apply(this, arguments);
 
       this.fields = options.fields || this.fields;

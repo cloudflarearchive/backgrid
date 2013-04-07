@@ -57,14 +57,14 @@ var Column = Backgrid.Column = Backbone.Model.extend({
      - Backgrid.CellFormatter
    */
   initialize: function (attrs) {
-    requireOptions(attrs, ["cell", "name"]);
+    Backgrid.requireOptions(attrs, ["cell", "name"]);
 
     if (!this.has("label")) {
       this.set({ label: this.get("name") }, { silent: true });
     }
 
-    var headerCell = resolveNameToClass(this.get("headerCell"), "HeaderCell");
-    var cell = resolveNameToClass(this.get("cell"), "Cell");
+    var headerCell = Backgrid.resolveNameToClass(this.get("headerCell"), "HeaderCell");
+    var cell = Backgrid.resolveNameToClass(this.get("cell"), "Cell");
     this.set({ cell: cell, headerCell: headerCell }, { silent: true });
   }
 

@@ -33,7 +33,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
      See Backgrid.Row.
   */
   initialize: function (options) {
-    requireOptions(options, ["columns", "collection"]);
+    Backgrid.requireOptions(options, ["columns", "collection"]);
 
     this.columns = options.columns;
     if (!(this.columns instanceof Backbone.Collection)) {
@@ -62,8 +62,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
   },
 
   _unshiftEmptyRowMayBe: function () {
-    if (this.rows.length === 0 && !_.isUndefined(this.emptyText) &&
-        !_.isNull(this.emptyText)) {
+    if (this.rows.length === 0 && this.emptyText != null) {
       this.rows.unshift(new EmptyRow({
         emptyText: this.emptyText,
         columns: this.columns
@@ -231,24 +230,32 @@ var Body = Backgrid.Body = Backbone.View.extend({
   },
 
   /**
-     Event handler. Moves focus to the next renderable and editable cell.
-   */
-  moveToNextCell: function (model, column, keys) {
-    if (keys.up || keys.down || keys.tab || keys.enter) {
-      var i = this.collection.indexOf(model);
-      var j = this.columns.indexOf(column);
+     Moves focus to the next renderable and editable cell and return the
+     currently editing cell to display mode.
+
+     @param {Backbone.Model} model The originating model
+     @param {Backgrid.Column} column The originating model column
+     @param {Backgrid.Command} keys The Command object constructed from a DOM
+     Event
+  */
+  moveToNextCell: function (model, column, command) {
+    var i = this.collection.indexOf(model);
+    var j = this.columns.indexOf(column);
+
+    if (command.moveUp() || command.moveDown() || command.moveLeft() ||
+        command.moveRight() || command.save()) {
       var l = this.columns.length;
       var maxOffset = l * this.collection.length;
 
-      if (keys.up || keys.down) {
-        var row = this.rows[i + (keys.up ? -1 : 1)];
+      if (command.moveUp() || command.moveDown()) {
+        var row = this.rows[i + (command.moveUp() ? -1 : 1)];
         if (row) row.cells[j].enterEditMode();
       }
-      else if (keys.tab) {
-        var shifted = keys.shift;
-        for (var offset = i * l + j + (shifted ? -1 : 1);
+      else if (command.moveLeft() || command.moveRight()) {
+        var right = command.moveRight();
+        for (var offset = i * l + j + (right ? 1 : -1);
              offset >= 0 && offset < maxOffset;
-             shifted ? offset-- : offset++) {
+             right ? offset++ : offset--) {
           var m = ~~(offset / l);
           var n = offset - m * l;
           var cell = this.rows[m].cells[n];
@@ -259,5 +266,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
         }
       }
     }
+
+    this.rows[i].cells[j].exitEditMode();
   }
 });

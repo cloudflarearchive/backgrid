@@ -39,14 +39,13 @@ describe("An CellEditor", function () {
     }).toThrow(new TypeError("'model' is required"));
   });
 
-  it("calls postRender when parent triggers 'backgrid:editing'", function () {
-
-    var parent = new Backbone.View();
-
+  it("calls postRender when model triggers 'backgrid:editing'", function () {
+    var postRenderCalled = 0;
     var editor = new (Backgrid.CellEditor.extend({
-      postRender: jasmine.createSpy("postRender")
+      postRender: function () {
+        postRenderCalled++;
+      }
     }))({
-      parent: parent,
       formatter: {
         fromRaw: function () {},
         toRaw: function () {}
@@ -59,14 +58,10 @@ describe("An CellEditor", function () {
         name: "alice"
       })
     });
-
     editor.render();
 
-    parent.trigger("backgrid:editing");
-
-    expect(editor.postRender).toHaveBeenCalled();
-    expect(editor.postRender.calls.length).toBe(1);
-
+    editor.model.trigger("backgrid:editing");
+    expect(postRenderCalled).toBe(1);
   });
 
 });
@@ -75,6 +70,10 @@ describe("An InputCellEditor", function () {
 
   var book;
   var editor;
+  var backgridEditedTriggerCount;
+  var backgridEditedTriggerArgs;
+  var backgridErrorTriggerCount;
+  var backgridErrorTriggerArgs;
 
   beforeEach(function () {
 
@@ -94,7 +93,17 @@ describe("An InputCellEditor", function () {
       placeholder: "put your text here"
     });
 
-    spyOn(editor, "trigger").andCallThrough();
+    backgridEditedTriggerCount = 0;
+    book.on("backgrid:edited", function () {
+      backgridEditedTriggerCount++;
+      backgridEditedTriggerArgs = [].slice.call(arguments);
+    });
+
+    backgridErrorTriggerCount = 0;
+    book.on("backgrid:error", function () {
+      backgridErrorTriggerCount++;
+      backgridErrorTriggerArgs = [].slice.call(arguments);
+    });
 
     this.addMatchers({
       toBeAnInstanceOf: function (expected) {
@@ -109,55 +118,38 @@ describe("An InputCellEditor", function () {
     });
   });
 
-  it("render an text input box with a placeholder and the model value formatted for display", function () {
+  it("renders a text input box with a placeholder and the model value formatted for display", function () {
     editor.render();
     expect(editor.el).toBeAnInstanceOf(HTMLInputElement);
     expect(editor.$el.attr("placeholder")).toBe("put your text here");
     expect(editor.$el.val()).toBe("title");
   });
 
-  it("saves a formatted value in the input box to the model and triggers 'backgrid:done' when tab is pressed", function () {
+  it("saves a formatted value in the input box to the model and triggers 'backgrid:edited' from the model when tab is pressed", function () {
     editor.render();
     editor.$el.val("another title");
     var tab = $.Event("keydown", { keyCode: 9 });
     editor.$el.trigger(tab);
     expect(editor.model.get(editor.column.get("name"))).toBe("another title");
-    expect(editor.trigger.calls.length).toBe(1);
-    expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor, {
-      space: false,
-      enter: false,
-      tab: true,
-      shift: false,
-      up: false,
-      down: false,
-      escape : false
-    });
+    expect(backgridEditedTriggerCount).toBe(1);
+    expect(backgridEditedTriggerArgs[0]).toEqual(editor.model);
+    expect(backgridEditedTriggerArgs[1]).toEqual(editor.column);
+    expect(backgridEditedTriggerArgs[2].moveRight()).toBe(true);
   });
 
-  it("saves a formatted value in the input box to the model and triggers 'backgrid:done' when enter is pressed", function () {
+  it("saves a formatted value in the input box to the model and triggers 'backgrid:edited' from the model when enter is pressed", function () {
     editor.render();
     editor.$el.val("another title");
     var enter = $.Event("keydown", { keyCode: 13 });
     editor.$el.trigger(enter);
     expect(editor.model.get(editor.column.get("name"))).toBe("another title");
-    expect(editor.trigger.calls.length).toBe(1);
-    expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor, {
-      space: false,
-      enter: true,
-      tab: false,
-      shift: false,
-      up: false,
-      down: false,
-      escape : false
-    });
+    expect(backgridEditedTriggerCount).toBe(1);
+    expect(backgridEditedTriggerArgs[0]).toEqual(editor.model);
+    expect(backgridEditedTriggerArgs[1]).toEqual(editor.column);
+    expect(backgridEditedTriggerArgs[2].save()).toBe(true);
   });
 
-  it("removes itself when it triggers 'backgrid:done'", function () {
-    editor.trigger("backgrid:done");
-    expect(editor.remove.calls.length).toBe(1);
-  });
-
-  it("triggers 'backgrid:error' when trying to save an invalid value", function () {
+  it("triggers 'backgrid:error' from the model when trying to save an invalid value", function () {
     editor.formatter = {
       fromRaw: jasmine.createSpy("fromRaw").andCallFake(function (d) {
         return d;
@@ -170,55 +162,38 @@ describe("An InputCellEditor", function () {
     editor.$el.trigger(enter);
     expect(editor.formatter.toRaw.calls.length).toBe(1);
     expect(editor.formatter.toRaw).toHaveBeenCalledWith("invalid value");
-    expect(editor.trigger.calls.length).toBe(1);
-    expect(editor.trigger).toHaveBeenCalledWith("backgrid:error", editor);
+    expect(backgridErrorTriggerCount).toBe(1);
+    expect(backgridErrorTriggerArgs[0]).toEqual(editor.model);
+    expect(backgridErrorTriggerArgs[1]).toEqual(editor.column);
+    expect(backgridErrorTriggerArgs[2]).toEqual("invalid value");
 
-    editor.trigger.reset();
-    editor.formatter.toRaw.reset();
-    editor.model.validate = function () { return "error found"; };
-    var tab = $.Event("keydown", { keyCode: 9 });
-    editor.$el.trigger(tab);
-    expect(editor.trigger.calls.length).toBe(1);
-    expect(editor.trigger).toHaveBeenCalledWith("backgrid:error", editor);
-
-    editor.trigger.reset();
     editor.formatter.toRaw.reset();
     editor.$el.blur();
-    expect(editor.trigger.calls.length).toBe(1);
-    expect(editor.trigger).toHaveBeenCalledWith("backgrid:error", editor);
+    expect(backgridErrorTriggerCount).toBe(2);
+    expect(backgridErrorTriggerArgs[0]).toEqual(editor.model);
+    expect(backgridErrorTriggerArgs[1]).toEqual(editor.column);
+    expect(backgridErrorTriggerArgs[2]).toEqual("invalid value");
   });
 
-  it("discards changes and triggers 'backgrid:done' when esc is pressed'", function () {
+  it("discards changes and triggers 'backgrid:edited' from the model when esc is pressed'", function () {
     editor.render();
     editor.$el.val("new value");
     var esc = $.Event("keydown", { keyCode: 27 });
     editor.$el.trigger(esc);
-    expect(editor.trigger.calls.length).toBe(1);
-    expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor, {
-      space: false,
-      enter: false,
-      tab: false,
-      shift: false,
-      up: false,
-      down: false,
-      escape : true
-    });
+    expect(backgridEditedTriggerCount).toBe(1);
+    expect(backgridEditedTriggerArgs[0]).toEqual(editor.model);
+    expect(backgridEditedTriggerArgs[1]).toEqual(editor.column);
+    expect(backgridEditedTriggerArgs[2].cancel()).toBe(true);
     expect(editor.model.get(editor.column.get("name"))).toBe("title");
   });
 
-  it("triggers 'backgrid:done' when value hasn't changed and focus is lost", function () {
+  it("triggers 'backgrid:edited' from the model when value hasn't changed and focus is lost", function () {
     editor.render();
     editor.$el.blur();
-    expect(editor.trigger.calls.length).toBe(1);
-    expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor, {
-      space: false,
-      enter: false,
-      tab: false,
-      shift: false,
-      up: false,
-      down: false,
-      escape : false
-    });
+    expect(backgridEditedTriggerCount).toBe(1);
+    expect(backgridEditedTriggerArgs[0]).toEqual(editor.model);
+    expect(backgridEditedTriggerArgs[1]).toEqual(editor.column);
+    expect(backgridEditedTriggerArgs[2].passThru()).toBe(true);
     expect(editor.model.get(editor.column.get("name"))).toBe("title");
   });
 
@@ -226,15 +201,10 @@ describe("An InputCellEditor", function () {
     editor.render();
     editor.$el.val("another title");
     editor.$el.blur();
-    expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor, {
-      space: false,
-      enter: false,
-      tab: false,
-      shift: false,
-      up: false,
-      down: false,
-      escape : false
-    });
+    expect(backgridEditedTriggerCount).toBe(1);
+    expect(backgridEditedTriggerArgs[0]).toEqual(editor.model);
+    expect(backgridEditedTriggerArgs[1]).toEqual(editor.column);
+    expect(backgridEditedTriggerArgs[2].passThru()).toBe(true);
     expect(editor.model.get(editor.column.get("name"))).toBe("another title");
   });
 
@@ -298,12 +268,17 @@ describe("A Cell", function () {
     expect(cell.$el.hasClass("editor")).toBe(true);
   });
 
-  it("goes back into display mode when enter triggers 'backgrid:done'", function () {
+  it("goes into edit mode when `enterEditMode` is called", function () {
     cell.render();
+    cell.enterEditMode();
+    expect(cell.$el.hasClass("editor")).toBe(true);
+  });
+
+  it("goes back into display mode when `exitEditMode` is called", function () {
+    cell.render();
+
     cell.$el.click();
-    var editor = cell.currentEditor;
-    var enter = $.Event("keydown", { keyCode: 13 });
-    editor.$el.trigger(enter);
+    cell.exitEditMode();
     expect(cell.$el.hasClass("editor")).toBe(false);
     expect(cell.$el.text()).toBe("title");
   });
@@ -620,30 +595,64 @@ describe("A BooleanCell", function () {
 
   it("has a display mode that renders a checkbox with the checkbox checked if the model value is true, not checked otherwise", function () {
     cell.render();
-    expect(cell.$el.find("input[type=checkbox]").prop("checked")).toBe(true);
+    expect(cell.$el.find(":checkbox").prop("checked")).toBe(true);
     model.set("ate", false);
     cell.render();
-    expect(cell.$el.find("input[type=checkbox]").prop("checked")).toBe(false);
+    expect(cell.$el.find(":checkbox").prop("checked")).toBe(false);
   });
 
   it("goes into edit mode after clicking the cell with the checkbox intact", function () {
     cell.render();
     cell.$el.click();
     expect(cell.$el.hasClass("editor")).toBe(true);
-    expect(cell.$el.find("input[type=checkbox]").length).toBe(1);
+    expect(cell.$el.find(":checkbox").length).toBe(1);
   });
 
-  it("goes back to display mode when the checkbox goes out of focus", function () {
+  it("goes into edit mode after calling `enterEditMode` with the checkbox intact", function () {
     cell.render();
-    cell.$el.click();
-    cell.$el.find("input[type=checkbox]").blur();
+    cell.enterEditMode();
+    expect(cell.$el.hasClass("editor")).toBe(true);
+    expect(cell.$el.find(":checkbox").length).toBe(1);
+  });
+
+  it("goes back to display mode after calling `exitEditMode`", function () {
+    cell.render();
+    cell.enterEditMode();
+    cell.exitEditMode();
     expect(cell.$el.hasClass("editor")).toBe(false);
-    expect(cell.$el.find("input[type=checkbox]").length).toBe(1);
+    expect(cell.$el.find(":checkbox").prop("checked")).toBe(true);
+  });
+
+  it("triggers `backgrid:edited` when the checkbox goes out of focus", function () {
+    var backgridEditedTriggerCount = 0;
+    var backgridEditedTriggerArgs;
+    cell.model.on("backgrid:edited", function () {
+      backgridEditedTriggerCount++;
+      backgridEditedTriggerArgs = [].slice.call(arguments);
+    });
+
+    runs(function () {
+      cell.render();
+      cell.$el.click();
+      cell.$el.find(":checkbox").blur();
+    });
+
+    waitsFor(function () {
+      return backgridEditedTriggerCount === 1;
+    }, "the backgrid:edited handler to have been called", 60);
+
+    runs(function () {
+      expect(backgridEditedTriggerArgs[0]).toBe(cell.model);
+      expect(backgridEditedTriggerArgs[1]).toBe(cell.column);
+      expect(backgridEditedTriggerArgs[2].passThru()).toBe(true);
+      expect(cell.$el.find(":checkbox").prop("checked")).toBe(true);
+    });
   });
 
   it("saves a boolean value to the model when the checkbox is toggled", function () {
     cell.render();
-    cell.$el.find("input[type=checkbox]").prop("checked", false).change();
+    cell.enterEditMode();
+    cell.$el.find(":checkbox").prop("checked", false).change();
     expect(cell.model.get(cell.column.get("name"))).toBe(false);
   });
 
@@ -651,20 +660,25 @@ describe("A BooleanCell", function () {
     it("refreshes during display mode", function () {
       cell.render();
       model.set("ate", false);
-      expect(cell.$el.find("input[type=checkbox]").prop("checked")).toBe(false);
+      expect(cell.$el.find(":checkbox").prop("checked")).toBe(false);
+      model.set("ate", true);
+      expect(cell.$el.find(":checkbox").prop("checked")).toBe(true);
     });
 
     it("does not refresh during display mode if the change was silenced", function () {
       cell.render();
       model.set("ate", false, {silent: true});
-      expect(cell.$el.find("input[type=checkbox]").prop("checked")).toBe(true);
+      expect(cell.$el.find(":checkbox").prop("checked")).toBe(true);
+      model.set("ate", false);
+      model.set("ate", true, {silent: true});
+      expect(cell.$el.find(":checkbox").prop("checked")).toBe(true);
     });
 
     it("does not refresh during edit mode", function () {
       cell.render();
       cell.$el.click();
       model.set("ate", false);
-      expect(cell.$el.find("input[type=checkbox]").prop("checked")).toBe(true);
+      expect(cell.$el.find(":checkbox").prop("checked")).toBe(true);
     });
   });
 
@@ -867,20 +881,22 @@ describe("A SelectCellEditor", function () {
     spyOn(editor.formatter, "toRaw").andCallThrough();
     spyOn(editor, "trigger").andCallThrough();
 
+    var backgridEditedTriggerCount = 0;
+    var backgridEditedTriggerArgs;
+    editor.model.on("backgrid:edited", function () {
+      backgridEditedTriggerCount++;
+      backgridEditedTriggerArgs = [].slice.call(arguments);
+    });
+
     editor.$el.val(1).change();
     expect(editor.formatter.toRaw).toHaveBeenCalledWith("1");
     expect(editor.formatter.toRaw.calls.length).toBe(1);
     expect(editor.model.get(editor.column.get("name"))).toBe("1");
-    expect(editor.trigger).toHaveBeenCalledWith("backgrid:done", editor, {
-      space: false,
-      enter: false,
-      tab: false,
-      shift: false,
-      up: false,
-      down: false,
-      escape : false
-    });
-    expect(editor.trigger.calls.length).toBe(1);
+
+    expect(backgridEditedTriggerCount).toBe(1);
+    expect(backgridEditedTriggerArgs[0]).toEqual(editor.model);
+    expect(backgridEditedTriggerArgs[1]).toEqual(editor.column);
+    expect(backgridEditedTriggerArgs[2].passThru()).toBe(true);
   });
 
 });

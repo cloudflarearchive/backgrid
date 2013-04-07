@@ -12,7 +12,7 @@
 
      @class Backgrid.Extension.SelectRowCell
      @extends Backbone.View
-   */
+  */
   var SelectRowCell = Backgrid.Extension.SelectRowCell = Backbone.View.extend({
 
     /** @property */
@@ -23,7 +23,9 @@
 
     /** @property */
     events: {
-      "change :checkbox": "onChange"
+      "keydown :checkbox": "onKeydown",
+      "change :checkbox": "onChange",
+      "click :checkbox": "enterEditMode"
     },
 
     /**
@@ -33,8 +35,9 @@
        @param {Object} options
        @param {Backgrid.Column} options.column
        @param {Backbone.Model} options.model
-     */
+    */
     initialize: function (options) {
+      Backgrid.requireOptions(options, ["model", "column"]);
 
       this.column = options.column;
       if (!(this.column instanceof Backgrid.Column)) {
@@ -48,19 +51,51 @@
     },
 
     /**
+       Focuses the checkbox.
+    */
+    enterEditMode: function () {
+      this.$el.find(":checkbox").focus();
+    },
+
+    /**
+       Unfocuses the checkbox.
+    */
+    exitEditMode: function () {
+      this.$el.find(":checkbox").blur();
+    },
+
+    /**
+       Process keyboard navigation.
+    */
+    onKeydown: function (e) {
+      var keys = new Backgrid.KeyboardCommand(e);
+      if (keys.passThru()) return true; // skip ahead to `change`
+      if (keys.cancel()) {
+        e.stopPropagation();
+        this.$el.find(":checkbox").blur();
+      }
+      else if (keys.save() || keys.moveLeft() || keys.moveRight() ||
+               keys.moveUp() || keys.moveDown()) {
+        e.preventDefault();
+        e.stopPropagation();
+        this.model.trigger("backgrid:edited", this.model, this.column, keys);
+      }
+    },
+
+    /**
        When the checkbox's value changes, this method will trigger a Backbone
        `backgrid:selected` event with a reference of the model and the
        checkbox's `checked` value.
-     */
+    */
     onChange: function (e) {
       this.model.trigger("backgrid:selected", this.model, $(e.target).prop("checked"));
     },
 
     /**
        Renders a checkbox in a table cell.
-     */
+    */
     render: function () {
-      this.$el.empty().append('<input type="checkbox" />');
+      this.$el.empty().append('<input tabindex="-1" type="checkbox" />');
       this.delegateEvents();
       return this;
     }
@@ -72,7 +107,7 @@
 
      @class Backgrid.Extension.SelectAllHeaderCell
      @extends Backgrid.Extension.SelectRowCell
-   */
+  */
   var SelectAllHeaderCell = Backgrid.Extension.SelectAllHeaderCell = SelectRowCell.extend({
 
     /** @property */
@@ -98,8 +133,9 @@
        @param {Object} options
        @param {Backgrid.Column} options.column
        @param {Backbone.Collection} options.collection
-     */
+    */
     initialize: function (options) {
+      Backgrid.requireOptions(options, ["column", "collection"]);
 
       this.column = options.column;
       if (!(this.column instanceof Backgrid.Column)) {
@@ -136,7 +172,7 @@
        underlying collection by triggering a Backbone `backgrid:select` event on
        the models themselves, passing each model and the current `checked` value
        of the checkbox in each event.
-     */
+    */
     onChange: function (e) {
       var checked = $(e.target).prop("checked");
 
@@ -154,7 +190,7 @@
 
      @member Backgrid.Grid
      @return {Array.<Backbone.Model>}
-   */
+  */
   Backgrid.Grid.prototype.getSelectedModels = function () {
     var selectAllHeaderCell;
     var headerCells = this.header.row.cells;

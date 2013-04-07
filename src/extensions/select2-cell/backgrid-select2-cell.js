@@ -109,15 +109,11 @@
     initialize: function (options) {
       Backgrid.SelectCell.prototype.initialize.apply(this, arguments);
       this.select2Options = options.select2Options || this.select2Options;
-      this.listenTo(this, "backgrid:edit", this.setSelect2Options);
-    },
-
-    /**
-       Sets the options for the underlying Select2CellEditor instance. Called by
-       the during edit mode.
-     */
-    setSelect2Options: function (cell, editor) {
-      editor.setSelect2Options(this.select2Options);
+      this.listenTo(this.model, "backgrid:edit", function (model, column, cell, editor) {
+        if (column.get("name") == this.column.get("name")) {
+          editor.setSelect2Options(this.select2Options);
+        }
+      });
     }
 
   });
