@@ -81,6 +81,6 @@ page.open(system.args[1], function(status){
                 }
             });
             phantom.exit(exitCode);
-        });
+        }, 5001);
     }
 });

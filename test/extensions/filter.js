@@ -148,21 +148,25 @@ describe("A ClientSideFilter", function () {
   });
 
   it("can perform a full-text search on change, keyup and submit, and cancel on clicking the close button", function () {
-    var filter = new Backgrid.Extension.ClientSideFilter({
-      collection: collection,
-      fields: {name: 1, bio: 10}
+    var filter;
+
+    runs(function () {
+      filter = new Backgrid.Extension.ClientSideFilter({
+        collection: collection,
+        fields: {name: 1, bio: 10}
+      });
+      filter.render();
+      expect(collection.length).toBe(2);
+      expect(collection.at(0).id).toBe(1);
+      expect(collection.at(1).id).toBe(2);
     });
-    filter.render();
-    expect(collection.length).toBe(2);
-    expect(collection.at(0).id).toBe(1);
-    expect(collection.at(1).id).toBe(2);
 
     runs(function () {
       filter.$el.find(":text").val("crap").change();
     });
     waitsFor(function () {
       return collection.length === 1;
-    }, "collection.length to become 1", 160);
+    }, "collection.length to become 1", 320);
     runs(function () {
       expect(collection.at(0).id).toBe(2);
     });
@@ -172,7 +176,7 @@ describe("A ClientSideFilter", function () {
     });
     waitsFor(function () {
       return collection.length === 2;
-    }, "collection.length to become 2", 160);
+    }, "collection.length to become 2", 320);
     runs(function () {
       expect(collection.at(0).id).toBe(1);
       expect(collection.at(1).id).toBe(2);
@@ -184,7 +188,7 @@ describe("A ClientSideFilter", function () {
     });
     waitsFor(function () {
       return collection.length === 1;
-    }, "collection.length to become 1", 160);
+    }, "collection.length to become 1", 320);
     runs(function () {
       expect(collection.at(0).id).toBe(1);
     });
@@ -194,7 +198,7 @@ describe("A ClientSideFilter", function () {
     });
     waitsFor(function () {
       return collection.length === 2;
-    }, "collection.length to become 2", 160);
+    }, "collection.length to become 2", 320);
     runs(function () {
       expect(collection.at(0).id).toBe(2);
       expect(collection.at(1).id).toBe(1);
@@ -206,30 +210,37 @@ describe("A ClientSideFilter", function () {
       collection: collection,
       fields: {name: 1, bio: 10}
     });
-    filter.render();
-    collection.reset([{id: 3, name: "charlie", bio: "The cat scared the bat and sat on the mat."},
-                      {id: 4, name: "doug", bio: "The snail hid in his shell. It heard a bell. He went to see it was the church bell."}]);
+
+    runs(function () {
+      filter = new Backgrid.Extension.ClientSideFilter({
+        collection: collection,
+        fields: {name: 1, bio: 10}
+      });
+      filter.render();
+      collection.reset([{id: 3, name: "charlie", bio: "The cat scared the bat and sat on the mat."},
+                        {id: 4, name: "doug", bio: "The snail hid in his shell. It heard a bell. He went to see it was the church bell."}]);
+    });
 
     runs(function () {
       filter.$el.find(":text").val("crap").change();
     });
     waitsFor(function () {
       return collection.length === 0;
-    }, "collection.length to become 0", 160);
+    }, "collection.length to become 0", 320);
 
     runs(function () {
       filter.$el.find(":text").val("alice").change();
     });
     waitsFor(function () {
       return collection.length === 0;
-    }, "collection.length to become 0", 160);
+    }, "collection.length to become 0", 320);
 
     runs(function () {
       filter.$el.find(":text").val("charlie").change();
     });
     waitsFor(function () {
       return collection.length === 1;
-    }, "collection.length to become 1", 160);
+    }, "collection.length to become 1", 320);
     runs(function () {
       expect(collection.at(0).id).toBe(3);
     });
@@ -239,24 +250,26 @@ describe("A ClientSideFilter", function () {
     });
     waitsFor(function () {
       return collection.length === 1 && collection.at(0).id === 4;
-    }, "colleciton.length to become 1 and collection.at(0).id to become 4", 160);
+    }, "colleciton.length to become 1 and collection.at(0).id to become 4", 320);
   });
 
   it("will update the index on remove", function () {
-    var filter = new Backgrid.Extension.ClientSideFilter({
-      collection: collection,
-      fields: {name: 1, bio: 10}
+    var filter;
+    runs(function () {
+      filter = new Backgrid.Extension.ClientSideFilter({
+        collection: collection,
+        fields: {name: 1, bio: 10}
+      });
+      filter.render();
+      collection.remove(collection.last());
     });
-    filter.render();
-
-    collection.remove(collection.last());
 
     runs(function () {
       filter.$el.find(":text").val("bob").change();
     });
     waitsFor(function () {
       return collection.length === 0;
-    }, "collection.length to become 0", 160);
+    }, "collection.length to become 0", 320);
 
     runs(function () {
       filter.$el.find(":text").val("alice").change();
@@ -270,27 +283,30 @@ describe("A ClientSideFilter", function () {
   });
 
   it("will update the index on change", function () {
-    var filter = new Backgrid.Extension.ClientSideFilter({
-      collection: collection,
-      fields: {name: 1, bio: 10}
-    });
-    filter.render();
+    var filter;
 
-    collection.at(0).set("name", "charlie");
+    runs(function () {
+      filter = new Backgrid.Extension.ClientSideFilter({
+        collection: collection,
+        fields: {name: 1, bio: 10}
+      });
+      filter.render();
+      collection.at(0).set("name", "charlie");
+    });
 
     runs(function () {
       filter.$el.find(":text").val("alice").change();
     });
     waitsFor(function () {
       return collection.length === 0;
-    }, "collection.length to become 0", 160);
+    }, "collection.length to become 0", 320);
 
     runs(function () {
       filter.$el.find(":text").val("charlie").change();
     });
     waitsFor(function () {
       return collection.length === 1;
-    }, "collection.length to become 1", 160);
+    }, "collection.length to become 1", 320);
 
     runs(function () {
       expect(collection.at(0).id).toBe(1);
@@ -298,25 +314,29 @@ describe("A ClientSideFilter", function () {
   });
 
   it("can clear the search box and reindex upon clicking the close button", function () {
-    var filter = new Backgrid.Extension.ClientSideFilter({
-      collection: collection,
-      fields: {name: 1, bio: 10}
+    var filter;
+
+    runs(function () {
+      filter = new Backgrid.Extension.ClientSideFilter({
+        collection: collection,
+        fields: {name: 1, bio: 10}
+      });
+      filter.render();
     });
-    filter.render();
 
     runs(function() {
       filter.$el.find(":text").val("crap").change();
     });
     waitsFor(function () {
       return collection.length === 1;
-    }, "collection.length to become 1", 160);
+    }, "collection.length to become 1", 320);
 
     runs(function () {
       filter.$el.find(".close").click();
     });
     waitsFor(function () {
       return collection.length === 2;
-    }, "collection.length to become 2", 160);
+    }, "collection.length to become 2", 320);
     runs(function () {
       expect(filter.$el.find(":text").val()).toBe('');
       expect(collection.at(0).id).toBe(1);
