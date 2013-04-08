@@ -5,7 +5,6 @@
   Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
   Licensed under the MIT @license.
 */
-
 describe("A SelectRowCell", function () {
 
   var collection;
@@ -28,28 +27,24 @@ describe("A SelectRowCell", function () {
     cell.render();
   });
 
-  describe("when used with Backbone.Collection", function () {
+  it("renders a checkbox", function () {
+    expect(cell.$el.find(":checkbox").length).toBe(1);
+  });
 
-    it("renders a checkbox", function () {
-      expect(cell.$el.find(":checkbox").length).toBe(1);
+  it("triggers a Backbone `backgrid:selected` event when the checkbox is checked", function () {
+    var selectedTriggered = false;
+    model.on("backgrid:selected", function () {
+      selectedTriggered = true;
     });
+    cell.$el.find(":checkbox").prop("checked", true).change();
+    expect(selectedTriggered).toBe(true);
+  });
 
-    it("triggers a Backbone `backgrid:selected` event when the checkbox is checked", function () {
-      var selectedTriggered = false;
-      model.on("backgrid:selected", function () {
-        selectedTriggered = true;
-      });
-      cell.$el.find(":checkbox").prop("checked", true).change();
-      expect(selectedTriggered).toBe(true);
-    });
-
-    it("checks or unchecks its checkbox when the model triggers a Backbone `backgrid:select` event", function () {
-      model.trigger("backgrid:select", model, true);
-      expect(cell.$el.find(":checkbox").prop("checked")).toBe(true);
-      model.trigger("backgrid:select", model, false);
-      expect(cell.$el.find(":checkbox").prop("checked")).toBe(false);
-    });
-
+  it("checks or unchecks its checkbox when the model triggers a Backbone `backgrid:select` event", function () {
+    model.trigger("backgrid:select", model, true);
+    expect(cell.$el.find(":checkbox").prop("checked")).toBe(true);
+    model.trigger("backgrid:select", model, false);
+    expect(cell.$el.find(":checkbox").prop("checked")).toBe(false);
   });
 
 });
