@@ -68,17 +68,17 @@
        Process keyboard navigation.
     */
     onKeydown: function (e) {
-      var keys = new Backgrid.KeyboardCommand(e);
-      if (keys.passThru()) return true; // skip ahead to `change`
-      if (keys.cancel()) {
+      var command = new Backgrid.Command(e);
+      if (command.passThru()) return true; // skip ahead to `change`
+      if (command.cancel()) {
         e.stopPropagation();
         this.$el.find(":checkbox").blur();
       }
-      else if (keys.save() || keys.moveLeft() || keys.moveRight() ||
-               keys.moveUp() || keys.moveDown()) {
+      else if (command.save() || command.moveLeft() || command.moveRight() ||
+               command.moveUp() || command.moveDown()) {
         e.preventDefault();
         e.stopPropagation();
-        this.model.trigger("backgrid:edited", this.model, this.column, keys);
+        this.model.trigger("backgrid:edited", this.model, this.column, command);
       }
     },
 
