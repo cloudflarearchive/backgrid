@@ -1,5 +1,5 @@
 /*
-  backbone-pageable 1.2.0
+  backbone-pageable 1.2.1
   http://github.com/wyuenho/backbone-pageable
 
   Copyright (c) 2013 Jimmy Yuen Ho Wong
@@ -60,6 +60,7 @@
   var _invert = _.invert;
   var _isArray = _.isArray;
   var _isFunction = _.isFunction;
+  var _isObject = _.isObject;
   var _keys = _.keys;
   var _isUndefined = _.isUndefined;
   var _result = _.result;
@@ -901,46 +902,48 @@
        @return {Object}
     */
     parseLinks: function (resp, options) {
-      var linkHeader = options.xhr.getResponseHeader("Link");
-      var relations = ["first", "prev", "previous", "next", "last"];
       var links = {};
-      _each(linkHeader.split(","), function (linkValue) {
-        var linkParts = linkValue.split(";");
-        var url = linkParts[0].replace(URL_TRIM_RE, '');
-        var params = linkParts.slice(1);
-        _each(params, function (param) {
-          var paramParts = param.split("=");
-          var key = paramParts[0].replace(PARAM_TRIM_RE, '');
-          var value = paramParts[1].replace(PARAM_TRIM_RE, '');
-          if (key == "rel" && _contains(relations, value)) {
-            if (value == "previous") links.prev = url;
-            else links[value] = url;
-          }
+      var linkHeader = options.xhr.getResponseHeader("Link");
+      if (linkHeader) {
+        var relations = ["first", "prev", "previous", "next", "last"];
+        _each(linkHeader.split(","), function (linkValue) {
+          var linkParts = linkValue.split(";");
+          var url = linkParts[0].replace(URL_TRIM_RE, '');
+          var params = linkParts.slice(1);
+          _each(params, function (param) {
+            var paramParts = param.split("=");
+            var key = paramParts[0].replace(PARAM_TRIM_RE, '');
+            var value = paramParts[1].replace(PARAM_TRIM_RE, '');
+            if (key == "rel" && _contains(relations, value)) {
+              if (value == "previous") links.prev = url;
+              else links[value] = url;
+            }
+          });
         });
-      });
 
-      var last = links.last || '', qsi, qs;
-      if (qs = (qsi = last.indexOf('?')) ? last.slice(qsi + 1) : '') {
-        var params = queryStringToParams(qs);
+        var last = links.last || '', qsi, qs;
+        if (qs = (qsi = last.indexOf('?')) ? last.slice(qsi + 1) : '') {
+          var params = queryStringToParams(qs);
 
-        var state = _clone(this.state);
-        var queryParams = this.queryParams;
-        var pageSize = state.pageSize;
+          var state = _clone(this.state);
+          var queryParams = this.queryParams;
+          var pageSize = state.pageSize;
 
-        var totalRecords = params[queryParams.totalRecords] * 1;
-        var pageNum = params[queryParams.currentPage] * 1;
-        var totalPages = params[queryParams.totalPages];
+          var totalRecords = params[queryParams.totalRecords] * 1;
+          var pageNum = params[queryParams.currentPage] * 1;
+          var totalPages = params[queryParams.totalPages];
 
-        if (!totalRecords) {
-          if (pageNum) totalRecords = (state.firstPage === 0 ?
-                                       pageNum + 1 :
-                                       pageNum) * pageSize;
-          else if (totalPages) totalRecords = totalPages * pageSize;
+          if (!totalRecords) {
+            if (pageNum) totalRecords = (state.firstPage === 0 ?
+                                         pageNum + 1 :
+                                         pageNum) * pageSize;
+            else if (totalPages) totalRecords = totalPages * pageSize;
+          }
+
+          if (totalRecords) state.totalRecords = totalRecords;
+
+          this.state = this._checkState(state);
         }
-
-        if (totalRecords) state.totalRecords = totalRecords;
-
-        this.state = this._checkState(state);
       }
 
       delete links.last;
@@ -1021,7 +1024,7 @@
        @return {Object} A new (partial) state object.
      */
     parseState: function (resp, queryParams, state) {
-      if (resp && resp.length === 2 && _.isObject(resp[0]) && _isArray(resp[1])) {
+      if (resp && resp.length === 2 && _isObject(resp[0]) && _isArray(resp[1])) {
 
         var newState = _clone(state);
         var serverState = resp[0];
@@ -1053,7 +1056,7 @@
        @return {Array.<Object>} An array of model objects
      */
     parseRecords: function (resp) {
-      if (resp && resp.length === 2 && _.isObject(resp[0]) && _isArray(resp[1])) {
+      if (resp && resp.length === 2 && _isObject(resp[0]) && _isArray(resp[1])) {
         return resp[1];
       }
 
