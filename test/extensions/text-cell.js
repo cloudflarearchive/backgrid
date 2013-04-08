@@ -81,34 +81,63 @@ describe("A TextareaEditor", function () {
   });
 
   it("asks for confirmation if textarea is dirty when canceling", function () {
-    var spiedConfirm = spyOn(window, "confirm");
+    var oldConfirm = window.confirm;
+    var confirmArgs;
 
-    spiedConfirm.andReturn(false);
-    editor.$el.find("textarea").val("name\r");
-    editor.$el.find(".close").click();
-    editor.$el.one($.support.transition.end, function () {
-      expect(editor.trigger).toHaveBeenCalledWith("done");
-      expect(window.confirm).toHaveBeenCalledWith("Would you like to save your changes?");
-      expect(editor.model.get(editor.column.get("name"))).toBe("name");
+    runs(function () {
+      window.confirm = function () {
+        confirmArgs = [].slice.call(arguments);
+        return false;
+      };
+      editor.$el.find("textarea").val("name\r");
+      editor.$el.find(".close").click();
+      expect(confirmArgs[0]).toBe("Would you like to save your changes?");
     });
-    spiedConfirm.reset();
 
-    spiedConfirm.andReturn(true);
-    editor.$el.find(".close").click();
-    editor.$el.one($.support.transition.end, function () {
-      expect(editor.trigger).toHaveBeenCalledWith("done");
-      expect(window.confirm).toHaveBeenCalledWith("Would you like to save your changes?");
-      expect(editor.model.get(editor.column.get("name"))).toBe("name\r");
+    waitsFor(function () {
+      return backgridEditedTriggerCount == 1;
+    }, "backgrid:edited was triggered", 1000);
+
+    runs(function () {
+      expect(backgridEditedTriggerArgs[0]).toBe(editor.model);
+      expect(backgridEditedTriggerArgs[1]).toBe(editor.column);
+      expect(backgridEditedTriggerArgs[2].passThru()).toBe(true);
     });
+
+    runs(function () {
+      confirmArgs = null;
+      window.confirm = function () {
+        confirmArgs = [].slice.call(arguments);
+        return true;
+      };
+      editor.render();
+      editor.$el.find("textarea").val("name\r");
+      editor.$el.find(".close").click();
+      expect(confirmArgs[0]).toBe("Would you like to save your changes?");
+    });
+
+    waitsFor(function () {
+      return backgridEditedTriggerCount === 2;
+    }, "editor to fade out", 1000);
+
+    runs(function () {
+      expect(editor.model.get(editor.column.get("name"))).toBe("name\n");
+      expect(backgridEditedTriggerArgs[0]).toBe(editor.model);
+      expect(backgridEditedTriggerArgs[1]).toBe(editor.column);
+      expect(backgridEditedTriggerArgs[2].passThru()).toBe(true);
+    });
+
+    window.confirm = oldConfirm;
   });
 
   it("saves the text from the textarea to the model and trigger 'backgrid:edited' from the model when the form is submitted", function () {
     editor.$el.find("textarea").val("another name");
     editor.$el.find("form").submit();
-    // have to wait for bootstrap's css transition to finish
-    // before hidden is fired and `trigger` called
-    editor.$el.one($.support.transition.end, function () {
-      expect(backgridEditedTriggerCount).toBe(1);
+    waitsFor(function () {
+      return backgridEditedTriggerCount === 1;
+    });
+
+    runs(function () {
       expect(backgridEditedTriggerArgs[0]).toBe(editor.model);
       expect(backgridEditedTriggerArgs[1]).toBe(editor.column);
       expect(backgridEditedTriggerArgs[2].passThru()).toBe(true);

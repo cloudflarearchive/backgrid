@@ -84,10 +84,10 @@
       var newValue = this.formatter.toRaw(val);
 
       if (_.isUndefined(newValue)) {
-        model.trigger("backgrid:error", model, this.column, val);
+        model.trigger("backgrid:error", model, column, val);
       }
       else {
-        this.model.set(column.get("name"), newValue);
+        model.set(column.get("name"), newValue);
         this.$el.modal("hide");
       }
     },
@@ -120,7 +120,7 @@
     close: function (e) {
       var model = this.model;
       model.trigger("backgrid:edited", model, this.column,
-                    new Backgrid.KeyboardCommand(e));
+                    new Backgrid.Command(e));
     },
 
     /**
