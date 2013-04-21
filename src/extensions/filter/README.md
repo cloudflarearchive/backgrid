@@ -2,7 +2,7 @@ Dependencies
 ============
 
 [bootstrap](http://twitter.github.com/bootstrap/) (optional)
-[lunr](http://lunrjs.com) (ClientSideFilter)
+[lunr](http://lunrjs.com) (LunrFilter)
 
 Usage
 ====
