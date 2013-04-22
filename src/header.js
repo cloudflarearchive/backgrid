@@ -217,7 +217,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
  */
 var HeaderRow = Backgrid.HeaderRow = Backgrid.Row.extend({
 
-  initOptionRequires: ["columns", "collection"],
+  requiredOptions: ["columns", "collection"],
 
   /**
      Initializer.

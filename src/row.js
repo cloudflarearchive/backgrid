@@ -19,7 +19,7 @@ var Row = Backgrid.Row = Backbone.View.extend({
   /** @property */
   tagName: "tr",
 
-  initOptionRequires: ["columns", "model"],
+  requiredOptions: ["columns", "model"],
 
   /**
      Initializes a row view instance.
@@ -32,7 +32,7 @@ var Row = Backgrid.Row = Backbone.View.extend({
   */
   initialize: function (options) {
 
-    Backgrid.requireOptions(options, this.initOptionRequires);
+    Backgrid.requireOptions(options, this.requiredOptions);
 
     var columns = this.columns = options.columns;
     if (!(columns instanceof Backbone.Collection)) {
