@@ -18,6 +18,7 @@
   "nonstandard": true,
 
   "globals": {
+    "Backgrid": false,
     "Backbone": false,
     "_": false
   }
