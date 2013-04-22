@@ -1,5 +1,5 @@
 /*
-  backbone-pageable 1.2.1
+  backbone-pageable 1.2.2
   http://github.com/wyuenho/backbone-pageable
 
   Copyright (c) 2013 Jimmy Yuen Ho Wong
@@ -70,7 +70,6 @@
   var BBColProto = Backbone.Collection.prototype;
 
   function finiteInt (val, name) {
-    val *= 1;
     if (!_.isNumber(val) || _.isNaN(val) || !_.isFinite(val) || ~~val !== val) {
       throw new TypeError("`" + name + "` must be a finite integer");
     }
@@ -503,7 +502,7 @@
             pageCol.state = pageCol._checkState(state);
             if (collection == pageCol) fullCol.trigger(event, fullCol, options);
             resetQuickly(pageCol, fullCol.models.slice(pageStart, pageEnd),
-                         options);
+                         _extend({}, options, {parse: false}));
           }
         }
 
@@ -570,13 +569,13 @@
             throw new RangeError("No link found for page " + currentPage);
           }
         }
-        else {
-          if (firstPage === 0 && (currentPage < firstPage || (currentPage >= totalPages && totalPages > 0))) {
-            throw new RangeError("`currentPage` must be firstPage <= currentPage < totalPages if 0-based. Got " + currentPage + '.');
-          }
-          else if (firstPage === 1 && (currentPage < firstPage || currentPage > totalPages)) {
-            throw new RangeError("`currentPage` must be firstPage <= currentPage <= totalPages if 1-based. Got " + currentPage + '.');
-          }
+        else if (currentPage < firstPage ||
+                 (totalPages > 0 &&
+                  (firstPage ? currentPage > totalPages : currentPage >= totalPages))) {
+          throw new RangeError("`currentPage` must be firstPage <= currentPage " +
+                               (firstPage ? ">" : ">=") +
+                               " totalPages if " + firstPage + "-based. Got " +
+                               currentPage + '.');
         }
       }
 
@@ -1007,11 +1006,6 @@
            parseState: function (resp, queryParams, state) {
              return {totalRecords: resp.total_entries};
            }
-
-       __Note__: `totalRecords` cannot be set to 0 for compatibility reasons,
-       use `null` instead of 0 for all cases where you would like to set it to
-       0. You can do this either on the server-side or in your overridden #parseState
-       method.
 
        This method __MUST__ return a new state object instead of directly
        modifying the #state object. The behavior of directly modifying #state is
