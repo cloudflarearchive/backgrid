@@ -74,6 +74,12 @@ Docs = {
         "icon": "icon-class"
       },
       {
+        "name": "Backgrid.BooleanCellEditor",
+        "extends": "Backgrid.CellEditor",
+        "private": null,
+        "icon": "icon-class"
+      },
+      {
         "name": "Backgrid.BooleanCell",
         "extends": "Backgrid.Cell",
         "private": null,
@@ -111,7 +117,13 @@ Docs = {
       },
       {
         "name": "Backgrid.Extension.ClientSideFilter",
-        "extends": null,
+        "extends": "Backgrid.Extension.ServerSideFilter",
+        "private": null,
+        "icon": "icon-class"
+      },
+      {
+        "name": "Backgrid.Extension.LunrFilter",
+        "extends": "Backgrid.Extension.ClientSideFilter",
         "private": null,
         "icon": "icon-class"
       },
@@ -230,7 +242,19 @@ Docs = {
         "icon": "icon-class"
       },
       {
+        "name": "Backgrid.Command",
+        "extends": null,
+        "private": null,
+        "icon": "icon-class"
+      },
+      {
         "name": "Backgrid.Row",
+        "extends": "Backbone.View",
+        "private": null,
+        "icon": "icon-class"
+      },
+      {
+        "name": "Backgrid.EmptyRow",
         "extends": "Backbone.View",
         "private": null,
         "icon": "icon-class"
@@ -318,6 +342,15 @@ Docs = {
         "url": "#!/api/Backgrid.Body-method-remove",
         "meta": {
           "chainable": true
+        },
+        "sort": 3
+      },
+      {
+        "name": "moveToNextCell",
+        "fullName": "Backgrid.Body.moveToNextCell",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Body-method-moveToNextCell",
+        "meta": {
         },
         "sort": 3
       },
@@ -778,6 +811,70 @@ Docs = {
         "sort": 3
       },
       {
+        "name": "BooleanCellEditor",
+        "fullName": "Backgrid.BooleanCellEditor",
+        "icon": "icon-class",
+        "url": "#!/api/Backgrid.BooleanCellEditor",
+        "meta": {
+        },
+        "sort": 1
+      },
+      {
+        "name": "tagName",
+        "fullName": "Backgrid.BooleanCellEditor.tagName",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.BooleanCellEditor-property-tagName",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "attributes",
+        "fullName": "Backgrid.BooleanCellEditor.attributes",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.BooleanCellEditor-property-attributes",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "events",
+        "fullName": "Backgrid.BooleanCellEditor.events",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.BooleanCellEditor-property-events",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "render",
+        "fullName": "Backgrid.BooleanCellEditor.render",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.BooleanCellEditor-method-render",
+        "meta": {
+          "chainable": true
+        },
+        "sort": 3
+      },
+      {
+        "name": "enterOrExitEditMode",
+        "fullName": "Backgrid.BooleanCellEditor.enterOrExitEditMode",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.BooleanCellEditor-method-enterOrExitEditMode",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "saveOrCancel",
+        "fullName": "Backgrid.BooleanCellEditor.saveOrCancel",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.BooleanCellEditor-method-saveOrCancel",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
         "name": "BooleanCell",
         "fullName": "Backgrid.BooleanCell",
         "icon": "icon-class",
@@ -820,33 +917,6 @@ Docs = {
         "url": "#!/api/Backgrid.BooleanCell-method-render",
         "meta": {
           "chainable": true
-        },
-        "sort": 3
-      },
-      {
-        "name": "enterEditMode",
-        "fullName": "Backgrid.BooleanCell.enterEditMode",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.BooleanCell-method-enterEditMode",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "exitEditMode",
-        "fullName": "Backgrid.BooleanCell.exitEditMode",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.BooleanCell-method-exitEditMode",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "save",
-        "fullName": "Backgrid.BooleanCell.save",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.BooleanCell-method-save",
-        "meta": {
         },
         "sort": 3
       },
@@ -1060,19 +1130,10 @@ Docs = {
         "sort": 3
       },
       {
-        "name": "placeholder",
-        "fullName": "Backgrid.Extension.ServerSideFilter.placeholder",
+        "name": "The",
+        "fullName": "Backgrid.Extension.ServerSideFilter.The",
         "icon": "icon-property",
-        "url": "#!/api/Backgrid.Extension.ServerSideFilter-property-placeholder",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "value",
-        "fullName": "Backgrid.Extension.ServerSideFilter.value",
-        "icon": "icon-property",
-        "url": "#!/api/Backgrid.Extension.ServerSideFilter-property-value",
+        "url": "#!/api/Backgrid.Extension.ServerSideFilter-property-The",
         "meta": {
         },
         "sort": 3
@@ -1087,10 +1148,10 @@ Docs = {
         "sort": 3
       },
       {
-        "name": "filter",
-        "fullName": "Backgrid.Extension.ServerSideFilter.filter",
+        "name": "search",
+        "fullName": "Backgrid.Extension.ServerSideFilter.search",
         "icon": "icon-method",
-        "url": "#!/api/Backgrid.Extension.ServerSideFilter-method-filter",
+        "url": "#!/api/Backgrid.Extension.ServerSideFilter-method-search",
         "meta": {
         },
         "sort": 3
@@ -1133,19 +1194,10 @@ Docs = {
         "sort": 3
       },
       {
-        "name": "ref",
-        "fullName": "Backgrid.Extension.ClientSideFilter.ref",
+        "name": "A",
+        "fullName": "Backgrid.Extension.ClientSideFilter.A",
         "icon": "icon-property",
-        "url": "#!/api/Backgrid.Extension.ClientSideFilter-property-ref",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "fields",
-        "fullName": "Backgrid.Extension.ClientSideFilter.fields",
-        "icon": "icon-property",
-        "url": "#!/api/Backgrid.Extension.ClientSideFilter-property-fields",
+        "url": "#!/api/Backgrid.Extension.ClientSideFilter-property-A",
         "meta": {
         },
         "sort": 3
@@ -1169,37 +1221,19 @@ Docs = {
         "sort": 3
       },
       {
-        "name": "resetIndex",
-        "fullName": "Backgrid.Extension.ClientSideFilter.resetIndex",
+        "name": "makeMatcher",
+        "fullName": "Backgrid.Extension.ClientSideFilter.makeMatcher",
         "icon": "icon-method",
-        "url": "#!/api/Backgrid.Extension.ClientSideFilter-method-resetIndex",
+        "url": "#!/api/Backgrid.Extension.ClientSideFilter-method-makeMatcher",
         "meta": {
         },
         "sort": 3
       },
       {
-        "name": "removeFromIndex",
-        "fullName": "Backgrid.Extension.ClientSideFilter.removeFromIndex",
+        "name": "search",
+        "fullName": "Backgrid.Extension.ClientSideFilter.search",
         "icon": "icon-method",
-        "url": "#!/api/Backgrid.Extension.ClientSideFilter-method-removeFromIndex",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "updateIndex",
-        "fullName": "Backgrid.Extension.ClientSideFilter.updateIndex",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.Extension.ClientSideFilter-method-updateIndex",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "filter",
-        "fullName": "Backgrid.Extension.ClientSideFilter.filter",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.Extension.ClientSideFilter-method-filter",
+        "url": "#!/api/Backgrid.Extension.ClientSideFilter-method-search",
         "meta": {
         },
         "sort": 3
@@ -1209,6 +1243,87 @@ Docs = {
         "fullName": "Backgrid.Extension.ClientSideFilter.clear",
         "icon": "icon-method",
         "url": "#!/api/Backgrid.Extension.ClientSideFilter-method-clear",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "Extension.LunrFilter",
+        "fullName": "Backgrid.Extension.LunrFilter",
+        "icon": "icon-class",
+        "url": "#!/api/Backgrid.Extension.LunrFilter",
+        "meta": {
+        },
+        "sort": 1
+      },
+      {
+        "name": "ref",
+        "fullName": "Backgrid.Extension.LunrFilter.ref",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.Extension.LunrFilter-property-ref",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "fields",
+        "fullName": "Backgrid.Extension.LunrFilter.fields",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.Extension.LunrFilter-property-fields",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "initialize",
+        "fullName": "Backgrid.Extension.LunrFilter.initialize",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Extension.LunrFilter-method-initialize",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "resetIndex",
+        "fullName": "Backgrid.Extension.LunrFilter.resetIndex",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Extension.LunrFilter-method-resetIndex",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "addToIndex",
+        "fullName": "Backgrid.Extension.LunrFilter.addToIndex",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Extension.LunrFilter-method-addToIndex",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "removeFromIndex",
+        "fullName": "Backgrid.Extension.LunrFilter.removeFromIndex",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Extension.LunrFilter-method-removeFromIndex",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "updateIndex",
+        "fullName": "Backgrid.Extension.LunrFilter.updateIndex",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Extension.LunrFilter-method-updateIndex",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "search",
+        "fullName": "Backgrid.Extension.LunrFilter.search",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Extension.LunrFilter-method-search",
         "meta": {
         },
         "sort": 3
@@ -1431,6 +1546,33 @@ Docs = {
         "sort": 3
       },
       {
+        "name": "enterEditMode",
+        "fullName": "Backgrid.Extension.SelectRowCell.enterEditMode",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Extension.SelectRowCell-method-enterEditMode",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "exitEditMode",
+        "fullName": "Backgrid.Extension.SelectRowCell.exitEditMode",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Extension.SelectRowCell-method-exitEditMode",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "onKeydown",
+        "fullName": "Backgrid.Extension.SelectRowCell.onKeydown",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Extension.SelectRowCell-method-onKeydown",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
         "name": "onChange",
         "fullName": "Backgrid.Extension.SelectRowCell.onChange",
         "icon": "icon-method",
@@ -1541,6 +1683,15 @@ Docs = {
         "sort": 3
       },
       {
+        "name": "postRender",
+        "fullName": "Backgrid.Extension.Select2CellEditor.postRender",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Extension.Select2CellEditor-method-postRender",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
         "name": "Extension.Select2Cell",
         "fullName": "Backgrid.Extension.Select2Cell",
         "icon": "icon-class",
@@ -1581,15 +1732,6 @@ Docs = {
         "fullName": "Backgrid.Extension.Select2Cell.initialize",
         "icon": "icon-method",
         "url": "#!/api/Backgrid.Extension.Select2Cell-method-initialize",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "setSelect2Options",
-        "fullName": "Backgrid.Extension.Select2Cell.setSelect2Options",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.Extension.Select2Cell-method-setSelect2Options",
         "meta": {
         },
         "sort": 3
@@ -1699,6 +1841,15 @@ Docs = {
         "fullName": "Backgrid.Extension.TextareaEditor.close",
         "icon": "icon-method",
         "url": "#!/api/Backgrid.Extension.TextareaEditor-method-close",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "focus",
+        "fullName": "Backgrid.Extension.TextareaEditor.focus",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Extension.TextareaEditor-method-focus",
         "meta": {
         },
         "sort": 3
@@ -2246,6 +2397,87 @@ Docs = {
         "sort": 3
       },
       {
+        "name": "Command",
+        "fullName": "Backgrid.Command",
+        "icon": "icon-class",
+        "url": "#!/api/Backgrid.Command",
+        "meta": {
+        },
+        "sort": 1
+      },
+      {
+        "name": "constructor",
+        "fullName": "Backgrid.Command.constructor",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Command-method-constructor",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "moveUp",
+        "fullName": "Backgrid.Command.moveUp",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Command-method-moveUp",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "moveDown",
+        "fullName": "Backgrid.Command.moveDown",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Command-method-moveDown",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "moveLeft",
+        "fullName": "Backgrid.Command.moveLeft",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Command-method-moveLeft",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "moveRight",
+        "fullName": "Backgrid.Command.moveRight",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Command-method-moveRight",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "save",
+        "fullName": "Backgrid.Command.save",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Command-method-save",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "cancel",
+        "fullName": "Backgrid.Command.cancel",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Command-method-cancel",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "passThru",
+        "fullName": "Backgrid.Command.passThru",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.Command-method-passThru",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
         "name": "Row",
         "fullName": "Backgrid.Row",
         "icon": "icon-class",
@@ -2297,6 +2529,52 @@ Docs = {
         "fullName": "Backgrid.Row.remove",
         "icon": "icon-method",
         "url": "#!/api/Backgrid.Row-method-remove",
+        "meta": {
+          "chainable": true
+        },
+        "sort": 3
+      },
+      {
+        "name": "EmptyRow",
+        "fullName": "Backgrid.EmptyRow",
+        "icon": "icon-class",
+        "url": "#!/api/Backgrid.EmptyRow",
+        "meta": {
+        },
+        "sort": 1
+      },
+      {
+        "name": "tagName",
+        "fullName": "Backgrid.EmptyRow.tagName",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.EmptyRow-property-tagName",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "emptyText",
+        "fullName": "Backgrid.EmptyRow.emptyText",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.EmptyRow-property-emptyText",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "initialize",
+        "fullName": "Backgrid.EmptyRow.initialize",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.EmptyRow-method-initialize",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "render",
+        "fullName": "Backgrid.EmptyRow.render",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.EmptyRow-method-render",
         "meta": {
           "chainable": true
         },
