@@ -52,11 +52,21 @@
 
 .backgrid thead th {
   vertical-align: bottom;
+  background-color: #f9f9f9;
 }
 
-.backgrid tbody tr:nth-child(odd) td,
-.backgrid tbody tr:nth-child(odd) th {
+.backgrid.backgrid-striped tbody tr:nth-child(odd) td,
+.backgrid.backgrid-striped tbody tr:nth-child(odd) th {
   background-color: #f9f9f9;
+}
+
+.backgrid tbody tr.empty {
+  font-style: italic;
+  color: gray;
+}
+
+.backgrid tbody tr.empty td {
+  text-align: center;
 }
 
 .backgrid td.editor,
@@ -102,8 +112,8 @@
 
 .backgrid td.editor.error,
 .backgrid tbody tr:nth-child(odd) td.editor.error {
-  background-color: rgba(255,210,77, 0.1);
-  outline: 1px solid rgb(255,210,77);
+  background-color: rgba(255, 210, 77, 0.1);
+  outline: 1px solid #ffd24d;
 }
 
 .backgrid td.editor :focus,
