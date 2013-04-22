@@ -91,21 +91,26 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
     }
     this.columns = options.columns;
 
+    var passedThruOptions = _.omit(options, ["el", "id", "attributes",
+                                             "className", "tagName", "events"]);
+
     this.header = options.header || this.header;
-    this.header = new this.header(options);
+    this.header = new this.header(passedThruOptions);
 
     this.body = options.body || this.body;
-    this.body = new this.body(options);
+    this.body = new this.body(passedThruOptions);
 
     this.footer = options.footer || this.footer;
     if (this.footer) {
-      this.footer = new this.footer(options);
+      this.footer = new this.footer(passedThruOptions);
     }
 
     this.listenTo(this.columns, "reset", function () {
-      this.header = new (this.header.remove().constructor)(options);
-      this.body = new (this.body.remove().constructor)(options);
-      if (this.footer) this.footer = new (this.footer.remove().constructor)(options);
+      this.header = new (this.header.remove().constructor)(passedThruOptions);
+      this.body = new (this.body.remove().constructor)(passedThruOptions);
+      if (this.footer) {
+        this.footer = new (this.footer.remove().constructor)(passedThruOptions);
+      }
       this.render();
     });
   },

@@ -79,11 +79,6 @@ describe("A Grid", function () {
     var CustomRow = Backgrid.Row.extend({});
     var CustomFooter = Backgrid.Footer.extend({});
 
-    spyOn(CustomHeader.prototype, "render").andCallThrough();
-    spyOn(CustomBody.prototype, "render").andCallThrough();
-    spyOn(CustomRow.prototype, "render").andCallThrough();
-    spyOn(CustomFooter.prototype, "render").andCallThrough();
-
     grid = new Backgrid.Grid({
       columns: [{
         name: "title",
@@ -93,15 +88,21 @@ describe("A Grid", function () {
       header: CustomHeader,
       body: CustomBody,
       row: CustomRow,
-      footer: CustomFooter
+      footer: CustomFooter,
+      className: "class-name"
     });
 
     grid.render();
 
-    expect(CustomHeader.prototype.render).toHaveBeenCalled();
-    expect(CustomBody.prototype.render).toHaveBeenCalled();
-    expect(CustomRow.prototype.render).toHaveBeenCalled();
-    expect(CustomFooter.prototype.render).toHaveBeenCalled();
+    expect(grid.header instanceof CustomHeader).toBe(true);
+    expect(grid.body instanceof CustomBody).toBe(true);
+    expect(grid.body.rows[0] instanceof CustomRow).toBe(true);
+    expect(grid.footer instanceof CustomFooter).toBe(true);
+
+    expect(grid.header.className).not.toBe("class-name");
+    expect(grid.body.className).not.toBe("class-name");
+    expect(grid.body.rows[0].className).not.toBe("class-name");
+    expect(grid.footer.className).not.toBe("class-name");
   });
 
   it("will clean up all its decendant views when remove is called", function () {
