@@ -32,7 +32,6 @@ var Footer = Backgrid.Footer = Backbone.View.extend({
   */
   initialize: function (options) {
     Backgrid.requireOptions(options, ["columns", "collection"]);
-    this.parent = options.parent;
     this.columns = options.columns;
     if (!(this.columns instanceof Backbone.Collection)) {
       this.columns = new Backgrid.Columns(this.columns);
