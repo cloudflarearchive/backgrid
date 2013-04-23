@@ -126,16 +126,16 @@ describe("A Body", function () {
                                    '<tr><td class="string-cell">The Catcher in the Rye</td></tr>');
   });
 
-  it("refresh its rendering if its collection is reset", function () {
+  it("will refresh if its collection is reset", function () {
     var eventFired = false;
     var handler = function () {
       eventFired = true;
     };
-    Backbone.on("backgrid:refresh", handler);
+    body.collection.on("backgrid:refresh", handler);
     body.collection.reset([{
       title: "Oliver Twist"
     }]);
-    Backbone.off("backgrid:refresh", handler);
+    body.collection.off("backgrid:refresh", handler);
     expect(eventFired).toBe(true);
     var $trs = body.$el.children();
     expect($trs.length).toBe(1);

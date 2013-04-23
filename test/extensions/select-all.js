@@ -101,7 +101,7 @@ describe("A SelectAllHeaderCell", function () {
     collection.on("backgrid:select", function (model) {
       ids2 = ids2 + model.id;
     });
-    Backbone.trigger("backgrid:refresh");
+    collection.trigger("backgrid:refresh");
     collection.off("backgrid:select");
 
     expect(ids1).not.toBe('');

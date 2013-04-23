@@ -170,8 +170,8 @@ var Body = Backgrid.Body = Backbone.View.extend({
 
   /**
      Reinitialize all the rows inside the body and re-render them. Triggers a
-     Backbone `backgrid:refresh` event along with the body instance as its event
-     parameter when done.
+     Backbone `backgrid:refresh` event from the collection along with the body
+     instance as its sole parameter when done.
   */
   refresh: function () {
     for (var i = 0; i < this.rows.length; i++) {
@@ -190,7 +190,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
 
     this.render();
 
-    Backbone.trigger("backgrid:refresh", this);
+    this.collection.trigger("backgrid:refresh", this);
 
     return this;
   },

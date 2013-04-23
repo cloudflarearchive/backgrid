@@ -44,7 +44,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
     if (!(this.column instanceof Column)) {
       this.column = new Column(this.column);
     }
-    this.listenTo(Backbone, "backgrid:sort", this._resetCellDirection);
+    this.listenTo(this.collection, "backgrid:sort", this._resetCellDirection);
   },
 
   /**
@@ -129,7 +129,9 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
      Backbone.PageableCollection, sorting will be done globally on all the pages
      and the current page will then be returned.
 
-     Triggers a Backbone `backgrid:sort` event when done.
+     Triggers a Backbone `backgrid:sort` event from the collection when done
+     with the column name, direction, comparator and a reference to the
+     collection.
 
      @param {string} columnName
      @param {null|"ascending"|"descending"} direction
@@ -164,17 +166,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
       collection.sort();
     }
 
-    /**
-       Global Backbone event. Fired when the sorter is clicked on a sortable
-       column.
-
-       @event backgrid:sort
-       @param {string} columnName
-       @param {null|"ascending"|"descending"} direction
-       @param {function(*, *): number} comparator A Backbone.Collection#comparator.
-       @param {Backbone.Collection} collection
-    */
-    Backbone.trigger("backgrid:sort", columnName, direction, comparator, this.collection);
+    this.collection.trigger("backgrid:sort", columnName, direction, comparator, this.collection);
   },
 
   /**
