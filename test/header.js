@@ -65,7 +65,42 @@ describe("A HeaderCell", function () {
     expect(cell.collection.toJSON()).toEqual([{id: 2}, {id: 1}, {id: 3}]);
   });
 
-  it("can sort on a client-side Backbone.PageableCollection", function () {
+  it("can sort on a server-mode Backbone.PageableCollection", function () {
+
+    var oldAjax = $.ajax;
+    $.ajax = function (settings) {
+      settings.success([{"total_entries": 3}, [{id: 2}, {id: 1}]]);
+    };
+
+    var books = new Backbone.PageableCollection([{id: 1}, {id: 2}], {
+      url: "test-headercell",
+      state: {
+        pageSize: 3
+      }
+    });
+
+    cell = new Backgrid.HeaderCell({
+      column: {
+        name: "title",
+        cell: "string"
+      },
+      collection: books
+    });
+
+    cell.render();
+
+    expect(cell.collection.at(0).get("id")).toBe(1);
+    expect(cell.collection.at(1).get("id")).toBe(2);
+
+    cell.$el.find("a").click().click();
+
+    expect(cell.collection.at(0).get("id")).toBe(2);
+    expect(cell.collection.at(1).get("id")).toBe(1);
+
+    $.ajax = oldAjax;
+  });
+
+  it("can sort on a client-mode Backbone.PageableCollection", function () {
 
     var books = new Backbone.PageableCollection([{
       title: "Alice's Adventures in Wonderland"
@@ -181,7 +216,6 @@ describe("A HeaderRow", function () {
         }]
       });
     }).toThrow(new TypeError("'collection' is required"));
-    
   });
 
   it("renders a row of header cells", function () {

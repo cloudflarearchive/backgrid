@@ -159,7 +159,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
         }
         collection.fullCollection.sort();
       }
-      else collection.fetch();
+      else collection.fetch({reset: true});
     }
     else {
       collection.comparator = comparator;
