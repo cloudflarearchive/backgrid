@@ -2303,15 +2303,6 @@ Docs = {
         "sort": 3
       },
       {
-        "name": "backgrid",
-        "fullName": "Backgrid.HeaderCell.backgrid",
-        "icon": "icon-event",
-        "url": "#!/api/Backgrid.HeaderCell-event-backgrid",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
         "name": "_cidComparator",
         "fullName": "Backgrid.HeaderCell._cidComparator",
         "icon": "icon-method",

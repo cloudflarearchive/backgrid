@@ -47,7 +47,7 @@ function lpad(str, length, padstr) {
 
 var Backgrid = root.Backgrid = {
 
-  VERSION: "0.2.0",
+  VERSION: "0.2.5",
 
   Extension: {},
 
