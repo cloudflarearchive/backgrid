@@ -127,6 +127,29 @@ describe("A TextareaEditor", function () {
       expect(backgridEditedTriggerArgs[2].passThru()).toBe(true);
     });
 
+    runs(function () {
+      confirmArgs = null;
+      window.confirm = function () {
+        confirmArgs = [].slice.call(arguments);
+        return false;
+      };
+      editor.model.unset("name");
+      editor.render();
+      editor.$el.find(".close").click();
+      expect(confirmArgs).toBeNull();
+    });
+
+    waitsFor(function () {
+      return backgridEditedTriggerCount === 3;
+    }, "backgrid:edited was triggered", 1000);
+
+    runs(function () {
+      expect(editor.model.get(editor.column.get("name"))).toBeUndefined();
+      expect(backgridEditedTriggerArgs[0]).toBe(editor.model);
+      expect(backgridEditedTriggerArgs[1]).toBe(editor.column);
+      expect(backgridEditedTriggerArgs[2].passThru()).toBe(true);
+    });
+
     window.confirm = oldConfirm;
   });
 

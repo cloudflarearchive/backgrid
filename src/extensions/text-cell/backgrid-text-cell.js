@@ -103,7 +103,7 @@
       var content = this.formatter.toRaw(this.$el.find("textarea").val());
 
       // Dirty
-      if (content !== this.model.get(this.column.get("name")).replace(/\r/g, '') &&
+      if (content !== (this.model.get(this.column.get("name")) || '').replace(/\r/g, '') &&
           window.confirm("Would you like to save your changes?")) {
         e.preventDefault();
         e.stopPropagation();
