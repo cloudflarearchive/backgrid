@@ -631,22 +631,20 @@ describe("A BooleanCell", function () {
       backgridEditedTriggerArgs = [].slice.call(arguments);
     });
 
-    runs(function () {
-      cell.render();
-      cell.$el.click();
-      cell.$el.find(":checkbox").blur();
-    });
+    cell.render();
+    cell.$el.click();
+    cell.$el.find(":checkbox").blur();
+    expect(backgridEditedTriggerCount).toBe(1);
+    expect(backgridEditedTriggerArgs[0]).toBe(cell.model);
+    expect(backgridEditedTriggerArgs[1]).toBe(cell.column);
+    expect(backgridEditedTriggerArgs[2].passThru()).toBe(true);
+    expect(cell.$el.find(":checkbox").prop("checked")).toBe(true);
 
-    waitsFor(function () {
-      return backgridEditedTriggerCount === 1;
-    }, "the backgrid:edited handler to have been called", 60);
-
-    runs(function () {
-      expect(backgridEditedTriggerArgs[0]).toBe(cell.model);
-      expect(backgridEditedTriggerArgs[1]).toBe(cell.column);
-      expect(backgridEditedTriggerArgs[2].passThru()).toBe(true);
-      expect(cell.$el.find(":checkbox").prop("checked")).toBe(true);
-    });
+    cell.render();
+    cell.$el.click();
+    cell.currentEditor.$el.mousedown();
+    cell.$el.find(":checkbox").blur();
+    expect(backgridEditedTriggerCount).toBe(1);
   });
 
   it("saves a boolean value to the model when the checkbox is toggled", function () {

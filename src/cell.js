@@ -583,7 +583,13 @@ var BooleanCellEditor = Backgrid.BooleanCellEditor = CellEditor.extend({
 
   /** @property */
   events: {
+    "mousedown": function () {
+      this.mouseDown = true;
+    },
     "blur": "enterOrExitEditMode",
+    "mouseup": function () {
+      this.mouseDown = false;
+    },
     "change": "saveOrCancel",
     "keydown": "saveOrCancel"
   },
@@ -603,20 +609,17 @@ var BooleanCellEditor = Backgrid.BooleanCellEditor = CellEditor.extend({
      `change` and `click` on a checkbox.
   */
   enterOrExitEditMode: function (e) {
-    var valBeforeBlur = this.$el.prop("checked");
-    var self = this;
-    var model = this.model;
-    var timeout = window.setTimeout(function () {
-      if (self.$el.prop("checked") != valBeforeBlur) self.$el.focus();
-      else model.trigger("backgrid:edited", model, self.column, new Command(e));
-      window.clearTimeout(timeout);
-    }, 50);
+    if (!this.mouseDown) {
+      var model = this.model;
+      model.trigger("backgrid:edited", model, this.column, new Command(e));
+    }
   },
 
   /**
      Event handler. Save the value into the model if the event is `change` or
      one of the keyboard navigation key presses. Exit edit mode without saving
      if `escape` was pressed.
+
   */
   saveOrCancel: function (e) {
     var model = this.model;
@@ -630,17 +633,19 @@ var BooleanCellEditor = Backgrid.BooleanCellEditor = CellEditor.extend({
       model.trigger("backgrid:edited", model, column, command);
     }
 
+    var $el = this.$el;
     if (command.save() || command.moveLeft() || command.moveRight() || command.moveUp() ||
         command.moveDown()) {
       e.preventDefault();
       e.stopPropagation();
-      var val = formatter.toRaw(this.$el.prop("checked"));
+      var val = formatter.toRaw($el.prop("checked"));
       model.set(column.get("name"), val);
       model.trigger("backgrid:edited", model, column, command);
     }
     else if (e.type == "change") {
-      var val = formatter.toRaw(this.$el.prop("checked"));
+      var val = formatter.toRaw($el.prop("checked"));
       model.set(column.get("name"), val);
+      $el.focus();
     }
   }
 
