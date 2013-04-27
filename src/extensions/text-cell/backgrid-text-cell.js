@@ -112,7 +112,7 @@
     },
 
     /**
-       Triggers a `backgrid:done` event along with the cell editor as the
+       Triggers a `backgrid:edited` event along with the cell editor as the
        parameter after the modal is hidden.
 
        @param {Event} e
