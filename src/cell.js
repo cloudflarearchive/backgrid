@@ -228,7 +228,7 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
     if (!(this.column instanceof Column)) {
       this.column = new Column(this.column);
     }
-    this.formatter = Backgrid.resolveNameToClass(this.formatter, "Formatter");
+    this.formatter = Backgrid.resolveNameToClass(this.column.get("formatter") || this.formatter, "Formatter");
     this.editor = Backgrid.resolveNameToClass(this.editor, "CellEditor");
     this.listenTo(this.model, "change:" + this.column.get("name"), function () {
       if (!this.$el.hasClass("editor")) this.render();
@@ -619,7 +619,6 @@ var BooleanCellEditor = Backgrid.BooleanCellEditor = CellEditor.extend({
      Event handler. Save the value into the model if the event is `change` or
      one of the keyboard navigation key presses. Exit edit mode without saving
      if `escape` was pressed.
-
   */
   saveOrCancel: function (e) {
     var model = this.model;

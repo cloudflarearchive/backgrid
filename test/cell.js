@@ -5,7 +5,7 @@
   Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
   Licensed under the MIT @license.
 */
-describe("An CellEditor", function () {
+describe("A CellEditor", function () {
 
   it("throws TypeError if a formatter is not given", function () {
     expect(function () {
@@ -255,6 +255,31 @@ describe("A Cell", function () {
         model: book
       });
     }).toThrow(new ReferenceError("Class 'NosuchformatterFormatter' not found"));
+  });
+
+  it("uses the formatter from the column if one is given", function () {
+
+    var formatter = {
+      fromRaw: function (rawValue) {
+        return rawValue;
+      },
+      toRaw: function (formattedValue) {
+        return formattedValue;
+      }
+    };
+
+    column = {
+      name: "title",
+      cell: "string",
+      formatter: formatter
+    };
+
+    cell = new Backgrid.Cell({
+      model: book,
+      column: column
+    });
+
+    expect(cell.formatter).toBe(formatter);
   });
 
   it("renders a td with the model value formatted for display", function () {
