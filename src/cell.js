@@ -138,16 +138,7 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
       var val = this.$el.val();
       var newValue = formatter.toRaw(val);
       if (_.isUndefined(newValue)) {
-
         model.trigger("backgrid:error", model, column, val);
-
-        if (blurred) {
-          var self = this;
-          var timeout = window.setTimeout(function () {
-            self.$el.focus();
-            window.clearTimeout(timeout);
-          }, 1);
-        }
       }
       else {
         model.set(column.get("name"), newValue);
