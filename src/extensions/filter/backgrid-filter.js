@@ -148,21 +148,20 @@
       this._debounceMethods(["search", "clear"]);
 
       var collection = this.collection;
-      this.shadowCollection = collection.clone();
-      this.shadowCollection.url = collection.url;
-      this.shadowCollection.sync = collection.sync;
+      var shadowCollection = this.shadowCollection = collection.clone();
+      shadowCollection.url = collection.url;
+      shadowCollection.sync = collection.sync;
+      shadowCollection.parse = collection.parse;
 
       this.listenTo(collection, "add", function (model, collection, options) {
-        this.shadowCollection.add(model, options);
+        shadowCollection.add(model, options);
       });
       this.listenTo(collection, "remove", function (model, collection, options) {
-        this.shadowCollection.remove(model, options);
+        shadowCollection.remove(model, options);
       });
       this.listenTo(collection, "sort reset", function (collection, options) {
         options = _.extend({reindex: true}, options || {});
-        if (options.reindex) {
-          this.shadowCollection.reset(collection.models);
-        }
+        if (options.reindex) shadowCollection.reset(collection.models);
       });
     },
 
