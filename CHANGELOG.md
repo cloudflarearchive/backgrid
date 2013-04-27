@@ -1,3 +1,37 @@
+### 0.2.5
+New Features
+
+- Keyboard Navigation. [Issue #3](https://github.com/wyuenho/backgrid/issues/3)
+
+Bug Fixes and Improvements
+
+- Select2Cell is now compatible with select2
+  3.3.x. [Issue #89](https://github.com/wyuenho/backgrid/issues/89)
+- MomentCell is now compatible with moment.js
+  2.0.0. [Issue #80](https://github.com/wyuenho/backgrid/issues/80)
+- Various bug fixes in backbone-pageable 1.2.1 and
+  1.2.2. [Issue #110](https://github.com/wyuenho/backgrid/issues/110)
+- Stop propagation of DOM events in
+  cells. [Issue #118](https://github.com/wyuenho/backgrid/issues/118)
+- Fix sorting issue with server mode PageableCollection when using Backbone
+  1.0+. [Issue #132](https://github.com/wyuenho/backgrid/issues/132)
+- Fix bug where passing any other View constructor options other than `model`
+  and `collection` will override the view options of all the other direct
+  subviews'. [Issue #137](https://github.com/wyuenho/backgrid/issues/132)
+- TextCell doesn't throw an error anymore when cancelling editing an undefined
+  model attribute. [Issue #142](https://github.com/wyuenho/backgrid/issues/142)
+- Switching focus on two different cells with invalid attributes no long content
+  for focus. [Issue #144](https://github.com/wyuenho/backgrid/issues/144)
+- Setting a formatter in column definition should override the cell class'
+  formatter. (Regression)
+  [Issue #140](https://github.com/wyuenho/backgrid/issues/140)
+- Reorganized Backgrid events, all inter-View Backgrid events will now only be
+  triggered from the model and/or collection. (Breaking Change)
+  [Issue #131](https://github.com/wyuenho/backgrid/issues/131)
+- Paginator no longer derives from Footer and is now a stand-alone widget
+  instead. (Breaking Change)
+  [Issue #120](https://github.com/wyuenho/backgrid/issues/120)
+
 ### 0.2.0
 - SelectAll
   extension. [Issue #18](https://github.com/wyuenho/backgrid/issues/18)
