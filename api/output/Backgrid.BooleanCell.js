@@ -133,7 +133,7 @@ Ext.data.JsonP.Backgrid_BooleanCell({
 
     ]
   },
-  "linenr": 649,
+  "linenr": 644,
   "files": [
     {
       "filename": "cell.js",
