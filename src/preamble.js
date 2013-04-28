@@ -184,18 +184,14 @@ _.extend(View.prototype, Backbone.Events, {
   },
 
   empty: function () {
-    if (this.$el) this.$el.remove();
-    else {
-      var el = this.el;
-      while (el.hasChildNodes()) {
-        el.removeChild(el.firstChild);
-      }
-    }
+    var el = this.el;
+    while (el.firstChild) el.removeChild(el.firstChild);
     return this;
   },
 
   remove: function() {
-    this.empty();
+    if (this.$el) this.$el.remove();
+    else if (this.el.parentNode) this.el.parentNode.removeChild(this.el);
     this.stopListening();
     return this;
   },
