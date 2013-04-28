@@ -17,7 +17,7 @@ Bug Fixes and Improvements
   1.0+. [Issue #132](https://github.com/wyuenho/backgrid/issues/132)
 - Fix bug where passing any other View constructor options other than `model`
   and `collection` will override the view options of all the other direct
-  subviews'. [Issue #137](https://github.com/wyuenho/backgrid/issues/132)
+  subviews'. [Issue #137](https://github.com/wyuenho/backgrid/issues/137)
 - TextCell doesn't throw an error anymore when cancelling editing an undefined
   model attribute. [Issue #142](https://github.com/wyuenho/backgrid/issues/142)
 - Switching focus on two different cells with invalid attributes no long content
