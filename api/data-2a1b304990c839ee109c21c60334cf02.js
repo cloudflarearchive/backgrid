@@ -3,13 +3,13 @@ Docs = {
     "classes": [
       {
         "name": "Backgrid.Body",
-        "extends": "Backbone.View",
+        "extends": "Backgrid.View",
         "private": null,
         "icon": "icon-class"
       },
       {
         "name": "Backgrid.CellEditor",
-        "extends": "Backbone.View",
+        "extends": "Backgrid.View",
         "private": null,
         "icon": "icon-class"
       },
@@ -21,7 +21,7 @@ Docs = {
       },
       {
         "name": "Backgrid.Cell",
-        "extends": "Backbone.View",
+        "extends": "Backgrid.View",
         "private": null,
         "icon": "icon-class"
       },
@@ -147,7 +147,7 @@ Docs = {
       },
       {
         "name": "Backgrid.Extension.SelectRowCell",
-        "extends": "Backbone.View",
+        "extends": "Backgrid.View",
         "private": null,
         "icon": "icon-class"
       },
@@ -183,7 +183,7 @@ Docs = {
       },
       {
         "name": "Backgrid.Footer",
-        "extends": "Backbone.View",
+        "extends": "Backgrid.View",
         "private": null,
         "icon": "icon-class"
       },
@@ -219,13 +219,13 @@ Docs = {
       },
       {
         "name": "Backgrid.Grid",
-        "extends": "Backbone.View",
+        "extends": "Backgrid.View",
         "private": null,
         "icon": "icon-class"
       },
       {
         "name": "Backgrid.HeaderCell",
-        "extends": "Backbone.View",
+        "extends": "Backgrid.View",
         "private": null,
         "icon": "icon-class"
       },
@@ -237,7 +237,7 @@ Docs = {
       },
       {
         "name": "Backgrid.Header",
-        "extends": "Backbone.View",
+        "extends": "Backgrid.View",
         "private": null,
         "icon": "icon-class"
       },
@@ -248,14 +248,20 @@ Docs = {
         "icon": "icon-class"
       },
       {
+        "name": "Backgrid.View",
+        "extends": null,
+        "private": null,
+        "icon": "icon-class"
+      },
+      {
         "name": "Backgrid.Row",
-        "extends": "Backbone.View",
+        "extends": "Backgrid.View",
         "private": null,
         "icon": "icon-class"
       },
       {
         "name": "Backgrid.EmptyRow",
-        "extends": "Backbone.View",
+        "extends": "Backgrid.View",
         "private": null,
         "icon": "icon-class"
       }
@@ -2464,6 +2470,24 @@ Docs = {
         "fullName": "Backgrid.Command.passThru",
         "icon": "icon-method",
         "url": "#!/api/Backgrid.Command-method-passThru",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "View",
+        "fullName": "Backgrid.View",
+        "icon": "icon-class",
+        "url": "#!/api/Backgrid.View",
+        "meta": {
+        },
+        "sort": 1
+      },
+      {
+        "name": "constructor",
+        "fullName": "Backgrid.View.constructor",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.View-method-constructor",
         "meta": {
         },
         "sort": 3
