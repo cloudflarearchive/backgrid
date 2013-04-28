@@ -44,23 +44,23 @@ describe("A HeaderCell", function () {
 
   it("renders a table header cell with an anchor wrapping the label text and the sort caret", function () {
     expect(cell.el.tagName).toBe("TH");
-    expect(cell.$el.find("a").text()).toBe("id");
-    expect(cell.$el.find(".sort-caret").length).toBe(1);
+    expect($(cell.el).find("a").text()).toBe("id");
+    expect($(cell.el).find(".sort-caret").length).toBe(1);
   });
 
   it("sorts the underlying collection in ascending order upon clicking the sort caret once", function () {
-    cell.$el.find("a").click();
+    $(cell.el).find("a").click();
     expect(cell.collection.toJSON()).toEqual([{id: 1}, {id: 2}, {id: 3}]);
   });
 
   it("sorts the underlying collection in descending order upon clicking the sort caret twice", function () {
-    cell.$el.find("a").click().click();
+    $(cell.el).find("a").click().click();
     expect(cell.direction()).toBe("descending");
     expect(cell.collection.toJSON()).toEqual([{id: 3}, {id: 2}, {id: 1}]);
   });
 
   it("sorts the underlying collection in default order upon clicking the sort caret thrice", function () {
-    cell.$el.find("a").click().click().click();
+    $(cell.el).find("a").click().click().click();
     expect(cell.direction()).toBeNull();
     expect(cell.collection.toJSON()).toEqual([{id: 2}, {id: 1}, {id: 3}]);
   });
@@ -92,7 +92,7 @@ describe("A HeaderCell", function () {
     expect(cell.collection.at(0).get("id")).toBe(1);
     expect(cell.collection.at(1).get("id")).toBe(2);
 
-    cell.$el.find("a").click().click();
+    $(cell.el).find("a").click().click();
 
     expect(cell.collection.at(0).get("id")).toBe(2);
     expect(cell.collection.at(1).get("id")).toBe(1);
@@ -125,7 +125,7 @@ describe("A HeaderCell", function () {
 
     cell.render();
 
-    cell.$el.find("a").click();
+    $(cell.el).find("a").click();
 
     expect(cell.collection.toJSON()).toEqual([{
       title: "A Tale of Two Cities"
@@ -145,13 +145,13 @@ describe("A HeaderCell", function () {
 
     cell.collection.getFirstPage();
 
-    cell.$el.find("a").click();
+    $(cell.el).find("a").click();
 
     expect(cell.collection.toJSON()).toEqual([{
       title: "The Catcher in the Rye"
     }]);
 
-    cell.$el.find("a").click();
+    $(cell.el).find("a").click();
 
     expect(cell.collection.toJSON()).toEqual([{
       title: "Alice's Adventures in Wonderland"
@@ -219,31 +219,31 @@ describe("A HeaderRow", function () {
   });
 
   it("renders a row of header cells", function () {
-    expect(row.$el[0].tagName).toBe("TR");
-    expect(row.$el[0].innerHTML).toBe('<th><a>name<b class="sort-caret"></b></a></th>' +
+    expect($(row.el)[0].tagName).toBe("TR");
+    expect($(row.el)[0].innerHTML).toBe('<th><a>name<b class="sort-caret"></b></a></th>' +
                                       '<th><a>year<b class="sort-caret"></b></a></th>');
   });
 
   it("resets the carets of the non-sorting columns", function () {
-    row.$el.find("a").eq(0).click(); // ascending
-    row.$el.find("a").eq(1).click(); // ascending, resets the previous
-    expect(row.$el.find("a").eq(0).hasClass("ascending")).toBe(false);
-    expect(row.$el.find("a").eq(1).hasClass("ascending")).toBe(false);
+    $(row.el).find("a").eq(0).click(); // ascending
+    $(row.el).find("a").eq(1).click(); // ascending, resets the previous
+    expect($(row.el).find("a").eq(0).hasClass("ascending")).toBe(false);
+    expect($(row.el).find("a").eq(1).hasClass("ascending")).toBe(false);
   });
 
   it("inserts or removes a cell if a column is added or removed", function () {
     row.columns.add({name: "price", cell: "number"});
-    expect(row.$el.children().length).toBe(3);
-    expect(row.$el.children().last()[0].outerHTML).toBe('<th><a>price<b class="sort-caret"></b></a></th>');
+    expect($(row.el).children().length).toBe(3);
+    expect($(row.el).children().last()[0].outerHTML).toBe('<th><a>price<b class="sort-caret"></b></a></th>');
 
     row.columns.add({name: "publisher", cell: "string", renderable: false});
-    expect(row.$el.children().length).toBe(4);
-    expect(row.$el.children().last().find("a").text()).toBe("publisher");
-    expect(row.$el.children().last().css("display")).toBe("none");
+    expect($(row.el).children().length).toBe(4);
+    expect($(row.el).children().last().find("a").text()).toBe("publisher");
+    expect($(row.el).children().last().css("display")).toBe("none");
 
     row.columns.remove(row.columns.first());
-    expect(row.$el.children().length).toBe(3);
-    expect(row.$el.children().first()[0].outerHTML).toBe('<th><a>year<b class="sort-caret"></b></a></th>');
+    expect($(row.el).children().length).toBe(3);
+    expect($(row.el).children().first()[0].outerHTML).toBe('<th><a>year<b class="sort-caret"></b></a></th>');
   });
 
 });
@@ -306,8 +306,8 @@ describe("A Header", function () {
   });
 
   it("renders a header with a row of header cells", function () {
-    expect(head.$el[0].tagName).toBe("THEAD");
-    expect(head.$el[0].innerHTML).toBe('<tr><th><a>name<b class="sort-caret"></b></a></th>' +
+    expect($(head.el)[0].tagName).toBe("THEAD");
+    expect($(head.el)[0].innerHTML).toBe('<tr><th><a>name<b class="sort-caret"></b></a></th>' +
                                       '<th><a>year<b class="sort-caret"></b></a></th></tr>');
   });
 

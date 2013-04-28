@@ -28,29 +28,29 @@ describe("A ServerSideFilter", function () {
       placeholder: "placeholder"
     });
     filter.render();
-    expect(filter.$el.find(":text").attr("name")).toBe("name");
-    expect(filter.$el.find(":text").attr("placeholder")).toBe("placeholder");
+    expect($(filter.el).find(":text").attr("name")).toBe("name");
+    expect($(filter.el).find(":text").attr("placeholder")).toBe("placeholder");
 
     var filter = new Backgrid.Extension.ServerSideFilter({
       collection: collection,
       name: "name"
     });
     filter.render();
-    expect(filter.$el.find(":text").attr("placeholder")).toBeUndefined();
-    expect(filter.$el.find(":text").attr("name")).toBe("name");
+    expect($(filter.el).find(":text").attr("placeholder")).toBeUndefined();
+    expect($(filter.el).find(":text").attr("name")).toBe("name");
 
     var filter = new Backgrid.Extension.ServerSideFilter({
       collection: collection,
       placeholder: "placeholder"
     });
     filter.render();
-    expect(filter.$el.find(":text").attr("placeholder")).toBe("placeholder");
+    expect($(filter.el).find(":text").attr("placeholder")).toBe("placeholder");
 
     var filter = new Backgrid.Extension.ServerSideFilter({
       collection: collection
     });
     filter.render();
-    expect(filter.$el.find(":text").attr("placeholder")).toBeUndefined();
+    expect($(filter.el).find(":text").attr("placeholder")).toBeUndefined();
   });
 
   it("can fetch with a query on submit", function () {
@@ -64,8 +64,8 @@ describe("A ServerSideFilter", function () {
       collection: collection
     });
     filter.render();
-    filter.$el.find(":text").val("query");
-    filter.$el.submit();
+    $(filter.el).find(":text").val("query");
+    $(filter.el).submit();
     expect(url).toBe("http://www.example.com");
     expect(data).toEqual({q: "query"});
     expect(collection.length).toBe(1);
@@ -78,9 +78,9 @@ describe("A ServerSideFilter", function () {
       collection: collection
     });
     filter.render();
-    filter.$el.find(":text").val("query");
-    filter.$el.find(".close").click();
-    expect(filter.$el.find(":text").val()).toBe("");
+    $(filter.el).find(":text").val("query");
+    $(filter.el).find(".close").click();
+    expect($(filter.el).find(":text").val()).toBe("");
     collection.fetch.reset();
   });
 
@@ -114,7 +114,7 @@ describe("A ClientSideFilter", function () {
     });
 
     runs(function () {
-      filter.$el.find(":text").val("bob").change();
+      $(filter.el).find(":text").val("bob").change();
     });
     waitsFor(function () {
       return collection.length === 1;
@@ -124,7 +124,7 @@ describe("A ClientSideFilter", function () {
     });
 
     runs(function () {
-      filter.$el.find(".close").click();
+      $(filter.el).find(".close").click();
     });
     waitsFor(function () {
       return collection.length === 3;
@@ -136,8 +136,8 @@ describe("A ClientSideFilter", function () {
     });
 
     runs(function () {
-      filter.$el.find(":text").val("ALICE");
-      filter.$el.submit();
+      $(filter.el).find(":text").val("ALICE");
+      $(filter.el).submit();
     });
     waitsFor(function () {
       return collection.length === 1;
@@ -147,7 +147,7 @@ describe("A ClientSideFilter", function () {
     });
 
     runs(function () {
-      filter.$el.find(":text").val("al").keyup();
+      $(filter.el).find(":text").val("al").keyup();
     });
     waitsFor(function () {
       return collection.length === 2;
@@ -158,7 +158,7 @@ describe("A ClientSideFilter", function () {
     });
 
     runs(function () {
-      filter.$el.find(":text").val("alic bob").keyup();
+      $(filter.el).find(":text").val("alic bob").keyup();
     });
     waitsFor(function () {
       return collection.length === 3;
@@ -180,7 +180,7 @@ describe("A ClientSideFilter", function () {
       });
       filter.render();
       collection.add({id: 4, name: "doug"});
-      filter.$el.find(":text").val("doug").change();
+      $(filter.el).find(":text").val("doug").change();
     });
     waitsFor(function () {
       return collection.length === 1;
@@ -201,7 +201,7 @@ describe("A ClientSideFilter", function () {
       });
       filter.render();
       collection.remove(collection.at(0));
-      filter.$el.find(":text").val("alice").change();
+      $(filter.el).find(":text").val("alice").change();
     });
     waitsFor(function () {
       return collection.length === 0;
@@ -224,7 +224,7 @@ describe("A ClientSideFilter", function () {
       });
       filter.render();
       filter.collection.at(0).set("name", "charlie");
-      filter.$el.find(":text").val("charlie").change();
+      $(filter.el).find(":text").val("charlie").change();
     });
     waitsFor(function () {
       return collection.length === 1;
@@ -247,7 +247,7 @@ describe("A ClientSideFilter", function () {
       });
       filter.render();
       filter.collection.reset([{id: 4, name: "charlie"}, {id: 5, name: "doug"}]);
-      filter.$el.find(":text").val("").change();
+      $(filter.el).find(":text").val("").change();
     });
     waitsFor(function () {
       return collection.length === 2;
@@ -293,7 +293,7 @@ describe("A LunrFilter", function () {
     });
 
     runs(function () {
-      filter.$el.find(":text").val("crap").change();
+      $(filter.el).find(":text").val("crap").change();
     });
     waitsFor(function () {
       return collection.length === 1;
@@ -303,7 +303,7 @@ describe("A LunrFilter", function () {
     });
 
     runs(function () {
-      filter.$el.find(".close").click();
+      $(filter.el).find(".close").click();
     });
     waitsFor(function () {
       return collection.length === 2;
@@ -314,8 +314,8 @@ describe("A LunrFilter", function () {
     });
 
     runs(function () {
-      filter.$el.find(":text").val("alice");
-      filter.$el.submit();
+      $(filter.el).find(":text").val("alice");
+      $(filter.el).submit();
     });
     waitsFor(function () {
       return collection.length === 1;
@@ -325,7 +325,7 @@ describe("A LunrFilter", function () {
     });
 
     runs(function () {
-      filter.$el.find(":text").val("fat").keyup();
+      $(filter.el).find(":text").val("fat").keyup();
     });
     waitsFor(function () {
       return collection.length === 2;
@@ -353,21 +353,21 @@ describe("A LunrFilter", function () {
     });
 
     runs(function () {
-      filter.$el.find(":text").val("crap").change();
+      $(filter.el).find(":text").val("crap").change();
     });
     waitsFor(function () {
       return collection.length === 0;
     }, "collection.length to become 0", 500);
 
     runs(function () {
-      filter.$el.find(":text").val("alice").change();
+      $(filter.el).find(":text").val("alice").change();
     });
     waitsFor(function () {
       return collection.length === 0;
     }, "collection.length to become 0", 500);
 
     runs(function () {
-      filter.$el.find(":text").val("charlie").change();
+      $(filter.el).find(":text").val("charlie").change();
     });
     waitsFor(function () {
       return collection.length === 1;
@@ -377,7 +377,7 @@ describe("A LunrFilter", function () {
     });
 
     runs(function () {
-      filter.$el.find(":text").val("doug").change();
+      $(filter.el).find(":text").val("doug").change();
     });
     waitsFor(function () {
       return collection.length === 1 && collection.at(0).id === 4;
@@ -396,7 +396,7 @@ describe("A LunrFilter", function () {
     });
 
     runs(function () {
-      filter.$el.find(":text").val("charlie").change();
+      $(filter.el).find(":text").val("charlie").change();
     });
     waitsFor(function () {
       return collection.length === 1;
@@ -418,14 +418,14 @@ describe("A LunrFilter", function () {
     });
 
     runs(function () {
-      filter.$el.find(":text").val("bob").change();
+      $(filter.el).find(":text").val("bob").change();
     });
     waitsFor(function () {
       return collection.length === 0;
     }, "collection.length to become 0", 500);
 
     runs(function () {
-      filter.$el.find(":text").val("alice").change();
+      $(filter.el).find(":text").val("alice").change();
     });
     waitsFor(function () {
       return collection.length === 1;
@@ -448,14 +448,14 @@ describe("A LunrFilter", function () {
     });
 
     runs(function () {
-      filter.$el.find(":text").val("alice").change();
+      $(filter.el).find(":text").val("alice").change();
     });
     waitsFor(function () {
       return collection.length === 0;
     }, "collection.length to become 0", 500);
 
     runs(function () {
-      filter.$el.find(":text").val("charlie").change();
+      $(filter.el).find(":text").val("charlie").change();
     });
     waitsFor(function () {
       return collection.length === 1;
@@ -478,20 +478,20 @@ describe("A LunrFilter", function () {
     });
 
     runs(function() {
-      filter.$el.find(":text").val("crap").change();
+      $(filter.el).find(":text").val("crap").change();
     });
     waitsFor(function () {
       return collection.length === 1;
     }, "collection.length to become 1", 500);
 
     runs(function () {
-      filter.$el.find(".close").click();
+      $(filter.el).find(".close").click();
     });
     waitsFor(function () {
       return collection.length === 2;
     }, "collection.length to become 2", 500);
     runs(function () {
-      expect(filter.$el.find(":text").val()).toBe('');
+      expect($(filter.el).find(":text").val()).toBe('');
       expect(collection.at(0).id).toBe(1);
       expect(collection.at(1).id).toBe(2);
     });

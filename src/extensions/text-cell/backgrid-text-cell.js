@@ -16,6 +16,8 @@
   */
   var TextareaEditor = Backgrid.Extension.TextareaEditor = Backgrid.CellEditor.extend({
 
+    use$: true,
+
     /** @property */
     tagName: "div",
 

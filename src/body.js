@@ -11,9 +11,9 @@
    responsible for refreshing the rows after sorting, insertion and removal.
 
    @class Backgrid.Body
-   @extends Backbone.View
+   @extends Backgrid.View
 */
-var Body = Backgrid.Body = Backbone.View.extend({
+var Body = Backgrid.Body = Backgrid.View.extend({
 
   /** @property */
   tagName: "tbody",
@@ -113,16 +113,16 @@ var Body = Backgrid.Body = Backbone.View.extend({
     var index = collection.indexOf(model);
     this.rows.splice(index, 0, row);
 
-    var $el = this.$el;
-    var $children = $el.children();
-    var $rowEl = row.render().$el;
+    var el = this.el;
+    var children = el.childNodes();
+    var rowEl = row.render().el;
 
     if (options.render) {
-      if (index >= $children.length) {
-        $el.append($rowEl);
+      if (index >= children.length) {
+        el.appendChild(rowEl);
       }
       else {
-        $children.eq(index).before($rowEl);
+        el.insertBefore(rowEl, children[index]);
       }
     }
   },
@@ -201,7 +201,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
      row is rendered, otherwise no row is rendered.
   */
   render: function () {
-    this.$el.empty();
+    this.empty();
 
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < this.rows.length; i++) {
@@ -226,7 +226,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
       var row = this.rows[i];
       row.remove.apply(row, arguments);
     }
-    return Backbone.View.prototype.remove.apply(this, arguments);
+    return Backgrid.View.prototype.remove.apply(this, arguments);
   },
 
   /**

@@ -150,3 +150,150 @@ _.extend(Command.prototype, {
   }
 });
 
+var viewOptions = ['model', 'collection', 'el', 'id', 'attributes', 'className', 'tagName', 'events'];
+
+/**
+   @class Backgrid.View
+   @constructor
+ */
+var View = Backgrid.View = function(options) {
+  this.cid = _.uniqueId('view');
+  this.options = options = options || {};
+  _.extend(this, _.pick(options, viewOptions));
+  this._ensureElement(options);
+  this.initialize.apply(this, arguments);
+  this.delegateEvents();
+};
+
+var delegateEventSplitter = /^(\S+)\s*(.*)$/;
+
+_.extend(View.prototype, Backbone.Events, {
+
+  use$: false,
+
+  tagName: 'div',
+
+  $: function(selector) {
+    return this.$el ? this.$el.find(selector) : this.el.querySelectorAll(selector);
+  },
+
+  initialize: function(){},
+
+  render: function() {
+    return this;
+  },
+
+  empty: function () {
+    if (this.$el) this.$el.remove();
+    else {
+      var el = this.el;
+      while (el.hasChildNodes()) {
+        el.removeChild(el.firstChild);
+      }
+    }
+    return this;
+  },
+
+  remove: function() {
+    this.empty();
+    this.stopListening();
+    return this;
+  },
+
+  setElement: function(element, options) {
+    options = _.extend({use$: Backbone.$ && this.use$, delegate: true}, options || {});
+    var delegate = options.delegate;
+    if (this.el) this.undelegateEvents();
+    this.el = element;
+    if (options.use$) this.$el = Backbone.$(element);
+    if (delegate !== false) this.delegateEvents();
+    return this;
+  },
+
+  _processEvents: function(events, func) {
+    for (var key in events) {
+      var method = events[key];
+      if (!_.isFunction(method)) method = this[events[key]];
+      if (!method) continue;
+
+      method = _.bind(method, this);
+      var match = key.match(delegateEventSplitter);
+      func(match[1], match[2], method);
+    }
+  },
+
+  delegateEvents: function(events) {
+    if (!(events || (events = _.result(this, 'events')))) return this;
+    this.undelegateEvents();
+    var el = this.el, $el = this.$el, cid = this.cid;
+    this._processEvents(events, function (eventName, selector, method) {
+      var namespacedEventName = eventName + '.delegateEvents' + cid;
+      if (selector === '') {
+        if ($el) $el.on(namespacedEventName, method);
+        else if (el.addEventListener) el.addEventListener(eventName, method);
+        else if (el.attachEvent) el.attachEvent('on' + eventName, method);
+      } else {
+        if ($el) $el.on(namespacedEventName, selector, method);
+        else {
+          var descendants = el.querySelectorAll(selector);
+          for (var i = 0, l = descendants.length; i < l; i++) {
+            var descendant = descendants[i];
+            if (el.addEventListener) {
+              descendant.addEventListener(eventName, method);
+            }
+            else if (el.attachEvent) {
+              descendant.attachEvent('on' + eventName, method);
+            }
+          }
+        }
+      }
+    });
+    return this;
+  },
+
+  undelegateEvents: function() {
+    var events = _.result(this, 'events');
+    if (!events) return this;
+    if (this.$el) this.$el.off('.delegateEvents' + this.cid);
+    else {
+      var el = this.el;
+      this._processEvents(events, function (eventName, selector, method) {
+        if (selector === '') {
+          if (el.removeEventListener) el.removeEventListener(eventName, method);
+          if (el.detachEvent) el.detachEvent('on' + eventName, method);
+        } else {
+          var descendants = el.querySelectorAll(selector);
+          for (var i = 0, l = descendants.length; i < l; i++) {
+            var descendant = descendants[i];
+            if (el.removeEventListener) {
+              descendant.removeEventListener(eventName, method);
+            }
+            else if (el.detachEvent) {
+              descendant.detachEvent('on' + eventName, method);
+            }
+          }
+        }
+      });
+    }
+    return this;
+  },
+
+  _ensureElement: function(options) {
+    options = _.extend(options, {delegate: false});
+    if (!this.el) {
+      var el = this.el = window.document.createElement(this.tagName);
+      var attrs = _.extend({}, _.result(this, 'attributes'));
+      if (this.id) attrs.id = _.result(this, 'id');
+      if (this.className) attrs['class'] = _.result(this, 'className');
+      for (var k in attrs) {
+        el.setAttribute(k, attrs[k]);
+      }
+      this.setElement(el, options);
+    } else {
+      this.setElement(_.result(this, 'el'), options);
+    }
+  }
+
+});
+
+View.extend = Backbone.View.extend;

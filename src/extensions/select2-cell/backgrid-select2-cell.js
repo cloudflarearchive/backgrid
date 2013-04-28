@@ -6,7 +6,7 @@
   Licensed under the MIT @license.
 */
 
-(function (window, $, _, Backbone, Backgrid)  {
+(function (_, Backbone, Backgrid)  {
 
   /**
      Select2CellEditor is a cell editor that renders a `select2` select box
@@ -20,6 +20,8 @@
      @extends Backgrid.SelectCellEditor
    */
   var Select2CellEditor = Backgrid.Extension.Select2CellEditor = Backgrid.SelectCellEditor.extend({
+
+    use$: true,
 
     /** @property */
     events: {
@@ -118,4 +120,4 @@
 
   });
 
-}(window, jQuery, _, Backbone, Backgrid));
+}(_, Backbone, Backgrid));

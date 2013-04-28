@@ -12,9 +12,9 @@
    refresh after sorting.
 
    @class Backgrid.HeaderCell
-   @extends Backbone.View
+   @extends Backgrid.View
  */
-var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
+var HeaderCell = Backgrid.HeaderCell = Backgrid.View.extend({
 
   /** @property */
   tagName: "th",
@@ -57,8 +57,8 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
    */
   direction: function (dir) {
     if (arguments.length) {
-      if (this._direction) this.$el.removeClass(this._direction);
-      if (dir) this.$el.addClass(dir);
+      if (this._direction) this.el.classList.remove(this._direction);
+      if (dir) this.el.classList.add(dir);
       this._direction = dir;
     }
 
@@ -192,9 +192,14 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
      Renders a header cell with a sorter and a label.
    */
   render: function () {
-    this.$el.empty();
-    var $label = $("<a>").text(this.column.get("label")).append("<b class='sort-caret'></b>");
-    this.$el.append($label);
+    this.empty();
+    var doc = window.document;
+    var label = doc.createElement("a");
+    label.appendChild(doc.createTextNode(this.column.get("label")));
+    var caret = doc.createElement("b");
+    caret.className = "sort-caret";
+    label.appendChild(caret);
+    this.el.appendChild(label);
     this.delegateEvents();
     return this;
   }
@@ -243,9 +248,9 @@ var HeaderRow = Backgrid.HeaderRow = Backgrid.Row.extend({
    single row of header cells.
 
    @class Backgrid.Header
-   @extends Backbone.View
+   @extends Backgrid.View
  */
-var Header = Backgrid.Header = Backbone.View.extend({
+var Header = Backgrid.Header = Backgrid.View.extend({
 
   /** @property */
   tagName: "thead",
@@ -278,7 +283,7 @@ var Header = Backgrid.Header = Backbone.View.extend({
      Renders this table head with a single row of header cells.
    */
   render: function () {
-    this.$el.append(this.row.render().$el);
+    this.el.appendChild(this.row.render().el);
     this.delegateEvents();
     return this;
   },
@@ -290,7 +295,7 @@ var Header = Backgrid.Header = Backbone.View.extend({
    */
   remove: function () {
     this.row.remove.apply(this.row, arguments);
-    return Backbone.View.prototype.remove.apply(this, arguments);
+    return Backgrid.View.prototype.remove.apply(this, arguments);
   }
 
 });

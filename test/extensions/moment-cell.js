@@ -197,13 +197,13 @@ describe("A MomentCell", function () {
   });
 
   it("applies a moment-cell class to the cell", function () {
-    expect(cell.render().$el.hasClass("moment-cell")).toBe(true);
+    expect($(cell.render().el).hasClass("moment-cell")).toBe(true);
   });
 
   it("renders a placeholder for the input format for the editor", function () {
     cell.render();
     cell.$el.click();
-    expect(cell.currentEditor.$el.attr("placeholder")).toBe(Backgrid.Extension.MomentFormatter.prototype.defaults.displayFormat);
+    expect($(cell.currentEditor.el).attr("placeholder")).toBe(Backgrid.Extension.MomentFormatter.prototype.defaults.displayFormat);
   });
 
 });

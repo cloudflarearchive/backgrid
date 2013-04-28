@@ -24,7 +24,7 @@ describe("A TextCell", function () {
 
   it("applies a text-cell class to the cell", function () {
     cell.render();
-    expect(cell.$el.hasClass("text-cell")).toBe(true);
+    expect($(cell.el).hasClass("text-cell")).toBe(true);
   });
 
 });
@@ -71,13 +71,13 @@ describe("A TextareaEditor", function () {
   });
 
   it("renders a dialog form with a textarea, a submit button and close button according to config", function () {
-    expect(editor.$el.find("form").length).toBe(1);
-    expect(editor.$el.find("form textarea").length).toBe(1);
-    expect(editor.$el.find("form textarea").html()).toBe("name &lt;script&gt;&lt;/script&gt;");
-    expect(editor.$el.find("form input[type=submit]").length).toBe(1);
-    expect(editor.$el.find("button.close").length).toBe(1);
-    expect(editor.$el.find("form textarea").prop("cols")).toBe(Backgrid.Extension.TextareaEditor.prototype.cols);
-    expect(editor.$el.find("form textarea").prop("rows")).toBe(Backgrid.Extension.TextareaEditor.prototype.rows);
+    expect($(editor.el).find("form").length).toBe(1);
+    expect($(editor.el).find("form textarea").length).toBe(1);
+    expect($(editor.el).find("form textarea").html()).toBe("name &lt;script&gt;&lt;/script&gt;");
+    expect($(editor.el).find("form input[type=submit]").length).toBe(1);
+    expect($(editor.el).find("button.close").length).toBe(1);
+    expect($(editor.el).find("form textarea").prop("cols")).toBe(Backgrid.Extension.TextareaEditor.prototype.cols);
+    expect($(editor.el).find("form textarea").prop("rows")).toBe(Backgrid.Extension.TextareaEditor.prototype.rows);
   });
 
   it("asks for confirmation if textarea is dirty when canceling", function () {
@@ -89,8 +89,8 @@ describe("A TextareaEditor", function () {
         confirmArgs = [].slice.call(arguments);
         return false;
       };
-      editor.$el.find("textarea").val("name\r");
-      editor.$el.find(".close").click();
+      $(editor.el).find("textarea").val("name\r");
+      $(editor.el).find(".close").click();
       expect(confirmArgs[0]).toBe("Would you like to save your changes?");
     });
 
@@ -111,8 +111,8 @@ describe("A TextareaEditor", function () {
         return true;
       };
       editor.render();
-      editor.$el.find("textarea").val("name\r");
-      editor.$el.find(".close").click();
+      $(editor.el).find("textarea").val("name\r");
+      $(editor.el).find(".close").click();
       expect(confirmArgs[0]).toBe("Would you like to save your changes?");
     });
 
@@ -135,7 +135,7 @@ describe("A TextareaEditor", function () {
       };
       editor.model.unset("name");
       editor.render();
-      editor.$el.find(".close").click();
+      $(editor.el).find(".close").click();
       expect(confirmArgs).toBeNull();
     });
 
@@ -154,8 +154,8 @@ describe("A TextareaEditor", function () {
   });
 
   it("saves the text from the textarea to the model and trigger 'backgrid:edited' from the model when the form is submitted", function () {
-    editor.$el.find("textarea").val("another name");
-    editor.$el.find("form").submit();
+    $(editor.el).find("textarea").val("another name");
+    $(editor.el).find("form").submit();
     waitsFor(function () {
       return backgridEditedTriggerCount === 1;
     });
@@ -170,8 +170,8 @@ describe("A TextareaEditor", function () {
 
   it("triggers 'backgrid:error' from the model if the formatter returns undefined", function () {
     editor.formatter.toRaw = function () {};
-    editor.$el.find("textarea").val("another name");
-    editor.$el.find("form").submit();
+    $(editor.el).find("textarea").val("another name");
+    $(editor.el).find("form").submit();
     expect(backgridErrorTriggerCount).toBe(1);
     expect(backgridErrorTriggerArgs[0]).toBe(editor.model);
     expect(backgridErrorTriggerArgs[1]).toBe(editor.column);

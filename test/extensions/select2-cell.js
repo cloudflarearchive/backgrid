@@ -49,7 +49,7 @@ describe("A Select2CellEditor", function () {
     editor.setOptionValues(optionValues);
     editor.render();
     expect(editor.el.tagName).toBe("SELECT");
-    var $options = editor.$el.children();
+    var $options = $(editor.el).children();
     expect($options.length).toBe(2);
     expect($options.eq(0).val()).toBe("1");
     expect($options.eq(0).prop("selected")).toBe(false);
@@ -77,7 +77,7 @@ describe("A Select2CellEditor", function () {
     });
     editor.render();
     expect(editor.el.tagName).toBe("SELECT");
-    var $options = editor.$el.children();
+    var $options = $(editor.el).children();
     expect($options.length).toBe(2);
     expect($options.eq(0).val()).toBe("1");
     expect($options.eq(0).prop("selected")).toBe(false);
@@ -102,7 +102,7 @@ describe("A Select2CellEditor", function () {
 
     editor.setOptionValues(optionGroupValues);
     editor.render();
-    var $optionGroups = editor.$el.children();
+    var $optionGroups = $(editor.el).children();
     expect($optionGroups.length).toBe(2);
 
     var $group1 = $optionGroups.eq(0);
@@ -151,7 +151,7 @@ describe("A Select2CellEditor", function () {
       return optionGroupValues;
     });
     editor.render();
-    var $optionGroups = editor.$el.children();
+    var $optionGroups = $(editor.el).children();
     expect($optionGroups.length).toBe(2);
 
     var $group1 = $optionGroups.eq(0);
@@ -209,7 +209,7 @@ describe("A Select2CellEditor", function () {
       backgridDoneTriggerArgs = [].slice.call(arguments);
     });
 
-    editor.$el.select2("val", 1).change();
+    $(editor.el).select2("val", 1).change();
     expect(editor.formatter.toRaw).toHaveBeenCalledWith("1");
     expect(editor.formatter.toRaw.calls.length).toBe(1);
     expect(editor.model.get(editor.column.get("name"))).toBe("1");
@@ -281,7 +281,7 @@ describe("A Select2Cell", function () {
 
     cell.render();
 
-    expect(cell.$el.hasClass("select2-cell")).toBe(true);
+    expect($(cell.el).hasClass("select2-cell")).toBe(true);
   });
 
   it("renders the label of the selected option in display mode", function () {
@@ -298,7 +298,7 @@ describe("A Select2Cell", function () {
     });
 
     cell.render();
-    expect(cell.$el.text()).toBe("Girl");
+    expect($(cell.el).text()).toBe("Girl");
 
     var cell = new (Backgrid.Extension.Select2Cell.extend({
       optionValues: optionGroupValues
@@ -313,7 +313,7 @@ describe("A Select2Cell", function () {
     });
 
     cell.render();
-    expect(cell.$el.text()).toBe("Banana");
+    expect($(cell.el).text()).toBe("Banana");
   });
 
   it("throws TypeError when rendering a malformed option value list", function () {
@@ -353,8 +353,8 @@ describe("A Select2Cell", function () {
 
     cell.render();
 
-    cell.$el.click();
-    expect(cell.$el.find(".select2-container").length).toBe(1);
+    $(cell.el).click();
+    expect($(cell.el).find(".select2-container").length).toBe(1);
     expect(cell.currentEditor.select2Options).toEqual({containerCssClass: "select2-container", width: "resolve"});
   });
 

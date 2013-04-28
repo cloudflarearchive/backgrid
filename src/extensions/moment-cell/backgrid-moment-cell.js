@@ -5,7 +5,7 @@
   Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
   Licensed under the MIT @license.
 */
-(function ($, _, Backbone, Backgrid, moment) {
+(function (_, Backbone, Backgrid, moment) {
 
   /**
      MomentFormatter converts bi-directionally any datetime values in any format
@@ -142,4 +142,4 @@
 
   _.extend(MomentCell.prototype, MomentFormatter.prototype.defaults);
 
-}(jQuery, _, Backbone, Backgrid, moment));
+}(_, Backbone, Backgrid, moment));
