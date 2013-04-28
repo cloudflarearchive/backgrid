@@ -296,7 +296,7 @@
                     });
 
                     // Render the grid and attach the root to your HTML document
-                    $("#example-1-result").append(grid.render().$el);
+                    $("#example-1-result").append(grid.render().el);
 
                     // Fetch some countries from the url
                     territories.fetch({reset: true});</textarea>
@@ -376,7 +376,7 @@
 
                     // Render the grid
                     var $example2 = $("#example-2-result");
-                    $example2.append(pageableGrid.render().$el)
+                    $example2.append(pageableGrid.render().el)
 
                     // Initialize the paginator
                     var paginator = new Backgrid.Extension.Paginator({
@@ -385,7 +385,7 @@
                     });
 
                     // Render the paginator
-                    $example2.append(paginator.render().$el);
+                    $example2.append(paginator.render().el);
 
                     // Initialize a client-side filter to filter on the client
                     // mode pageable collection's cache.
@@ -395,10 +395,12 @@
                     });
 
                     // Render the filter
-                    $example2.prepend(filter.render().$el);
+                    $example2.prepend(filter.render().el);
 
                     // Add some space to the filter and move it to the right
-                    filter.$el.css({float: "right", margin: "20px"});
+                    // filter.$el.css({float: "right", margin: "20px"});
+                    filter.el.style.cssFloat = "right";
+                    filter.el.style.margin = "20px";
 
                     // Fetch some data
                     pageableTerritories.fetch({reset: true});</textarea>
@@ -879,7 +881,7 @@
                 var CaptionFooter = Backgrid.Footer.extend({
 
                   render: function () {
-                    this.$el.html("&lt;tr&gt;&lt;td colspan=&apos;6&apos;&gt;Hello World!&lt;/td&gt;&lt;/tr&gt;");
+                    this.el.innerHTML("&lt;tr&gt;&lt;td colspan=&apos;6&apos;&gt;Hello World!&lt;/td&gt;&lt;/tr&gt;");
                     return this;
                   }
 
