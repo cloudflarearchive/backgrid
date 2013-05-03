@@ -144,6 +144,11 @@ describe("A DatetimeFormatter", function () {
     expect(formatter.fromRaw("2012-02-29")).toBe("2012-02-29T00:00:00Z");
   });
 
+  it(".fromRaw() can convert an unix timestamp to an ISO datetime string", function () {
+    var formatter = new Backgrid.DatetimeFormatter;
+    expect(formatter.fromRaw(1356998400)).toBe("2013-01-01T00:00:00Z");
+  });
+
   it(".fromRaw() can convert an ISO date string to an ISO date string", function () {
     var formatter = new Backgrid.DatetimeFormatter({
       includeTime: false
