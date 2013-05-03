@@ -192,11 +192,19 @@ _.extend(DatetimeFormatter.prototype, {
   ISO_SPLITTER_RE: /T|Z| +/,
 
   _convert: function (data, validate) {
-    data = data.trim();
-    var parts = data.split(this.ISO_SPLITTER_RE) || [];
+    var date, time = null;
+    if (_.isNumber(data)) {
+      var actualData = new Date(data * 1000);
+      date = lpad(actualData.getUTCFullYear(), 4, 0) + '-' + lpad(actualData.getUTCMonth() + 1, 2, 0) + '-' + lpad(actualData.getUTCDate(), 2, 0);
+      time = lpad(actualData.getUTCHours(), 2, 0) + ':' + lpad(actualData.getUTCMinutes(), 2, 0) + ':' + lpad(actualData.getUTCSeconds(), 2, 0);
+    }
+    else {
+      data = data.trim();
+      var parts = data.split(this.ISO_SPLITTER_RE) || [];
+      date = this.DATE_RE.test(parts[0]) ? parts[0] : '';
+      time = date && parts[1] ? parts[1] : this.TIME_RE.test(parts[0]) ? parts[0] : '';
+    }
 
-    var date = this.DATE_RE.test(parts[0]) ? parts[0] : '';
-    var time = date && parts[1] ? parts[1] : this.TIME_RE.test(parts[0]) ? parts[0] : '';
 
     var YYYYMMDD = this.DATE_RE.exec(date) || [];
     var HHmmssSSS = this.TIME_RE.exec(time) || [];
