@@ -922,6 +922,22 @@ describe("A SelectCellEditor", function () {
     expect(backgridEditedTriggerArgs[2].passThru()).toBe(true);
   });
 
+  it("saves the value to the model on blur if there's only one option", function () {
+    var editor = new Backgrid.SelectCellEditor({
+      formatter: new Backgrid.CellFormatter(),
+      column: {
+        name: "gender",
+        cell: "select"
+      },
+      model: new Backbone.Model()
+    });
+    editor.setOptionValues([["Boy", "1"]]);
+    editor.render();
+
+    editor.$el.blur();
+    expect(editor.model.get(editor.column.get("name"))).toBe("1");
+  });
+
 });
 
 describe("A SelectCell", function () {
