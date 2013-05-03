@@ -224,6 +224,7 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
     this.listenTo(this.model, "change:" + this.column.get("name"), function () {
       if (!this.$el.hasClass("editor")) this.render();
     });
+    this.listenTo(this.model, "backgrid:error", this.renderError);
   },
 
   /**
@@ -269,8 +270,6 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
       });
 
       model.trigger("backgrid:edit", model, column, this, this.currentEditor);
-
-      this.listenTo(model, "backgrid:error", this.renderError);
 
       // Need to redundantly undelegate events for Firefox
       this.undelegateEvents();
