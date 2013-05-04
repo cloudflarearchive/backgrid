@@ -145,9 +145,10 @@ _.extend(NumberFormatter.prototype, {
 });
 
 /**
-   Formatter to converts between various datetime string formats.
+   Formatter to converts between various datetime formats.
 
-   This class only understands ISO-8601 formatted datetime strings. See
+   This class only understands ISO-8601 formatted datetime strings and UNIX
+   offset (number of milliseconds since UNIX Epoch). See
    Backgrid.Extension.MomentFormatter if you need a much more flexible datetime
    formatter.
 
@@ -194,9 +195,9 @@ _.extend(DatetimeFormatter.prototype, {
   _convert: function (data, validate) {
     var date, time = null;
     if (_.isNumber(data)) {
-      var actualData = new Date(data * 1000);
-      date = lpad(actualData.getUTCFullYear(), 4, 0) + '-' + lpad(actualData.getUTCMonth() + 1, 2, 0) + '-' + lpad(actualData.getUTCDate(), 2, 0);
-      time = lpad(actualData.getUTCHours(), 2, 0) + ':' + lpad(actualData.getUTCMinutes(), 2, 0) + ':' + lpad(actualData.getUTCSeconds(), 2, 0);
+      var jsDate = new Date(data);
+      date = lpad(jsDate.getUTCFullYear(), 4, 0) + '-' + lpad(jsDate.getUTCMonth() + 1, 2, 0) + '-' + lpad(jsDate.getUTCDate(), 2, 0);
+      time = lpad(jsDate.getUTCHours(), 2, 0) + ':' + lpad(jsDate.getUTCMinutes(), 2, 0) + ':' + lpad(jsDate.getUTCSeconds(), 2, 0);
     }
     else {
       data = data.trim();
@@ -204,7 +205,6 @@ _.extend(DatetimeFormatter.prototype, {
       date = this.DATE_RE.test(parts[0]) ? parts[0] : '';
       time = date && parts[1] ? parts[1] : this.TIME_RE.test(parts[0]) ? parts[0] : '';
     }
-
 
     var YYYYMMDD = this.DATE_RE.exec(date) || [];
     var HHmmssSSS = this.TIME_RE.exec(time) || [];
