@@ -52,23 +52,12 @@
        Initializer.
 
        @param {Object} options
-       @param {Backbone.Collection.<Backgrid.Column>|Array.<Backgrid.Column>|Array.<Object>} options.columns
-       Column metadata.
        @param {Backbone.Collection} options.collection
        @param {boolean} [options.fastForwardHandleLabels] Whether to render fast forward buttons.
     */
     initialize: function (options) {
-      Backgrid.requireOptions(options, ["columns", "collection"]);
+      Backgrid.requireOptions(options, ["collection"]);
 
-      this.columns = options.columns;
-      if (!(this.columns instanceof Backbone.Collection)) {
-        this.columns = new Backgrid.Columns(this.columns);
-      }
-
-      var columns = this.columns;
-      this.listenTo(columns, "add", this.render);
-      this.listenTo(columns, "remove", this.render);
-      this.listenTo(columns, "change:renderable", this.render);
       var collection = this.collection;
       var fullCollection = collection.fullCollection;
       if (fullCollection) {
@@ -190,8 +179,7 @@
     },
 
     /**
-       Render the paginator handles inside an unordered list placed inside a
-       cell that spans all the columns.
+       Render the paginator handles inside an unordered list.
     */
     render: function () {
       this.$el.empty();
