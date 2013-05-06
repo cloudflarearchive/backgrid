@@ -55,8 +55,8 @@
       if (Backbone.PageableCollection &&
           collection instanceof Backbone.PageableCollection &&
           collection.mode == "server") {
-        collection.queryParam[this.name] = function () {
-          return self.$el.find("input[type=search]").val();
+        collection.queryParams[this.name] = function () {
+          return self.$el.find("input[type=text]").val();
         };
       }
     },
@@ -68,18 +68,9 @@
     */
     search: function (e) {
       if (e) e.preventDefault();
-      var $text = $(e.target).find("input[type=text]");
       var data = {};
-      data[$text.attr("name")] = $text.val();
-      var collection = this.collection;
-      if (Backbone.PageableCollection &&
-          collection instanceof Backbone.PageableCollection &&
-          collection.mode == "server") {
-        this.collection.fetch();
-      }
-      else {
-        this.collection.fetch({data: data});
-      }
+      data[this.name] = this.$el.find("input[type=text]").val();
+      this.collection.fetch({data: data});
     },
 
     /**
