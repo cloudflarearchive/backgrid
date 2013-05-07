@@ -330,3 +330,23 @@ _.extend(EmailFormatter.prototype, {
     }
   }
 });
+
+/**
+   @class Backgrid.SelectFormatter
+   @extends Backgrid.CellFormatter
+   @constructor
+*/
+var SelectFormatter = Backgrid.SelectFormatter = function () {};
+SelectFormatter.prototype = new CellFormatter();
+_.extend(SelectFormatter.prototype, {
+
+  /**
+     @member Backgrid.SelectFormatter
+     @param {*} rawValue
+     @return {Array.<*>}
+  */
+  fromRaw: function (rawValue) {
+    return _.isArray(rawValue) ? rawValue : rawValue != null ? [rawValue] : [];
+  }
+});
+
