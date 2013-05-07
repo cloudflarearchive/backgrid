@@ -110,8 +110,8 @@
      -moz-appearance: none;
 }
 
-.backgrid td.editor.error,
-.backgrid tbody tr:nth-child(odd) td.editor.error {
+.backgrid td.error,
+.backgrid tbody tr:nth-child(odd) td.error {
   background-color: rgba(255, 210, 77, 0.1);
   outline: 1px solid #ffd24d;
 }
