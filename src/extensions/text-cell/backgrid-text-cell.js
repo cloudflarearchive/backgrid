@@ -108,8 +108,11 @@
       else if (e.type != "hide") this.$el.modal("hide");
     },
 
+    /**
+       Clears the error class on the parent cell.
+     */
     clearError: _.debounce(function () {
-      if (this.formatter.toRaw(this.$el.find("textarea").val())) {
+      if (!_.isUndefined(this.formatter.toRaw(this.$el.find("textarea").val()))) {
         this.$el.parent().removeClass("error");
       }
     }, 150),
