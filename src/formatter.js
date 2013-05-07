@@ -332,6 +332,8 @@ _.extend(EmailFormatter.prototype, {
 });
 
 /**
+   Formatter for SelectCell.
+
    @class Backgrid.SelectFormatter
    @extends Backgrid.CellFormatter
    @constructor
@@ -341,6 +343,8 @@ SelectFormatter.prototype = new CellFormatter();
 _.extend(SelectFormatter.prototype, {
 
   /**
+     Normalizes raw scalar or array values to an array.
+
      @member Backgrid.SelectFormatter
      @param {*} rawValue
      @return {Array.<*>}
