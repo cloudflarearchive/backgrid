@@ -328,7 +328,7 @@ var Cell = Backgrid.Cell = Backgrid.View.extend({
   */
   remove: function () {
     if (this.currentEditor) {
-      this.currentEditor.remove.apply(this, arguments);
+      this.currentEditor.remove.apply(this.currentEditor, arguments);
       delete this.currentEditor;
     }
     return Backgrid.View.prototype.remove.apply(this, arguments);

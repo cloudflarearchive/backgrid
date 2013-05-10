@@ -328,6 +328,19 @@ describe("A Cell", function () {
     expect($(cell.el).hasClass("editor")).toBe(true);
   });
 
+  it("removes the editor correctly when removing the cell", function() {
+    cell.render();
+    cell.$el.click();
+
+    var editor = cell.currentEditor;
+
+    spyOn(editor, "remove");
+
+    cell.remove("argument1", "argument2");
+
+    expect(editor.remove).toHaveBeenCalledWith("argument1", "argument2");
+  });
+
   describe("when the model value has changed", function () {
     it("refreshes during display mode", function () {
       cell.render();
