@@ -68,7 +68,7 @@ Ext.data.JsonP.Backgrid_EmailFormatter({
 
     ]
   },
-  "linenr": 299,
+  "linenr": 307,
   "files": [
     {
       "filename": "formatter.js",

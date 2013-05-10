@@ -774,7 +774,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
           text: optionText,
           value: optionValue,
           selected: selectedValues.indexOf(optionValue) > -1
-        }));
+        });
       }
       else if (_.isObject(optionValue)) {
         optgroupName = optionValue.name;
@@ -919,8 +919,6 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
     try {
       if (!_.isArray(optionValues) || _.isEmpty(optionValues)) throw new TypeError;
 
-      var doc = window.document;
-
       for (var k = 0; k < rawData.length; k++) {
         var rawDatum = rawData[k];
 
@@ -930,10 +928,6 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
           if (_.isArray(optionValue)) {
             var optionText  = optionValue[0];
             var optionValue = optionValue[1];
-
-          if (optionValue == rawData) {
-            this.el.appendChild(doc.createTextNode(optionText));
-            break;
 
             if (optionValue == rawDatum) selectedText.push(optionText);
           }
@@ -953,7 +947,7 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
         }
       }
 
-      this.$el.append(selectedText.join(this.delimiter));
+      this.el.appendChild(window.document.createTextNode(selectedText.join(this.delimiter)));
     }
     catch (ex) {
       if (ex instanceof TypeError) {
