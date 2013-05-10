@@ -310,7 +310,7 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
   */
   remove: function () {
     if (this.currentEditor) {
-      this.currentEditor.remove.apply(this, arguments);
+      this.currentEditor.remove.apply(this.currentEditor, arguments);
       delete this.currentEditor;
     }
     return Backbone.View.prototype.remove.apply(this, arguments);
