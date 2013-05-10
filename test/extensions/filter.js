@@ -58,7 +58,7 @@ describe("A ServerSideFilter", function () {
     $.ajax = function (settings) {
       url = settings.url;
       data = settings.data;
-      settings.success({id: 1});
+      settings.success([{id: 1}]);
     };
     var filter = new Backgrid.Extension.ServerSideFilter({
       collection: collection
@@ -70,6 +70,32 @@ describe("A ServerSideFilter", function () {
     expect(data).toEqual({q: "query"});
     expect(collection.length).toBe(1);
     expect(collection.at(0).toJSON()).toEqual({id: 1});
+  });
+
+  it("can persist the filter parameter on a pageable collection", function () {
+    var url, data;
+    $.ajax = function (settings) {
+      url = settings.url;
+      data = settings.data;
+      settings.success([{id: 2}]);
+    };
+    collection = new Backbone.PageableCollection([{id: 1}], {
+      url: "http://www.example.com",
+      state: {
+        pageSize: 1,
+        totalRecords: 3
+      }
+    });
+    var filter = new Backgrid.Extension.ServerSideFilter({
+      collection: collection
+    });
+    filter.render();
+    filter.$el.find(":text").val("query");
+    collection.getPage(2);
+    expect(url).toBe("http://www.example.com");
+    expect(data).toEqual({q: "query", page: 2, "per_page": 1, "total_pages": 3, "total_entries": 3});
+    expect(collection.length).toBe(1);
+    expect(collection.at(0).toJSON()).toEqual({id: 2});
   });
 
   it("can clear the search box and refetch upon clicking the cross", function () {

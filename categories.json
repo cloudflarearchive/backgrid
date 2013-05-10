@@ -32,7 +32,8 @@
           "Backgrid.StringFormatter",
           "Backgrid.EmailFormatter",
           "Backgrid.NumberFormatter",
-          "Backgrid.DatetimeFormatter"
+          "Backgrid.DatetimeFormatter",
+          "Backgrid.SelectFormatter"
         ]
       }, {
         "name": "Columns",

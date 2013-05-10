@@ -50,6 +50,15 @@
       Backgrid.View.prototype.initialize.apply(this, arguments);
       this.name = options.name || this.name;
       this.placeholder = options.placeholder || this.placeholder;
+
+      var collection = this.collection, self = this;
+      if (Backbone.PageableCollection &&
+          collection instanceof Backbone.PageableCollection &&
+          collection.mode == "server") {
+        collection.queryParams[this.name] = function () {
+          return self.searchBox().value;
+        };
+      }
     },
 
     searchBox: function () {
@@ -65,7 +74,7 @@
       if (e) e.preventDefault();
       var searchBox = this.searchBox();
       var data = {};
-      data[searchBox.name] = searchBox.value;
+      data[this.name] = searchBox.value;
       this.collection.fetch({data: data});
     },
 

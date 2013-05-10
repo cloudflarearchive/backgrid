@@ -1,3 +1,24 @@
+### 0.2.6
+Bug Fixes and Improvements
+
+- TextCell should trigger and error and highlight the text area if the formatter
+  returns undefined. [Issue #149](https://github.com/wyuenho/backgrid/issues/149)
+- SelectCell and Select2Cell can now handle multiple
+  selections. [Issue #152](https://github.com/wyuenho/backgrid/issues/159)
+- ServerSideFilter's query parameter will now persist across server mode
+  pagination with
+  PageableCollection. [Issue #159](https://github.com/wyuenho/backgrid/issues/159)
+- Paginator no longer requires the column definition list in its constructor.
+- Paginator will no long page into the negative under server mode and when
+  there's no `totalRecords`
+  set. [Issue #33](https://github.com/wyuenho/backgrid/issues/33)
+- DatetimeFormatter now accepts UNIX offset values and MomentFormatter now
+  accepts both UNIX offset and UNIX timestamp
+  values. [Issue #145](https://github.com/wyuenho/backgrid/issues/145)
+- The `error` class can now be applied to cells without going into edit mode.
+- SelectCellEditor will now save the value if there's only one
+  option. [Issue #153](https://github.com/wyuenho/backgrid/issues/153)
+
 ### 0.2.5
 New Features
 
@@ -17,7 +38,7 @@ Bug Fixes and Improvements
   1.0+. [Issue #132](https://github.com/wyuenho/backgrid/issues/132)
 - Fix bug where passing any other View constructor options other than `model`
   and `collection` will override the view options of all the other direct
-  subviews'. [Issue #137](https://github.com/wyuenho/backgrid/issues/132)
+  subviews'. [Issue #137](https://github.com/wyuenho/backgrid/issues/137)
 - TextCell doesn't throw an error anymore when cancelling editing an undefined
   model attribute. [Issue #142](https://github.com/wyuenho/backgrid/issues/142)
 - Switching focus on two different cells with invalid attributes no long content

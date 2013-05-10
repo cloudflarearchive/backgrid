@@ -737,8 +737,9 @@ describe("A SelectCellEditor", function () {
 
   it("renders a select box using a list if nvps", function () {
 
+    // single selection
     var editor = new Backgrid.SelectCellEditor({
-      formatter: new Backgrid.CellFormatter(),
+      formatter: new Backgrid.SelectFormatter(),
       column: {
         name: "gender",
         cell: "select"
@@ -759,12 +760,39 @@ describe("A SelectCellEditor", function () {
     expect($options.eq(1).val()).toBe("2");
     expect($options.eq(1).prop("selected")).toBe(true);
     expect($options.eq(1).text()).toBe("Girl");
+
+    // multiple selection
+    var editor = new Backgrid.SelectCellEditor({
+      formatter: new Backgrid.SelectFormatter(),
+      column: {
+        name: "gender",
+        cell: "select"
+      },
+      model: new Backbone.Model({
+        gender: [1, 2]
+      })
+    });
+
+    editor.setMultiple(true);
+    editor.setOptionValues(optionValues);
+    editor.render();
+    expect(editor.el.tagName).toBe("SELECT");
+    expect(editor.el.multiple).toBe(true);
+    var $options = editor.$el.children();
+    expect($options.length).toBe(2);
+    expect($options.eq(0).val()).toBe("1");
+    expect($options.eq(0).prop("selected")).toBe(true);
+    expect($options.eq(0).text()).toBe("Boy");
+    expect($options.eq(1).val()).toBe("2");
+    expect($options.eq(1).prop("selected")).toBe(true);
+    expect($options.eq(1).text()).toBe("Girl");
   });
 
   it("renders a select box using a parameter-less function that returns a list if nvps", function () {
 
+    // single selection
     var editor = new Backgrid.SelectCellEditor({
-      formatter: new Backgrid.CellFormatter(),
+      formatter: new Backgrid.SelectFormatter(),
       column: {
         name: "gender",
         cell: "select"
@@ -787,12 +815,41 @@ describe("A SelectCellEditor", function () {
     expect($options.eq(1).val()).toBe("2");
     expect($options.eq(1).prop("selected")).toBe(true);
     expect($options.eq(1).text()).toBe("Girl");
+
+    // multiple selection
+    var editor = new Backgrid.SelectCellEditor({
+      formatter: new Backgrid.SelectFormatter(),
+      column: {
+        name: "gender",
+        cell: "select"
+      },
+      model: new Backbone.Model({
+        gender: [1, 2]
+      })
+    });
+
+    editor.setMultiple(true);
+    editor.setOptionValues(function () {
+      return optionValues;
+    });
+    editor.render();
+    expect(editor.el.tagName).toBe("SELECT");
+    expect(editor.el.multiple).toBe(true);
+    var $options = editor.$el.children();
+    expect($options.length).toBe(2);
+    expect($options.eq(0).val()).toBe("1");
+    expect($options.eq(0).prop("selected")).toBe(true);
+    expect($options.eq(0).text()).toBe("Boy");
+    expect($options.eq(1).val()).toBe("2");
+    expect($options.eq(1).prop("selected")).toBe(true);
+    expect($options.eq(1).text()).toBe("Girl");
   });
 
   it("renders a select box using a list of object literals denoting option groups", function () {
 
+    // single selection
     var editor = new Backgrid.SelectCellEditor({
-      formatter: new Backgrid.CellFormatter(),
+      formatter: new Backgrid.SelectFormatter(),
       column: {
         name: "food",
         cell: "select"
@@ -834,12 +891,59 @@ describe("A SelectCellEditor", function () {
     expect($group2Options.eq(2).val()).toBe("m");
     expect($group2Options.eq(2).prop("selected")).toBe(false);
     expect($group2Options.eq(2).text()).toBe("Maize");
+
+    // multiple selection
+    var editor = new Backgrid.SelectCellEditor({
+      formatter: new Backgrid.SelectFormatter(),
+      column: {
+        name: "food",
+        cell: "select"
+      },
+      model: new Backbone.Model({
+        food: ["b", "c"]
+      })
+    });
+
+    editor.setMultiple(true);
+    editor.setOptionValues(optionGroupValues);
+    editor.render();
+    var $optionGroups = editor.$el.children();
+    expect($optionGroups.length).toBe(2);
+
+    var $group1 = $optionGroups.eq(0);
+    var $group2 = $optionGroups.eq(1);
+
+    expect($group1.attr("label")).toBe("\" ><script></script>Fruit");
+    expect($group2.attr("label")).toBe("Cereal");
+
+    var $group1Options = $group1.children();
+    expect($group1Options.eq(0).val()).toBe("\" ><script></script>a");
+    expect($group1Options.eq(0).prop("selected")).toBe(false);
+    expect($group1Options.eq(0).html()).toBe("Apple&lt;script&gt;&lt;/script&gt;");
+    expect($group1Options.eq(1).val()).toBe("b");
+    expect($group1Options.eq(1).prop("selected")).toBe(true);
+    expect($group1Options.eq(1).text()).toBe("Banana");
+    expect($group1Options.eq(2).val()).toBe("c");
+    expect($group1Options.eq(2).prop("selected")).toBe(true);
+    expect($group1Options.eq(2).text()).toBe("Cantaloupe");
+
+    var $group2Options = $group2.children();
+    expect($group2Options.eq(0).val()).toBe("w");
+    expect($group2Options.eq(0).prop("selected")).toBe(false);
+    expect($group2Options.eq(0).text()).toBe("Wheat");
+    expect($group2Options.eq(1).val()).toBe("r");
+    expect($group2Options.eq(1).prop("selected")).toBe(false);
+    expect($group2Options.eq(1).text()).toBe("Rice");
+    expect($group2Options.eq(2).val()).toBe("m");
+    expect($group2Options.eq(2).prop("selected")).toBe(false);
+    expect($group2Options.eq(2).text()).toBe("Maize");
   });
 
   it("renders a select box using a parameter-less function that returns a list of object literals denoting option groups", function () {
 
+    // single selection
     var editor = new Backgrid.SelectCellEditor({
-      formatter: new Backgrid.CellFormatter(),
+      formatter: new Backgrid.SelectFormatter(),
       column: {
         name: "food",
         cell: "select"
@@ -883,12 +987,61 @@ describe("A SelectCellEditor", function () {
     expect($group2Options.eq(2).val()).toBe("m");
     expect($group2Options.eq(2).prop("selected")).toBe(false);
     expect($group2Options.eq(2).text()).toBe("Maize");
+
+    // multiple selection
+    var editor = new Backgrid.SelectCellEditor({
+      formatter: new Backgrid.SelectFormatter(),
+      column: {
+        name: "food",
+        cell: "select"
+      },
+      model: new Backbone.Model({
+        food: ["b", "c"]
+      })
+    });
+
+    editor.setMultiple(true);
+    editor.setOptionValues(function () {
+      return optionGroupValues;
+    });
+    editor.render();
+    var $optionGroups = editor.$el.children();
+    expect($optionGroups.length).toBe(2);
+
+    var $group1 = $optionGroups.eq(0);
+    var $group2 = $optionGroups.eq(1);
+
+    expect($group1.attr("label")).toBe("\" ><script></script>Fruit");
+    expect($group2.attr("label")).toBe("Cereal");
+
+    var $group1Options = $group1.children();
+    expect($group1Options.eq(0).val()).toBe("\" ><script></script>a");
+    expect($group1Options.eq(0).prop("selected")).toBe(false);
+    expect($group1Options.eq(0).html()).toBe("Apple&lt;script&gt;&lt;/script&gt;");
+    expect($group1Options.eq(1).val()).toBe("b");
+    expect($group1Options.eq(1).prop("selected")).toBe(true);
+    expect($group1Options.eq(1).text()).toBe("Banana");
+    expect($group1Options.eq(2).val()).toBe("c");
+    expect($group1Options.eq(2).prop("selected")).toBe(true);
+    expect($group1Options.eq(2).text()).toBe("Cantaloupe");
+
+    var $group2Options = $group2.children();
+    expect($group2Options.eq(0).val()).toBe("w");
+    expect($group2Options.eq(0).prop("selected")).toBe(false);
+    expect($group2Options.eq(0).text()).toBe("Wheat");
+    expect($group2Options.eq(1).val()).toBe("r");
+    expect($group2Options.eq(1).prop("selected")).toBe(false);
+    expect($group2Options.eq(1).text()).toBe("Rice");
+    expect($group2Options.eq(2).val()).toBe("m");
+    expect($group2Options.eq(2).prop("selected")).toBe(false);
+    expect($group2Options.eq(2).text()).toBe("Maize");
   });
 
   it("saves the value to the model on change", function () {
 
+    // single selection
     var editor = new Backgrid.SelectCellEditor({
-      formatter: new Backgrid.CellFormatter(),
+      formatter: new Backgrid.SelectFormatter(),
       column: {
         name: "gender",
         cell: "select"
@@ -920,6 +1073,69 @@ describe("A SelectCellEditor", function () {
     expect(backgridEditedTriggerArgs[0]).toEqual(editor.model);
     expect(backgridEditedTriggerArgs[1]).toEqual(editor.column);
     expect(backgridEditedTriggerArgs[2].passThru()).toBe(true);
+
+    // multiple selection
+    var editor = new Backgrid.SelectCellEditor({
+      formatter: new Backgrid.SelectFormatter(),
+      column: {
+        name: "gender",
+        cell: "select"
+      },
+      model: new Backbone.Model({
+        gender: [1, 2]
+      })
+    });
+
+    editor.setMultiple(true);
+    editor.setOptionValues(optionValues);
+    editor.render();
+
+    spyOn(editor.formatter, "toRaw").andCallThrough();
+    spyOn(editor, "trigger").andCallThrough();
+
+    var backgridEditedTriggerCount = 0;
+    var backgridEditedTriggerArgs;
+    editor.model.on("backgrid:edited", function () {
+      backgridEditedTriggerCount++;
+      backgridEditedTriggerArgs = [].slice.call(arguments);
+    });
+
+    editor.$el.val([1, 2]).change();
+    expect(editor.formatter.toRaw).toHaveBeenCalledWith(["1", "2"]);
+    expect(editor.formatter.toRaw.calls.length).toBe(1);
+    expect(editor.model.get(editor.column.get("name"))).toEqual(["1", "2"]);
+
+    expect(backgridEditedTriggerCount).toBe(1);
+    expect(backgridEditedTriggerArgs[0]).toEqual(editor.model);
+    expect(backgridEditedTriggerArgs[1]).toEqual(editor.column);
+    expect(backgridEditedTriggerArgs[2].passThru()).toBe(true);
+
+    backgridEditedTriggerCount = 0;
+    editor.$el.val(null).change();
+    expect(editor.formatter.toRaw).toHaveBeenCalledWith(null);
+    expect(editor.formatter.toRaw.calls.length).toBe(2);
+    expect(editor.model.get(editor.column.get("name"))).toBe(null);
+
+    expect(backgridEditedTriggerCount).toBe(1);
+    expect(backgridEditedTriggerArgs[0]).toEqual(editor.model);
+    expect(backgridEditedTriggerArgs[1]).toEqual(editor.column);
+    expect(backgridEditedTriggerArgs[2].passThru()).toBe(true);
+  });
+
+  it("saves the value to the model on blur if there's only one option", function () {
+    var editor = new Backgrid.SelectCellEditor({
+      formatter: new Backgrid.SelectFormatter(),
+      column: {
+        name: "gender",
+        cell: "select"
+      },
+      model: new Backbone.Model()
+    });
+    editor.setOptionValues([["Boy", "1"]]);
+    editor.render();
+
+    editor.$el.blur();
+    expect(editor.model.get(editor.column.get("name"))).toBe("1");
   });
 
 });
@@ -986,6 +1202,8 @@ describe("A SelectCell", function () {
   });
 
   it("renders the label of the selected option in display mode", function () {
+
+    // single selection
     var cell = new (Backgrid.SelectCell.extend({
       optionValues: optionValues
     }))({
@@ -1015,6 +1233,37 @@ describe("A SelectCell", function () {
 
     cell.render();
     expect($(cell.el).text()).toBe("Banana");
+
+    // multiple selection
+    var cell = new (Backgrid.SelectCell.extend({
+      optionValues: optionValues
+    }))({
+      column: {
+        name: "gender",
+        cell: "select"
+      },
+      model: new Backbone.Model({
+        gender: [1, 2]
+      })
+    });
+
+    cell.render();
+    expect($(cell.el).text()).toBe("Boy, Girl");
+
+    var cell = new (Backgrid.SelectCell.extend({
+      optionValues: optionGroupValues
+    }))({
+      column: {
+        name: "food",
+        cell: "select"
+      },
+      model: new Backbone.Model({
+        food: ["a", "b"]
+      })
+    });
+
+    cell.render();
+    expect($(cell.el).text()).toBe("Apple, Banana");
   });
 
   it("throws TypeError when rendering a malformed option value list", function () {

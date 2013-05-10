@@ -145,9 +145,10 @@ _.extend(NumberFormatter.prototype, {
 });
 
 /**
-   Formatter to converts between various datetime string formats.
+   Formatter to converts between various datetime formats.
 
-   This class only understands ISO-8601 formatted datetime strings. See
+   This class only understands ISO-8601 formatted datetime strings and UNIX
+   offset (number of milliseconds since UNIX Epoch). See
    Backgrid.Extension.MomentFormatter if you need a much more flexible datetime
    formatter.
 
@@ -192,11 +193,18 @@ _.extend(DatetimeFormatter.prototype, {
   ISO_SPLITTER_RE: /T|Z| +/,
 
   _convert: function (data, validate) {
-    data = data.trim();
-    var parts = data.split(this.ISO_SPLITTER_RE) || [];
-
-    var date = this.DATE_RE.test(parts[0]) ? parts[0] : '';
-    var time = date && parts[1] ? parts[1] : this.TIME_RE.test(parts[0]) ? parts[0] : '';
+    var date, time = null;
+    if (_.isNumber(data)) {
+      var jsDate = new Date(data);
+      date = lpad(jsDate.getUTCFullYear(), 4, 0) + '-' + lpad(jsDate.getUTCMonth() + 1, 2, 0) + '-' + lpad(jsDate.getUTCDate(), 2, 0);
+      time = lpad(jsDate.getUTCHours(), 2, 0) + ':' + lpad(jsDate.getUTCMinutes(), 2, 0) + ':' + lpad(jsDate.getUTCSeconds(), 2, 0);
+    }
+    else {
+      data = data.trim();
+      var parts = data.split(this.ISO_SPLITTER_RE) || [];
+      date = this.DATE_RE.test(parts[0]) ? parts[0] : '';
+      time = date && parts[1] ? parts[1] : this.TIME_RE.test(parts[0]) ? parts[0] : '';
+    }
 
     var YYYYMMDD = this.DATE_RE.exec(date) || [];
     var HHmmssSSS = this.TIME_RE.exec(time) || [];
@@ -322,3 +330,27 @@ _.extend(EmailFormatter.prototype, {
     }
   }
 });
+
+/**
+   Formatter for SelectCell.
+
+   @class Backgrid.SelectFormatter
+   @extends Backgrid.CellFormatter
+   @constructor
+*/
+var SelectFormatter = Backgrid.SelectFormatter = function () {};
+SelectFormatter.prototype = new CellFormatter();
+_.extend(SelectFormatter.prototype, {
+
+  /**
+     Normalizes raw scalar or array values to an array.
+
+     @member Backgrid.SelectFormatter
+     @param {*} rawValue
+     @return {Array.<*>}
+  */
+  fromRaw: function (rawValue) {
+    return _.isArray(rawValue) ? rawValue : rawValue != null ? [rawValue] : [];
+  }
+});
+

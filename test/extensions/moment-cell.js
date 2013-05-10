@@ -7,6 +7,20 @@
 */
 describe("A MomentFormatter", function () {
 
+  it(".fromRaw() can convert an UNIX offset to a datetime string in moment.js", function () {
+    var formatter = new Backgrid.Extension.MomentFormatter({
+      modelInUnixOffset: true
+    });
+    expect(formatter.fromRaw(1318781876406)).toBe('2011-10-16T16:17:56+00:00');
+  });
+
+  it(".fromRaw() can convert an UNIX timestamp to a datetime string in moment.js", function () {
+    var formatter = new Backgrid.Extension.MomentFormatter({
+      modelInUnixTimestamp: true
+    });
+    expect(formatter.fromRaw(1318781876.721)).toBe('2011-10-16T16:17:56+00:00');
+  });
+
   it(".fromRaw() can convert an ISO datetime string in UTC to a datetime " +
      "string in moment.js' default format in UTC", function () {
     var formatter = new Backgrid.Extension.MomentFormatter();
@@ -91,6 +105,20 @@ describe("A MomentFormatter", function () {
   it(".fromRaw() returns an empty string for an undefined value", function () {
     var formatter = new Backgrid.Extension.MomentFormatter();
     expect(formatter.fromRaw(undefined)).toBe('');
+  });
+
+  it(".toRaw() can convert an UNIX offset to a datetime string in moment.js", function () {
+    var formatter = new Backgrid.Extension.MomentFormatter({
+      displayInUnixOffset: true
+    });
+    expect(formatter.toRaw(1318781876406)).toBe('2011-10-16T16:17:56+00:00');
+  });
+
+  it(".toRaw() can convert an UNIX timestamp to a datetime string in moment.js", function () {
+    var formatter = new Backgrid.Extension.MomentFormatter({
+      displayInUnixTimestamp: true
+    });
+    expect(formatter.toRaw(1318781876.721)).toBe('2011-10-16T16:17:56+00:00');
   });
 
   it(".toRaw() can convert a non-ISO datetime string in UTC in the default locale to the ISO datetime string in UTC in the default locale", function () {

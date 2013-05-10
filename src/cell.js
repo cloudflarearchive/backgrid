@@ -231,6 +231,7 @@ var Cell = Backgrid.Cell = Backgrid.View.extend({
     this.listenTo(this.model, "change:" + this.column.get("name"), function () {
       if (!this.el.classList.contains("editor")) this.render();
     });
+    this.listenTo(this.model, "backgrid:error", this.renderError);
   },
 
   show: function () {
@@ -287,8 +288,6 @@ var Cell = Backgrid.Cell = Backgrid.View.extend({
       });
 
       model.trigger("backgrid:edit", model, column, this, this.currentEditor);
-
-      this.listenTo(model, "backgrid:error", this.renderError);
 
       // Need to redundantly undelegate events for Firefox
       this.undelegateEvents();
@@ -725,13 +724,18 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
     this.optionValues = optionValues;
   },
 
-  _renderOptions: function (nvps, currentValue) {
+  setMultiple: function (multiple) {
+    this.multiple = multiple;
+    this.$el.prop("multiple", multiple);
+  },
+
+  _renderOptions: function (nvps, selectedValues) {
     var options = '';
     for (var i = 0; i < nvps.length; i++) {
       options = options + this.template({
         text: nvps[i][0],
         value: nvps[i][1],
-        selected: currentValue == nvps[i][1]
+        selected: selectedValues.indexOf(nvps[i][1]) > -1
       });
     }
     return options;
@@ -748,7 +752,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
     this.empty();
 
     var optionValues = _.result(this, "optionValues");
-    var currentValue = this.model.get(this.column.get("name"));
+    var selectedValues = this.formatter.fromRaw(this.model.get(this.column.get("name")));
 
     if (!_.isArray(optionValues)) throw TypeError("optionValues must be an array");
 
@@ -758,6 +762,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
     var optgroupName = null;
     var optgroup = null;
     var innerHTML = '';
+
     for (var i = 0; i < optionValues.length; i++) {
       var optionValue = optionValues[i];
 
@@ -768,12 +773,12 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
         innerHTML += this.template({
           text: optionText,
           value: optionValue,
-          selected: optionValue == currentValue
-        });
+          selected: selectedValues.indexOf(optionValue) > -1
+        }));
       }
       else if (_.isObject(optionValue)) {
         optgroupName = optionValue.name;
-        optgroup = this._renderOptions(optionValue.values, currentValue);
+        optgroup = this._renderOptions(optionValue.values, selectedValues);
         innerHTML = innerHTML + '<optgroup label="' + optgroupName + '">' + optgroup + '</optgroup>';
       }
       else {
@@ -815,6 +820,9 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
              command.moveUp() || command.moveDown() || e.type == "blur") {
       e.preventDefault();
       e.stopPropagation();
+      if (e.type == "blur" && this.$el.find("option").length === 1) {
+        model.set(column.get("name"), this.formatter.toRaw(this.$el.val()));
+      }
       model.trigger("backgrid:edited", model, column, new Command(e));
     }
   }
@@ -823,11 +831,10 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
 
 /**
    SelectCell is also a different kind of cell in that upon going into edit mode
-   the cell renders a list of options for to pick from, as opposed to an input
-   box.
+   the cell renders a list of options to pick from, as opposed to an input box.
 
    SelectCell cannot be referenced by its string name when used in a column
-   definition because requires an `optionValues` class attribute to be
+   definition because it requires an `optionValues` class attribute to be
    defined. `optionValues` can either be a list of name-value pairs, to be
    rendered as options, or a list of object hashes which consist of a key *name*
    which is the option group name, and a key *values* which is a list of
@@ -835,17 +842,21 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
 
    In addition, `optionValues` can also be a parameter-less function that
    returns one of the above. If the options are static, it is recommended the
-   returned values to be memoized. _.memoize() is a good function to help with
+   returned values to be memoized. `_.memoize()` is a good function to help with
    that.
 
-   Lastly, since this class uses the default CellFormatter, during display mode,
-   the raw model value is compared with the `optionValues` values using
+   During display mode, the default formatter will normalize the raw model value
+   to an array of values whether the raw model value is a scalar or an
+   array. Each value is compared with the `optionValues` values using
    Ecmascript's implicit type conversion rules. When exiting edit mode, no type
    conversion is performed when saving into the model. This behavior is not
    always desirable when the value type is anything other than string. To
    control type conversion on the client-side, you should subclass SelectCell to
    provide a custom formatter or provide the formatter to your column
    definition.
+
+   See:
+     [$.fn.val()](http://api.jquery.com/val/)
 
    @class Backgrid.SelectCell
    @extends Backgrid.Cell
@@ -858,10 +869,19 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
   /** @property */
   editor: SelectCellEditor,
 
+  /** @property */
+  multiple: false,
+
+  /** @property */
+  formatter: new SelectFormatter(),
+
   /**
      @property {Array.<Array>|Array.<{name: string, values: Array.<Array>}>} optionValues
   */
   optionValues: undefined,
+
+  /** @property */
+  delimiter: ', ',
 
   /**
      Initializer.
@@ -875,10 +895,10 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
   initialize: function (options) {
     Cell.prototype.initialize.apply(this, arguments);
     Backgrid.requireOptions(this, ["optionValues"]);
-    this.optionValues = _.result(this, "optionValues");
     this.listenTo(this.model, "backgrid:edit", function (model, column, cell, editor) {
       if (column.get("name") == this.column.get("name")) {
         editor.setOptionValues(this.optionValues);
+        editor.setMultiple(this.multiple);
       }
     });
   },
@@ -894,35 +914,46 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
     var optionValues = this.optionValues;
     var rawData = this.formatter.fromRaw(this.model.get(this.column.get("name")));
 
+    var selectedText = [];
+
     try {
       if (!_.isArray(optionValues) || _.isEmpty(optionValues)) throw new TypeError;
-      var doc = window.document;
-      for (var i = 0; i < optionValues.length; i++) {
-        var optionValue = optionValues[i];
 
-        if (_.isArray(optionValue)) {
-          var optionText  = optionValue[0];
-          var optionValue = optionValue[1];
+      var doc = window.document;
+
+      for (var k = 0; k < rawData.length; k++) {
+        var rawDatum = rawData[k];
+
+        for (var i = 0; i < optionValues.length; i++) {
+          var optionValue = optionValues[i];
+
+          if (_.isArray(optionValue)) {
+            var optionText  = optionValue[0];
+            var optionValue = optionValue[1];
 
           if (optionValue == rawData) {
             this.el.appendChild(doc.createTextNode(optionText));
             break;
+
+            if (optionValue == rawDatum) selectedText.push(optionText);
           }
-        }
-        else if (_.isObject(optionValue)) {
-          var optionGroupValues = optionValue.values;
-          for (var j = 0; j < optionGroupValues.length; j++) {
-            var optionGroupValue = optionGroupValues[j];
-            if (optionGroupValue[1] == rawData) {
-              this.el.appendChild(doc.createTextNode(optionGroupValue[0]));
-              break;
+          else if (_.isObject(optionValue)) {
+            var optionGroupValues = optionValue.values;
+
+            for (var j = 0; j < optionGroupValues.length; j++) {
+              var optionGroupValue = optionGroupValues[j];
+              if (optionGroupValue[1] == rawDatum) {
+                selectedText.push(optionGroupValue[0]);
+              }
             }
           }
-        }
-        else {
-          throw new TypeError;
+          else {
+            throw new TypeError;
+          }
         }
       }
+
+      this.$el.append(selectedText.join(this.delimiter));
     }
     catch (ex) {
       if (ex instanceof TypeError) {
