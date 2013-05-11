@@ -150,15 +150,11 @@ _.extend(Command.prototype, {
   }
 });
 
-var viewOptions = ['model', 'collection', 'el', 'id', 'attributes', 'className', 'tagName', 'events'];
+var viewOptions = ['model', 'collection', 'el', 'id', 'attributes', 'className', 'tagName', 'events', 'use$'];
 
-/**
-   @class Backgrid.View
-   @constructor
- */
 var View = Backgrid.View = function(options) {
   this.cid = _.uniqueId('view');
-  this.options = options = options || {};
+  options = options || {};
   _.extend(this, _.pick(options, viewOptions));
   this._ensureElement(options);
   this.initialize.apply(this, arguments);
@@ -169,7 +165,7 @@ var delegateEventSplitter = /^(\S+)\s*(.*)$/;
 
 _.extend(View.prototype, Backbone.Events, {
 
-  use$: false,
+  use$: true,
 
   tagName: 'div',
 
@@ -190,8 +186,7 @@ _.extend(View.prototype, Backbone.Events, {
   },
 
   remove: function() {
-    if (this.$el) this.$el.remove();
-    else if (this.el.parentNode) this.el.parentNode.removeChild(this.el);
+    this.$el.remove();
     this.stopListening();
     return this;
   },
@@ -200,8 +195,11 @@ _.extend(View.prototype, Backbone.Events, {
     options = _.extend({use$: Backbone.$ && this.use$, delegate: true}, options || {});
     var delegate = options.delegate;
     if (this.el) this.undelegateEvents();
-    this.el = element;
-    if (options.use$) this.$el = Backbone.$(element);
+    if (options.use$) {
+      this.$el = element instanceof Backbone.$ ? element : Backbone.$(element);
+      this.el = this.$el[0];
+    }
+    else this.el = element;
     if (delegate !== false) this.delegateEvents();
     return this;
   },
@@ -256,7 +254,7 @@ _.extend(View.prototype, Backbone.Events, {
       this._processEvents(events, function (eventName, selector, method) {
         if (selector === '') {
           if (el.removeEventListener) el.removeEventListener(eventName, method);
-          if (el.detachEvent) el.detachEvent('on' + eventName, method);
+          else if (el.detachEvent) el.detachEvent('on' + eventName, method);
         } else {
           var descendants = el.querySelectorAll(selector);
           for (var i = 0, l = descendants.length; i < l; i++) {
@@ -277,7 +275,7 @@ _.extend(View.prototype, Backbone.Events, {
   _ensureElement: function(options) {
     options = _.extend(options, {delegate: false});
     if (!this.el) {
-      var el = this.el = window.document.createElement(this.tagName);
+      var el = this.el = window.document.createElement(_.result(this, 'tagName'));
       var attrs = _.extend({}, _.result(this, 'attributes'));
       if (this.id) attrs.id = _.result(this, 'id');
       if (this.className) attrs['class'] = _.result(this, 'className');

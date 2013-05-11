@@ -254,12 +254,6 @@ Docs = {
         "icon": "icon-class"
       },
       {
-        "name": "Backgrid.View",
-        "extends": null,
-        "private": null,
-        "icon": "icon-class"
-      },
-      {
         "name": "Backgrid.Row",
         "extends": "Backgrid.View",
         "private": null,
@@ -2530,24 +2524,6 @@ Docs = {
         "fullName": "Backgrid.Command.passThru",
         "icon": "icon-method",
         "url": "#!/api/Backgrid.Command-method-passThru",
-        "meta": {
-        },
-        "sort": 3
-      },
-      {
-        "name": "View",
-        "fullName": "Backgrid.View",
-        "icon": "icon-class",
-        "url": "#!/api/Backgrid.View",
-        "meta": {
-        },
-        "sort": 1
-      },
-      {
-        "name": "constructor",
-        "fullName": "Backgrid.View.constructor",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.View-method-constructor",
         "meta": {
         },
         "sort": 3

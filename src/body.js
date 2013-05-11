@@ -114,7 +114,7 @@ var Body = Backgrid.Body = Backgrid.View.extend({
     this.rows.splice(index, 0, row);
 
     var el = this.el;
-    var children = el.childNodes();
+    var children = el.childNodes;
     var rowEl = row.render().el;
 
     if (options.render) {

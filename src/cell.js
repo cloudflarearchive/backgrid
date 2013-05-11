@@ -726,7 +726,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
 
   setMultiple: function (multiple) {
     this.multiple = multiple;
-    this.$el.prop("multiple", multiple);
+    this.el.multiple = multiple;
   },
 
   _renderOptions: function (nvps, selectedValues) {

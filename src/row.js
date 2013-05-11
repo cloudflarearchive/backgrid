@@ -60,7 +60,7 @@ var Row = Backgrid.Row = Backgrid.View.extend({
 
       if (!cell.column.get("renderable")) cell.hide();
 
-      var el = this.el, children = el.childNodes();
+      var el = this.el, children = el.childNodes;
       if (i === 0) {
         el.insertBefore(cell.render().el, el.firstChild);
       }
