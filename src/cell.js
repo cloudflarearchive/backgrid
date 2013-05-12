@@ -234,16 +234,6 @@ var Cell = Backgrid.Cell = Backgrid.View.extend({
     this.listenTo(this.model, "backgrid:error", this.renderError);
   },
 
-  show: function () {
-    this.el.style.display = '';
-    return this;
-  },
-
-  hide: function () {
-    this.el.style.display = "none";
-    return this;
-  },
-
   /**
      Render a text string in a table cell. The text is converted from the
      model's raw value for this cell's column.
@@ -732,10 +722,11 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
   _renderOptions: function (nvps, selectedValues) {
     var options = '';
     for (var i = 0; i < nvps.length; i++) {
+      var nvp = nvps[i];
       options = options + this.template({
-        text: nvps[i][0],
-        value: nvps[i][1],
-        selected: selectedValues.indexOf(nvps[i][1]) > -1
+        text: nvp[0],
+        value: nvp[1],
+        selected: selectedValues.indexOf(nvp[1]) > -1
       });
     }
     return options;
@@ -760,7 +751,6 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
     var optionText = null;
     var optionValue = null;
     var optgroupName = null;
-    var optgroup = null;
     var innerHTML = '';
 
     for (var i = 0; i < optionValues.length; i++) {
@@ -778,8 +768,8 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
       }
       else if (_.isObject(optionValue)) {
         optgroupName = optionValue.name;
-        optgroup = this._renderOptions(optionValue.values, selectedValues);
-        innerHTML = innerHTML + '<optgroup label="' + optgroupName + '">' + optgroup + '</optgroup>';
+        var options = this._renderOptions(optionValue.values, selectedValues);
+        innerHTML = innerHTML + '<optgroup label="' + optgroupName + '">' + options + '</optgroup>';
       }
       else {
         throw TypeError("optionValues elements must be a name-value pair or an object hash of { name: 'optgroup label', value: [option name-value pairs] }");
@@ -820,8 +810,8 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
              command.moveUp() || command.moveDown() || e.type == "blur") {
       e.preventDefault();
       e.stopPropagation();
-      if (e.type == "blur" && this.$el.find("option").length === 1) {
-        model.set(column.get("name"), this.formatter.toRaw(this.$el.val()));
+      if (e.type == "blur" && this.$("option").length === 1) {
+        model.set(column.get("name"), this.formatter.toRaw(this.el.value));
       }
       model.trigger("backgrid:edited", model, column, new Command(e));
     }
@@ -892,7 +882,7 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
 
      @throws {TypeError} If `optionsValues` is undefined.
   */
-  initialize: function (options) {
+  initialize: function () {
     Cell.prototype.initialize.apply(this, arguments);
     Backgrid.requireOptions(this, ["optionValues"]);
     this.listenTo(this.model, "backgrid:edit", function (model, column, cell, editor) {

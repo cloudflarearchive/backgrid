@@ -163,7 +163,7 @@ var View = Backgrid.View = function(options) {
 
 var delegateEventSplitter = /^(\S+)\s*(.*)$/;
 
-_.extend(View.prototype, Backbone.Events, {
+_.extend(Backgrid.View.prototype, Backbone.Events, {
 
   use$: true,
 
@@ -179,6 +179,16 @@ _.extend(View.prototype, Backbone.Events, {
     return this;
   },
 
+  show: function () {
+    this.el.style.display = '';
+    return this;
+  },
+
+  hide: function () {
+    this.el.style.display = "none";
+    return this;
+  },
+
   empty: function () {
     var el = this.el;
     while (el.firstChild) el.removeChild(el.firstChild);
@@ -186,7 +196,11 @@ _.extend(View.prototype, Backbone.Events, {
   },
 
   remove: function() {
-    this.$el.remove();
+    if (this.$el) this.$el.remove();
+    else if (this.el) {
+      var parentNode = this.el.parentNode;
+      if (parentNode) parentNode.removeChild(this.el);
+    }
     this.stopListening();
     return this;
   },
@@ -194,10 +208,18 @@ _.extend(View.prototype, Backbone.Events, {
   setElement: function(element, options) {
     options = _.extend({use$: Backbone.$ && this.use$, delegate: true}, options || {});
     var delegate = options.delegate;
-    if (this.el) this.undelegateEvents();
+    if (this.$el) this.undelegateEvents();
     if (options.use$) {
       this.$el = element instanceof Backbone.$ ? element : Backbone.$(element);
       this.el = this.$el[0];
+    }
+    else if (typeof element == 'string') {
+      if (element[0] == '<') {
+        var el = window.document.createElement("div");
+        el.innerHTML = element;
+        this.el = el.firstChild;
+      }
+      else this.el = window.document.querySelector(element);
     }
     else this.el = element;
     if (delegate !== false) this.delegateEvents();
@@ -224,11 +246,13 @@ _.extend(View.prototype, Backbone.Events, {
       var namespacedEventName = eventName + '.delegateEvents' + cid;
       if (selector === '') {
         if ($el) $el.on(namespacedEventName, method);
-        else if (el.addEventListener) el.addEventListener(eventName, method);
-        else if (el.attachEvent) el.attachEvent('on' + eventName, method);
+        else if (el) {
+          if (el.addEventListener) el.addEventListener(eventName, method);
+          else if (el.attachEvent) el.attachEvent('on' + eventName, method);
+        }
       } else {
         if ($el) $el.on(namespacedEventName, selector, method);
-        else {
+        else if (el) {
           var descendants = el.querySelectorAll(selector);
           for (var i = 0, l = descendants.length; i < l; i++) {
             var descendant = descendants[i];
@@ -246,11 +270,11 @@ _.extend(View.prototype, Backbone.Events, {
   },
 
   undelegateEvents: function() {
-    var events = _.result(this, 'events');
-    if (!events) return this;
-    if (this.$el) this.$el.off('.delegateEvents' + this.cid);
-    else {
-      var el = this.el;
+    var el = this.el, $el = this.$el;
+    if ($el) this.$el.off('.delegateEvents' + this.cid);
+    else if (el) {
+      var events = _.result(this, 'events');
+      if (!events) return this;
       this._processEvents(events, function (eventName, selector, method) {
         if (selector === '') {
           if (el.removeEventListener) el.removeEventListener(eventName, method);

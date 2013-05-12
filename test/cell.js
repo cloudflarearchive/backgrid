@@ -330,7 +330,7 @@ describe("A Cell", function () {
 
   it("removes the editor correctly when removing the cell", function() {
     cell.render();
-    cell.$el.click();
+    $(cell.el).click();
 
     var editor = cell.currentEditor;
 
@@ -445,7 +445,7 @@ describe("An EmailCell", function () {
   });
 
   it("applies a email-cell class to the cell", function () {
-    expect(cell.render().$el.hasClass("email-cell")).toBe(true);
+    expect($(cell.render().el).hasClass("email-cell")).toBe(true);
   });
 
   it("renders the model value in a mailto: anchor", function () {
@@ -628,7 +628,7 @@ describe("A BooleanCell", function () {
   });
 
   it("applies a boolean-cell class to the cell", function () {
-    expect(cell.render().$el.hasClass("boolean-cell")).toBe(true);
+    expect($(cell.render().el).hasClass("boolean-cell")).toBe(true);
   });
 
   it("has a display mode that renders a checkbox with the checkbox checked if the model value is true, not checked otherwise", function () {
@@ -680,7 +680,7 @@ describe("A BooleanCell", function () {
 
     cell.render();
     $(cell.el).click();
-    cell.current$(editor.el).mousedown();
+    $(cell.currentEditor.el).mousedown();
     $(cell.el).find(":checkbox").blur();
     expect(backgridEditedTriggerCount).toBe(1);
   });
@@ -791,7 +791,7 @@ describe("A SelectCellEditor", function () {
     editor.render();
     expect(editor.el.tagName).toBe("SELECT");
     expect(editor.el.multiple).toBe(true);
-    var $options = editor.$el.children();
+    var $options = $(editor.el).children();
     expect($options.length).toBe(2);
     expect($options.eq(0).val()).toBe("1");
     expect($options.eq(0).prop("selected")).toBe(true);
@@ -848,7 +848,7 @@ describe("A SelectCellEditor", function () {
     editor.render();
     expect(editor.el.tagName).toBe("SELECT");
     expect(editor.el.multiple).toBe(true);
-    var $options = editor.$el.children();
+    var $options = $(editor.el).children();
     expect($options.length).toBe(2);
     expect($options.eq(0).val()).toBe("1");
     expect($options.eq(0).prop("selected")).toBe(true);
@@ -920,7 +920,7 @@ describe("A SelectCellEditor", function () {
     editor.setMultiple(true);
     editor.setOptionValues(optionGroupValues);
     editor.render();
-    var $optionGroups = editor.$el.children();
+    var $optionGroups = $(editor.el).children();
     expect($optionGroups.length).toBe(2);
 
     var $group1 = $optionGroups.eq(0);
@@ -1018,7 +1018,7 @@ describe("A SelectCellEditor", function () {
       return optionGroupValues;
     });
     editor.render();
-    var $optionGroups = editor.$el.children();
+    var $optionGroups = $(editor.el).children();
     expect($optionGroups.length).toBe(2);
 
     var $group1 = $optionGroups.eq(0);
@@ -1113,7 +1113,7 @@ describe("A SelectCellEditor", function () {
       backgridEditedTriggerArgs = [].slice.call(arguments);
     });
 
-    editor.$el.val([1, 2]).change();
+    $(editor.el).val([1, 2]).change();
     expect(editor.formatter.toRaw).toHaveBeenCalledWith(["1", "2"]);
     expect(editor.formatter.toRaw.calls.length).toBe(1);
     expect(editor.model.get(editor.column.get("name"))).toEqual(["1", "2"]);
@@ -1124,7 +1124,7 @@ describe("A SelectCellEditor", function () {
     expect(backgridEditedTriggerArgs[2].passThru()).toBe(true);
 
     backgridEditedTriggerCount = 0;
-    editor.$el.val(null).change();
+    $(editor.el).val(null).change();
     expect(editor.formatter.toRaw).toHaveBeenCalledWith(null);
     expect(editor.formatter.toRaw.calls.length).toBe(2);
     expect(editor.model.get(editor.column.get("name"))).toBe(null);
@@ -1147,7 +1147,7 @@ describe("A SelectCellEditor", function () {
     editor.setOptionValues([["Boy", "1"]]);
     editor.render();
 
-    editor.$el.blur();
+    $(editor.el).blur();
     expect(editor.model.get(editor.column.get("name"))).toBe("1");
   });
 

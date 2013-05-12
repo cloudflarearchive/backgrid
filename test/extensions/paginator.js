@@ -40,9 +40,9 @@ describe("A Paginator", function () {
 
       paginator.render();
 
-      expect(paginator.$el.find("a").length).toBe(5);
-      expect(paginator.$el.find("a[title='No. 1']").length).toBe(1);
-      expect(paginator.$el.find("a[title='No. 2']").length).toBe(0);
+      expect($(paginator.el).find("a").length).toBe(5);
+      expect($(paginator.el).find("a[title='No. 1']").length).toBe(1);
+      expect($(paginator.el).find("a[title='No. 2']").length).toBe(0);
 
       paginator = new Backgrid.Extension.Paginator({
         collection: new Backbone.PageableCollection([{id: 1}], {
@@ -56,9 +56,9 @@ describe("A Paginator", function () {
 
       paginator.render();
 
-      expect(paginator.$el.find("a").length).toBe(5);
-      expect(paginator.$el.find("a[title='No. 1']").length).toBe(1);
-      expect(paginator.$el.find("a[title='No. 2']").length).toBe(0);
+      expect($(paginator.el).find("a").length).toBe(5);
+      expect($(paginator.el).find("a[title='No. 1']").length).toBe(1);
+      expect($(paginator.el).find("a[title='No. 2']").length).toBe(0);
 
       paginator = new Backgrid.Extension.Paginator({
         collection: new Backbone.PageableCollection([{id: 1}, {id: 2}], {
@@ -72,9 +72,9 @@ describe("A Paginator", function () {
 
       paginator.render();
 
-      expect(paginator.$el.find("a").length).toBe(5);
-      expect(paginator.$el.find("a[title='No. 1']").length).toBe(1);
-      expect(paginator.$el.find("a[title='No. 2']").length).toBe(0);
+      expect($(paginator.el).find("a").length).toBe(5);
+      expect($(paginator.el).find("a[title='No. 1']").length).toBe(1);
+      expect($(paginator.el).find("a[title='No. 2']").length).toBe(0);
     });
 
     it("clicking on active or disabled page handles have no effect", function () {
@@ -88,19 +88,19 @@ describe("A Paginator", function () {
         columns: [{name: "id", cell: "integer"}]
       });
 
-      paginator.$el.find("a").eq(0).click();
+      $(paginator.el).find("a").eq(0).click();
       expect(paginator.collection.state.currentPage).toBe(1);
 
-      paginator.$el.find("a").eq(1).click();
+      $(paginator.el).find("a").eq(1).click();
       expect(paginator.collection.state.currentPage).toBe(1);
 
-      paginator.$el.find("a").eq(2).click();
+      $(paginator.el).find("a").eq(2).click();
       expect(paginator.collection.state.currentPage).toBe(1);
 
-      paginator.$el.find("a").eq(3).click();
+      $(paginator.el).find("a").eq(3).click();
       expect(paginator.collection.state.currentPage).toBe(1);
 
-      paginator.$el.find("a").eq(4).click();
+      $(paginator.el).find("a").eq(4).click();
       expect(paginator.collection.state.currentPage).toBe(1);
     });
 
@@ -111,7 +111,7 @@ describe("A Paginator", function () {
       expect(collection.state.currentPage).toBe(2);
 
       // page 1
-      paginator.$el.find("a").eq(2).click();
+      $(paginator.el).find("a").eq(2).click();
       expect(collection.state.currentPage).toBe(1);
 
       // reset window size and rerender
@@ -221,19 +221,19 @@ describe("A Paginator", function () {
         columns: [{name: "id", cell: "integer"}]
       });
 
-      paginator.$el.find("a").eq(0).click();
+      $(paginator.el).find("a").eq(0).click();
       expect(paginator.collection.state.currentPage).toBe(1);
 
-      paginator.$el.find("a").eq(1).click();
+      $(paginator.el).find("a").eq(1).click();
       expect(paginator.collection.state.currentPage).toBe(1);
 
-      paginator.$el.find("a").eq(2).click();
+      $(paginator.el).find("a").eq(2).click();
       expect(paginator.collection.state.currentPage).toBe(1);
 
-      paginator.$el.find("a").eq(3).click();
+      $(paginator.el).find("a").eq(3).click();
       expect(paginator.collection.state.currentPage).toBe(1);
 
-      paginator.$el.find("a").eq(4).click();
+      $(paginator.el).find("a").eq(4).click();
       expect(paginator.collection.state.currentPage).toBe(1);
     });
 

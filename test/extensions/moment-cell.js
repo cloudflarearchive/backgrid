@@ -230,7 +230,7 @@ describe("A MomentCell", function () {
 
   it("renders a placeholder for the input format for the editor", function () {
     cell.render();
-    cell.$el.click();
+    $(cell.el).click();
     expect($(cell.currentEditor.el).attr("placeholder")).toBe(Backgrid.Extension.MomentFormatter.prototype.defaults.displayFormat);
   });
 
