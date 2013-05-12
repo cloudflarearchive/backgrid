@@ -715,7 +715,6 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
   },
 
   setMultiple: function (multiple) {
-    this.multiple = multiple;
     this.el.multiple = multiple;
   },
 
@@ -751,7 +750,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
     var optionText = null;
     var optionValue = null;
     var optgroupName = null;
-    var innerHTML = '';
+    var children = [];
 
     for (var i = 0; i < optionValues.length; i++) {
       var optionValue = optionValues[i];
@@ -760,23 +759,25 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
         optionText  = optionValue[0];
         optionValue = optionValue[1];
 
-        innerHTML += this.template({
+        children.push(this.template({
           text: optionText,
           value: optionValue,
           selected: selectedValues.indexOf(optionValue) > -1
-        });
+        }));
       }
       else if (_.isObject(optionValue)) {
         optgroupName = optionValue.name;
-        var options = this._renderOptions(optionValue.values, selectedValues);
-        innerHTML = innerHTML + '<optgroup label="' + optgroupName + '">' + options + '</optgroup>';
+        var optgroup = window.document.createElement("optgroup");
+        optgroup.label = optgroupName;
+        optgroup.innerHTML = this._renderOptions(optionValue.values, selectedValues);
+        children.push(optgroup.outerHTML);
       }
       else {
         throw TypeError("optionValues elements must be a name-value pair or an object hash of { name: 'optgroup label', value: [option name-value pairs] }");
       }
     }
 
-    this.el.innerHTML = innerHTML;
+    this.el.innerHTML = children.join('');
 
     this.delegateEvents();
 
@@ -790,7 +791,20 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
   save: function (e) {
     var model = this.model;
     var column = this.column;
-    model.set(column.get("name"), this.formatter.toRaw(this.el.value));
+
+    var values;
+    if (!this.el.multiple) values = this.el.value;
+    else if (this.el.multiple) {
+      values = [];
+      var selectedOptions = this.el.querySelectorAll("option");
+      for (var i = 0, l = selectedOptions.length; i < l; i++) {
+        var option = selectedOptions[i];
+        if (option.selected) values.push(option.value);
+      }
+      if (values.length === 0) values = null;
+    }
+
+    model.set(column.get("name"), this.formatter.toRaw(values));
     model.trigger("backgrid:edited", model, column, new Command(e));
   },
 
@@ -810,7 +824,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
              command.moveUp() || command.moveDown() || e.type == "blur") {
       e.preventDefault();
       e.stopPropagation();
-      if (e.type == "blur" && this.$("option").length === 1) {
+      if (e.type == "blur" && this.el.querySelectorAll("option").length === 1) {
         model.set(column.get("name"), this.formatter.toRaw(this.el.value));
       }
       model.trigger("backgrid:edited", model, column, new Command(e));

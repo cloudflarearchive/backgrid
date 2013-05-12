@@ -152,6 +152,10 @@ _.extend(Command.prototype, {
 
 var viewOptions = ['model', 'collection', 'el', 'id', 'attributes', 'className', 'tagName', 'events', 'use$'];
 
+/**
+   @class Backgrid.View
+   @constructor
+ */
 var View = Backgrid.View = function(options) {
   this.cid = _.uniqueId('view');
   options = options || {};

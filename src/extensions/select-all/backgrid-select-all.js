@@ -92,7 +92,7 @@
        checkbox's `checked` value.
     */
     onChange: function (e) {
-      this.model.trigger("backgrid:selected", this.model, $(e.target).prop("checked"));
+      this.model.trigger("backgrid:selected", this.model, e.target.checked);
     },
 
     /**
@@ -178,7 +178,7 @@
        of the checkbox in each event.
     */
     onChange: function (e) {
-      var checked = $(e.target).prop("checked");
+      var checked = e.target.checked;
 
       var collection = this.collection;
       collection.each(function (model) {
