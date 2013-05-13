@@ -242,6 +242,8 @@ var Body = Backgrid.Body = Backbone.View.extend({
     var i = this.collection.indexOf(model);
     var j = this.columns.indexOf(column);
 
+    this.rows[i].cells[j].exitEditMode();
+
     if (command.moveUp() || command.moveDown() || command.moveLeft() ||
         command.moveRight() || command.save()) {
       var l = this.columns.length;
@@ -266,7 +268,5 @@ var Body = Backgrid.Body = Backbone.View.extend({
         }
       }
     }
-
-    this.rows[i].cells[j].exitEditMode();
   }
 });
