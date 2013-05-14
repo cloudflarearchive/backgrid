@@ -27,6 +27,12 @@
     /**
        @cfg {Object} options
 
+       @cfg {boolean} [options.modelInUnixOffset=false] Whether the model values
+       should be read/written as the number of milliseconds since UNIX Epoch.
+
+       @cfg {boolean} [options.modelInUnixTimestamp=false] Whether the model
+       values should be read/written as the number of seconds since UNIX Epoch.
+
        @cfg {boolean} [options.modelInUTC=true] Whether the model values should
        be read/written in UTC mode or local mode.
 
@@ -36,6 +42,13 @@
        @cfg {string} [options.modelFormat=moment.defaultFormat] The format this
        moment formatter should use to read/write model values. Only meaningful if
        the values are strings.
+
+       @cfg {boolean} [options.displayInUnixOffset=false] Whether the display
+       values should be read/written as the number of milliseconds since UNIX
+       Epoch.
+
+       @cfg {boolean} [options.displayInUnixTimestamp=false] Whether the display
+       values should be read/written as the number of seconds since UNIX Epoch.
 
        @cfg {boolean} [options.displayInUTC=true] Whether the display values
        should be read/written in UTC mode or local mode.
@@ -47,9 +60,13 @@
        this moment formatter should use to read/write dislay values.
      */
     defaults: {
+      modelInUnixOffset: false,
+      modelInUnixTimestamp: false,
       modelInUTC: true,
       modelLang: moment.lang(),
       modelFormat: moment.defaultFormat,
+      displayInUnixOffset: false,
+      displayInUnixTimestamp: false,
       displayInUTC: true,
       displayLang: moment.lang(),
       displayFormat: moment.defaultFormat
@@ -65,9 +82,15 @@
     fromRaw: function (rawData) {
       if (rawData == null) return '';
 
-      var m = this.modelInUTC ?
+      var m = this.modelInUnixOffset ? moment(rawData) :
+        this.modelInUnixTimestamp ? moment.unix(rawData) :
+        this.modelInUTC ?
         moment.utc(rawData, this.modelFormat, this.modelLang) :
         moment(rawData, this.modelFormat, this.modelLang);
+
+      if (this.displayInUnixOffset) return +m;
+
+      if (this.displayInUnixTimestamp) return m.unix();
 
       if (this.displayLang) m.lang(this.displayLang);
 
@@ -84,11 +107,18 @@
        @return {string}
      */
     toRaw: function (formattedData) {
-      var m = this.displayInUTC ?
+
+      var m = this.displayInUnixOffset ? moment(+formattedData) :
+        this.displayInUnixTimestamp ? moment.unix(+formattedData) :
+        this.displayInUTC ?
         moment.utc(formattedData, this.displayFormat, this.displayLang) :
         moment(formattedData, this.displayFormat, this.displayLang);
 
       if (!m || !m.isValid()) return;
+
+      if (this.modelInUnixOffset) return +m;
+
+      if (this.modelInUnixTimestamp) return m.unix();
 
       if (this.modelLang) m.lang(this.modelLang);
 

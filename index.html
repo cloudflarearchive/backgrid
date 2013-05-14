@@ -132,9 +132,9 @@
             <div class="btn-group">
               <a class="btn btn-large btn-success" href="#examples">See Examples</a>
               <a class="btn btn-large btn-primary hidden-phone hidden-tablet"
-                 href="https://github.com/wyuenho/backgrid/tags">Download v0.2.5</a>
+                 href="https://github.com/wyuenho/backgrid/tags">Download v0.2.6</a>
               <a class="btn btn-large btn-info"
-                 href="https://github.com/wyuenho/backgrid/blob/0.2.5/CHANGELOG.md">What's new?</a>
+                 href="https://github.com/wyuenho/backgrid/blob/0.2.6/CHANGELOG.md">What's new?</a>
             </div>
           </p>
         </section>
@@ -380,7 +380,6 @@
 
                     // Initialize the paginator
                     var paginator = new Backgrid.Extension.Paginator({
-                      columns: columns,
                       collection: pageableTerritories
                     });
 
@@ -1169,7 +1168,6 @@
                 });
 
                 var paginator = new GithubPaginator({
-                  columns: columns,
                   collection: issues
                 });
                 $paginatorExample.append(paginator.render().el);

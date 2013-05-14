@@ -218,6 +218,12 @@ Docs = {
         "icon": "icon-class"
       },
       {
+        "name": "Backgrid.SelectFormatter",
+        "extends": "Backgrid.CellFormatter",
+        "private": null,
+        "icon": "icon-class"
+      },
+      {
         "name": "Backgrid.Grid",
         "extends": "Backbone.View",
         "private": null,
@@ -1012,10 +1018,37 @@ Docs = {
         "sort": 3
       },
       {
+        "name": "multiple",
+        "fullName": "Backgrid.SelectCell.multiple",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.SelectCell-property-multiple",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "formatter",
+        "fullName": "Backgrid.SelectCell.formatter",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.SelectCell-property-formatter",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
         "name": "optionValues",
         "fullName": "Backgrid.SelectCell.optionValues",
         "icon": "icon-property",
         "url": "#!/api/Backgrid.SelectCell-property-optionValues",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "delimiter",
+        "fullName": "Backgrid.SelectCell.delimiter",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.SelectCell-property-delimiter",
         "meta": {
         },
         "sort": 3
@@ -1819,19 +1852,19 @@ Docs = {
         "sort": 3
       },
       {
-        "name": "save",
-        "fullName": "Backgrid.Extension.TextareaEditor.save",
+        "name": "saveOrCancel",
+        "fullName": "Backgrid.Extension.TextareaEditor.saveOrCancel",
         "icon": "icon-method",
-        "url": "#!/api/Backgrid.Extension.TextareaEditor-method-save",
+        "url": "#!/api/Backgrid.Extension.TextareaEditor-method-saveOrCancel",
         "meta": {
         },
         "sort": 3
       },
       {
-        "name": "cancel",
-        "fullName": "Backgrid.Extension.TextareaEditor.cancel",
-        "icon": "icon-method",
-        "url": "#!/api/Backgrid.Extension.TextareaEditor-method-cancel",
+        "name": "clearError",
+        "fullName": "Backgrid.Extension.TextareaEditor.clearError",
+        "icon": "icon-property",
+        "url": "#!/api/Backgrid.Extension.TextareaEditor-property-clearError",
         "meta": {
         },
         "sort": 3
@@ -2086,6 +2119,33 @@ Docs = {
         "fullName": "Backgrid.EmailFormatter.toRaw",
         "icon": "icon-method",
         "url": "#!/api/Backgrid.EmailFormatter-method-toRaw",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "SelectFormatter",
+        "fullName": "Backgrid.SelectFormatter",
+        "icon": "icon-class",
+        "url": "#!/api/Backgrid.SelectFormatter",
+        "meta": {
+        },
+        "sort": 1
+      },
+      {
+        "name": "constructor",
+        "fullName": "Backgrid.SelectFormatter.constructor",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.SelectFormatter-method-constructor",
+        "meta": {
+        },
+        "sort": 3
+      },
+      {
+        "name": "fromRaw",
+        "fullName": "Backgrid.SelectFormatter.fromRaw",
+        "icon": "icon-method",
+        "url": "#!/api/Backgrid.SelectFormatter-method-fromRaw",
         "meta": {
         },
         "sort": 3
