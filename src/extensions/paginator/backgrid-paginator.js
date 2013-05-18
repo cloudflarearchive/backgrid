@@ -48,6 +48,9 @@
       "click a": "changePage"
     },
 
+    /** @property */
+    goBackFirstOnSort: true,
+
     /**
        Initializer.
 
@@ -63,6 +66,11 @@
       if (fullCollection) {
         this.listenTo(fullCollection, "add", this.render);
         this.listenTo(fullCollection, "remove", this.render);
+        if (this.goBackFirstOnSort) {
+          this.listenTo(fullCollection, "sort", function () {
+            collection.getFirstPage();
+          });
+        }
         this.listenTo(fullCollection, "reset", this.render);
       }
       else {

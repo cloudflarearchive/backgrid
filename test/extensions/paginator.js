@@ -177,6 +177,13 @@ describe("A Paginator", function () {
       expect(paginator.$el.find("a[title='No. 1']").length).toBe(1);
       expect(paginator.$el.find("a[title='No. 2']").length).toBe(0);
     });
+
+    it("will go back to the first page on sort", function () {
+      paginator.$el.find("a").eq(3).click();
+      collection.setSorting("id", -1);
+      collection.fullCollection.sort();
+      expect(paginator.$el.find("li").eq(2).hasClass("active")).toBe(true);
+    });
   });
 
   describe("when under server mode", function () {
