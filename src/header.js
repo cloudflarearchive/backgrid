@@ -193,7 +193,10 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
    */
   render: function () {
     this.$el.empty();
-    var $label = $("<a>").text(this.column.get("label")).append("<b class='sort-caret'></b>");
+    var $label = $("<a>").text(this.column.get("label"));
+    if (this.column.get("sortable")) {
+      $label.append("<b class='sort-caret'></b>");
+    }
     this.$el.append($label);
     this.delegateEvents();
     return this;

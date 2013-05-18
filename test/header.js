@@ -42,10 +42,16 @@ describe("A HeaderCell", function () {
     cell.render();
   });
 
-  it("renders a table header cell with an anchor wrapping the label text and the sort caret", function () {
+  it("renders a table header cell with an anchor wrapping the label text and an optional sort caret", function () {
     expect(cell.el.tagName).toBe("TH");
     expect(cell.$el.find("a").text()).toBe("id");
     expect(cell.$el.find(".sort-caret").length).toBe(1);
+
+    cell.column.set("sortable", false);
+    cell.render();
+    expect(cell.el.tagName).toBe("TH");
+    expect(cell.$el.find("a").text()).toBe("id");
+    expect(cell.$el.find(".sort-caret").length).toBe(0);
   });
 
   it("sorts the underlying collection in ascending order upon clicking the sort caret once", function () {
