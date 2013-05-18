@@ -40,6 +40,26 @@ describe("Backgrid#resolveNameToClass", function () {
 
 });
 
+describe("Backgrid#callByNeed", function () {
+
+  it("will return the first argument if it is not a function", function () {
+    expect(Backgrid.callByNeed(1)).toBe(1);
+  });
+
+  it("will return the value of the first argument after evaluating it as a function if it is a function", function () {
+    expect(Backgrid.callByNeed(function () { return 1; })).toBe(1);
+  });
+
+  it("will use the second parameter as the context when evaluation the first parameter as a function", function () {
+    expect(Backgrid.callByNeed(function () { return this[0]; }, [1,2,3])).toBe(1);
+  });
+
+  it("will use the third parameter and beyond as arguments to the first argument when evaluating it as a function", function () {
+    expect(Backgrid.callByNeed(function (a) { return this[0] + a; }, [1,2,3], 1)).toBe(2);
+  });
+
+});
+
 describe("Backgrid.Command", function () {
 
   it("can be initialized with a DOM Event instance", function () {

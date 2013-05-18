@@ -57,8 +57,8 @@ var Row = Backgrid.Row = Backbone.View.extend({
       var i = columns.indexOf(column);
       var cell = this.makeCell(column, options);
       cells.splice(i, 0, cell);
-
-      if (!cell.column.get("renderable")) cell.$el.hide();
+      var renderable = Backgrid.callByNeed(column.get("renderable"), column, cell.model);
+      if (!renderable) cell.$el.hide();
 
       var $el = this.$el;
       if (i === 0) {
@@ -103,11 +103,11 @@ var Row = Backgrid.Row = Backbone.View.extend({
     this.$el.empty();
 
     var fragment = document.createDocumentFragment();
-
     for (var i = 0; i < this.cells.length; i++) {
-      var cell = this.cells[i];
+      var cell = this.cells[i], column = cell.column;
       fragment.appendChild(cell.render().el);
-      if (!cell.column.get("renderable")) cell.$el.hide();
+      var renderable = Backgrid.callByNeed(column.get("renderable"), column, cell.model);
+      if (!renderable) cell.$el.hide();
     }
 
     this.el.appendChild(fragment);

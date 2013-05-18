@@ -261,7 +261,9 @@ var Body = Backgrid.Body = Backbone.View.extend({
           var m = ~~(offset / l);
           var n = offset - m * l;
           var cell = this.rows[m].cells[n];
-          if (cell.column.get("renderable") && cell.column.get("editable")) {
+          var renderable = Backgrid.callByNeed(cell.column.get("renderable"), cell.column, cell.model);
+          var editable = Backgrid.callByNeed(cell.column.get("editable"), cell.column, model);
+          if (renderable && editable) {
             cell.enterEditMode();
             break;
           }
