@@ -99,7 +99,7 @@ _.extend(Backgrid, Backbone.Events);
 var Command = Backgrid.Command = function (evt) {
   _.extend(this, {
     altKey: !!evt.altKey,
-    'char': evt['char'],
+    "char": evt["char"],
     charCode: evt.charCode,
     ctrlKey: !!evt.ctrlKey,
     key: evt.key,
