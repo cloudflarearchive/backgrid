@@ -6,9 +6,11 @@
   Licensed under the MIT @license.
 */
 
-(function ($, _, Backbone, Backgrid, lunr) {
+(function (root) {
 
   "use strict";
+
+  var Backbone = root.Backbone, Backgrid = root.Backgrid, lunr = root.lunr;
 
   /**
      ServerSideFilter is a search form widget that submits a query to the server
@@ -365,4 +367,4 @@
 
   });
 
-}(jQuery, _, Backbone, Backgrid, lunr));
+}(this));
