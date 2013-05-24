@@ -335,6 +335,33 @@ var StringCell = Backgrid.StringCell = Cell.extend({
 });
 
 /**
+   HtmlCell renders an HTML element for the value.
+
+   @class Backgrid.HtmlCell
+   @extends Backgrid.Cell
+*/
+var HtmlCell = Backgrid.HtmlCell = Cell.extend({
+
+  /** @property */
+  className: "html-cell",
+  
+  formattedValue : function () { 
+  return this.formatter.fromRaw(this.model.get(this.column.get("name"))); 
+  },
+  
+  displayValue : function () { 
+	return this.formattedValue(); 
+  },
+  
+  render: function () {
+    this.$el.empty();
+    this.$el.append(this.displayValue());
+    this.delegateEvents();
+    return this;
+  }
+});
+
+/**
    UriCell renders an HTML `<a>` anchor for the value and accepts URIs as user
    input values. No type conversion or URL validation is done by the formatter
    of this cell. Users who need URL validation are encourage to subclass UriCell
@@ -345,25 +372,23 @@ var StringCell = Backgrid.StringCell = Cell.extend({
    @class Backgrid.UriCell
    @extends Backgrid.Cell
 */
-var UriCell = Backgrid.UriCell = Cell.extend({
+var UriCell = Backgrid.UriCell = HtmlCell.extend({
 
   /** @property */
   className: "uri-cell",
 
-  render: function () {
-    this.$el.empty();
-    var formattedValue = this.formatter.fromRaw(this.model.get(this.column.get("name")));
-    this.$el.append($("<a>", {
+  displayValue : function () {
+    var formattedValue = this.formattedValue();
+    return $("<a>", {
       tabIndex: -1,
       href: formattedValue,
       title: formattedValue,
       target: "_blank"
-    }).text(formattedValue));
-    this.delegateEvents();
-    return this;
-  }
+    }).text(formattedValue);
+  } 
 
 });
+
 
 /**
    Like Backgrid.UriCell, EmailCell renders an HTML `<a>` anchor for the
