@@ -1228,7 +1228,7 @@
                 // expression search on the client side by OR-ing the keywords in
                 // the search box together.
                 var clientSideFilter = new Backgrid.Extension.ClientSideFilter({
-                  collection: territories,
+                  collection: pageableTerritories.fullCollection,
                   placeholder: "Search in the browser",
                   // The model fields to search for matches
                   fields: ['name'],
@@ -1241,7 +1241,7 @@
                 // LunrFilter is a specialized ClientSideFilter that uses
                 // lunr.js to perform full-text searching on the client side.
                 var lunrFilter = new Backgrid.Extension.LunrFilter({
-                  collection: territories,
+                  collection: pageableTerritories.fullCollection,
                   placeholder: "Full-text searching",
                   // lunr.js field name and boost value
                   fields: {
