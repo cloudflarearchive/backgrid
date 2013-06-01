@@ -155,7 +155,7 @@
       });
 
       this.listenTo(collection, "remove", function (model) {
-        delete selectedModels[model.cid];
+        delete selectedModels[model.id || model.cid];
       });
 
       this.listenTo(collection, "backgrid:refresh", function () {
