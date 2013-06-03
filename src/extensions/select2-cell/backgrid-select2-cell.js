@@ -53,7 +53,6 @@
     render: function () {
       Backgrid.SelectCellEditor.prototype.render.apply(this, arguments);
       this.$el.select2(this.select2Options);
-      this.delegateEvents();
       return this;
     },
 
@@ -64,7 +63,7 @@
       var self = this;
       this.$el.parent()
         .find("." + this.select2Options.containerCssClass)
-        .on("blur", function (e) {
+        .on("focusout", function (e) {
           if (!e.relatedTarget) self.close(e);
         })
         .on("keydown", this.close)

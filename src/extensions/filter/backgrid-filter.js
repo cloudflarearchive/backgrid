@@ -6,9 +6,11 @@
   Licensed under the MIT @license.
 */
 
-(function ($, _, Backbone, Backgrid, lunr) {
+(function (root) {
 
   "use strict";
+
+  var Backbone = root.Backbone, Backgrid = root.Backgrid, lunr = root.lunr;
 
   /**
      ServerSideFilter is a search form widget that submits a query to the server
@@ -24,7 +26,7 @@
     /** @property */
     className: "backgrid-filter form-search",
 
-    /** @property {function(Object, ?Object=): string} template */
+    /** @property {function(Object, ?Object=): String} template */
     template: _.template('<div class="input-prepend input-append"><span class="add-on"><i class="icon-search"></i></span><input type="text" <% if (placeholder) { %> placeholder="<%- placeholder %>" <% } %> name="<%- name %>" /><span class="add-on"><a class="close" href="#">&times;</a></span></div>'),
 
     /** @property */
@@ -33,10 +35,13 @@
       "submit": "search"
     },
 
-    /** @property {string} [name='q'] Query key */
+    /** @property {String} [name='q'] Query key */
     name: "q",
 
-    /** @property The HTML5 placeholder to appear beneath the search box. */
+    /**
+       @property {String} [placeholder] The HTML5 placeholder to appear beneath
+       the search box.
+    */
     placeholder: null,
 
     /**
@@ -50,6 +55,15 @@
       Backbone.View.prototype.initialize.apply(this, arguments);
       this.name = options.name || this.name;
       this.placeholder = options.placeholder || this.placeholder;
+
+      var collection = this.collection, self = this;
+      if (Backbone.PageableCollection &&
+          collection instanceof Backbone.PageableCollection &&
+          collection.mode == "server") {
+        collection.queryParams[this.name] = function () {
+          return self.$el.find("input[type=text]").val();
+        };
+      }
     },
 
     /**
@@ -59,9 +73,8 @@
     */
     search: function (e) {
       if (e) e.preventDefault();
-      var $text = $(e.target).find("input[type=text]");
       var data = {};
-      data[$text.attr("name")] = $text.val();
+      data[this.name] = this.$el.find("input[type=text]").val();
       this.collection.fetch({data: data});
     },
 
@@ -116,14 +129,14 @@
     },
 
     /**
-       @property {?Array.<string>} A list of model field names to search
-       for matches. If null, all of the fields will be searched.
+       @property {?Array.<String>} [fields] A list of model field names to
+       search for matches. If null, all of the fields will be searched.
     */
     fields: null,
 
     /**
-       @property wait The time in milliseconds to wait since for since the last
-       change to the search box's value before searching. This value can be
+       @property [wait=149] The time in milliseconds to wait since for since the
+       last change to the search box's value before searching. This value can be
        adjusted depending on how often the search box is used and how large the
        search index is.
     */
@@ -190,7 +203,7 @@
        is called, its context will be bound to this ClientSideFilter object so
        it has access to the filter's attributes and methods.
 
-       @param {string} query The search query in the search box.
+       @param {String} query The search query in the search box.
        @return {function(Backbone.Model):boolean} A matching function.
     */
     makeMatcher: function (query) {
@@ -235,7 +248,7 @@
   Backgrid.Extension.LunrFilter = ClientSideFilter.extend({
 
     /**
-       @property {string} [ref="id"]｀lunrjs` document reference attribute name.
+       @property {String} [ref="id"]｀lunrjs` document reference attribute name.
     */
     ref: "id",
 
@@ -255,7 +268,7 @@
        @param {Object} options
        @param {Backbone.Collection} options.collection
        @param {String} [options.placeholder]
-       @param {string} [options.ref] ｀lunrjs` document reference attribute name.
+       @param {String} [options.ref] ｀lunrjs` document reference attribute name.
        @param {Object} [options.fields] A hash of `lunrjs` index field names and
        boost value.
        @param {number} [options.wait]
@@ -354,4 +367,4 @@
 
   });
 
-}(jQuery, _, Backbone, Backgrid, lunr));
+}(this));

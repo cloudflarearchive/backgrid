@@ -86,9 +86,10 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
   onClick: function (e) {
     e.preventDefault();
 
-    var columnName = this.column.get("name");
-
-    if (this.column.get("sortable")) {
+    var column = this.column;
+    var columnName = column.get("name");
+    var sortable = Backgrid.callByNeed(column.get("sortable"), column, this.model);
+    if (sortable) {
       if (this.direction() === "ascending") {
         this.sort(columnName, "descending", function (left, right) {
           var leftVal = left.get(columnName);
@@ -193,7 +194,9 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
    */
   render: function () {
     this.$el.empty();
-    var $label = $("<a>").text(this.column.get("label")).append("<b class='sort-caret'></b>");
+    var $label = $("<a>").text(this.column.get("label"));
+    var sortable = Backgrid.callByNeed(this.column.get("sortable"), this.column, this.model);
+    if (sortable) $label.append("<b class='sort-caret'></b>");
     this.$el.append($label);
     this.delegateEvents();
     return this;

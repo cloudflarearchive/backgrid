@@ -242,6 +242,8 @@ var Body = Backgrid.Body = Backbone.View.extend({
     var i = this.collection.indexOf(model);
     var j = this.columns.indexOf(column);
 
+    this.rows[i].cells[j].exitEditMode();
+
     if (command.moveUp() || command.moveDown() || command.moveLeft() ||
         command.moveRight() || command.save()) {
       var l = this.columns.length;
@@ -259,14 +261,14 @@ var Body = Backgrid.Body = Backbone.View.extend({
           var m = ~~(offset / l);
           var n = offset - m * l;
           var cell = this.rows[m].cells[n];
-          if (cell.column.get("renderable") && cell.column.get("editable")) {
+          var renderable = Backgrid.callByNeed(cell.column.get("renderable"), cell.column, cell.model);
+          var editable = Backgrid.callByNeed(cell.column.get("editable"), cell.column, model);
+          if (renderable && editable) {
             cell.enterEditMode();
             break;
           }
         }
       }
     }
-
-    this.rows[i].cells[j].exitEditMode();
   }
 });

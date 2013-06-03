@@ -47,6 +47,15 @@ describe("A SelectRowCell", function () {
     expect(cell.$el.find(":checkbox").prop("checked")).toBe(false);
   });
 
+  it("toggles a `selected` class on the parent row when the checkbox changes", function () {
+    var $row = $('<tr></tr>');
+    $row.append(cell.$el);
+    cell.$el.find(":checkbox").prop("checked", true).change();
+    expect($row.hasClass("selected")).toBe(true);
+    cell.$el.find(":checkbox").prop("checked", false).change();
+    expect($row.hasClass("selected")).toBe(false);
+  });
+
 });
 
 describe("A SelectAllHeaderCell", function () {

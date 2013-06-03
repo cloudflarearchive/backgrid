@@ -47,7 +47,7 @@ function lpad(str, length, padstr) {
 
 var Backgrid = root.Backgrid = {
 
-  VERSION: "0.2.5",
+  VERSION: "0.2.6",
 
   Extension: {},
 
@@ -71,7 +71,17 @@ var Backgrid = root.Backgrid = {
     }
 
     return name;
+  },
+
+  callByNeed: function () {
+    var value = arguments[0];
+    if (!_.isFunction(value)) return value;
+
+    var context = arguments[1];
+    var args = [].slice.call(arguments, 2);
+    return value.apply(context, !!(args + '') ? args : void 0);
   }
+
 };
 _.extend(Backgrid, Backbone.Events);
 
@@ -89,7 +99,7 @@ _.extend(Backgrid, Backbone.Events);
 var Command = Backgrid.Command = function (evt) {
   _.extend(this, {
     altKey: !!evt.altKey,
-    char: evt.char,
+    "char": evt["char"],
     charCode: evt.charCode,
     ctrlKey: !!evt.ctrlKey,
     key: evt.key,

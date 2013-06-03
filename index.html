@@ -100,7 +100,7 @@
                     </ul>
                   </li>
                   <li id="social-media">
-                    <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://backgridjs.com" data-via="wong_jim">Tweet</a>
+                    <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://backgridjs.com" data-counturl="wyuenho.github.com/backgrid" data-via="wong_jim" data-hashtags="backgridjs,backbone_js">Tweet</a>
                     <div class="g-plusone" data-size="medium"></div>
                     <iframe src="http://ghbtns.com/github-btn.html?user=wyuenho&repo=backgrid&type=watch&count=true"
                             allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
@@ -132,9 +132,9 @@
             <div class="btn-group">
               <a class="btn btn-large btn-success" href="#examples">See Examples</a>
               <a class="btn btn-large btn-primary hidden-phone hidden-tablet"
-                 href="https://github.com/wyuenho/backgrid/tags">Download v0.2.5</a>
+                 href="https://github.com/wyuenho/backgrid/tags">Download v0.2.6</a>
               <a class="btn btn-large btn-info"
-                 href="https://github.com/wyuenho/backgrid/blob/0.2.5/CHANGELOG.md">What's new?</a>
+                 href="https://github.com/wyuenho/backgrid/blob/0.2.6/CHANGELOG.md">What's new?</a>
             </div>
           </p>
         </section>
@@ -286,7 +286,7 @@
                     }, {
                       name: "url",
                       label: "URL",
-                      cell: "uri" // Renders the value in an HTML &lt;a&gt; element
+                      cell: "uri" // Renders the value in an HTML anchor element
                     }];
 
                     // Initialize a new Grid instance
@@ -380,7 +380,6 @@
 
                     // Initialize the paginator
                     var paginator = new Backgrid.Extension.Paginator({
-                      columns: columns,
                       collection: pageableTerritories
                     });
 
@@ -957,8 +956,8 @@
               </ul>
               <h3>Events</h3>
               <ul class="nav">
-                <li><a href="api/Backgrid.Extension.SelectAllHeaderCell-method-initialize">backgrid:select</a></li>
-                <li><a href="api/Backgrid.Extension.SelectAllHeaderCell-method-initialize">backgrid:selected</a></li>
+                <li><a href="api/index.html#!/api/Backgrid.Extension.SelectAllHeaderCell-method-initialize">backgrid:select</a></li>
+                <li><a href="api/index.html#!/api/Backgrid.Extension.SelectAllHeaderCell-method-initialize">backgrid:selected</a></li>
               </ul>
               <h4>Best Used On</h4>
               <ul>
@@ -1169,7 +1168,6 @@
                 });
 
                 var paginator = new GithubPaginator({
-                  columns: columns,
                   collection: issues
                 });
                 $paginatorExample.append(paginator.render().el);
@@ -1230,7 +1228,7 @@
                 // expression search on the client side by OR-ing the keywords in
                 // the search box together.
                 var clientSideFilter = new Backgrid.Extension.ClientSideFilter({
-                  collection: territories,
+                  collection: pageableTerritories.fullCollection,
                   placeholder: "Search in the browser",
                   // The model fields to search for matches
                   fields: ['name'],
@@ -1243,7 +1241,7 @@
                 // LunrFilter is a specialized ClientSideFilter that uses
                 // lunr.js to perform full-text searching on the client side.
                 var lunrFilter = new Backgrid.Extension.LunrFilter({
-                  collection: territories,
+                  collection: pageableTerritories.fullCollection,
                   placeholder: "Full-text searching",
                   // lunr.js field name and boost value
                   fields: {
@@ -1531,7 +1529,7 @@
                     /* Say you want to give some shiny gradient background colors
                        to your table header */
                     .backgrid th {
-                      background-color: linear-gradient(top, #2F2727, #1a82f7);
+                      background-image: linear-gradient(#2F2727, #1a82f7);
                     }</textarea>
                 </div>
                 <div class="span6">
