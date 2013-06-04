@@ -31,10 +31,6 @@ if (!String.prototype.trim || ws.trim()) {
   };
 }
 
-function capitalize(s) {
-  return String.fromCharCode(s.charCodeAt(0) - 32) + s.slice(1);
-}
-
 function lpad(str, length, padstr) {
   var paddingLen = length - (str + '').length;
   paddingLen =  paddingLen < 0 ? 0 : paddingLen;
@@ -62,7 +58,9 @@ var Backgrid = root.Backgrid = {
 
   resolveNameToClass: function (name, suffix) {
     if (_.isString(name)) {
-      var key = _.map(name.split('-'), function (e) { return capitalize(e); }).join('') + suffix;
+      var key = _.map(name.split('-'), function (e) {
+        return e.slice(0, 1).toUpperCase() + e.slice(1);
+      }).join('') + suffix;
       var klass = Backgrid[key] || Backgrid.Extension[key];
       if (_.isUndefined(klass)) {
         throw new ReferenceError("Class '" + key + "' not found");
