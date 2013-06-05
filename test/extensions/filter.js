@@ -28,29 +28,29 @@ describe("A ServerSideFilter", function () {
       placeholder: "placeholder"
     });
     filter.render();
-    expect(filter.$el.find(":text").attr("name")).toBe("name");
-    expect(filter.$el.find(":text").attr("placeholder")).toBe("placeholder");
+    expect(filter.searchBox().attr("name")).toBe("name");
+    expect(filter.searchBox().attr("placeholder")).toBe("placeholder");
 
     var filter = new Backgrid.Extension.ServerSideFilter({
       collection: collection,
       name: "name"
     });
     filter.render();
-    expect(filter.$el.find(":text").attr("placeholder")).toBeUndefined();
-    expect(filter.$el.find(":text").attr("name")).toBe("name");
+    expect(filter.searchBox().attr("placeholder")).toBeUndefined();
+    expect(filter.searchBox().attr("name")).toBe("name");
 
     var filter = new Backgrid.Extension.ServerSideFilter({
       collection: collection,
       placeholder: "placeholder"
     });
     filter.render();
-    expect(filter.$el.find(":text").attr("placeholder")).toBe("placeholder");
+    expect(filter.searchBox().attr("placeholder")).toBe("placeholder");
 
     var filter = new Backgrid.Extension.ServerSideFilter({
       collection: collection
     });
     filter.render();
-    expect(filter.$el.find(":text").attr("placeholder")).toBeUndefined();
+    expect(filter.searchBox().attr("placeholder")).toBeUndefined();
   });
 
   it("can fetch with a query on submit", function () {
@@ -64,15 +64,60 @@ describe("A ServerSideFilter", function () {
       collection: collection
     });
     filter.render();
-    filter.$el.find(":text").val("query");
+    filter.searchBox().val("query");
     filter.$el.submit();
     expect(url).toBe("http://www.example.com");
     expect(data).toEqual({q: "query"});
     expect(collection.length).toBe(1);
     expect(collection.at(0).toJSON()).toEqual({id: 1});
+
+    filter = new Backgrid.Extension.ServerSideFilter({
+      collection: new Backbone.PageableCollection(null, {
+        url: "http://www.example.com"
+      })
+    });
+    filter.render();
+    filter.searchBox().val("query");
+    filter.$el.submit();
+    expect(url).toBe("http://www.example.com");
+    expect(data).toEqual({q: "query", page: 1, "per_page": 25});
+    expect(collection.length).toBe(1);
+    expect(collection.at(0).toJSON()).toEqual({id: 1});
   });
 
-  it("can persist the filter parameter on a pageable collection", function () {
+  it("fetches without the query parameter if the search box is empty", function () {
+    var url, data;
+    $.ajax = function (settings) {
+      url = settings.url;
+      data = settings.data;
+      settings.success([{id: 1}]);
+    };
+    var filter = new Backgrid.Extension.ServerSideFilter({
+      collection: collection
+    });
+    filter.render();
+    filter.searchBox().val("");
+    filter.$el.submit();
+    expect(url).toBe("http://www.example.com");
+    expect(data).toEqual({});
+    expect(collection.length).toBe(1);
+    expect(collection.at(0).toJSON()).toEqual({id: 1});
+
+    var filter = new Backgrid.Extension.ServerSideFilter({
+      collection: new Backbone.PageableCollection(null, {
+        url: "http://www.example.com"
+      })
+    });
+    filter.render();
+    filter.searchBox().val("");
+    filter.$el.submit();
+    expect(url).toBe("http://www.example.com");
+    expect(data).toEqual({page: 1, "per_page": 25});
+    expect(collection.length).toBe(1);
+    expect(collection.at(0).toJSON()).toEqual({id: 1});
+  });
+
+  it("can persist the filter parameter on pagination", function () {
     var url, data;
     $.ajax = function (settings) {
       url = settings.url;
@@ -84,18 +129,56 @@ describe("A ServerSideFilter", function () {
       state: {
         pageSize: 1,
         totalRecords: 3
+      },
+      queryParams: {
+        totalRecords: null,
+        totalPages: null
       }
     });
     var filter = new Backgrid.Extension.ServerSideFilter({
       collection: collection
     });
     filter.render();
-    filter.$el.find(":text").val("query");
+    filter.searchBox().val("query");
     collection.getPage(2);
+    expect(filter.searchBox().val()).toBe("query");
     expect(url).toBe("http://www.example.com");
-    expect(data).toEqual({q: "query", page: 2, "per_page": 1, "total_pages": 3, "total_entries": 3});
+    expect(data).toEqual({q: "query", page: 2, "per_page": 1});
     expect(collection.length).toBe(1);
     expect(collection.at(0).toJSON()).toEqual({id: 2});
+  });
+
+  it("goes back to the first page when the query changes", function () {
+    var url, data;
+    $.ajax = function (settings) {
+      url = settings.url;
+      data = settings.data;
+      settings.success([{id: 3}]);
+    };
+    collection = new Backbone.PageableCollection([{id: 1}, {id: 2}], {
+      url: "http://www.example.com",
+      state: {
+        pageSize: 1,
+        totalRecords: 3
+      },
+      queryParams: {
+        totalRecords: null,
+        totalPages: null
+      }
+    });
+    var filter = new Backgrid.Extension.ServerSideFilter({
+      collection: collection
+    });
+    filter.render();
+    collection.getPage(2);
+    filter.searchBox().val("query");
+    filter.$el.submit();
+    expect(url).toBe("http://www.example.com");
+    expect(data).toEqual({q: "query", page: 1, "per_page": 1});
+    expect(collection.length).toBe(1);
+    expect(collection.state.currentPage).toBe(1);
+    expect(collection.state.totalRecords).toBe(3);
+    expect(collection.at(0).toJSON()).toEqual({id: 3});
   });
 
   it("can clear the search box and refetch upon clicking the cross", function () {
@@ -104,9 +187,9 @@ describe("A ServerSideFilter", function () {
       collection: collection
     });
     filter.render();
-    filter.$el.find(":text").val("query");
+    filter.searchBox().val("query");
     filter.$el.find(".close").click();
-    expect(filter.$el.find(":text").val()).toBe("");
+    expect(filter.searchBox().val()).toBe("");
     collection.fetch.reset();
   });
 
@@ -124,7 +207,7 @@ describe("A ClientSideFilter", function () {
          {id: 3, name: "bob"}]);
   });
 
-  it("can perform a regex search on change, keyup and submit, and cancel on clicking the close button", function () {
+  it("can perform a regex search on keydown and submit, and cancel on clicking the close button", function () {
     var filter;
 
     runs(function () {
@@ -140,7 +223,7 @@ describe("A ClientSideFilter", function () {
     });
 
     runs(function () {
-      filter.$el.find(":text").val("bob").change();
+      filter.searchBox().val("bob").keydown();
     });
     waitsFor(function () {
       return collection.length === 1;
@@ -162,7 +245,7 @@ describe("A ClientSideFilter", function () {
     });
 
     runs(function () {
-      filter.$el.find(":text").val("ALICE");
+      filter.searchBox().val("ALICE");
       filter.$el.submit();
     });
     waitsFor(function () {
@@ -173,7 +256,7 @@ describe("A ClientSideFilter", function () {
     });
 
     runs(function () {
-      filter.$el.find(":text").val("al").keyup();
+      filter.searchBox().val("al").keydown();
     });
     waitsFor(function () {
       return collection.length === 2;
@@ -184,7 +267,7 @@ describe("A ClientSideFilter", function () {
     });
 
     runs(function () {
-      filter.$el.find(":text").val("alic bob").keyup();
+      filter.searchBox().val("alic bob").keydown();
     });
     waitsFor(function () {
       return collection.length === 3;
@@ -206,7 +289,7 @@ describe("A ClientSideFilter", function () {
       });
       filter.render();
       collection.add({id: 4, name: "doug"});
-      filter.$el.find(":text").val("doug").change();
+      filter.searchBox().val("doug").keydown();
     });
     waitsFor(function () {
       return collection.length === 1;
@@ -227,7 +310,7 @@ describe("A ClientSideFilter", function () {
       });
       filter.render();
       collection.remove(collection.at(0));
-      filter.$el.find(":text").val("alice").change();
+      filter.searchBox().val("alice").keydown();
     });
     waitsFor(function () {
       return collection.length === 0;
@@ -250,7 +333,7 @@ describe("A ClientSideFilter", function () {
       });
       filter.render();
       filter.collection.at(0).set("name", "charlie");
-      filter.$el.find(":text").val("charlie").change();
+      filter.searchBox().val("charlie").keydown();
     });
     waitsFor(function () {
       return collection.length === 1;
@@ -273,7 +356,7 @@ describe("A ClientSideFilter", function () {
       });
       filter.render();
       filter.collection.reset([{id: 4, name: "charlie"}, {id: 5, name: "doug"}]);
-      filter.$el.find(":text").val("").change();
+      filter.searchBox().val("").keydown();
     });
     waitsFor(function () {
       return collection.length === 2;
@@ -291,6 +374,41 @@ describe("A ClientSideFilter", function () {
 
   });
 
+  it("goes back to the first page when the query changes", function () {
+    var filter;
+
+    runs(function () {
+      collection = new Backbone.PageableCollection([
+        {id: 1, name: "alice"},
+        {id: 2, name: "bob"}], {
+        state: {
+          pageSize: 1,
+        },
+        mode: "client"
+      });
+      filter = new Backgrid.Extension.ClientSideFilter({
+        collection: collection,
+        fields: ["name"]
+      });
+      filter.render();
+      collection.getPage(2);
+      filter.searchBox().val("bob").keydown();
+    });
+    waitsFor(function () {
+      return collection.state.currentPage === 1;
+    }, "collection.state.currentPage to become 1", 500);
+    runs(function () {
+      expect(collection.length).toBe(1);
+      expect(filter.shadowCollection.at(0).id).toBe(1);
+      expect(filter.shadowCollection.at(1).id).toBe(2);
+      expect(filter.shadowCollection.at(0).get("name")).toBe("alice");
+      expect(filter.shadowCollection.at(1).get("name")).toBe("bob");
+      expect(collection.state.currentPage).toBe(1);
+      expect(collection.state.totalRecords).toBe(1);
+      expect(collection.at(0).toJSON()).toEqual({id: 2, name: "bob"});
+    });
+  });
+
 });
 
 describe("A LunrFilter", function () {
@@ -304,7 +422,7 @@ describe("A LunrFilter", function () {
          {id: 2, name: "bob", bio: "he is fat but does not crap"}]);
   });
 
-  it("can perform a full-text search on change, keyup and submit, and cancel on clicking the close button", function () {
+  it("can perform a full-text search on keydown and submit, and cancel on clicking the close button", function () {
     var filter;
 
     runs(function () {
@@ -319,7 +437,7 @@ describe("A LunrFilter", function () {
     });
 
     runs(function () {
-      filter.$el.find(":text").val("crap").change();
+      filter.searchBox().val("crap").keydown();
     });
     waitsFor(function () {
       return collection.length === 1;
@@ -340,7 +458,7 @@ describe("A LunrFilter", function () {
     });
 
     runs(function () {
-      filter.$el.find(":text").val("alice");
+      filter.searchBox().val("alice");
       filter.$el.submit();
     });
     waitsFor(function () {
@@ -351,7 +469,7 @@ describe("A LunrFilter", function () {
     });
 
     runs(function () {
-      filter.$el.find(":text").val("fat").keyup();
+      filter.searchBox().val("fat").keydown();
     });
     waitsFor(function () {
       return collection.length === 2;
@@ -379,21 +497,21 @@ describe("A LunrFilter", function () {
     });
 
     runs(function () {
-      filter.$el.find(":text").val("crap").change();
+      filter.searchBox().val("crap").keydown();
     });
     waitsFor(function () {
       return collection.length === 0;
     }, "collection.length to become 0", 500);
 
     runs(function () {
-      filter.$el.find(":text").val("alice").change();
+      filter.searchBox().val("alice").keydown();
     });
     waitsFor(function () {
       return collection.length === 0;
     }, "collection.length to become 0", 500);
 
     runs(function () {
-      filter.$el.find(":text").val("charlie").change();
+      filter.searchBox().val("charlie").keydown();
     });
     waitsFor(function () {
       return collection.length === 1;
@@ -403,7 +521,7 @@ describe("A LunrFilter", function () {
     });
 
     runs(function () {
-      filter.$el.find(":text").val("doug").change();
+      filter.searchBox().val("doug").keydown();
     });
     waitsFor(function () {
       return collection.length === 1 && collection.at(0).id === 4;
@@ -422,7 +540,7 @@ describe("A LunrFilter", function () {
     });
 
     runs(function () {
-      filter.$el.find(":text").val("charlie").change();
+      filter.searchBox().val("charlie").keydown();
     });
     waitsFor(function () {
       return collection.length === 1;
@@ -444,14 +562,14 @@ describe("A LunrFilter", function () {
     });
 
     runs(function () {
-      filter.$el.find(":text").val("bob").change();
+      filter.searchBox().val("bob").keydown();
     });
     waitsFor(function () {
       return collection.length === 0;
     }, "collection.length to become 0", 500);
 
     runs(function () {
-      filter.$el.find(":text").val("alice").change();
+      filter.searchBox().val("alice").keydown();
     });
     waitsFor(function () {
       return collection.length === 1;
@@ -474,14 +592,14 @@ describe("A LunrFilter", function () {
     });
 
     runs(function () {
-      filter.$el.find(":text").val("alice").change();
+      filter.searchBox().val("alice").keydown();
     });
     waitsFor(function () {
       return collection.length === 0;
     }, "collection.length to become 0", 500);
 
     runs(function () {
-      filter.$el.find(":text").val("charlie").change();
+      filter.searchBox().val("charlie").keydown();
     });
     waitsFor(function () {
       return collection.length === 1;
@@ -504,7 +622,7 @@ describe("A LunrFilter", function () {
     });
 
     runs(function() {
-      filter.$el.find(":text").val("crap").change();
+      filter.searchBox().val("crap").keydown();
     });
     waitsFor(function () {
       return collection.length === 1;
@@ -517,7 +635,7 @@ describe("A LunrFilter", function () {
       return collection.length === 2;
     }, "collection.length to become 2", 500);
     runs(function () {
-      expect(filter.$el.find(":text").val()).toBe('');
+      expect(filter.searchBox().val()).toBe('');
       expect(collection.at(0).id).toBe(1);
       expect(collection.at(1).id).toBe(2);
     });
