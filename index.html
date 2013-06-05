@@ -1777,11 +1777,11 @@
           function nextChristmas() {
             var now = new Date();
             if (now.getMonth() < 11 || (now.getMonth() == 11 && now.getDate() < 24)) {
-              return new Date(now.getFullYear() + "-12-24T00:00Z").toISOString();
+              return now.getFullYear() + "-12-24T00:00Z";
             }
 
             if (now.getMonth() == 11 && now.getDate() >= 26) {
-              return new Date(now.getFullYear() + 1 + "-12-24T00:00Z").toISOString();
+              return (now.getFullYear() + 1) + "-12-24T00:00Z";
             }
           }
 
@@ -1797,7 +1797,7 @@
             url: "http://santaclaus.com",
             email: "santa@santaclaus.com",
             nextDeliveryTime: nextChristmas(),
-            hisLocalTime: new Date().toISOString().split(/T|Z| +/)[1],
+            hisLocalTime: moment().format("YYYY-MM-DDTHH:mm:ss.SSS\\Z"),
             moneyInWallet: 10.7
           });
 
