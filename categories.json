@@ -65,6 +65,7 @@
       {
         "name": "Paginator",
         "classes": [
+          "Backgrid.Extension.PageHandle",
           "Backgrid.Extension.Paginator"
         ]
       },

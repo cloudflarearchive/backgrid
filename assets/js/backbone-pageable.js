@@ -1138,7 +1138,7 @@
         kvp = extraKvps[i];
         v = kvp[1];
         v = _isFunction(v) ? v.call(thisCopy) : v;
-        data[kvp[0]] = v;
+        if (v != null) data[kvp[0]] = v;
       }
 
       var fullCol = this.fullCollection, links = this.links;
