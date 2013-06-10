@@ -44,7 +44,10 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
     if (!(this.column instanceof Column)) {
       this.column = new Column(this.column);
     }
-    this.comparator = options.comparator || this.comparator;
+
+    this.comparator = this.column.get("comparator") || options.comparator || this.comparator;
+    this.value = this.column.get("value") || options.value || this.value;
+
     this.listenTo(this.collection, "backgrid:sort", this._resetCellDirection);
   },
 
@@ -103,21 +106,25 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
     }
   },
 
-  makeComparator: function(columnName, order) {
-    if (!order) return;
-    var invert = order === 1, comparator = this.comparator;
+  makeComparator: function (attr, order) {
+    if (!attr || !order) return;
+    var invert = order === 1, comparator = this.comparator, value = this.value;
     if (invert) {
       return function(left, right) {
-        return comparator(right.get(columnName), left.get(columnName));
+        return comparator(value(right, attr), value(left, attr));
       };
     } else {
       return function(left, right) {
-        return comparator(left.get(columnName), right.get(columnName));
+        return comparator(value(left, attr), value(right, attr));
       };
     }
   },
 
-  comparator: function(left, right) {
+  value: function (model, attr) {
+    return model.get(attr);
+  },
+
+  comparator: function (left, right) {
     if (left === right) {
       return 0;
     }
@@ -153,15 +160,12 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
      See [Backbone.Collection#comparator](http://backbonejs.org/#Collection-comparator)
   */
   sort: function (columnName, direction) {
-
     var order = this.orderMap[direction];
     var comparator = this.makeComparator(columnName, order) || this._cidComparator;
     var collection = this.collection;
 
     if (Backbone.PageableCollection && collection instanceof Backbone.PageableCollection) {
-      collection.setSorting(order ? columnName : null, order, {
-        makeComparator: _.bind(this.makeComparator, this)
-      });
+      collection.setSorting(order ? columnName : null, order, {makeComparator: _.bind(this.makeComparator, this)});
 
       if (collection.mode == "client") {
         if (!collection.fullCollection.comparator) {

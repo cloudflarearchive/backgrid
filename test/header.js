@@ -71,6 +71,59 @@ describe("A HeaderCell", function () {
     expect(cell.collection.toJSON()).toEqual([{id: 2}, {id: 1}, {id: 3}]);
   });
 
+  it("sorts the underlying collection using a custom comparator in ascending order upon clicking the sort caret", function() {
+    var comparator = function (left, right) {
+      if(left === right) return 0;
+      if(left > right) return -1;
+      return 1;
+    };
+
+    cell = new Backgrid.HeaderCell({
+      collection: col,
+      column: {
+        name: "id",
+        cell: "integer"
+      },
+      comparator: comparator
+    });
+
+    cell.render();
+
+    var $anchor = cell.$el.find("a");
+
+    $anchor.click();
+    expect(cell.collection.toJSON()).toEqual([{id: 3}, {id: 2}, {id: 1}]);
+
+    $anchor.click();
+    expect(cell.collection.toJSON()).toEqual([{id: 1}, {id: 2}, {id: 3}]);
+
+    $anchor.click();
+    expect(cell.collection.toJSON()).toEqual([{id: 2}, {id: 1}, {id: 3}]);
+  });
+
+  it("sorts the underlying collection using the custom value extractor upon clicking the sort caret", function() {
+    var value = function (model, attr) {
+      return model.get("name");
+    };
+
+    col = new Backbone.Collection([{id: 2, name: "Charlie"}, {id: 1, name: "Anton"}, {id: 3, name: "Brian"}]);
+    cell = new Backgrid.HeaderCell({
+      collection: col,
+      column: {
+        name: "id",
+        cell: "integer"
+      },
+      value: value
+    });
+
+    cell.render();
+
+    var $anchor = cell.$el.find("a");
+
+    $anchor.click();
+    expect(cell.collection.toJSON()).toEqual([{id: 1, name: "Anton"}, {id: 3, name: "Brian"}, {id: 2, name: "Charlie"}]);
+  });
+
   it("can sort on a server-mode Backbone.PageableCollection", function () {
 
     var oldAjax = $.ajax;
