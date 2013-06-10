@@ -101,12 +101,22 @@ describe("A HeaderCell", function () {
     expect(cell.collection.toJSON()).toEqual([{id: 2}, {id: 1}, {id: 3}]);
   });
 
-  it("sorts the underlying collection using the custom value extractor upon clicking the sort caret", function() {
+  it("sorts the underlying collection using a custom value extractor upon clicking the sort caret", function() {
     var value = function (model, attr) {
       return model.get("name");
     };
 
-    col = new Backbone.Collection([{id: 2, name: "Charlie"}, {id: 1, name: "Anton"}, {id: 3, name: "Brian"}]);
+    col = new Backbone.Collection([{
+      id: 2,
+      name: "Charlie"
+    }, {
+      id: 1,
+      name: "Anton"
+    }, {
+      id: 3,
+      name: "Brian"
+    }]);
+
     cell = new Backgrid.HeaderCell({
       collection: col,
       column: {
@@ -114,14 +124,19 @@ describe("A HeaderCell", function () {
         cell: "integer"
       },
       value: value
-    });
+    }).render();
 
-    cell.render();
-
-    var $anchor = cell.$el.find("a");
-
-    $anchor.click();
-    expect(cell.collection.toJSON()).toEqual([{id: 1, name: "Anton"}, {id: 3, name: "Brian"}, {id: 2, name: "Charlie"}]);
+    cell.$el.find("a").click();
+    expect(cell.collection.toJSON()).toEqual([{
+      id: 1,
+      name: "Anton"
+    }, {
+      id: 3,
+      name: "Brian"
+    }, {
+      id: 2,
+      name: "Charlie"
+    }]);
   });
 
   it("can sort on a server-mode Backbone.PageableCollection", function () {
@@ -218,6 +233,53 @@ describe("A HeaderCell", function () {
 
   });
 
+  it("can sort a client-mode Backbone.PageableCollection with a custom comparator", function() {
+    var words = new Backbone.PageableCollection([{
+      name: "Button"
+    }, {
+      name: "array"
+    }, {
+      name: "compound"
+    }], {
+      state: {
+        pageSize: 1
+      },
+      mode: "client"
+    });
+
+    var comparator = function(left, right) {
+      var l = left.toLowerCase(), r = right.toLowerCase();
+      if(l === r) return 0;
+      if(l < r) return -1;
+      return 1;
+    };
+
+    cell = new Backgrid.HeaderCell({
+      collection: words,
+      column: {
+        name: "name",
+        cell: "string",
+        comparator: comparator
+      }
+    });
+
+    cell.render();
+
+    cell.$el.find("a").click();
+    expect(cell.collection.toJSON()).toEqual([{
+      name: "array"
+    }]);
+
+    cell.$el.find("a").click();
+    expect(cell.collection.toJSON()).toEqual([{
+      name: "compound"
+    }]);
+
+    cell.$el.find("a").click();
+    expect(cell.collection.toJSON()).toEqual([{
+      name: "Button"
+    }]);
+  });
 });
 
 describe("A HeaderRow", function () {
