@@ -1270,7 +1270,9 @@
       options = _extend({side: mode == "client" ? mode : "server", full: true},
                         options);
 
-      var comparator = this._makeComparator(sortKey, order);
+      var comparator = options.makeComparator ?
+        options.makeComparator(sortKey, order) :
+        this._makeComparator(sortKey, order);
 
       var full = options.full, side = options.side;
 
