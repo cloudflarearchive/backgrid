@@ -35,6 +35,8 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
 
      @param {Object} options
      @param {Backgrid.Column|Object} options.column
+     @param {function(*, *): number} options.comparator
+     @param {function(*, *): *} option.value
 
      @throws {TypeError} If options.column or options.collection is undefined.
    */
@@ -120,21 +122,27 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
     }
   },
 
+  /**
+     Overridable value extractor function that makes it possible to extract
+     a custom value when sorting.
+
+     @param {Backbone.Model} model
+     @param {string} attr
+  */
   value: function (model, attr) {
     return model.get(attr);
   },
 
+  /**
+     Overridable comparator function. By default, it does a simple value
+     comparison using less than/greater than.
+  */
   comparator: function (left, right) {
     if (left === right) {
       return 0;
     }
     else if (left < right) { return -1; }
     return 1;
-  },
-
-  orderMap: {
-    "ascending": -1,
-    "descending": 1
   },
 
   /**
@@ -160,7 +168,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
      See [Backbone.Collection#comparator](http://backbonejs.org/#Collection-comparator)
   */
   sort: function (columnName, direction) {
-    var order = this.orderMap[direction];
+    var order = direction == "ascending" ? -1 : direction == "descending" ? 1 : null;
     var comparator = this.makeComparator(columnName, order) || this._cidComparator;
     var collection = this.collection;
 
