@@ -40,11 +40,14 @@ var Body = Backgrid.Body = Backbone.View.extend({
       this.columns = new Columns(this.columns);
     }
 
+    this.grid = options.grid;
+
     this.row = options.row || Row;
     this.rows = this.collection.map(function (model) {
       var row = new this.row({
         columns: this.columns,
-        model: model
+        model: model,
+        grid: this.grid
       });
 
       return row;
@@ -107,7 +110,8 @@ var Body = Backgrid.Body = Backbone.View.extend({
 
     var row = new this.row({
       columns: this.columns,
-      model: model
+      model: model,
+      grid: this.grid
     });
 
     var index = collection.indexOf(model);
