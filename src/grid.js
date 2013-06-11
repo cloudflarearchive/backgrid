@@ -93,6 +93,7 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
 
     var passedThruOptions = _.omit(options, ["el", "id", "attributes",
                                              "className", "tagName", "events"]);
+    _.extend(passedThruOptions, {grid: this});
 
     this.header = options.header || this.header;
     this.header = new this.header(passedThruOptions);
