@@ -35,6 +35,8 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
 
      @param {Object} options
      @param {Backgrid.Column|Object} options.column
+     @param {function(*, *): number} options.comparator
+     @param {function(*, *): *} option.value
 
      @throws {TypeError} If options.column or options.collection is undefined.
    */
@@ -44,6 +46,10 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
     if (!(this.column instanceof Column)) {
       this.column = new Column(this.column);
     }
+
+    this.comparator = this.column.get("comparator") || options.comparator || this.comparator;
+    this.value = this.column.get("value") || options.value || this.value;
+
     this.listenTo(this.collection, "backgrid:sort", this._resetCellDirection);
   },
 
@@ -91,31 +97,52 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
     var sortable = Backgrid.callByNeed(column.get("sortable"), column, this.model);
     if (sortable) {
       if (this.direction() === "ascending") {
-        this.sort(columnName, "descending", function (left, right) {
-          var leftVal = left.get(columnName);
-          var rightVal = right.get(columnName);
-          if (leftVal === rightVal) {
-            return 0;
-          }
-          else if (leftVal > rightVal) { return -1; }
-          return 1;
-        });
+        this.sort(columnName, "descending");
       }
       else if (this.direction() === "descending") {
         this.sort(columnName, null);
       }
       else {
-        this.sort(columnName, "ascending", function (left, right) {
-          var leftVal = left.get(columnName);
-          var rightVal = right.get(columnName);
-          if (leftVal === rightVal) {
-            return 0;
-          }
-          else if (leftVal < rightVal) { return -1; }
-          return 1;
-        });
+        this.sort(columnName, "ascending");
       }
     }
+  },
+
+  makeComparator: function (attr, order) {
+    if (!attr || !order) return;
+    var invert = order === 1, comparator = this.comparator, value = this.value;
+    if (invert) {
+      return function(left, right) {
+        return comparator(value(right, attr), value(left, attr));
+      };
+    } else {
+      return function(left, right) {
+        return comparator(value(left, attr), value(right, attr));
+      };
+    }
+  },
+
+  /**
+     Overridable value extractor function that makes it possible to extract
+     a custom value when sorting.
+
+     @param {Backbone.Model} model
+     @param {string} attr
+  */
+  value: function (model, attr) {
+    return model.get(attr);
+  },
+
+  /**
+     Overridable comparator function. By default, it does a simple value
+     comparison using less than/greater than.
+  */
+  comparator: function (left, right) {
+    if (left === right) {
+      return 0;
+    }
+    else if (left < right) { return -1; }
+    return 1;
   },
 
   /**
@@ -140,19 +167,13 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
 
      See [Backbone.Collection#comparator](http://backbonejs.org/#Collection-comparator)
   */
-  sort: function (columnName, direction, comparator) {
-
-    comparator = comparator || this._cidComparator;
-
+  sort: function (columnName, direction) {
+    var order = direction == "ascending" ? -1 : direction == "descending" ? 1 : null;
+    var comparator = this.makeComparator(columnName, order) || this._cidComparator;
     var collection = this.collection;
 
     if (Backbone.PageableCollection && collection instanceof Backbone.PageableCollection) {
-      var order;
-      if (direction === "ascending") order = -1;
-      else if (direction === "descending") order = 1;
-      else order = null;
-
-      collection.setSorting(order ? columnName : null, order);
+      collection.setSorting(order ? columnName : null, order, {makeComparator: _.bind(this.makeComparator, this)});
 
       if (collection.mode == "client") {
         if (!collection.fullCollection.comparator) {
