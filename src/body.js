@@ -241,6 +241,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
   moveToNextCell: function (model, column, command) {
     var i = this.collection.indexOf(model);
     var j = this.columns.indexOf(column);
+    var cell, renderable, editable;
 
     this.rows[i].cells[j].exitEditMode();
 
@@ -251,7 +252,12 @@ var Body = Backgrid.Body = Backbone.View.extend({
 
       if (command.moveUp() || command.moveDown()) {
         var row = this.rows[i + (command.moveUp() ? -1 : 1)];
-        if (row) row.cells[j].enterEditMode();
+        if (row) {
+          cell = row.cells[j];
+          if (Backgrid.callByNeed(cell.column.get("editable"), cell.column, model)) {
+            cell.enterEditMode();
+          }
+        }
       }
       else if (command.moveLeft() || command.moveRight()) {
         var right = command.moveRight();
@@ -260,9 +266,9 @@ var Body = Backgrid.Body = Backbone.View.extend({
              right ? offset++ : offset--) {
           var m = ~~(offset / l);
           var n = offset - m * l;
-          var cell = this.rows[m].cells[n];
-          var renderable = Backgrid.callByNeed(cell.column.get("renderable"), cell.column, cell.model);
-          var editable = Backgrid.callByNeed(cell.column.get("editable"), cell.column, model);
+          cell = this.rows[m].cells[n];
+          renderable = Backgrid.callByNeed(cell.column.get("renderable"), cell.column, cell.model);
+          editable = Backgrid.callByNeed(cell.column.get("editable"), cell.column, model);
           if (renderable && editable) {
             cell.enterEditMode();
             break;

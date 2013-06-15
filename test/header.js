@@ -71,72 +71,23 @@ describe("A HeaderCell", function () {
     expect(cell.collection.toJSON()).toEqual([{id: 2}, {id: 1}, {id: 3}]);
   });
 
-  it("sorts the underlying collection using a custom comparator in ascending order upon clicking the sort caret", function() {
-    var comparator = function (left, right) {
-      if(left === right) return 0;
-      if(left > right) return -1;
-      return 1;
-    };
-
-    cell = new Backgrid.HeaderCell({
-      collection: col,
-      column: {
-        name: "id",
-        cell: "integer"
-      },
-      comparator: comparator
-    });
-
-    cell.render();
-
-    var $anchor = cell.$el.find("a");
-
-    $anchor.click();
-    expect(cell.collection.toJSON()).toEqual([{id: 3}, {id: 2}, {id: 1}]);
-
-    $anchor.click();
-    expect(cell.collection.toJSON()).toEqual([{id: 1}, {id: 2}, {id: 3}]);
-
-    $anchor.click();
-    expect(cell.collection.toJSON()).toEqual([{id: 2}, {id: 1}, {id: 3}]);
-  });
-
   it("sorts the underlying collection using a custom value extractor upon clicking the sort caret", function() {
-    var value = function (model, attr) {
-      return model.get("name");
-    };
 
-    col = new Backbone.Collection([{
-      id: 2,
-      name: "Charlie"
-    }, {
-      id: 1,
-      name: "Anton"
-    }, {
-      id: 3,
-      name: "Brian"
-    }]);
+    var sortValue = function (model, attr) {
+      return 3 - model.get(attr);
+    };
 
     cell = new Backgrid.HeaderCell({
       collection: col,
       column: {
         name: "id",
-        cell: "integer"
+        cell: "integer",
+        sortValue: sortValue
       },
-      value: value
     }).render();
 
     cell.$el.find("a").click();
-    expect(cell.collection.toJSON()).toEqual([{
-      id: 1,
-      name: "Anton"
-    }, {
-      id: 3,
-      name: "Brian"
-    }, {
-      id: 2,
-      name: "Charlie"
-    }]);
+    expect(cell.collection.toJSON()).toEqual([{id: 3}, {id: 2}, {id: 1}]);
   });
 
   it("can sort on a server-mode Backbone.PageableCollection", function () {
@@ -192,7 +143,10 @@ describe("A HeaderCell", function () {
     cell = new Backgrid.HeaderCell({
       column: {
         name: "title",
-        cell: "string"
+        cell: "string",
+        sortValue: function (model, attr) {
+          return model.get(attr).length;
+        }
       },
       collection: books
     });
@@ -208,13 +162,13 @@ describe("A HeaderCell", function () {
     cell.collection.getPage(2);
 
     expect(cell.collection.toJSON()).toEqual([{
-      title: "Alice's Adventures in Wonderland"
+      title: "The Catcher in the Rye"
     }]);
 
     cell.collection.getPage(3);
 
     expect(cell.collection.toJSON()).toEqual([{
-      title: "The Catcher in the Rye"
+      title: "Alice's Adventures in Wonderland"
     }]);
 
     cell.collection.getFirstPage();
@@ -222,7 +176,7 @@ describe("A HeaderCell", function () {
     cell.$el.find("a").click();
 
     expect(cell.collection.toJSON()).toEqual([{
-      title: "The Catcher in the Rye"
+      title: "Alice's Adventures in Wonderland"
     }]);
 
     cell.$el.find("a").click();
@@ -233,53 +187,6 @@ describe("A HeaderCell", function () {
 
   });
 
-  it("can sort a client-mode Backbone.PageableCollection with a custom comparator", function() {
-    var words = new Backbone.PageableCollection([{
-      name: "Button"
-    }, {
-      name: "array"
-    }, {
-      name: "compound"
-    }], {
-      state: {
-        pageSize: 1
-      },
-      mode: "client"
-    });
-
-    var comparator = function(left, right) {
-      var l = left.toLowerCase(), r = right.toLowerCase();
-      if(l === r) return 0;
-      if(l < r) return -1;
-      return 1;
-    };
-
-    cell = new Backgrid.HeaderCell({
-      collection: words,
-      column: {
-        name: "name",
-        cell: "string",
-        comparator: comparator
-      }
-    });
-
-    cell.render();
-
-    cell.$el.find("a").click();
-    expect(cell.collection.toJSON()).toEqual([{
-      name: "array"
-    }]);
-
-    cell.$el.find("a").click();
-    expect(cell.collection.toJSON()).toEqual([{
-      name: "compound"
-    }]);
-
-    cell.$el.find("a").click();
-    expect(cell.collection.toJSON()).toEqual([{
-      name: "Button"
-    }]);
-  });
 });
 
 describe("A HeaderRow", function () {
