@@ -25,6 +25,7 @@ var Column = Backgrid.Column = Backbone.Model.extend({
     editable: true,
     renderable: true,
     formatter: undefined,
+    sortValue: undefined,
     cell: undefined,
     headerCell: undefined
   },
@@ -33,22 +34,36 @@ var Column = Backgrid.Column = Backbone.Model.extend({
      Initializes this Column instance.
 
      @param {Object} attrs Column attributes.
+
      @param {string} attrs.name The name of the model attribute.
+
      @param {string|Backgrid.Cell} attrs.cell The cell type.
      If this is a string, the capitalized form will be used to look up a
      cell class in Backbone, i.e.: string => StringCell. If a Cell subclass
      is supplied, it is initialized with a hash of parameters. If a Cell
      instance is supplied, it is used directly.
+
      @param {string|Backgrid.HeaderCell} [attrs.headerCell] The header cell type.
+
      @param {string} [attrs.label] The label to show in the header.
-     @param {boolean} [attrs.sortable=true]
-     @param {boolean} [attrs.editable=true]
-     @param {boolean} [attrs.renderable=true]
-     @param {Backgrid.CellFormatter|Object|string} [attrs.formatter] The
+
+     @param {boolean|string} [attrs.sortable=true]
+
+     @param {boolean|string} [attrs.editable=true]
+
+     @param {boolean|string} [attrs.renderable=true]
+
+     @param {Backgrid.CellFormatter | Object | string} [attrs.formatter] The
      formatter to use to convert between raw model values and user input.
 
+     @param {(function(Backbone.Model, string): Object) | string} [sortValue] The
+     function to use to extract a value from the model for comparison during
+     sorting. If this value is a string, a method with the same name will be
+     looked up from the column instance.
+
      @throws {TypeError} If attrs.cell or attrs.options are not supplied.
-     @throws {ReferenceError} If attrs.cell is a string but a cell class of
+
+     @throws {ReferenceError} If formatter is a string but a formatter class of
      said name cannot be found in the Backgrid module.
 
      See:
@@ -64,8 +79,32 @@ var Column = Backgrid.Column = Backbone.Model.extend({
     }
 
     var headerCell = Backgrid.resolveNameToClass(this.get("headerCell"), "HeaderCell");
+
     var cell = Backgrid.resolveNameToClass(this.get("cell"), "Cell");
-    this.set({ cell: cell, headerCell: headerCell }, { silent: true });
+
+    var sortValue = this.get("sortValue");
+    if (sortValue == null) sortValue = function (model, colName) {
+      return model.get(colName);
+    };
+    else if (_.isString(sortValue)) sortValue = this[sortValue];
+
+    var sortable = this.get("sortable");
+    if (_.isString(sortable)) sortable = this[sortable];
+
+    var editable = this.get("editable");
+    if (_.isString(editable)) editable = this[editable];
+
+    var renderable = this.get("renderable");
+    if (_.isString(renderable)) renderable = this[renderable];
+
+    this.set({
+      cell: cell,
+      headerCell: headerCell,
+      sortable: sortable,
+      editable: editable,
+      renderable: renderable,
+      sortValue: sortValue
+    }, { silent: true });
   }
 
 });

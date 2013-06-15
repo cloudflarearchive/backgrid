@@ -41,10 +41,99 @@ describe("A Column", function () {
     expect(col.get("label")).toBe("name");
   });
 
+  it("sortValue can be a string or a function", function () {
+    var Col = Backgrid.Column.extend({
+      sortValue: function () {}
+    });
+
+    var col = new Col({
+      name: "name",
+      cell: "string",
+      sortValue: "sortValue"
+    });
+
+    expect(col.get("sortValue")).toBe(Col.prototype.sortValue);
+
+    var sortValue = function () {};
+    col = new Col({
+      name: "name",
+      cell: "string",
+      sortValue: sortValue
+    });
+
+    expect(col.get("sortValue")).toBe(sortValue);
+  });
+
+  it("sortable can be a string or a boolean", function () {
+    var Col = Backgrid.Column.extend({
+      sortable: function () {}
+    });
+
+    var col = new Col({
+      name: "name",
+      cell: "string",
+      sortable: "sortable"
+    });
+
+    expect(col.get("sortable")).toBe(Col.prototype.sortable);
+
+    col = new Col({
+      name: "name",
+      cell: "string",
+      sortable: false
+    });
+
+    expect(col.get("sortable")).toBe(false);
+  });
+
+  it("editable can be a string or a boolean", function () {
+    var Col = Backgrid.Column.extend({
+      editable: function () {}
+    });
+
+    var col = new Col({
+      name: "name",
+      cell: "string",
+      editable: "editable"
+    });
+
+    expect(col.get("editable")).toBe(Col.prototype.editable);
+
+    col = new Col({
+      name: "name",
+      cell: "string",
+      editable: false
+    });
+
+    expect(col.get("editable")).toBe(false);
+  });
+
+  it("renderable can be a string or a boolean", function () {
+    var Col = Backgrid.Column.extend({
+      renderable: function () {}
+    });
+
+    var col = new Col({
+      name: "name",
+      cell: "string",
+      renderable: "renderable"
+    });
+
+    expect(col.get("renderable")).toBe(Col.prototype.renderable);
+
+    col = new Col({
+      name: "name",
+      cell: "string",
+      renderable: false
+    });
+
+    expect(col.get("renderable")).toBe(false);
+  });
+
 });
 
 describe("A Columns", function () {
-  
+
   it("is a Backbone.Collection of Column objects", function () {
     expect(new Backgrid.Columns().model).toBe(Backgrid.Column);
   });
