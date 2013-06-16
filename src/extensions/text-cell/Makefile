@@ -22,11 +22,11 @@ FORCE:
 	*/\n" | cat - $@ > "/tmp/`basename $@`" && mv -f "/tmp/`basename $@`" $@
 
 csslint:
-	recess $(CSS_FILE) --noIDS --noUniversalSelectors --compile > /tmp/$(CSS_FILE) && mv -f /tmp/$(CSS_FILE) $(CSS_FILE);
+	recess $(CSS_FILE) --compile > /tmp/$(CSS_FILE) && mv -f /tmp/$(CSS_FILE) $(CSS_FILE);
 
 minify:
 	uglifyjs $(JS_FILE) --compress --mangle --output $(JS_OUTFILE)
-	recess $(CSS_FILE) --noIDS --noUniversalSelectors --compress > /tmp/$(CSS_OUTFILE) && mv -f /tmp/$(CSS_OUTFILE) $(CSS_OUTFILE);
+	recess $(CSS_FILE) --compress > /tmp/$(CSS_OUTFILE) && mv -f /tmp/$(CSS_OUTFILE) $(CSS_OUTFILE);
 
 build: minify
 	$(MAKE) $(JS_OUTFILE)
