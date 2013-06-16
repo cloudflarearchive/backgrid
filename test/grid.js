@@ -115,11 +115,11 @@ describe("A Grid", function () {
       name: "id",
       cell: "integer"
     }]);
-    expect(grid.el.innerHTML).toBe('<thead><tr><th><a>id<b class="sort-caret"></b></a></th></tr></thead>' +
+    expect(grid.el.innerHTML).toBe('<thead><tr><th class="editable sortable renderable"><a>id<b class="sort-caret"></b></a></th></tr></thead>' +
                                    '<tfoot></tfoot>' +
-                                   '<tbody><tr><td class="integer-cell">1</td></tr>' +
-                                   '<tr><td class="integer-cell">2</td></tr>' +
-                                   '<tr><td class="integer-cell">3</td></tr></tbody>');
+                                   '<tbody><tr><td class="integer-cell editable sortable renderable">1</td></tr>' +
+                                   '<tr><td class="integer-cell editable sortable renderable">2</td></tr>' +
+                                   '<tr><td class="integer-cell editable sortable renderable">3</td></tr></tbody>');
   });
 
 });

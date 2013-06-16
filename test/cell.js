@@ -282,6 +282,31 @@ describe("A Cell", function () {
     expect(cell.formatter).toBe(formatter);
   });
 
+  it("adds an editable, sortable and a renderable class to the cell if these column attributes are true", function () {
+    column = {
+      name: "title",
+      cell: "string"
+    };
+
+    cell = new Backgrid.Cell({
+      model: book,
+      column: column
+    });
+
+    expect(cell.$el.hasClass("editable")).toBe(true);
+    expect(cell.$el.hasClass("sortable")).toBe(true);
+    expect(cell.$el.hasClass("renderable")).toBe(true);
+
+    cell.column.set("editable", false);
+    expect(cell.$el.hasClass("editable")).toBe(false);
+
+    cell.column.set("sortable", false);
+    expect(cell.$el.hasClass("sortable")).toBe(false);
+
+    cell.column.set("renderable", false);
+    expect(cell.$el.hasClass("renderable")).toBe(false);
+  });
+
   it("renders a td with the model value formatted for display", function () {
     cell.render();
     expect(cell.$el.text()).toBe("title");

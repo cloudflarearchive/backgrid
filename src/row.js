@@ -44,21 +44,10 @@ var Row = Backgrid.Row = Backbone.View.extend({
       cells.push(this.makeCell(columns.at(i), options));
     }
 
-    this.listenTo(columns, "change:renderable", function (column, renderable) {
-      for (var i = 0; i < cells.length; i++) {
-        var cell = cells[i];
-        if (cell.column.get("name") == column.get("name")) {
-          if (renderable) cell.$el.show(); else cell.$el.hide();
-        }
-      }
-    });
-
     this.listenTo(columns, "add", function (column, columns) {
       var i = columns.indexOf(column);
       var cell = this.makeCell(column, options);
       cells.splice(i, 0, cell);
-      var renderable = Backgrid.callByNeed(column.get("renderable"), column, cell.model);
-      if (!renderable) cell.$el.hide();
 
       var $el = this.$el;
       if (i === 0) {
@@ -104,10 +93,7 @@ var Row = Backgrid.Row = Backbone.View.extend({
 
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < this.cells.length; i++) {
-      var cell = this.cells[i], column = cell.column;
-      fragment.appendChild(cell.render().el);
-      var renderable = Backgrid.callByNeed(column.get("renderable"), column, cell.model);
-      if (!renderable) cell.$el.hide();
+      fragment.appendChild(this.cells[i].render().el);
     }
 
     this.el.appendChild(fragment);

@@ -58,9 +58,9 @@ describe("A Body", function () {
     expect(body.el.tagName).toBe("TBODY");
     var $trs = body.$el.children();
     expect($trs.length).toBe(3);
-    expect(body.el.innerHTML).toBe('<tr><td class="string-cell">Alice\'s Adventures in Wonderland</td></tr>' +
-                                   '<tr><td class="string-cell">A Tale of Two Cities</td></tr>' +
-                                   '<tr><td class="string-cell">The Catcher in the Rye</td></tr>');
+    expect(body.el.innerHTML).toBe('<tr><td class="string-cell editable sortable renderable">Alice\'s Adventures in Wonderland</td></tr>' +
+                                   '<tr><td class="string-cell editable sortable renderable">A Tale of Two Cities</td></tr>' +
+                                   '<tr><td class="string-cell editable sortable renderable">The Catcher in the Rye</td></tr>');
   });
 
   it("will render a new row if a new model is added to its collection", function () {
@@ -69,14 +69,14 @@ describe("A Body", function () {
     });
     var $trs = body.$el.children();
     expect($trs.length).toBe(4);
-    expect($trs[3].outerHTML).toBe('<tr><td class="string-cell">The Great Gatsby</td></tr>');
+    expect($trs[3].outerHTML).toBe('<tr><td class="string-cell editable sortable renderable">The Great Gatsby</td></tr>');
 
     body.collection.add({
       title: "Les Misérables"
     }, {at: 1});
     $trs = body.$el.children();
     expect($trs.length).toBe(5);
-    expect($trs[1].outerHTML).toBe('<tr><td class="string-cell">Les Misérables</td></tr>');
+    expect($trs[1].outerHTML).toBe('<tr><td class="string-cell editable sortable renderable">Les Misérables</td></tr>');
   });
 
   it("will render a new row by calling insertRow directly with a new model", function () {
@@ -98,14 +98,14 @@ describe("A Body", function () {
 
     var $trs = body.$el.children();
     expect($trs.length).toBe(1);
-    expect($trs[0].outerHTML).toBe('<tr><td class="string-cell">The Great Gatsby</td></tr>');
+    expect($trs[0].outerHTML).toBe('<tr><td class="string-cell editable sortable renderable">The Great Gatsby</td></tr>');
 
     body.insertRow({
       title: "Les Misérables"
     }, {at: 0});
     $trs = body.$el.children();
     expect($trs.length).toBe(2);
-    expect($trs[0].outerHTML).toBe('<tr><td class="string-cell">Les Misérables</td></tr>');
+    expect($trs[0].outerHTML).toBe('<tr><td class="string-cell editable sortable renderable">Les Misérables</td></tr>');
   });
 
   it("will remove a row from the DOM if a model is removed from its collection", function () {
@@ -113,8 +113,8 @@ describe("A Body", function () {
     body.collection.remove(twocities);
     var $trs = body.$el.children();
     expect($trs.length).toBe(2);
-    expect(body.el.innerHTML).toBe('<tr><td class="string-cell">Alice\'s Adventures in Wonderland</td></tr>' +
-                                   '<tr><td class="string-cell">The Catcher in the Rye</td></tr>');
+    expect(body.el.innerHTML).toBe('<tr><td class="string-cell editable sortable renderable">Alice\'s Adventures in Wonderland</td></tr>' +
+                                   '<tr><td class="string-cell editable sortable renderable">The Catcher in the Rye</td></tr>');
   });
 
   it("will remove a row from the DOM is removeRow is called directly with a model", function () {
@@ -122,8 +122,8 @@ describe("A Body", function () {
     body.removeRow(twocities);
     var $trs = body.$el.children();
     expect($trs.length).toBe(2);
-    expect(body.el.innerHTML).toBe('<tr><td class="string-cell">Alice\'s Adventures in Wonderland</td></tr>' +
-                                   '<tr><td class="string-cell">The Catcher in the Rye</td></tr>');
+    expect(body.el.innerHTML).toBe('<tr><td class="string-cell editable sortable renderable">Alice\'s Adventures in Wonderland</td></tr>' +
+                                   '<tr><td class="string-cell editable sortable renderable">The Catcher in the Rye</td></tr>');
   });
 
   it("will refresh if its collection is reset", function () {
@@ -139,7 +139,7 @@ describe("A Body", function () {
     expect(eventFired).toBe(true);
     var $trs = body.$el.children();
     expect($trs.length).toBe(1);
-    expect(body.el.innerHTML).toBe('<tr><td class="string-cell">Oliver Twist</td></tr>');
+    expect(body.el.innerHTML).toBe('<tr><td class="string-cell editable sortable renderable">Oliver Twist</td></tr>');
   });
 
   it("will render rows using the Row class supplied in the constructor options", function () {

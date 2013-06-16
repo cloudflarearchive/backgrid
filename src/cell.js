@@ -219,12 +219,33 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
     if (!(this.column instanceof Column)) {
       this.column = new Column(this.column);
     }
-    this.formatter = Backgrid.resolveNameToClass(this.column.get("formatter") || this.formatter, "Formatter");
+
+    var column = this.column, model = this.model, $el = this.$el;
+
+    this.formatter = Backgrid.resolveNameToClass(column.get("formatter") ||
+                                                 this.formatter, "Formatter");
+
     this.editor = Backgrid.resolveNameToClass(this.editor, "CellEditor");
-    this.listenTo(this.model, "change:" + this.column.get("name"), function () {
-      if (!this.$el.hasClass("editor")) this.render();
+
+    this.listenTo(model, "change:" + column.get("name"), function () {
+      if (!$el.hasClass("editor")) this.render();
     });
-    this.listenTo(this.model, "backgrid:error", this.renderError);
+
+    this.listenTo(model, "backgrid:error", this.renderError);
+
+    this.listenTo(column, "change:editable change:sortable change:renderable",
+                  function (column) {
+                    var changed = column.changedAttributes();
+                    for (var key in changed) {
+                      if (changed.hasOwnProperty(key)) {
+                        $el.toggleClass(key, changed[key]);
+                      }
+                    }
+                  });
+
+    if (column.get("editable")) $el.addClass("editable");
+    if (column.get("sortable")) $el.addClass("sortable");
+    if (column.get("renderable")) $el.addClass("renderable");
   },
 
   /**

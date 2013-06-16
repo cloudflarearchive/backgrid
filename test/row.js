@@ -66,17 +66,17 @@ describe("A Row", function () {
 
     var $tds = row.$el.children();
     expect($tds.eq(0).text()).toBe("name");
-    expect($tds.eq(0).css("display")).not.toBe("none");
+    expect($tds.eq(0).hasClass("renderable")).toBe(true);
 
     row.columns.at(0).set("renderable", false);
     $tds = row.$el.children();
     expect($tds.eq(0).text()).toBe("name");
-    expect($tds.eq(0).css("display")).toBe("none");
+    expect($tds.eq(0).hasClass("renderable")).toBe(false);
 
     row.columns.at(0).set("renderable", true);
     $tds = row.$el.children();
     expect($tds.eq(0).text()).toBe("name");
-    expect($tds.eq(0).css("display")).not.toBe("none");
+    expect($tds.eq(0).hasClass("renderable")).toBe(true);
   });
 
   it("inserts or removes a cell if a column is added or removed", function () {
