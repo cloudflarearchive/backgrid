@@ -5,7 +5,6 @@
   Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
   Licensed under the MIT @license.
 */
-
 .backgrid-filter .close {
   display: inline-block;
   float: none;
@@ -16,4 +15,15 @@
   line-height: 20px;
   text-align: center;
   vertical-align: text-top;
+}
+
+.backgrid-filter .add-on {
+  background-color: transparent;
+  border: none;
+}
+
+.backgrid-filter input[type=text] {
+  -webkit-border-radius: 5px;
+     -moz-border-radius: 5px;
+          border-radius: 5px;
 }

@@ -20,7 +20,6 @@
   width: 100%;
   max-width: 100%;
   background-color: transparent;
-  border: 1px solid #DDD;
   border-collapse: collapse;
   -webkit-border-radius: 4px;
      -moz-border-radius: 4px;
@@ -29,6 +28,7 @@
 
 .backgrid th,
 .backgrid td {
+  display: none;
   height: 20px;
   max-width: 250px;
   padding: 4px 5px;
@@ -38,7 +38,12 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   vertical-align: middle;
-  border: 1px solid #DDD;
+  border-bottom: 1px solid #DDD;
+}
+
+.backgrid th.renderable,
+.backgrid td.renderable {
+  display: table-cell;
 }
 
 .backgrid th {
@@ -55,8 +60,7 @@
   background-color: #f9f9f9;
 }
 
-.backgrid.backgrid-striped tbody tr:nth-child(odd) td,
-.backgrid.backgrid-striped tbody tr:nth-child(odd) th {
+.backgrid.backgrid-striped tbody tr:nth-child(even) {
   background-color: #f9f9f9;
 }
 
@@ -67,6 +71,10 @@
 
 .backgrid tbody tr.empty td {
   text-align: center;
+}
+
+.backgrid td.editor {
+  padding: 0;
 }
 
 .backgrid td.editor,
@@ -95,7 +103,7 @@
   display: block;
   width: 100%;
   height: 100%;
-  padding: 0;
+  padding: 4px 5px;
   margin: 0;
   background-color: transparent;
   border: 0;
