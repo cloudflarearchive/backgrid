@@ -29,6 +29,7 @@
 
 .backgrid th,
 .backgrid td {
+  display: none;
   height: 20px;
   max-width: 250px;
   padding: 4px 5px;
@@ -39,6 +40,11 @@
   white-space: nowrap;
   vertical-align: middle;
   border: 1px solid #DDD;
+}
+
+.backgrid th.renderable,
+.backgrid td.renderable {
+  display: table-cell;
 }
 
 .backgrid th {

@@ -46,6 +46,22 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
     }
 
     this.listenTo(this.collection, "backgrid:sort", this._resetCellDirection);
+
+    var column = this.column, $el = this.$el;
+
+    this.listenTo(column, "change:editable change:sortable change:renderable",
+                  function (column) {
+                    var changed = column.changedAttributes();
+                    for (var key in changed) {
+                      if (changed.hasOwnProperty(key)) {
+                        $el.toggleClass(key, changed[key]);
+                      }
+                    }
+                  });
+
+    if (column.get("editable")) $el.addClass("editable");
+    if (column.get("sortable")) $el.addClass("sortable");
+    if (column.get("renderable")) $el.addClass("renderable");
   },
 
   /**

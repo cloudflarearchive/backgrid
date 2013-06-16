@@ -248,8 +248,8 @@ describe("A HeaderRow", function () {
 
   it("renders a row of header cells", function () {
     expect(row.$el[0].tagName).toBe("TR");
-    expect(row.$el[0].innerHTML).toBe('<th><a>name<b class="sort-caret"></b></a></th>' +
-                                      '<th><a>year<b class="sort-caret"></b></a></th>');
+    expect(row.$el[0].innerHTML).toBe('<th class="editable sortable renderable"><a>name<b class="sort-caret"></b></a></th>' +
+                                      '<th class="editable sortable renderable"><a>year<b class="sort-caret"></b></a></th>');
   });
 
   it("resets the carets of the non-sorting columns", function () {
@@ -262,16 +262,16 @@ describe("A HeaderRow", function () {
   it("inserts or removes a cell if a column is added or removed", function () {
     row.columns.add({name: "price", cell: "number"});
     expect(row.$el.children().length).toBe(3);
-    expect(row.$el.children().last()[0].outerHTML).toBe('<th><a>price<b class="sort-caret"></b></a></th>');
+    expect(row.$el.children().last()[0].outerHTML).toBe('<th class="editable sortable renderable"><a>price<b class="sort-caret"></b></a></th>');
 
     row.columns.add({name: "publisher", cell: "string", renderable: false});
     expect(row.$el.children().length).toBe(4);
     expect(row.$el.children().last().find("a").text()).toBe("publisher");
-    expect(row.$el.children().last().css("display")).toBe("none");
+    expect(row.$el.children().last().hasClass("renderable")).toBe(false);
 
     row.columns.remove(row.columns.first());
     expect(row.$el.children().length).toBe(3);
-    expect(row.$el.children().first()[0].outerHTML).toBe('<th><a>year<b class="sort-caret"></b></a></th>');
+    expect(row.$el.children().first()[0].outerHTML).toBe('<th class="editable sortable renderable"><a>year<b class="sort-caret"></b></a></th>');
   });
 
 });
@@ -335,8 +335,8 @@ describe("A Header", function () {
 
   it("renders a header with a row of header cells", function () {
     expect(head.$el[0].tagName).toBe("THEAD");
-    expect(head.$el[0].innerHTML).toBe('<tr><th><a>name<b class="sort-caret"></b></a></th>' +
-                                      '<th><a>year<b class="sort-caret"></b></a></th></tr>');
+    expect(head.$el[0].innerHTML).toBe('<tr><th class="editable sortable renderable"><a>name<b class="sort-caret"></b></a></th>' +
+                                      '<th class="editable sortable renderable"><a>year<b class="sort-caret"></b></a></th></tr>');
   });
 
 });
