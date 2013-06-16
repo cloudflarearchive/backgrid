@@ -41,11 +41,11 @@ js:
 	make $(JS_OUTFILE)
 
 csslint:
-	recess $(CSS_FILES) --noIDS --noUniversalSelectors --compile > /tmp/$(CSS_OUTFILE) && mv -f /tmp/$(CSS_OUTFILE) $(CSS_OUTFILE);
+	recess $(CSS_FILES) --compile > /tmp/$(CSS_OUTFILE) && mv -f /tmp/$(CSS_OUTFILE) $(CSS_OUTFILE);
 
 minify: js
 	$(UGLIFY) $(JS_OUTFILE) $(UGLIFY_FLAGS) --output $(JS_OUTFILE_MIN)
-	recess $(CSS_FILES) --noIDS --noUniversalSelectors --compress > /tmp/$(CSS_OUTFILE_MIN) && mv -f /tmp/$(CSS_OUTFILE_MIN) $(CSS_OUTFILE_MIN);
+	recess $(CSS_FILES) --compress > /tmp/$(CSS_OUTFILE_MIN) && mv -f /tmp/$(CSS_OUTFILE_MIN) $(CSS_OUTFILE_MIN);
 
 build: minify
 	$(MAKE) $(JS_OUTFILE_MIN)
