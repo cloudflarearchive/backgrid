@@ -1,3 +1,4 @@
+.grunt
 node_modules
 .rbenv-gemsets
 .rvmrc
