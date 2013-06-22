@@ -184,7 +184,7 @@ module.exports = function (grunt) {
           'lib/extensions/filter/backgrid-filter.min.css': ['src/extensions/filter/*.css'],
           'lib/extensions/moment-cell/backgrid-moment-cell.min.css': ['src/extensions/moment-cell/*.css'],
           'lib/extensions/paginator/backgrid-paginator.min.css': ['src/extensions/paginator/*.css'],
-          'lib/extensions/seletct2-cell/backgrid-select2-cell.min.css': ['src/extensions/select2-cell/*.css'],
+          'lib/extensions/select2-cell/backgrid-select2-cell.min.css': ['src/extensions/select2-cell/*.css'],
           'lib/extensions/select-all/backgrid-select-all.min.css': ['src/extensions/select-all/*.css'],
           'lib/extensions/text-cell/backgrid-text-cell.min.css': ['src/extensions/text-cell/*.css']
         }
@@ -202,8 +202,8 @@ module.exports = function (grunt) {
           'lib/extensions/moment-cell/backgrid-moment-cell.min.js': ['src/extensions/moment-cell/*.js'],
           'lib/extensions/paginator/backgrid-paginator.min.js': ['src/extensions/paginator/*.js'],
           'lib/extensions/select2-cell/backgrid-select2-cell.min.js': ['src/extensions/select2-cell/*.js'],
-          'lib/extensions/select-all/backgrid-select-all.js': ['src/extensions/select-all/*.js'],
-          'lib/extensions/text-cell/backgrid-text-cell.js': ['src/extensions/text-cell/*.js']
+          'lib/extensions/select-all/backgrid-select-all.min.js': ['src/extensions/select-all/*.js'],
+          'lib/extensions/text-cell/backgrid-text-cell.min.js': ['src/extensions/text-cell/*.js']
         }
       }
     }
