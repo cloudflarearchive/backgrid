@@ -231,5 +231,5 @@ module.exports = function(grunt) {
     //
     // the default task will be equivalent to all in Makefile
     //
-    grunt.registerTask('default', ['clean', 'jsduck', 'concat', 'uglify', 'recess' ]);
+    grunt.registerTask('default', ['clean', 'jsduck', 'concat', 'uglify', 'recess', 'jasmine' ]);
 };
