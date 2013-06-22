@@ -1,3 +1,11 @@
+/*
+  backgrid
+  http://github.com/wyuenho/backgrid
+
+  Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
+  Licensed under the MIT license.
+*/
+
 // jshint globalstrict:true, node:true
 
 "use strict";
@@ -12,23 +20,24 @@ module.exports = function (grunt) {
       options: {
         force: true
       },
+      lib: [
+        "lib/**/*"
+      ],
+      api: [
+        "api/**/*"
+      ],
       default: [
-        "api",
-        "lib",
-        "src/backgrid.js",
-        "src/backgrid.min.js",
-        "src/backgrid.min.css",
-        "src/extensions/**/*.min.js",
-        "src/extensions/**/*.min.css"
+        "api/**/*",
+        "lib/**/*"
       ]
     },
     concat: {
       backgrid: {
         options: {
-          banner: '/*\n  <%= pkg.name %>\n' +
+          banner: '/*!\n  <%= pkg.name %>\n' +
             '  <%= pkg.repository.url %>\n\n' +
             '  Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author %>\n' +
-            '  Licensed under the MIT @license.\n' +
+            '  Licensed under the MIT license.\n' +
             '*/\n\n' +
             '(function (root, $, _, Backbone) {\n\n  \"use strict\";\n',
           footer: "}(this, jQuery, _, Backbone));"
@@ -193,7 +202,8 @@ module.exports = function (grunt) {
     uglify: {
       options: {
         mangle: true,
-        compress: true
+        compress: true,
+        preserveComments: "some"
       },
       default: {
         files: {
@@ -217,7 +227,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks("grunt-contrib-jasmine");
   grunt.loadNpmTasks("grunt-contrib-connect");
 
-  grunt.registerTask("doc", ["jsduck"]);
+  grunt.registerTask("doc", ["clean:api", "jsduck"]);
   grunt.registerTask("dist", ["concat", "uglify", "recess"]);
-  grunt.registerTask("default", ["clean", "jsduck", "concat", "uglify", "recess", "jasmine"]);
+  grunt.registerTask("default", ["clean", "doc", "dist", "jasmine"]);
 };
