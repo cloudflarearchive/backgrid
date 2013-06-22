@@ -48,6 +48,12 @@
         this.$el.find(":checkbox").prop("checked", selected).change();
       });
 
+      var column = this.column, $el = this.$el;
+      this.listenTo(column, "change:renderable", function (column, renderable) {
+        $el.toggleClass("renderable", renderable);
+      });
+
+      if (column.get("renderable")) $el.addClass("renderable");
     },
 
     /**
@@ -167,6 +173,13 @@
           }
         }
       });
+
+      var column = this.column, $el = this.$el;
+      this.listenTo(column, "change:renderable", function (column, renderable) {
+        $el.toggleClass("renderable", renderable);
+      });
+
+      if (column.get("renderable")) $el.addClass("renderable");
     },
 
     /**

@@ -27,6 +27,10 @@ describe("A SelectRowCell", function () {
     cell.render();
   });
 
+  it("renders a renderable cell", function () {
+    expect(cell.$el.hasClass("renderable")).toBe(true);
+  });
+
   it("renders a checkbox", function () {
     expect(cell.$el.find(":checkbox").length).toBe(1);
   });
@@ -75,6 +79,10 @@ describe("A SelectAllHeaderCell", function () {
     });
 
     cell.render();
+  });
+
+  it("renders a renderable header cell", function () {
+    expect(cell.$el.hasClass("renderable")).toBe(true);
   });
 
   it("triggers a `backgrid:select` event on each model when its checkbox is checked", function () {
