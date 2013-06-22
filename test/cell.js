@@ -483,6 +483,31 @@ describe("An EmailCell", function () {
 
 describe("A NumberCell", function () {
 
+  it("accepts a formatter instance", function () {
+
+    var formatter = {
+      fromRaw: function (rawValue) {
+        return rawValue;
+      },
+      toRaw: function (formattedValue) {
+        return +formattedValue;
+      }
+    };
+
+    var cell = new Backgrid.NumberCell({
+      model: new Backbone.Model({
+        age: 1.1
+      }),
+      column: {
+        name: "age",
+        cell: "number",
+        formatter: formatter
+      },
+    });
+
+    expect(cell.formatter).toBe(formatter);
+  });
+
   it("applies a number-cell class to the cell", function () {
     var cell = new Backgrid.NumberCell({
       model: new Backbone.Model({
@@ -538,6 +563,27 @@ describe("A DatetimeCell", function () {
       model: model,
       column: column
     });
+  });
+
+  it("accepts a formatter instance", function () {
+
+    var formatter = {
+      fromRaw: function (rawValue) {
+        return rawValue;
+      },
+      toRaw: function (formattedValue) {
+        return formattedValue;
+      }
+    };
+
+    cell = new Backgrid.DatetimeCell({
+      model: model,
+      column: _.extend({}, column, {
+        formatter: formatter
+      })
+    });
+
+    expect(cell.formatter).toBe(formatter);
   });
 
   it("applies a datetime-cell class to the cell", function () {

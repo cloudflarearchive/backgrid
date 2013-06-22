@@ -450,11 +450,13 @@ var NumberCell = Backgrid.NumberCell = Cell.extend({
   */
   initialize: function (options) {
     Cell.prototype.initialize.apply(this, arguments);
-    this.formatter = new this.formatter({
-      decimals: this.decimals,
-      decimalSeparator: this.decimalSeparator,
-      orderSeparator: this.orderSeparator
-    });
+    if (!this.formatter.fromRaw && !this.formatter.toRaw) {
+      this.formatter = new this.formatter({
+        decimals: this.decimals,
+        decimalSeparator: this.decimalSeparator,
+        orderSeparator: this.orderSeparator
+      });
+    }
   }
 
 });
@@ -524,11 +526,13 @@ var DatetimeCell = Backgrid.DatetimeCell = Cell.extend({
   */
   initialize: function (options) {
     Cell.prototype.initialize.apply(this, arguments);
-    this.formatter = new this.formatter({
-      includeDate: this.includeDate,
-      includeTime: this.includeTime,
-      includeMilli: this.includeMilli
-    });
+    if (!this.formatter.fromRaw && !this.formatter.toRaw) {
+      this.formatter = new this.formatter({
+        includeDate: this.includeDate,
+        includeTime: this.includeTime,
+        includeMilli: this.includeMilli
+      });
+    }
 
     var placeholder = this.includeDate ? "YYYY-MM-DD" : "";
     placeholder += (this.includeDate && this.includeTime) ? "T" : "";
