@@ -1,0 +1,78 @@
+{
+  "name": "backgrid",
+  "version": "0.2.6",
+  "author": "Jimmy Yuen Ho Wong and contributors<wyuenho@gmail.com>",
+  "description": "Backgrid.js is a set of components for building semantic and easily stylable data grid widgets with Backbone.",
+  "homepage": "http://backgridjs.com/",
+  "keywords": [
+    "backgrid",
+    "backbone"
+  ],
+  "contributors": [
+    {
+      "name": "Jimmy Yuen Ho Wong",
+      "email": "wyuenho@gmail.com"
+    },
+    {
+      "name":"Gabriel Bédard Sicé",
+      "email":"gbedardsice"
+    },
+    {
+      "name":"David Rouchy",
+      "email":"drouchy"
+    },
+    {
+      "name":"Tim Walker",
+      "email":"tim.twalker@gmail.com"
+    },
+    {
+      "name":"John Moses",
+      "email":"moses.john.r@gmail.com"
+    },
+    {
+      "name":"David Burrows",
+      "email":"david@imergent.com"
+    },
+    {
+      "name":"pctj101",
+      "email":"pctj101"
+    },
+    {
+      "name":"Bruno Carriere",
+      "email":"neonskimmer@gmail.com"
+    },
+    {
+      "name":"Dan Davison",
+      "email":"dandavison7@gmail.com"
+    },
+    {
+      "name":"Ivor",
+      "email":"Ivor"
+    },
+    {
+      "name":"Steve",
+      "email":"steve@snkashis.com"
+    }
+  ],
+  "main": "./lib/backgrid.js",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/wyuenho/backgrid"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-connect": "~0.3.0",
+    "grunt-contrib-clean": "~0.4.1",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-jasmine": "~0.5.1",
+    "grunt-contrib-uglify": "~0.2.2",
+    "grunt-jsduck": "~0.1.4",
+    "grunt-recess": "~0.3.3"
+  },
+  "bundledDependencies": [],
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.6"
+  }
+}
