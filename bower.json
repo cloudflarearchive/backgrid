@@ -1,0 +1,76 @@
+{
+  "name": "backgrid",
+  "description": "backgrid ===============",
+  "url": "http://backgridjs.com/",
+  "version": "0.3.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/wyuenho/backgrid.git"
+  },
+  "ignore": [
+    "node_modules",
+    "components",
+    "index.html",
+    "categories.json",
+    "*.md",
+    "component.json",
+    "package.json"
+  ] ,
+  "readmeFilename": "README.md",
+  "dependencies": {
+    "jquery": "~1.8.0",
+    "backbone":"~0.9.10",
+    "underscore":"~1.4.0"
+  },
+  "license": "MIT",
+  "contributors": [
+    {
+      "name": "Jimmy Yuen Ho Wong",
+      "email": "wyuenho@gmail.com"
+    },
+    {
+      "name":"Gabriel Bédard Sicé",
+      "email":"gbedardsice"
+    },
+    {
+      "name":"David Rouchy",
+      "email":"drouchy"
+    },
+    {
+      "name":"Tim Walker",
+      "email":"tim.twalker@gmail.com"
+    },
+    {
+      "name":"John Moses",
+      "email":"moses.john.r@gmail.com"
+    },
+    {
+      "name":"David Burrows",
+      "email":"david@imergent.com"
+    },
+    {
+      "name":"pctj101",
+      "email":"pctj101"
+    },
+    {
+      "name":"Bruno Carriere",
+      "email":"neonskimmer@gmail.com"
+    },
+    {
+      "name":"Dan Davison",
+      "email":"dandavison7@gmail.com"
+    },
+    {
+      "name":"Ivor",
+      "email":"Ivor"
+    },
+    {
+      "name":"Steve",
+      "email":"steve@snkashis.com"
+    }
+  ],
+  "author": {
+    "name": "Jimmy Yuen Ho Wong",
+    "email": "wyuenho@gmail.com"
+  }
+}
