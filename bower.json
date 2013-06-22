@@ -23,52 +23,6 @@
     "underscore":"~1.4.0"
   },
   "license": "MIT",
-  "contributors": [
-    {
-      "name": "Jimmy Yuen Ho Wong",
-      "email": "wyuenho@gmail.com"
-    },
-    {
-      "name":"Gabriel Bédard Sicé",
-      "email":"gbedardsice"
-    },
-    {
-      "name":"David Rouchy",
-      "email":"drouchy"
-    },
-    {
-      "name":"Tim Walker",
-      "email":"tim.twalker@gmail.com"
-    },
-    {
-      "name":"John Moses",
-      "email":"moses.john.r@gmail.com"
-    },
-    {
-      "name":"David Burrows",
-      "email":"david@imergent.com"
-    },
-    {
-      "name":"pctj101",
-      "email":"pctj101"
-    },
-    {
-      "name":"Bruno Carriere",
-      "email":"neonskimmer@gmail.com"
-    },
-    {
-      "name":"Dan Davison",
-      "email":"dandavison7@gmail.com"
-    },
-    {
-      "name":"Ivor",
-      "email":"Ivor"
-    },
-    {
-      "name":"Steve",
-      "email":"steve@snkashis.com"
-    }
-  ],
   "author": {
     "name": "Jimmy Yuen Ho Wong",
     "email": "wyuenho@gmail.com"
