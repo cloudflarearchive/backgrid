@@ -24,16 +24,16 @@ module.exports = function(grunt) {
             ]
         },
         concat: {
-            options: {
-                banner:'/*! <%= pkg.name %> \n '+
-                    '<%= pkg.repository.url %> \n' +
-                    'Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author %>\n' +' ' +
-                    'Licensed under the MIT @license.\n' +
-                    '*/\n\n' +
-                    '(function (root, $, _, Backbone) {\n\n  \"use strict\";\n',
-                footer:"}(this, jQuery, _, Backbone));"
-            },
             backgrid: {
+                options:{
+                    banner:'/*! <%= pkg.name %> \n '+
+                        '<%= pkg.repository.url %> \n' +
+                        'Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author %>\n' +' ' +
+                        'Licensed under the MIT @license.\n' +
+                        '*/\n\n' +
+                        '(function (root, $, _, Backbone) {\n\n  \"use strict\";\n',
+                    footer:"}(this, jQuery, _, Backbone));"
+                },
                 src: ['src/*.js'],
                 dest: 'lib/backgrid.js'
             },
@@ -62,6 +62,32 @@ module.exports = function(grunt) {
                 dest:'lib/extensions/text-cell/backgrid-text-cell.js'
             }
         },
+        /**
+        jasmine: {
+            test: {
+                version:'1.3.1',
+                src:[
+                    'lib/backgrid.js'
+                ],
+                options: {
+                    specs: 'test/row.js',
+                    helpers:'assets/js/jasmine-html.js',
+                    vendor:[
+                        'assets/js/jquery.js',
+                        'assets/js/underscore.js',
+                        'assets/js/backbone.js',
+                        'assets/js/backbone-pageable.js',
+                        'assets/js/bootstrap.js',
+                        'assets/js/moment/moment.js',
+                        'assets/js/moment/lang/zh-tw.js',
+                        'assets/js/moment/lang/fr.js',
+                        'assets/js/select2.js',
+                        'assets/js/lunr.js'
+                    ]
+                }
+            }
+        },
+        **/
         jsduck: {
             main: {
                 // source paths with your code
@@ -149,6 +175,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-recess');
     grunt.loadNpmTasks('grunt-jsduck');
+    grunt.loadNpmTasks('grunt-contrib-jasmine');
 
     //
     // this is equivalent to doc in Makefile
