@@ -62,6 +62,14 @@ module.exports = function(grunt) {
                 dest:'lib/extensions/text-cell/backgrid-text-cell.js'
             }
         },
+        connect: {
+            server: {
+                options: {
+                    port: 8080,
+                    keepalive:true
+                }
+            }
+        },
         /**
         jasmine: {
             test: {
@@ -70,7 +78,7 @@ module.exports = function(grunt) {
                     'lib/backgrid.js'
                 ],
                 options: {
-                    specs: 'test/row.js',
+                    specs: 'test/body.js',
                     helpers:'assets/js/jasmine-html.js',
                     vendor:[
                         'assets/js/jquery.js',
@@ -176,6 +184,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-recess');
     grunt.loadNpmTasks('grunt-jsduck');
     grunt.loadNpmTasks('grunt-contrib-jasmine');
+    grunt.loadNpmTasks('grunt-contrib-connect');
 
     //
     // this is equivalent to doc in Makefile
