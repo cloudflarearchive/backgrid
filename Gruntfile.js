@@ -34,7 +34,17 @@ module.exports = function(grunt) {
                         '(function (root, $, _, Backbone) {\n\n  \"use strict\";\n',
                     footer:"}(this, jQuery, _, Backbone));"
                 },
-                src: ['src/*.js'],
+                src: [
+                    'src/preamble.js',
+                    'src/formatter.js',
+                    'src/cell.js',
+                    'src/column.js',
+                    'src/row.js',
+                    'src/header.js',
+                    'src/body.js',
+                    'src/footer.js',
+                    'src/grid.js'
+                ],
                 dest: 'lib/backgrid.js'
             },
             filter:{
@@ -70,7 +80,6 @@ module.exports = function(grunt) {
                 }
             }
         },
-        /**
         jasmine: {
             test: {
                 version:'1.3.1',
@@ -78,7 +87,7 @@ module.exports = function(grunt) {
                     'lib/backgrid.js'
                 ],
                 options: {
-                    specs: 'test/body.js',
+                    specs: 'test/header.js',
                     helpers:'assets/js/jasmine-html.js',
                     vendor:[
                         'assets/js/jquery.js',
@@ -95,7 +104,6 @@ module.exports = function(grunt) {
                 }
             }
         },
-        **/
         jsduck: {
             main: {
                 // source paths with your code
