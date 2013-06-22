@@ -371,14 +371,33 @@ var UriCell = Backgrid.UriCell = Cell.extend({
   /** @property */
   className: "uri-cell",
 
+  /**
+     @property {String} [title] The title attribute of the generated anchor. It
+     uses the display value formatted by the `formatter.fromRaw` by default.
+  */
+  title: null,
+
+  /**
+     @property {String} [target="_blank"] The target attribute of the generated
+     anchor.
+  */
+  target: "_blank",
+
+  initialize: function (options) {
+    Cell.prototype.initialize.apply(this, arguments);
+    this.title = options.title || this.title;
+    this.target = options.target || this.target;
+  },
+
   render: function () {
     this.$el.empty();
-    var formattedValue = this.formatter.fromRaw(this.model.get(this.column.get("name")));
+    var rawValue = this.model.get(this.column.get("name"));
+    var formattedValue = this.formatter.fromRaw(rawValue);
     this.$el.append($("<a>", {
       tabIndex: -1,
-      href: formattedValue,
-      title: formattedValue,
-      target: "_blank"
+      href: rawValue,
+      title: this.title || formattedValue,
+      target: this.target,
     }).text(formattedValue));
     this.delegateEvents();
     return this;

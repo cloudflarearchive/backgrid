@@ -445,6 +445,32 @@ describe("A UriCell", function () {
     expect(cell.$el.find("a").text()).toBe("http://www.example.com");
   });
 
+  it("uses the supplied target or _blank", function () {
+    cell.render();
+    expect(cell.$el.find("a").attr("target")).toBe("_blank");
+
+    cell = new Backgrid.UriCell({
+      model: model,
+      column: column,
+      target: "_self"
+    });
+    cell.render();
+    expect(cell.$el.find("a").attr("target")).toBe("_self");
+  });
+
+  it("uses the supplied title or the raw value", function () {
+    cell.render();
+    expect(cell.$el.find("a").attr("title")).toBe("http://www.example.com");
+
+    cell = new Backgrid.UriCell({
+      model: model,
+      column: column,
+      title: "http://backgridjs.com"
+    });
+    cell.render();
+    expect(cell.$el.find("a").attr("title")).toBe("http://backgridjs.com");
+  });
+
 });
 
 describe("An EmailCell", function () {
