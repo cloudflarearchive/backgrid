@@ -84,10 +84,34 @@ module.exports = function(grunt) {
             test: {
                 version:'1.3.1',
                 src:[
-                    'lib/backgrid.js'
+                    'lib/backgrid.js',
+                    'lib/extensions/paginator/backgrid-paginator.js',
+                    'lib/extensions/text-cell/backgrid-text-cell.js',
+                    'lib/extensions/moment-cell/backgrid-moment-cell.js',
+                    'lib/extensions/select2-cell/backgrid-select2-cell.js',
+                    'lib/extensions/select-all/backgrid-select-all.js',
+                    'lib/extensions/filter/backgrid-filter.js',
                 ],
                 options: {
-                    specs: 'test/header.js',
+                    specs:[
+                       // Got error
+                       'test/preamble.js',
+                       'test/column.js',
+                       'test/formatter.js',
+                       'test/cell.js',
+                       'test/row.js',
+                       'test/body.js',
+                        'test/header.js',
+                        'test/footer.js',
+                        'test/grid.js',
+                        'test/extensions/paginator.js',
+                        // Got error
+                        //'test/extensions/moment-cell.js',
+                        'test/extensions/text-cell.js',
+                        'test/extensions/select2-cell.js',
+                        'test/extensions/select-all.js',
+                        'test/extensions/filter.js'
+                    ],
                     helpers:'assets/js/jasmine-html.js',
                     vendor:[
                         'assets/js/jquery.js',
@@ -96,10 +120,10 @@ module.exports = function(grunt) {
                         'assets/js/backbone-pageable.js',
                         'assets/js/bootstrap.js',
                         'assets/js/moment/moment.js',
+                        'assets/js/select2.js',
+                        'assets/js/lunr.js',
                         'assets/js/moment/lang/zh-tw.js',
                         'assets/js/moment/lang/fr.js',
-                        'assets/js/select2.js',
-                        'assets/js/lunr.js'
                     ]
                 }
             }
