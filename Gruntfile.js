@@ -13,8 +13,8 @@ module.exports = function (grunt) {
         force: true
       },
       default: [
-        "api/**/*",
-        "lib/**/*",
+        "api",
+        "lib",
         "src/backgrid.js",
         "src/backgrid.min.js",
         "src/backgrid.min.css",
