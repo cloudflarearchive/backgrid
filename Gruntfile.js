@@ -39,27 +39,59 @@ module.exports = function(grunt) {
             },
             filter:{
                 src:['src/extensions/filter/*.js'],
-                dest:'lib/extensions/backgrid-filter.js'
+                dest:'lib/extensions/filter/backgrid-filter.js'
             },
             "moment-cell":{
                 src:['src/extensions/moment-cell/*.js'],
-                dest:'lib/extensions/backgrid-moment-cell.js'
+                dest:'lib/extensions/moment-cell/backgrid-moment-cell.js'
             },
             'paginator':{
                 src:['src/extensions/paginator/*.js'],
-                dest:'lib/extensions/backgrid-paginator.js'
+                dest:'lib/extensions/paginator/backgrid-paginator.js'
             },
             "select2-cell":{
                 src:['src/extensions/select2-cell/*.js'],
-                dest:'lib/extensions/backgrid-select2-cell.js'
+                dest:'lib/extensions/select2-cell/backgrid-select2-cell.js'
             },
             "select-all":{
                 src:['src/extensions/select-all/*.js'],
-                dest:'lib/extensions/backgrid-select-all.js'
+                dest:'lib/extensions/select-all/backgrid-select-all.js'
             },
             "text-cell":{
                 src:['src/extensions/text-cell/*.js'],
-                dest:'lib/extensions/backgrid-text-cell.js'
+                dest:'lib/extensions/text-cell/backgrid-text-cell.js'
+            }
+        },
+        jsduck: {
+            main: {
+                // source paths with your code
+                src: [
+                    'src'
+                ],
+                // docs output dir
+                dest: 'api',
+                // extra options
+                options: {
+                    'external':['Backbone.Model,Backbone.Collection,Backbone.View,ReferenceError,TypeError,RangeError'],
+                    'title':'Backgrid.js',
+                    'no-source':true,
+                    'categories':'categories.json',
+                    'warnings':'-no_doc',
+                    'pretty-json':true,
+                    'builtin-classes': true,
+                    'body-html':"<script type='text/javascript'>"+
+                        ' var _gaq = _gaq || [];'+
+                        "_gaq.push(['_setAccount', 'UA-36403214-1']);"+
+                        "_gaq.push(['_setDomainName', 'backgridjs.com']);"+
+                        "_gaq.push(['_setAllowLinker', true]);"+
+                        "_gaq.push(['_trackPageview']);"+
+                        "(function() {"+
+                            "var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;"+
+                            "ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';"+
+                            "var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);"+
+                        "})();"+
+                        "</script>"
+                }
             }
         },
         recess: {
@@ -116,9 +148,20 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-concat');
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-recess');
+    grunt.loadNpmTasks('grunt-jsduck');
+
+    //
+    // this is equivalent to doc in Makefile
+    //
+    grunt.registerTask('doc', [ 'jsduck' ]);
+
+    //
+    // this is equivalent to dist in Makefile
+    //
+    grunt.registerTask('dist', [ 'concat', 'uglify', 'recess' ]);
 
     //
     // the default task will be equivalent to all in Makefile
     //
-    grunt.registerTask('default', ['clean', 'concat', 'uglify', 'recess' ]);
+    grunt.registerTask('default', ['clean', 'jsduck', 'concat', 'uglify', 'recess' ]);
 };

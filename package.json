@@ -3,6 +3,7 @@
     "version": "0.2.6",
     "author": "Jimmy Yuen Ho Wong and contributors<wyuenho@gmail.com>",
     "description": "Backgrid.js is a set of components for building semantic and easily stylable data grid widgets with Backbone.",
+    "homepage": "http://backgridjs.com/",
     "keywords": [
         "backgrid",
         "backbone"
@@ -13,7 +14,7 @@
             "email": "wyuenho@gmail.com"
         }
     ],
-    "main": "./dist/backgrid.js",
+    "main": "./lib/backgrid.js",
     "repository": {
         "type": "git",
         "url": "http://github.com/wyuenho/backgrid"
@@ -24,6 +25,7 @@
         "grunt-contrib-clean": "~0.4.1",
         "grunt-contrib-concat": "~0.3.0",
         "grunt-contrib-uglify": "~0.2.2",
+        "grunt-jsduck": "~0.1.4",
         "grunt-recess": "~0.3.3"
     },
     "bundledDependencies": [],
