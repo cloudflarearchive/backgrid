@@ -372,13 +372,13 @@ var UriCell = Backgrid.UriCell = Cell.extend({
   className: "uri-cell",
 
   /**
-     @property {String} [title] The title attribute of the generated anchor. It
+     @property {string} [title] The title attribute of the generated anchor. It
      uses the display value formatted by the `formatter.fromRaw` by default.
   */
   title: null,
 
   /**
-     @property {String} [target="_blank"] The target attribute of the generated
+     @property {string} [target="_blank"] The target attribute of the generated
      anchor.
   */
   target: "_blank",
