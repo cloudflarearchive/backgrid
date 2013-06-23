@@ -30,6 +30,6 @@
     "node": ">=0.10"
   },
   "scripts": {
-    "test": "grunt --verbose"
+    "test": "grunt"
   }
 }
