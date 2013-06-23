@@ -51,7 +51,8 @@ _.extend(CellFormatter.prototype, {
 });
 
 /**
-   A floating point number formatter. Doesn't understand notation at the moment.
+   A floating point number formatter. Doesn't understand scientific notation at
+   the moment.
 
    @class Backgrid.NumberFormatter
    @extends Backgrid.CellFormatter
