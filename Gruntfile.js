@@ -232,5 +232,5 @@ module.exports = function (grunt) {
   grunt.registerTask("default", ["clean", "doc", "dist", "jasmine"]);
 
   // Travis CI task
-  // grunt.registerTask("travis", ["clean", "dist", "jasmine"]);
+  grunt.registerTask("travis", ["clean", "dist", "jasmine"]);
 };
