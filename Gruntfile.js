@@ -230,4 +230,7 @@ module.exports = function (grunt) {
   grunt.registerTask("doc", ["clean:api", "jsduck"]);
   grunt.registerTask("dist", ["concat", "uglify", "recess"]);
   grunt.registerTask("default", ["clean", "doc", "dist", "jasmine"]);
+
+  // Travis CI task
+  grunt.registerTask("travis", ["clean", "dist", "jasmine"]);
 };

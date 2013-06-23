@@ -38,7 +38,8 @@ describe("A MomentFormatter", function () {
   it(".fromRaw() can convert an ISO datetime string in UTC to a datetime " +
      "string in another moment.js supported format in the default locale", function () {
     var formatter = new Backgrid.Extension.MomentFormatter({
-      displayFormat: "ddd, DD-MMM-YYYY HH:mm:ss G\\MT" //cookie expires format
+      displayFormat: "ddd, DD-MMM-YYYY HH:mm:ss G\\MT", //cookie expires format,
+      displayLang:"en"
     });
     expect(formatter.fromRaw("2012-02-29T05:30:00.100Z")).toBe("Wed, 29-Feb-2012 05:30:00 GMT");
   });
@@ -67,8 +68,9 @@ describe("A MomentFormatter", function () {
      "supported format to another datetime string in UTC in another moment.js" +
      " supported format", function () {
     var formatter = new Backgrid.Extension.MomentFormatter({
-      modelFormat: "ddd, DD-MMM-YYYY HH:mm:ss",
-      displayFormat: "MM-DD-YYYY HH:mm:ss"
+        modelLang:"en",
+        modelFormat: "ddd, DD-MMM-YYYY HH:mm:ss",
+        displayFormat: "MM-DD-YYYY HH:mm:ss"
     });
     expect(formatter.fromRaw("Wed, 29-Feb-2012 05:30:00")).toBe("02-29-2012 05:30:00");
   });
@@ -123,7 +125,8 @@ describe("A MomentFormatter", function () {
 
   it(".toRaw() can convert a non-ISO datetime string in UTC in the default locale to the ISO datetime string in UTC in the default locale", function () {
     var formatter = new Backgrid.Extension.MomentFormatter({
-      displayFormat: "ddd, DD-MMM-YYYY HH:mm:ss"
+        displayFormat: "ddd, DD-MMM-YYYY HH:mm:ss",
+        displayLang:"en"
     });
     expect(formatter.toRaw("Wed, 29-Feb-2012 05:30:00")).toBe("2012-02-29T05:30:00+00:00");
   });
@@ -147,6 +150,7 @@ describe("A MomentFormatter", function () {
 
   it(".toRaw() can convert a non-ISO datetime string in a timezone offset in a different locale to another non-ISO datetime string in UTC in a default locale", function () {
     var formatter = new Backgrid.Extension.MomentFormatter({
+      modelLang:"en",
       modelFormat: "dddd, YYYY-MMM-DD HH:mm:ss",
       displayInUTC: false,
       displayLang: "zh-tw",
