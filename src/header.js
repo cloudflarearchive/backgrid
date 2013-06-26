@@ -25,12 +25,6 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
   },
 
   /**
-    @property {null|"ascending"|"descending"} _direction The current sorting
-    direction of this column.
-  */
-  _direction: null,
-
-  /**
      Initializer.
 
      @param {Object} options
@@ -74,12 +68,13 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
    */
   direction: function (dir) {
     if (arguments.length) {
-      if (this._direction) this.$el.removeClass(this._direction);
+      direction = this.column.get('direction');
+      if (direction) this.$el.removeClass(direction);
       if (dir) this.$el.addClass(dir);
-      this._direction = dir;
+      this.column.set('direction', dir)
     }
 
-    return this._direction;
+    return this.column.get('direction');
   },
 
   /**
