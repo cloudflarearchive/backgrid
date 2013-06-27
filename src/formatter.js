@@ -122,9 +122,13 @@ _.extend(NumberFormatter.prototype, {
      a number.
   */
   toRaw: function (formattedData) {
+    formattedData = formattedData.trim();
+
+    if (formattedData === '') return null;
+
     var rawData = '';
 
-    var thousands = formattedData.trim().split(this.orderSeparator);
+    var thousands = formattedData.split(this.orderSeparator);
     for (var i = 0; i < thousands.length; i++) {
       rawData += thousands[i];
     }

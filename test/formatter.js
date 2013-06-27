@@ -68,6 +68,11 @@ describe("A NumberFormatter", function () {
     expect(formatter.fromRaw(undefined)).toBe('');
   });
 
+  it(".toRaw() converts an empty string to null", function () {
+    var formatter = new Backgrid.NumberFormatter();
+    expect(formatter.toRaw('')).toBe(null);
+  });
+
   it(".toRaw() converts a number string with any number of decimals, with " +
      "1000s separated by ',' and the decimal part separated by '.' to a " +
      "number by default", function () {
@@ -89,10 +94,9 @@ describe("A NumberFormatter", function () {
     expect(formatter.toRaw("1.000.003,141592653589793238462")).toBe(1000003.142);
   });
 
-  it(".toRaw() returns undefined for empty strings or strings of whitespaces", function () {
+  it(".toRaw() returns undefined for invalid number strings", function () {
     var formatter = new Backgrid.NumberFormatter();
-    expect(formatter.toRaw('')).toBe(0);
-    expect(formatter.toRaw(' ')).toBe(0);
+    expect(formatter.toRaw('ads')).toBeUndefined();
   });
 
 });
