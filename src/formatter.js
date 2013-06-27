@@ -198,6 +198,8 @@ _.extend(DatetimeFormatter.prototype, {
   ISO_SPLITTER_RE: /T|Z| +/,
 
   _convert: function (data, validate) {
+    if ((data + '').trim() === '') return null;
+
     var date, time = null;
     if (_.isNumber(data)) {
       var jsDate = new Date(data);

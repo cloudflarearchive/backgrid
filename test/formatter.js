@@ -68,9 +68,10 @@ describe("A NumberFormatter", function () {
     expect(formatter.fromRaw(undefined)).toBe('');
   });
 
-  it(".toRaw() converts an empty string to null", function () {
+  it(".toRaw() converts a blank string to null", function () {
     var formatter = new Backgrid.NumberFormatter();
     expect(formatter.toRaw('')).toBe(null);
+    expect(formatter.toRaw(' ')).toBe(null);
   });
 
   it(".toRaw() converts a number string with any number of decimals, with " +
@@ -199,6 +200,12 @@ describe("A DatetimeFormatter", function () {
     }).toThrow();
   });
 
+  it(".toRaw() returns null when a blank string is supplied", function () {
+    var formatter = new Backgrid.DatetimeFormatter();
+    expect(formatter.toRaw('')).toBe(null);
+    expect(formatter.toRaw(' ')).toBe(null);
+  });
+
   it(".toRaw() returns undefined when converting an ISO datetime string to an ISO date string", function () {
     var formatter = new Backgrid.DatetimeFormatter({
       includeTime: false
@@ -299,12 +306,6 @@ describe("A DatetimeFormatter", function () {
       includeMilli: true
     });
     expect(formatter.toRaw("05:30:29.123")).toBe("05:30:29.123");
-  });
-
-  it(".toRaw() returns undefined when converting an empty string or a string of whitespaces", function () {
-    var formatter = new Backgrid.DatetimeFormatter();
-    expect(formatter.toRaw('')).toBeUndefined();
-    expect(formatter.toRaw(' ')).toBeUndefined();
   });
 });
 
