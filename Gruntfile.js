@@ -39,8 +39,20 @@ module.exports = function (grunt) {
             '  Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author %>\n' +
             '  Licensed under the MIT license.\n' +
             '*/\n\n' +
-            '(function (root, $, _, Backbone) {\n\n  \"use strict\";\n',
-          footer: "}(this, jQuery, _, Backbone));"
+            '(function (factory) {\n\n' +
+            '  // CommonJS\n' +
+            '  if (typeof exports == "object") {\n' +
+            '    module.exports = factory(module.exports,\n' +
+            '                             require("underscore"),\n' +
+            '                             require("backbone"));\n' +
+            '  }\n' +
+            '  // Browser\n' +
+            '  else if (typeof _ !== "undefined" &&\n' +
+            '    typeof Backbone !== "undefined") {\n' +
+            '    factory(window, _, Backbone);\n' +
+            '  }\n' +
+            '}(function (root, _, Backbone) {\n\n  \"use strict\";\n',
+          footer: "}));"
         },
         src: [
           "src/preamble.js",
@@ -54,30 +66,6 @@ module.exports = function (grunt) {
           "src/grid.js"
         ],
         dest: "lib/backgrid.js"
-      },
-      filter: {
-        src: ["src/extensions/filter/*.js"],
-        dest: "lib/extensions/filter/backgrid-filter.js"
-      },
-      "moment-cell": {
-        src: ["src/extensions/moment-cell/*.js"],
-        dest: "lib/extensions/moment-cell/backgrid-moment-cell.js"
-      },
-      paginator: {
-        src: ["src/extensions/paginator/*.js"],
-        dest: "lib/extensions/paginator/backgrid-paginator.js"
-      },
-      "select2-cell": {
-        src: ["src/extensions/select2-cell/*.js"],
-        dest: "lib/extensions/select2-cell/backgrid-select2-cell.js"
-      },
-      "select-all": {
-        src: ["src/extensions/select-all/*.js"],
-        dest: "lib/extensions/select-all/backgrid-select-all.js"
-      },
-      "text-cell": {
-        src: ["src/extensions/text-cell/*.js"],
-        dest: "lib/extensions/text-cell/backgrid-text-cell.js"
       }
     },
     connect: {
@@ -92,12 +80,6 @@ module.exports = function (grunt) {
         version: "1.3.1",
         src: [
           "lib/backgrid.js",
-          "lib/extensions/paginator/backgrid-paginator.js",
-          "lib/extensions/text-cell/backgrid-text-cell.js",
-          "lib/extensions/moment-cell/backgrid-moment-cell.js",
-          "lib/extensions/select2-cell/backgrid-select2-cell.js",
-          "lib/extensions/select-all/backgrid-select-all.js",
-          "lib/extensions/filter/backgrid-filter.js",
         ],
         options: {
           specs: [
@@ -109,13 +91,7 @@ module.exports = function (grunt) {
             "test/body.js",
             "test/header.js",
             "test/footer.js",
-            "test/grid.js",
-            "test/extensions/paginator.js",
-            "test/extensions/moment-cell.js",
-            "test/extensions/text-cell.js",
-            "test/extensions/select2-cell.js",
-            "test/extensions/select-all.js",
-            "test/extensions/filter.js"
+            "test/grid.js"
           ],
           template: require("grunt-template-jasmine-istanbul"),
           templateOptions: {
@@ -132,13 +108,7 @@ module.exports = function (grunt) {
             "assets/js/jquery.js",
             "assets/js/underscore.js",
             "assets/js/backbone.js",
-            "assets/js/backbone-pageable.js",
-            "assets/js/bootstrap.js",
-            "assets/js/select2.js",
-            "assets/js/lunr.js",
-            "assets/js/moment/moment.js",
-            "assets/js/moment/lang/zh-tw.js",
-            "assets/js/moment/lang/fr.js"
+            "assets/js/backbone-pageable.js"
           ]
         }
       }
@@ -175,13 +145,7 @@ module.exports = function (grunt) {
           compile: true
         },
         files: {
-          "lib/backgrid.css": ["src/backgrid.css"],
-          "lib/extensions/filter/backgrid-filter.css": ["src/extensions/filter/*.css"],
-          "lib/extensions/moment-cell/backgrid-moment-cell.css": ["src/extensions/moment-cell/*.css"],
-          "lib/extensions/paginator/backgrid-paginator.css": ["src/extensions/paginator/*.css"],
-          "lib/extensions/select2-cell/backgrid-select2-cell.css": ["src/extensions/select2-cell/*.css"],
-          "lib/extensions/select-all/backgrid-select-all.css": ["src/extensions/select-all/*.css"],
-          "lib/extensions/text-cell/backgrid-text-cell.css": ["src/extensions/text-cell/*.css"]
+          "lib/backgrid.css": ["src/backgrid.css"]
         }
       },
       default: {
@@ -189,13 +153,7 @@ module.exports = function (grunt) {
           compress: true
         },
         files: {
-          "lib/backgrid.min.css": ["src/backgrid.css"],
-          "lib/extensions/filter/backgrid-filter.min.css": ["src/extensions/filter/*.css"],
-          "lib/extensions/moment-cell/backgrid-moment-cell.min.css": ["src/extensions/moment-cell/*.css"],
-          "lib/extensions/paginator/backgrid-paginator.min.css": ["src/extensions/paginator/*.css"],
-          "lib/extensions/select2-cell/backgrid-select2-cell.min.css": ["src/extensions/select2-cell/*.css"],
-          "lib/extensions/select-all/backgrid-select-all.min.css": ["src/extensions/select-all/*.css"],
-          "lib/extensions/text-cell/backgrid-text-cell.min.css": ["src/extensions/text-cell/*.css"]
+          "lib/backgrid.min.css": ["src/backgrid.css"]
         }
       }
     },
@@ -207,13 +165,7 @@ module.exports = function (grunt) {
       },
       default: {
         files: {
-          "lib/backgrid.min.js": ["./lib/backgrid.js"],
-          "lib/extensions/filter/backgrid-filter.min.js": ["src/extensions/filter/*.js"],
-          "lib/extensions/moment-cell/backgrid-moment-cell.min.js": ["src/extensions/moment-cell/*.js"],
-          "lib/extensions/paginator/backgrid-paginator.min.js": ["src/extensions/paginator/*.js"],
-          "lib/extensions/select2-cell/backgrid-select2-cell.min.js": ["src/extensions/select2-cell/*.js"],
-          "lib/extensions/select-all/backgrid-select-all.min.js": ["src/extensions/select-all/*.js"],
-          "lib/extensions/text-cell/backgrid-text-cell.min.js": ["src/extensions/text-cell/*.js"]
+          "lib/backgrid.min.js": ["./lib/backgrid.js"]
         }
       }
     }
@@ -229,5 +181,6 @@ module.exports = function (grunt) {
 
   grunt.registerTask("doc", ["clean:api", "jsduck"]);
   grunt.registerTask("dist", ["concat", "uglify", "recess"]);
+  grunt.registerTask("test", ["dist", "jasmine"]);
   grunt.registerTask("default", ["clean", "doc", "dist", "jasmine"]);
 };

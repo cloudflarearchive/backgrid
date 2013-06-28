@@ -24,8 +24,10 @@ describe("Backgrid#requireOptions", function () {
 describe("Backgrid#resolveNameToClass", function () {
 
   it("will return a reference to a Backgrid or a Backgrid.Extension object from a dasherized string and a suffix", function () {
+    Backgrid.SelectRowCell = {};
     expect(Backgrid.resolveNameToClass("select-row", "Cell")).toBeDefined();
     expect(Backgrid.resolveNameToClass("select", "Cell")).toBeDefined();
+    delete Backgrid.SelectRowCell;
   });
 
   it("will return the `name` object if it is not a string", function () {
