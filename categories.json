@@ -59,52 +59,5 @@
         ]
       }
     ]
-  }, {
-    "name": "Extensions",
-    "groups": [
-      {
-        "name": "Paginator",
-        "classes": [
-          "Backgrid.Extension.PageHandle",
-          "Backgrid.Extension.Paginator"
-        ]
-      },
-      {
-        "name": "TextCell",
-        "classes": [
-          "Backgrid.Extension.TextCell",
-          "Backgrid.Extension.TextareaEditor"
-        ]
-      },
-      {
-        "name": "MomentCell",
-        "classes": [
-          "Backgrid.Extension.MomentFormatter",
-          "Backgrid.Extension.MomentCell"
-        ]
-      },
-      {
-        "name": "Select2Cell",
-        "classes": [
-          "Backgrid.Extension.Select2Cell",
-          "Backgrid.Extension.Select2CellEditor"
-        ]
-      },
-      {
-        "name": "SelectAll",
-        "classes": [
-          "Backgrid.Extension.SelectAllHeaderCell",
-          "Backgrid.Extension.SelectRowCell"
-        ]
-      },
-      {
-        "name": "Filter",
-        "classes": [
-          "Backgrid.Extension.ServerSideFilter",
-          "Backgrid.Extension.ClientSideFilter",
-          "Backgrid.Extension.LunrFilter"
-        ]
-      }
-    ]
   }
 ]

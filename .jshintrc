@@ -14,6 +14,7 @@
   "-W018": true,
 
   "browser": true,
+  "node": true,
   "devel": true,
   "jquery": true,
   "nonstandard": true,

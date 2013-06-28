@@ -3,10 +3,8 @@
   http://github.com/wyuenho/backgrid
 
   Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
-  Licensed under the MIT @license.
+  Licensed under the MIT license.
 */
-
-var window = root;
 
 // Copyright 2009, 2010 Kristopher Michael Kowal
 // https://github.com/kriskowal/es5-shim
@@ -43,7 +41,7 @@ function lpad(str, length, padstr) {
 
 var Backgrid = root.Backgrid = {
 
-  VERSION: "0.2.6",
+  VERSION: "0.3.0",
 
   Extension: {},
 
