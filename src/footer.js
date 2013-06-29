@@ -23,7 +23,6 @@ var Footer = Backgrid.Footer = Backbone.View.extend({
      Initializer.
 
      @param {Object} options
-     @param {*} options.parent The parent view class of this footer.
      @param {Backbone.Collection.<Backgrid.Column>|Array.<Backgrid.Column>|Array.<Object>} options.columns
      Column metadata.
      @param {Backbone.Collection} options.collection
