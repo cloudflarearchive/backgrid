@@ -1,5 +1,7 @@
 # Backgrid.js
 
+[![Build Status](https://travis-ci.org/wyuenho/backgrid.png?branch=master)](https://travis-ci.org/wyuenho/backgrid)
+
 Backgrid.js is a set of components for building semantic and easily stylable
 data grid widgets. It offers a simple, intuitive programming interface that
 makes easy things easy, but hard things possible when dealing with tabular data.
@@ -27,7 +29,6 @@ functionalities easy.
 - Chrome 4+
 - Safari 4+
 - Firefox 4+
-- Opera 9+
 
 ### Notes:
 
