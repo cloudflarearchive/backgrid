@@ -181,6 +181,6 @@ module.exports = function (grunt) {
 
   grunt.registerTask("doc", ["clean:api", "jsduck"]);
   grunt.registerTask("dist", ["concat", "uglify", "recess"]);
-  grunt.registerTask("test", ["dist", "jasmine"]);
+  grunt.registerTask("test", ["concat", "jasmine"]);
   grunt.registerTask("default", ["clean", "doc", "dist", "jasmine"]);
 };

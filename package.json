@@ -9,6 +9,9 @@
     "backbone"
   ],
   "main": "./lib/backgrid.js",
+  "scripts": {
+    "test": "grunt test"
+  },
   "repository": {
     "type": "git",
     "url": "http://github.com/wyuenho/backgrid"
@@ -22,7 +25,8 @@
     "grunt-contrib-uglify": "~0.2.2",
     "grunt-jsduck": "~0.1.4",
     "grunt-recess": "~0.3.3",
-    "grunt-template-jasmine-istanbul": "~0.2.4"
+    "grunt-template-jasmine-istanbul": "~0.2.4",
+    "grunt-cli": "~0.1.9"
   },
   "license": "MIT",
   "engines": {
