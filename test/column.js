@@ -43,39 +43,39 @@ describe("A Column", function () {
 
   it("sortValue can be a string or a function", function () {
     var Col = Backgrid.Column.extend({
-      sortValue: function () {}
+      mySortValue: function () {}
     });
 
     var col = new Col({
       name: "name",
       cell: "string",
-      sortValue: "sortValue"
+      sortValue: "mySortValue"
     });
 
-    expect(col.get("sortValue")).toBe(Col.prototype.sortValue);
+    expect(col.sortValue()).toBe(Col.prototype.mySortValue);
 
-    var sortValue = function () {};
+    var mySortValue = function () {};
     col = new Col({
       name: "name",
       cell: "string",
-      sortValue: sortValue
+      sortValue: mySortValue
     });
 
-    expect(col.get("sortValue")).toBe(sortValue);
+    expect(col.sortValue()).toBe(mySortValue);
   });
 
   it("sortable can be a string or a boolean", function () {
     var Col = Backgrid.Column.extend({
-      sortable: function () {}
+      mySortable: function () {}
     });
 
     var col = new Col({
       name: "name",
       cell: "string",
-      sortable: "sortable"
+      sortable: "mySortable"
     });
 
-    expect(col.get("sortable")).toBe(Col.prototype.sortable);
+    expect(col.sortable()).toBe(Col.prototype.mySortable);
 
     col = new Col({
       name: "name",
@@ -83,21 +83,21 @@ describe("A Column", function () {
       sortable: false
     });
 
-    expect(col.get("sortable")).toBe(false);
+    expect(col.sortable()).toBe(false);
   });
 
   it("editable can be a string or a boolean", function () {
     var Col = Backgrid.Column.extend({
-      editable: function () {}
+      myEditable: function () {}
     });
 
     var col = new Col({
       name: "name",
       cell: "string",
-      editable: "editable"
+      editable: "myEditable"
     });
 
-    expect(col.get("editable")).toBe(Col.prototype.editable);
+    expect(col.editable()).toBe(Col.prototype.myEditable);
 
     col = new Col({
       name: "name",
@@ -105,21 +105,21 @@ describe("A Column", function () {
       editable: false
     });
 
-    expect(col.get("editable")).toBe(false);
+    expect(col.editable()).toBe(false);
   });
 
   it("renderable can be a string or a boolean", function () {
     var Col = Backgrid.Column.extend({
-      renderable: function () {}
+      myRenderable: function () {}
     });
 
     var col = new Col({
       name: "name",
       cell: "string",
-      renderable: "renderable"
+      renderable: "myRenderable"
     });
 
-    expect(col.get("renderable")).toBe(Col.prototype.renderable);
+    expect(col.renderable()).toBe(Col.prototype.myRenderable);
 
     col = new Col({
       name: "name",
@@ -127,7 +127,7 @@ describe("A Column", function () {
       renderable: false
     });
 
-    expect(col.get("renderable")).toBe(false);
+    expect(col.renderable()).toBe(false);
   });
 
 });

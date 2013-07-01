@@ -104,7 +104,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
     e.preventDefault();
 
     var column = this.column;
-    var sortable = Backgrid.callByNeed(column.get("sortable"), column, this.model);
+    var sortable = Backgrid.callByNeed(column.sortable(), column, this.model);
     if (sortable) {
       if (this.direction() === "ascending") this.sort(column, "descending");
       else if (this.direction() === "descending") this.sort(column, null);
@@ -143,7 +143,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
 
     var comparator = this.makeComparator(column.get("name"), order,
                                          order ?
-                                         column.get("sortValue") :
+                                         column.sortValue() :
                                          function (model) {
                                            return model.cid;
                                          });
@@ -152,7 +152,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
         collection instanceof Backbone.PageableCollection) {
 
       collection.setSorting(order && column.get("name"), order,
-                            {sortValue: column.get("sortValue")});
+                            {sortValue: column.sortValue()});
 
       if (collection.mode == "client") {
         if (collection.fullCollection.comparator == null) {
@@ -193,7 +193,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
   render: function () {
     this.$el.empty();
     var $label = $("<a>").text(this.column.get("label"));
-    var sortable = Backgrid.callByNeed(this.column.get("sortable"), this.column, this.model);
+    var sortable = Backgrid.callByNeed(this.column.sortable(), this.column, this.model);
     if (sortable) $label.append("<b class='sort-caret'></b>");
     this.$el.append($label);
     this.delegateEvents();

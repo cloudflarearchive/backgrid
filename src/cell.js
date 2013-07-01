@@ -282,7 +282,7 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
     var model = this.model;
     var column = this.column;
 
-    var editable = Backgrid.callByNeed(column.get("editable"), column, model);
+    var editable = Backgrid.callByNeed(column.editable(), column, model);
     if (editable) {
 
       this.currentEditor = new this.editor({

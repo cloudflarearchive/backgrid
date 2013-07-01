@@ -254,7 +254,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
         var row = this.rows[i + (command.moveUp() ? -1 : 1)];
         if (row) {
           cell = row.cells[j];
-          if (Backgrid.callByNeed(cell.column.get("editable"), cell.column, model)) {
+          if (Backgrid.callByNeed(cell.column.editable(), cell.column, model)) {
             cell.enterEditMode();
           }
         }
@@ -267,8 +267,8 @@ var Body = Backgrid.Body = Backbone.View.extend({
           var m = ~~(offset / l);
           var n = offset - m * l;
           cell = this.rows[m].cells[n];
-          renderable = Backgrid.callByNeed(cell.column.get("renderable"), cell.column, cell.model);
-          editable = Backgrid.callByNeed(cell.column.get("editable"), cell.column, model);
+          renderable = Backgrid.callByNeed(cell.column.renderable(), cell.column, cell.model);
+          editable = Backgrid.callByNeed(cell.column.editable(), cell.column, model);
           if (renderable && editable) {
             cell.enterEditMode();
             break;

@@ -15,9 +15,68 @@
 
    @class Backgrid.Column
    @extends Backbone.Model
- */
+*/
 var Column = Backgrid.Column = Backbone.Model.extend({
 
+  /**
+     @cfg {Object} defaults Column defaults. To override any of these default
+     values, you can either change the prototype directly to override
+     Column.defaults globally or extend Column and supply the custom class to
+     Backgrid.Grid:
+
+         // Override Column defaults globally
+         Column.prototype.defaults.sortable = false;
+
+         // Override Column defaults locally
+         var MyColumn = Column.extend({
+           defaults: _.defaults({
+             editable: false
+           }, Column.prototype.defaults)
+         });
+
+         var grid = new Backgrid.Grid(columns: new Columns([{...}, {...}], {
+           model: MyColumn
+         }));
+
+     @cfg {string} [defaults.name] The default name of the model attribute.
+
+     @cfg {string} [defaults.label] The default label to show in the header.
+
+     @cfg {string|Backgrid.Cell} [defaults.cell] The default cell type. If this
+     is a string, the capitalized form will be used to look up a cell class in
+     Backbone, i.e.: string => StringCell. If a Cell subclass is supplied, it is
+     initialized with a hash of parameters. If a Cell instance is supplied, it
+     is used directly.
+
+     @cfg {string|Backgrid.HeaderCell} [defaults.headerCell] The default header
+     cell type.
+
+     @cfg {boolean|string} [defaults.sortable=true] Whether this column is
+     sortable. If the value is a string, a method will the same name will be
+     looked up from the column instance to determine whether the column should
+     be sortable. The method's signature must be `function (Backgrid.Column,
+     Backbone.Model): boolean`.
+
+     @cfg {boolean|string} [defaults.editable=true] Whether this column is
+     editable. If the value is a string, a method will the same name will be
+     looked up from the column instance to determine whether the column should
+     be editable. The method's signature must be `function (Backgrid.Column,
+     Backbone.Model): boolean`.
+
+     @cfg {boolean|string} [defaults.renderable=true] Whether this column is
+     renderable. If the value is a string, a method will the same name will be
+     looked up from the column instance to determine whether the column should
+     be renderable. The method's signature must be `function (Backrid.Column,
+     Backbone.Model): boolean`.
+
+     @cfg {Backgrid.CellFormatter | Object | string} [defaults.formatter] The
+     formatter to use to convert between raw model values and user input.
+
+     @cfg {(function(Backbone.Model, string): *) | string} [defaults.sortValue]
+     The function to use to extract a value from the model for comparison during
+     sorting. If this value is a string, a method with the same name will be
+     looked up from the column instance.
+  */
   defaults: {
     name: undefined,
     label: undefined,
@@ -33,19 +92,17 @@ var Column = Backgrid.Column = Backbone.Model.extend({
   /**
      Initializes this Column instance.
 
-     @param {Object} attrs Column attributes.
+     @param {Object} attrs
 
-     @param {string} attrs.name The name of the model attribute.
+     @param {string} attrs.name The model attribute this column is responsible
+     for.
 
-     @param {string|Backgrid.Cell} attrs.cell The cell type.
-     If this is a string, the capitalized form will be used to look up a
-     cell class in Backbone, i.e.: string => StringCell. If a Cell subclass
-     is supplied, it is initialized with a hash of parameters. If a Cell
-     instance is supplied, it is used directly.
+     @param {string|Backgrid.Cell} attrs.cell The cell type to use to render
+     this column.
 
-     @param {string|Backgrid.HeaderCell} [attrs.headerCell] The header cell type.
+     @param {string} [attrs.label]
 
-     @param {string} [attrs.label] The label to show in the header.
+     @param {string|Backgrid.HeaderCell} [attrs.headerCell]
 
      @param {boolean|string} [attrs.sortable=true]
 
@@ -53,13 +110,9 @@ var Column = Backgrid.Column = Backbone.Model.extend({
 
      @param {boolean|string} [attrs.renderable=true]
 
-     @param {Backgrid.CellFormatter | Object | string} [attrs.formatter] The
-     formatter to use to convert between raw model values and user input.
+     @param {Backgrid.CellFormatter | Object | string} [attrs.formatter]
 
-     @param {(function(Backbone.Model, string): Object) | string} [sortValue] The
-     function to use to extract a value from the model for comparison during
-     sorting. If this value is a string, a method with the same name will be
-     looked up from the column instance.
+     @param {(function(Backbone.Model, string): *) | string} [attrs.sortValue]
 
      @throws {TypeError} If attrs.cell or attrs.options are not supplied.
 
@@ -68,6 +121,7 @@ var Column = Backgrid.Column = Backbone.Model.extend({
 
      See:
 
+     - Backgrid.Column.defaults
      - Backgrid.Cell
      - Backgrid.CellFormatter
    */
@@ -82,31 +136,53 @@ var Column = Backgrid.Column = Backbone.Model.extend({
 
     var cell = Backgrid.resolveNameToClass(this.get("cell"), "Cell");
 
-    var sortValue = this.get("sortValue");
-    if (sortValue == null) sortValue = function (model, colName) {
-      return model.get(colName);
-    };
-    else if (_.isString(sortValue)) sortValue = this[sortValue];
-
-    var sortable = this.get("sortable");
-    if (_.isString(sortable)) sortable = this[sortable];
-
-    var editable = this.get("editable");
-    if (_.isString(editable)) editable = this[editable];
-
-    var renderable = this.get("renderable");
-    if (_.isString(renderable)) renderable = this[renderable];
-
     this.set({
       cell: cell,
-      headerCell: headerCell,
-      sortable: sortable,
-      editable: editable,
-      renderable: renderable,
-      sortValue: sortValue
+      headerCell: headerCell
     }, { silent: true });
+  },
+
+  /**
+     @return {function(Backbone.Model, string): *}
+   */
+  sortValue: function () {
+    var sortValue = this.get("sortValue");
+    if (_.isString(sortValue)) return this[sortValue];
+    else if (_.isFunction(sortValue)) return sortValue;
+
+    return function (model, colName) {
+      return model.get(colName);
+    };
   }
 
+  /**
+     @member Backgrid.Column
+     @protected
+     @method sortable
+     @return {function(Backgrid.Column, Backbone.Model): boolean | boolean}
+  */
+
+  /**
+     @member Backgrid.Column
+     @protected
+     @method editable
+     @return {function(Backgrid.Column, Backbone.Model): boolean | boolean}
+  */
+
+  /**
+     @member Backgrid.Column
+     @protected
+     @method renderable
+     @return {function(Backgrid.Column, Backbone.Model): boolean | boolean}
+  */
+});
+
+_.each(["sortable", "renderable", "editable"], function (key) {
+  Column.prototype[key] = function () {
+    var value = this.get(key);
+    if (_.isString(value)) return this[value];
+    return !!value;
+  };
 });
 
 /**
