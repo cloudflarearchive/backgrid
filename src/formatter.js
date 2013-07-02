@@ -103,7 +103,7 @@ _.extend(NumberFormatter.prototype, {
   fromRaw: function (number) {
     if (_.isNull(number) || _.isUndefined(number)) return '';
 
-    number = number.toFixed(~~this.decimals);
+    number = parseFloat(number).toFixed(~~this.decimals);
 
     var parts = number.split('.');
     var integerPart = parts[0];
