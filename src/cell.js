@@ -356,6 +356,26 @@ var StringCell = Backgrid.StringCell = Cell.extend({
 });
 
 /**
+   HtmlCell displays HTML unescaped strings and accepts anything typed in.
+
+   @class Backgrid.HtmlCell
+   @extends Backgrid.Cell
+*/
+var HtmlCell = Backgrid.HtmlCell = Cell.extend({
+
+  /** @property */
+  className: "html-cell",
+
+  render: function () {
+    this.$el.empty();
+    this.$el.html(this.formatter.fromRaw(this.model.get(this.column.get("name"))));
+    this.delegateEvents();
+    return this;
+  }
+
+});
+
+/**
    UriCell renders an HTML `<a>` anchor for the value and accepts URIs as user
    input values. No type conversion or URL validation is done by the formatter
    of this cell. Users who need URL validation are encourage to subclass UriCell
