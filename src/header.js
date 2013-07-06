@@ -97,8 +97,10 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
 
   /**
      Event handler for the `click` event on the cell's anchor. If the column is
-     sortable, clicking on the anchor will cycle through 3 sorting orderings -
-     `ascending`, `descending`, and default.
+     sortable and the column sortType is "toggle", clicking on the anchor will
+     toggle the sorting between `ascending` and `descending`; if sortType is
+     "cycle", it cycle through 3 sorting orderings - `ascending`, `descending`,
+     and default.
    */
   onClick: function (e) {
     e.preventDefault();
@@ -106,9 +108,29 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
     var column = this.column;
     var sortable = Backgrid.callByNeed(column.sortable(), column, this.model);
     if (sortable) {
-      if (this.direction() === "ascending") this.sort(column, "descending");
-      else if (this.direction() === "descending") this.sort(column, null);
-      else this.sort(column, "ascending");
+      switch( column.get("sortType"))
+      {
+          case "cycle":
+            cycleSort(this, column);
+            break;
+          case "toggle":
+            toggleSort(this, column);
+            break;
+          default:
+            cycleSort(this, column);
+      }
+    }
+
+    //helper functions for handling the proper sort behavior
+    function cycleSort( header, col ) {
+      if (header.direction() === "ascending") header.sort(col, "descending");
+      else if (header.direction() === "descending") header.sort(col, null);
+      else header.sort(col, "ascending");
+    }
+
+    function toggleSort( header, col ) {
+      if (header.direction() === "ascending") header.sort(col, "descending");
+      else header.sort(col, "ascending");
     }
   },
 

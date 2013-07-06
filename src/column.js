@@ -57,6 +57,11 @@ var Column = Backgrid.Column = Backbone.Model.extend({
      be sortable. The method's signature must be `function (Backgrid.Column,
      Backbone.Model): boolean`.
 
+     @cfg {string} [defaults.sortType="cycle"] How the default sorting
+     behavior should work. "cycle" will cycle though all sorting states (
+     `ascending`, `descending`, and default); "toggle" will only go between
+     `ascending` and `descending`. This only applies if options.sortable=true
+
      @cfg {boolean|string} [defaults.editable=true] Whether this column is
      editable. If the value is a string, a method will the same name will be
      looked up from the column instance to determine whether the column should
@@ -81,6 +86,7 @@ var Column = Backgrid.Column = Backbone.Model.extend({
     name: undefined,
     label: undefined,
     sortable: true,
+    sortType: "cycle",
     editable: true,
     renderable: true,
     formatter: undefined,
