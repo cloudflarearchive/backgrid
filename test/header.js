@@ -71,6 +71,27 @@ describe("A HeaderCell", function () {
     expect(cell.collection.toJSON()).toEqual([{id: 2}, {id: 1}, {id: 3}]);
   });
 
+  it("with the sortType to `toggle`, sorts the underlying collection in ascending order upon clicking the sort caret once", function(){
+    cell.column.set("sortType", "toggle");
+    cell.$el.find("a").click();
+    expect(cell.direction()).toBe("ascending");
+    expect(cell.collection.toJSON()).toEqual([{id: 1}, {id: 2}, {id: 3}]);
+  });
+
+  it("with the sortType to `toggle`, sorts the underlying collection in descending order upon clicking the sort caret twice", function(){
+    cell.column.set("sortType", "toggle");
+    cell.$el.find("a").click().click();
+    expect(cell.direction()).toBe("descending");
+    expect(cell.collection.toJSON()).toEqual([{id: 3}, {id: 2}, {id: 1}]);
+  });
+
+  it("with the sortType to `toggle`, sorts the underlying collection back in ascending order upon clicking the sort caret thrice", function(){
+    cell.column.set("sortType", "toggle");
+    cell.$el.find("a").click().click().click();
+    expect(cell.direction()).toBe("ascending");
+    expect(cell.collection.toJSON()).toEqual([{id: 1}, {id: 2}, {id: 3}]);
+  });
+
   it("sorts the underlying collection using a custom value extractor upon clicking the sort caret", function() {
 
     var sortValue = function (model, attr) {
