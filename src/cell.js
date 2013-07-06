@@ -777,7 +777,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
     var optionValues = _.result(this, "optionValues");
     var selectedValues = this.formatter.fromRaw(this.model.get(this.column.get("name")));
 
-    if (!_.isArray(optionValues)) throw TypeError("optionValues must be an array");
+    if (!_.isArray(optionValues)) throw new TypeError("optionValues must be an array");
 
     var optionValue = null;
     var optionText = null;
@@ -805,7 +805,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
         this.$el.append(optgroup);
       }
       else {
-        throw TypeError("optionValues elements must be a name-value pair or an object hash of { name: 'optgroup label', value: [option name-value pairs] }");
+        throw new TypeError("optionValues elements must be a name-value pair or an object hash of { name: 'optgroup label', value: [option name-value pairs] }");
       }
     }
 
@@ -972,7 +972,7 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
     }
     catch (ex) {
       if (ex instanceof TypeError) {
-        throw TypeError("'optionValues' must be of type {Array.<Array>|Array.<{name: string, values: Array.<Array>}>}");
+        throw new TypeError("'optionValues' must be of type {Array.<Array>|Array.<{name: string, values: Array.<Array>}>}");
       }
       throw ex;
     }
