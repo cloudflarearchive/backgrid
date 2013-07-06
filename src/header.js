@@ -105,22 +105,6 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
   onClick: function (e) {
     e.preventDefault();
 
-    var column = this.column;
-    var sortable = Backgrid.callByNeed(column.sortable(), column, this.model);
-    if (sortable) {
-      switch( column.get("sortType"))
-      {
-          case "cycle":
-            cycleSort(this, column);
-            break;
-          case "toggle":
-            toggleSort(this, column);
-            break;
-          default:
-            cycleSort(this, column);
-      }
-    }
-
     //helper functions for handling the proper sort behavior
     function cycleSort( header, col ) {
       if (header.direction() === "ascending") header.sort(col, "descending");
@@ -132,6 +116,15 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
       if (header.direction() === "ascending") header.sort(col, "descending");
       else header.sort(col, "ascending");
     }
+
+    var column = this.column;
+    var sortable = Backgrid.callByNeed(column.sortable(), column, this.model);
+    var sortType = column.get("sortType");
+    if (sortable) {
+        if( sortType === "toggle") toggleSort(this, column);
+        else cycleSort(this, column);
+    }
+
   },
 
   /**
