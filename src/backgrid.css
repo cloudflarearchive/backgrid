@@ -208,6 +208,11 @@
           box-sizing: border-box;
 }
 
+.backgrid .select-cell.editor select[multiple]
+{
+  height: auto;
+}
+
 .backgrid .select-cell.editor :focus {
   border: 0;
   outline: 0;
