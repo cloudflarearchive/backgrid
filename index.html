@@ -767,6 +767,25 @@
                 and <a href="http://backbonejs.org/#Model-cid"
                 title="Backbone.Model#cid">client IDs</a>.</p>
               <h3>Customizing the Header</h3>
+              <p>If you want to change the default sort behavior to only toggle
+                between sorting in ascending or descending order, you do this
+                by passing ```sortType: "toggle"``` as part of your column
+                definition.</p>
+              <textarea class="code-snippet" data-mode="javascript" data-eval="no">
+                var grid = new Backgrid.Grid({
+                  columns: [{
+                    name: "id",
+                    label: "ID"
+                  },{
+                    name: "name",
+                    label: "Name"
+                  },{
+                    name: "age",
+                    label: "Age",
+                    sortTye: "toggle"
+                  }]
+                });
+              </textarea>
               <p class="label label-warning">Advanced Usage</p>
               <p>You are allow to use a different header cell class on
                 columns. There is no restriction on what a header cell must do. In fact,
