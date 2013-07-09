@@ -15,6 +15,7 @@
           "Backgrid.UriCell",
           "Backgrid.EmailCell",
           "Backgrid.BooleanCell",
+          "Backgrid.ButtonCell",
           "Backgrid.SelectCell"
         ]
       }, {
