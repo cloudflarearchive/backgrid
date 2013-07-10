@@ -39,6 +39,8 @@ function lpad(str, length, padstr) {
   return padding + str;
 }
 
+var root = this;
+
 var Backgrid = root.Backgrid = {
 
   VERSION: "0.3.0",
