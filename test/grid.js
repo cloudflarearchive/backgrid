@@ -55,7 +55,7 @@ describe("A Grid", function () {
     }).toThrow(new TypeError("'collection' is required"));
   });
 
-  it("renders a table with a header, body and an optional footer section", function () {
+  it("renders a table with a body, optional header, and an optional footer section", function () {
 
     spyOn(grid, "trigger");
     spyOn(grid.header, "render").andCallThrough();
