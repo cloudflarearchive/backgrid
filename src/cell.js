@@ -378,6 +378,12 @@ var UriCell = Backgrid.UriCell = Cell.extend({
   title: null,
 
   /**
+     @property {string} [displayText] The name of the model attribute or string
+     that will be used as the anchor text.
+   */
+  displayText: null,
+
+  /**
      @property {string} [target="_blank"] The target attribute of the generated
      anchor.
   */
@@ -387,18 +393,20 @@ var UriCell = Backgrid.UriCell = Cell.extend({
     Cell.prototype.initialize.apply(this, arguments);
     this.title = options.title || this.title;
     this.target = options.target || this.target;
+    this.displayText = options.displayText || this.displayText;
   },
 
   render: function () {
     this.$el.empty();
     var rawValue = this.model.get(this.column.get("name"));
     var formattedValue = this.formatter.fromRaw(rawValue);
+    var anchorText = this.model.get(this.displayText) || this.displayText;
     this.$el.append($("<a>", {
       tabIndex: -1,
       href: rawValue,
       title: this.title || formattedValue,
       target: this.target,
-    }).text(formattedValue));
+    }).text(  anchorText || formattedValue));
     this.delegateEvents();
     return this;
   }
