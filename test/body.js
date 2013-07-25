@@ -7,25 +7,6 @@
 */
 describe("A Body", function () {
 
-  it("throws TypeError if columns is not given", function () {
-    expect(function () {
-      new Backgrid.Body({
-        collection: new Backbone.Collection()
-      });
-    }).toThrow(new TypeError("'columns' is required"));
-  });
-
-  it("throws TypeError if collection is not given", function () {
-    expect(function () {
-      new Backgrid.Body({
-        columns: [{
-          name: "name",
-          cell: "string"
-        }]
-      });
-    }).toThrow(new TypeError("'collection' is required"));
-  });
-
   var Book = Backbone.Model.extend({});
   var Books = Backbone.Collection.extend({
     model: Book

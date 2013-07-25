@@ -7,25 +7,6 @@
 */
 describe("A HeaderCell", function () {
 
-  it("throws TypeError if a column is not given", function () {
-    expect(function () {
-      new Backgrid.HeaderCell({
-        collection: new Backbone.Collection()
-      });
-    }).toThrow(new TypeError("'column' is required"));
-  });
-
-  it("throws TypeError if a collection is not given", function () {
-    expect(function () {
-      new Backgrid.HeaderCell({
-        column: [{
-          name: "name",
-          cell: "string"
-        }]
-      });
-    }).toThrow(new TypeError("'collection' is required"));
-  });
-
   var col;
   var cell;
   beforeEach(function () {
@@ -248,25 +229,6 @@ describe("A HeaderRow", function () {
     row.render();
   });
 
-  it("throws TypeError when a list of column definition is not given", function () {
-    expect(function () {
-      new Backgrid.HeaderRow({
-        collection: new Backbone.Collection()
-      });
-    }).toThrow(new TypeError("'columns' is required"));
-  });
-
-  it("throws TypeError when a collection is not given", function () {
-    expect(function () {
-      new Backgrid.HeaderRow({
-        columns: [{
-          name: "name",
-          cell: "string"
-        }]
-      });
-    }).toThrow(new TypeError("'collection' is required"));
-  });
-
   it("renders a row of header cells", function () {
     expect(row.$el[0].tagName).toBe("TR");
     expect(row.$el[0].innerHTML).toBe('<th class="editable sortable renderable"><a>name<b class="sort-caret"></b></a></th>' +
@@ -298,25 +260,6 @@ describe("A HeaderRow", function () {
 });
 
 describe("A Header", function () {
-
-  it("throws TypeError if a list of column definitions is not given", function () {
-    expect(function () {
-      new Backgrid.Header({
-        collection: new Backbone.Collection()
-      });
-    }).toThrow(new TypeError("'columns' is required"));
-  });
-
-  it("throws TypeError if a collection is not given", function () {
-    expect(function () {
-      new Backgrid.Header({
-        columns: [{
-          name: "title",
-          cell: "string"
-        }]
-      });
-    }).toThrow(new TypeError("'collection' is required"));
-  });
 
   var Book = Backbone.Model.extend({});
 

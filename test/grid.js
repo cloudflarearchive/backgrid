@@ -36,25 +36,6 @@ describe("A Grid", function () {
     });
   });
 
-  it("throws TypeError if a list of column definition is not given", function () {
-    expect(function () {
-      new Backgrid.Grid({
-        collection: books
-      });
-    }).toThrow(new TypeError("'columns' is required"));
-  });
-
-  it("throws TypeError if a collection is not given", function () {
-    expect(function () {
-      new Backgrid.Grid({
-        columns: [{
-          name: "title",
-          cell: "string"
-        }]
-      });
-    }).toThrow(new TypeError("'collection' is required"));
-  });
-
   it("renders a table with a header, body and an optional footer section", function () {
 
     spyOn(grid, "trigger");
