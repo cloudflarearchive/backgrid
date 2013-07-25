@@ -129,7 +129,7 @@ describe("An InputCellEditor", function () {
     var enter = $.Event("keydown", { keyCode: 13 });
     editor.$el.trigger(enter);
     expect(editor.formatter.toRaw.calls.length).toBe(1);
-    expect(editor.formatter.toRaw).toHaveBeenCalledWith("invalid value");
+    expect(editor.formatter.toRaw).toHaveBeenCalledWith("invalid value", editor.model);
     expect(backgridErrorTriggerCount).toBe(1);
     expect(backgridErrorTriggerArgs[0]).toEqual(editor.model);
     expect(backgridErrorTriggerArgs[1]).toEqual(editor.column);
@@ -1118,7 +1118,7 @@ describe("A SelectCellEditor", function () {
     });
 
     editor.$el.val(1).change();
-    expect(editor.formatter.toRaw).toHaveBeenCalledWith("1");
+    expect(editor.formatter.toRaw).toHaveBeenCalledWith("1", editor.model);
     expect(editor.formatter.toRaw.calls.length).toBe(1);
     expect(editor.model.get(editor.column.get("name"))).toBe("1");
 
@@ -1154,7 +1154,7 @@ describe("A SelectCellEditor", function () {
     });
 
     editor.$el.val([1, 2]).change();
-    expect(editor.formatter.toRaw).toHaveBeenCalledWith(["1", "2"]);
+    expect(editor.formatter.toRaw).toHaveBeenCalledWith(["1", "2"], editor.model);
     expect(editor.formatter.toRaw.calls.length).toBe(1);
     expect(editor.model.get(editor.column.get("name"))).toEqual(["1", "2"]);
 
@@ -1165,7 +1165,7 @@ describe("A SelectCellEditor", function () {
 
     backgridEditedTriggerCount = 0;
     editor.$el.val(null).change();
-    expect(editor.formatter.toRaw).toHaveBeenCalledWith(null);
+    expect(editor.formatter.toRaw).toHaveBeenCalledWith(null, editor.model);
     expect(editor.formatter.toRaw.calls.length).toBe(2);
     expect(editor.model.get(editor.column.get("name"))).toBe(null);
 
