@@ -19,8 +19,6 @@ var Row = Backgrid.Row = Backbone.View.extend({
   /** @property */
   tagName: "tr",
 
-  requiredOptions: ["columns", "model"],
-
   /**
      Initializes a row view instance.
 
@@ -31,8 +29,6 @@ var Row = Backgrid.Row = Backbone.View.extend({
      @throws {TypeError} If options.columns or options.model is undefined.
   */
   initialize: function (options) {
-
-    Backgrid.requireOptions(options, this.requiredOptions);
 
     var columns = this.columns = options.columns;
     if (!(columns instanceof Backbone.Collection)) {
@@ -141,8 +137,6 @@ var EmptyRow = Backgrid.EmptyRow = Backbone.View.extend({
      @param {Backbone.Collection.<Backgrid.Column>|Array.<Backgrid.Column>|Array.<Object>} options.columns Column metadata.
    */
   initialize: function (options) {
-    Backgrid.requireOptions(options, ["emptyText", "columns"]);
-
     this.emptyText = options.emptyText;
     this.columns =  options.columns;
   },

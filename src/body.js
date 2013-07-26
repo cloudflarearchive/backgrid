@@ -33,7 +33,6 @@ var Body = Backgrid.Body = Backbone.View.extend({
      See Backgrid.Row.
   */
   initialize: function (options) {
-    Backgrid.requireOptions(options, ["columns", "collection"]);
 
     this.columns = options.columns;
     if (!(this.columns instanceof Backbone.Collection)) {

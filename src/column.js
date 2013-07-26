@@ -126,8 +126,6 @@ var Column = Backgrid.Column = Backbone.Model.extend({
      - Backgrid.CellFormatter
    */
   initialize: function (attrs) {
-    Backgrid.requireOptions(attrs, ["cell", "name"]);
-
     if (!this.has("label")) {
       this.set({ label: this.get("name") }, { silent: true });
     }
