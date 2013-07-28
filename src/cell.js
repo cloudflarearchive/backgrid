@@ -748,6 +748,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
 
   setOptionValues: function (optionValues) {
     this.optionValues = optionValues;
+    this.optionValues = _.result(this, "optionValues");
   },
 
   setMultiple: function (multiple) {
@@ -935,7 +936,7 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
   render: function () {
     this.$el.empty();
 
-    var optionValues = this.optionValues;
+    var optionValues = _.result(this, "optionValues");
     var model = this.model;
     var rawData = this.formatter.fromRaw(model.get(this.column.get("name")), model);
 

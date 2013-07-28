@@ -1191,6 +1191,26 @@ describe("A SelectCellEditor", function () {
     expect(editor.model.get(editor.column.get("name"))).toBe("1");
   });
 
+  it("can accept optionValues that is a function", function () {
+    var editor = new Backgrid.SelectCellEditor({
+      formatter: new Backgrid.SelectFormatter(),
+      column: {
+        name: "gender",
+        cell: "select"
+      },
+      model: new Backbone.Model()
+    });
+    editor.setOptionValues(function () {
+      return [["Male", "M"], ["Female", "F"]];
+    });
+    editor.render();
+    expect(editor.$el.find("option").eq(0).val()).toBe("M");
+    expect(editor.$el.find("option").eq(0).text()).toBe("Male");
+    expect(editor.$el.find("option").eq(1).val()).toBe("F");
+    expect(editor.$el.find("option").eq(1).text()).toBe("Female");
+    expect(editor.el.tagName).toBe("SELECT");
+  });
+
 });
 
 describe("A SelectCell", function () {
@@ -1301,6 +1321,22 @@ describe("A SelectCell", function () {
 
     cell.render();
     expect(cell.$el.text()).toBe("Apple, Banana");
+  });
+
+  it("can accept optionValues that is a function", function () {
+    var cell = new (Backgrid.SelectCell.extend({
+      optionValues: function () {
+        return [["Male", "m"], ["Female", "f"]];
+      }
+    }))({
+      column: {
+        name: "gender",
+        cell: "select"
+      },
+      model: new Backbone.Model({"gender": "m"})
+    });
+    cell.render();
+    expect(cell.$el.text()).toBe("Male");
   });
 
   describe("when the model value has changed", function () {
