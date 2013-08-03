@@ -198,7 +198,8 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
   },
 
   /**
-     Renders a header cell with a sorter and a label.
+     Renders a header cell with a sorter, a label, and a class name for this
+     column.
    */
   render: function () {
     this.$el.empty();
@@ -206,6 +207,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
     var sortable = Backgrid.callByNeed(this.column.sortable(), this.column, this.model);
     if (sortable) $label.append("<b class='sort-caret'></b>");
     this.$el.append($label);
+    this.$el.addClass(this.column.get("name"));
     this.delegateEvents();
     return this;
   }
