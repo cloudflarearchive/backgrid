@@ -831,12 +831,23 @@
                 define your own Row subclass and give it to the Grid constructor
                 as an option:</p>
               <textarea class="code-snippet" data-mode="javascript" data-eval="no">
-                var ZebraStrippingRow = Backgrid.Row.extend({
-                  // ...
+                // Suppose you want to highlight the entire row when an editable field is focused 
+                var FocusableRow = Backgrid.Row.extend({
+                  highlightColor: 'lightYellow',
+                  events: {
+                    focusin: 'rowFocused',
+                    focusout: 'rowLostFocus'
+                  },
+                  rowFocused: function() {
+                    this.$el.css('background-color', this.highlightColor);
+                  },
+                  rowLostFocus: function() {
+                    this.$el.removeAttr('style');
+                  }
                 });
 
                 var grid = new Backgrid.Grid({
-                  row: ZebraStrippingRow, // <-- Tell the new Body class to use ZebraStrippingRow to render rows.
+                  row: FocusableRow, // <-- Tell the Body class to use FocusableRow to render rows.
                   columns: [{
                     //...
                   }],
