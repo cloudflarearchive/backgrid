@@ -72,6 +72,10 @@ var Column = Backgrid.Column = Backbone.Model.extend({
      @cfg {Backgrid.CellFormatter | Object | string} [defaults.formatter] The
      formatter to use to convert between raw model values and user input.
 
+     @cfg {"toggle"|"cycle"} [defaults.sortType="cycle"] Whether sorting will
+     toggle between ascending and descending order, or cycle between insertion
+     order, ascending and descending order.
+
      @cfg {(function(Backbone.Model, string): *) | string} [defaults.sortValue]
      The function to use to extract a value from the model for comparison during
      sorting. If this value is a string, a method with the same name will be
@@ -84,6 +88,7 @@ var Column = Backgrid.Column = Backbone.Model.extend({
     editable: true,
     renderable: true,
     formatter: undefined,
+    sortType: "cycle",
     sortValue: undefined,
     cell: undefined,
     headerCell: undefined
@@ -111,6 +116,8 @@ var Column = Backgrid.Column = Backbone.Model.extend({
      @param {boolean|string} [attrs.renderable=true]
 
      @param {Backgrid.CellFormatter | Object | string} [attrs.formatter]
+
+     @param {"toggle"|"cycle"}  [attrs.sortType="cycle"]
 
      @param {(function(Backbone.Model, string): *) | string} [attrs.sortValue]
 
