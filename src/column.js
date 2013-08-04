@@ -148,6 +148,15 @@ var Column = Backgrid.Column = Backbone.Model.extend({
   },
 
   /**
+     Returns an appropriate value extraction function from a model for sorting.
+
+     If the column model contains an attribute `sortValue`, if it is a string, a
+     method from the column instance identifified by the `sortValue` string is
+     returned. If it is a function, it it returned as is. If `sortValue` isn't
+     found from the column model's attributes, a default value extraction
+     function is returned which will compare according to the natural order of
+     the value's type.
+
      @return {function(Backbone.Model, string): *}
    */
   sortValue: function () {
