@@ -118,14 +118,16 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
      Delegates to Backgrid.Body#insertRow.
    */
   insertRow: function (model, collection, options) {
-    return this.body.insertRow(model, collection, options);
+    this.body.insertRow(model, collection, options);
+    return this;
   },
 
   /**
      Delegates to Backgrid.Body#removeRow.
    */
   removeRow: function (model, collection, options) {
-    return this.body.removeRow(model, collection, options);
+    this.body.removeRow(model, collection, options);
+    return this;
   },
 
   /**
@@ -136,8 +138,6 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
      @param {Object} [options] Options for `Backgrid.Columns#add`.
      @param {boolean} [options.render=true] Whether to render the column
      immediately after insertion.
-
-     @chainable
    */
   insertColumn: function (column, options) {
     options = options || {render: true};
@@ -151,14 +151,15 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
      needs to happen.
 
      @param {Object} [options] Options for `Backgrid.Columns#remove`.
-
-     @chainable
    */
   removeColumn: function (column, options) {
     this.columns.remove(column, options);
     return this;
   },
 
+  /**
+     Delegates to Backgrid.Body#sort.
+   */
   sort: function () {
     this.body.sort(arguments);
     return this;

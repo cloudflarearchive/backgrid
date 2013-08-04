@@ -125,6 +125,8 @@ var Body = Backgrid.Body = Backbone.View.extend({
         $children.eq(index).before($rowEl);
       }
     }
+
+    return this;
   },
 
   /**
@@ -166,6 +168,8 @@ var Body = Backgrid.Body = Backbone.View.extend({
 
     this.rows.splice(options.index, 1);
     this._unshiftEmptyRowMayBe();
+
+    return this;
   },
 
   /**
@@ -285,6 +289,8 @@ var Body = Backgrid.Body = Backbone.View.extend({
       collection.comparator = comparator;
       collection.sort();
     }
+
+    return this;
   },
 
   makeComparator: function (attr, order, func) {
@@ -350,5 +356,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
         }
       }
     }
+
+    return this;
   }
 });
