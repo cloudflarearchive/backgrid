@@ -67,7 +67,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
    */
   direction: function (dir) {
     if (arguments.length) {
-      direction = this.column.get('direction');
+      var direction = this.column.get('direction');
       if (direction) this.$el.removeClass(direction);
       if (dir) this.$el.addClass(dir);
       this.column.set('direction', dir)
