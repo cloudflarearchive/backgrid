@@ -87,11 +87,9 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
 
      @private
    */
-  _resetCellDirection: function (columnToSort, direction, comparator, collection) {
-    if (collection == this.collection) {
-      if (columnToSort !== this.column) this.direction(null);
-      else this.direction(direction);
-    }
+  _resetCellDirection: function (columnToSort, direction) {
+    if (columnToSort !== this.column) this.direction(null);
+    else this.direction(direction);
   },
 
   /**
@@ -102,15 +100,17 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
   onClick: function (e) {
     e.preventDefault();
 
+    var collection = this.collection, event = "backgrid:sort";
+
     function cycleSort(header, col) {
-      if (header.direction() === "ascending") header.sort(col, "descending");
-      else if (header.direction() === "descending") header.sort(col, null);
-      else header.sort(col, "ascending");
+      if (header.direction() === "ascending") collection.trigger(event, col, "descending");
+      else if (header.direction() === "descending") collection.trigger(event, col, null);
+      else collection.trigger(event, col, "ascending");
     }
 
     function toggleSort(header, col) {
-      if (header.direction() === "ascending") header.sort(col, "descending");
-      else header.sort(col, "ascending");
+      if (header.direction() === "ascending") collection.trigger(event, col, "descending");
+      else collection.trigger(event, col, "ascending");
     }
 
     var column = this.column;
@@ -120,81 +120,6 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
       if (sortType === "toggle") toggleSort(this, column);
       else cycleSort(this, column);
     }
-  },
-
-  /**
-     If the underlying collection is a Backbone.PageableCollection in
-     server-mode or infinite-mode, a page of models is fetched after sorting is
-     done on the server.
-
-     If the underlying collection is a Backbone.PageableCollection in
-     client-mode, or any
-     [Backbone.Collection](http://backbonejs.org/#Collection) instance, sorting
-     is done on the client side. If the collection is an instance of a
-     Backbone.PageableCollection, sorting will be done globally on all the pages
-     and the current page will then be returned.
-
-     Triggers a Backbone `backgrid:sort` event from the collection when done
-     with the column, direction, comparator and a reference to the collection.
-
-     @param {Backgrid.Column} column
-     @param {null|"ascending"|"descending"} direction
-
-     See [Backbone.Collection#comparator](http://backbonejs.org/#Collection-comparator)
-  */
-  sort: function (column, direction) {
-
-    var collection = this.collection;
-
-    var order;
-    if (direction === "ascending") order = -1;
-    else if (direction === "descending") order = 1;
-    else order = null;
-
-    var comparator = this.makeComparator(column.get("name"), order,
-                                         order ?
-                                         column.sortValue() :
-                                         function (model) {
-                                           return model.cid;
-                                         });
-
-    if (Backbone.PageableCollection &&
-        collection instanceof Backbone.PageableCollection) {
-
-      collection.setSorting(order && column.get("name"), order,
-                            {sortValue: column.sortValue()});
-
-      if (collection.mode == "client") {
-        if (collection.fullCollection.comparator == null) {
-          collection.fullCollection.comparator = comparator;
-        }
-        collection.fullCollection.sort();
-      }
-      else collection.fetch({reset: true});
-    }
-    else {
-      collection.comparator = comparator;
-      collection.sort();
-    }
-
-    this.collection.trigger("backgrid:sort", column, direction, comparator,
-                            this.collection);
-  },
-
-  makeComparator: function (attr, order, func) {
-
-    return function (left, right) {
-      // extract the values from the models
-      var l = func(left, attr), r = func(right, attr), t;
-
-      // if descending order, swap left and right
-      if (order === 1) t = l, l = r, r = t;
-
-      // compare as usual
-      if (l === r) return 0;
-      else if (l < r) return -1;
-      return 1;
-    };
   },
 
   /**

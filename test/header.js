@@ -35,158 +35,55 @@ describe("A HeaderCell", function () {
     expect(cell.$el.find(".sort-caret").length).toBe(0);
   });
 
-  it("sorts the underlying collection in ascending order upon clicking the sort caret once", function () {
+  it("triggers `backgrid:sort` with the column and direction set to \"ascending\" upon clicking the sort caret once", function () {
+    var column, direction;
+    cell.collection.on("backgrid:sort", function (col, dir) { column = col; direction = dir});
     cell.$el.find("a").click();
-    expect(cell.collection.toJSON()).toEqual([{id: 1}, {id: 2}, {id: 3}]);
+    expect(column).toBe(cell.column);
+    expect(direction).toBe("ascending");
   });
 
-  it("sorts the underlying collection in descending order upon clicking the sort caret twice", function () {
+  it("triggers `backgrid:sort` with the column and direction set to \"descending\" upon clicking the sort caret twice", function () {
+    var column, direction;
+    cell.collection.on("backgrid:sort", function (col, dir) { column = col; direction = dir});
     cell.$el.find("a").click().click();
-    expect(cell.direction()).toBe("descending");
-    expect(cell.collection.toJSON()).toEqual([{id: 3}, {id: 2}, {id: 1}]);
+    expect(column).toBe(cell.column);
+    expect(direction).toBe("descending");
   });
 
-  it("sorts the underlying collection in default order upon clicking the sort caret thrice", function () {
+  it("triggers `backgrid:sort` with the column and direction set to `null` upon clicking the sort caret thrice", function () {
+    var column, direction;
+    cell.collection.on("backgrid:sort", function (col, dir) { column = col; direction = dir});
+    cell.$el.find("a").click().click().click()
+    expect(column).toBe(cell.column);
+    expect(direction).toBeNull();
+  });
+
+  it("with `sortType` set to `toggle`, triggers `backgrid:sort` with the column and direction set to \"ascending\" upon clicking the sort caret once", function () {
+    var column, direction;
+    cell.column.set("sortType", "toggle");
+    cell.collection.on("backgrid:sort", function (col, dir) { column = col; direction = dir});
+    cell.$el.find("a").click();
+    expect(column).toBe(cell.column);
+    expect(direction).toBe("ascending");
+  });
+
+  it("with `sortType` set to `toggle`, triggers `backgrid:sort` with the column and direction set to \"descending\" upon clicking the sort caret once", function () {
+    var column, direction;
+    cell.column.set("sortType", "toggle");
+    cell.collection.on("backgrid:sort", function (col, dir) { column = col; direction = dir});
+    cell.$el.find("a").click().click();
+    expect(column).toBe(cell.column);
+    expect(direction).toBe("descending");
+  });
+
+  it("with `sortType` set to `toggle`, triggers `backgrid:sort` with the column and direction set to \"ascending\" upon clicking the sort caret thrice", function () {
+    var column, direction;
+    cell.column.set("sortType", "toggle");
+    cell.collection.on("backgrid:sort", function (col, dir) { column = col; direction = dir});
     cell.$el.find("a").click().click().click();
-    expect(cell.direction()).toBeNull();
-    expect(cell.collection.toJSON()).toEqual([{id: 2}, {id: 1}, {id: 3}]);
-  });
-
-  it("with the sortType to `toggle`, sorts the underlying collection in ascending order upon clicking the sort caret once", function(){
-    cell.column.set("sortType", "toggle");
-    cell.$el.find("a").click();
-    expect(cell.direction()).toBe("ascending");
-    expect(cell.collection.toJSON()).toEqual([{id: 1}, {id: 2}, {id: 3}]);
-  });
-
-  it("with the sortType to `toggle`, sorts the underlying collection in descending order upon clicking the sort caret twice", function(){
-    cell.column.set("sortType", "toggle");
-    cell.$el.find("a").click().click();
-    expect(cell.direction()).toBe("descending");
-    expect(cell.collection.toJSON()).toEqual([{id: 3}, {id: 2}, {id: 1}]);
-  });
-
-  it("with the sortType to `toggle`, sorts the underlying collection back in ascending order upon clicking the sort caret thrice", function(){
-    cell.column.set("sortType", "toggle");
-    cell.$el.find("a").click().click().click();
-    expect(cell.direction()).toBe("ascending");
-    expect(cell.collection.toJSON()).toEqual([{id: 1}, {id: 2}, {id: 3}]);
-  });
-
-  it("sorts the underlying collection using a custom value extractor upon clicking the sort caret", function() {
-
-    var sortValue = function (model, attr) {
-      return 3 - model.get(attr);
-    };
-
-    cell = new Backgrid.HeaderCell({
-      collection: col,
-      column: {
-        name: "id",
-        cell: "integer",
-        sortValue: sortValue
-      },
-    }).render();
-
-    cell.$el.find("a").click();
-    expect(cell.collection.toJSON()).toEqual([{id: 3}, {id: 2}, {id: 1}]);
-  });
-
-  it("can sort on a server-mode Backbone.PageableCollection", function () {
-
-    var oldAjax = $.ajax;
-    $.ajax = function (settings) {
-      settings.success([{"total_entries": 3}, [{id: 2}, {id: 1}]]);
-    };
-
-    var books = new Backbone.PageableCollection([{id: 1}, {id: 2}], {
-      url: "test-headercell",
-      state: {
-        pageSize: 3
-      }
-    });
-
-    cell = new Backgrid.HeaderCell({
-      column: {
-        name: "title",
-        cell: "string"
-      },
-      collection: books
-    });
-
-    cell.render();
-
-    expect(cell.collection.at(0).get("id")).toBe(1);
-    expect(cell.collection.at(1).get("id")).toBe(2);
-
-    cell.$el.find("a").click().click();
-
-    expect(cell.collection.at(0).get("id")).toBe(2);
-    expect(cell.collection.at(1).get("id")).toBe(1);
-
-    $.ajax = oldAjax;
-  });
-
-  it("can sort on a client-mode Backbone.PageableCollection", function () {
-
-    var books = new Backbone.PageableCollection([{
-      title: "Alice's Adventures in Wonderland"
-    }, {
-      title: "A Tale of Two Cities"
-    }, {
-      title: "The Catcher in the Rye"
-    }], {
-      state: {
-        pageSize: 1
-      },
-      mode: "client"
-    });
-
-    cell = new Backgrid.HeaderCell({
-      column: {
-        name: "title",
-        cell: "string",
-        sortValue: function (model, attr) {
-          return model.get(attr).length;
-        }
-      },
-      collection: books
-    });
-
-    cell.render();
-
-    cell.$el.find("a").click();
-
-    expect(cell.collection.toJSON()).toEqual([{
-      title: "A Tale of Two Cities"
-    }]);
-
-    cell.collection.getPage(2);
-
-    expect(cell.collection.toJSON()).toEqual([{
-      title: "The Catcher in the Rye"
-    }]);
-
-    cell.collection.getPage(3);
-
-    expect(cell.collection.toJSON()).toEqual([{
-      title: "Alice's Adventures in Wonderland"
-    }]);
-
-    cell.collection.getFirstPage();
-
-    cell.$el.find("a").click();
-
-    expect(cell.collection.toJSON()).toEqual([{
-      title: "Alice's Adventures in Wonderland"
-    }]);
-
-    cell.$el.find("a").click();
-
-    expect(cell.collection.toJSON()).toEqual([{
-      title: "Alice's Adventures in Wonderland"
-    }]);
-
+    expect(column).toBe(cell.column);
+    expect(direction).toBe("ascending");
   });
 
 });

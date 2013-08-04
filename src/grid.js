@@ -92,11 +92,12 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
     var passedThruOptions = _.omit(options, ["el", "id", "attributes",
                                              "className", "tagName", "events"]);
 
-    this.header = options.header || this.header;
-    this.header = new this.header(passedThruOptions);
-
+    // must construct body first so it listens to backgrid:sort first
     this.body = options.body || this.body;
     this.body = new this.body(passedThruOptions);
+
+    this.header = options.header || this.header;
+    this.header = new this.header(passedThruOptions);
 
     this.footer = options.footer || this.footer;
     if (this.footer) {
@@ -155,6 +156,11 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
    */
   removeColumn: function (column, options) {
     this.columns.remove(column, options);
+    return this;
+  },
+
+  sort: function () {
+    this.body.sort(arguments);
     return this;
   },
 
