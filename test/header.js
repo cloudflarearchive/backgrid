@@ -35,6 +35,24 @@ describe("A HeaderCell", function () {
     expect(cell.$el.find(".sort-caret").length).toBe(0);
   });
 
+  it("will put a class indicating the sorting direction if `direction` is set in the column", function () {
+    cell = new Backgrid.HeaderCell({
+      column: {
+        name: "id",
+        cell: "integer",
+        direction: "descending"
+      },
+      collection: col
+    });
+
+    cell.render();
+
+    expect(cell.el.tagName).toBe("TH");
+    expect(cell.$el.find("a").text()).toBe("id");
+    expect(cell.$el.find(".sort-caret").length).toBe(1);
+    expect(cell.$el.hasClass("descending")).toBe(true);
+  });
+
   it("triggers `backgrid:sort` with the column and direction set to \"ascending\" upon clicking the sort caret once", function () {
     var column, direction;
     cell.collection.on("backgrid:sort", function (col, dir) { column = col; direction = dir});

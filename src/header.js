@@ -123,12 +123,14 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
    */
   render: function () {
     this.$el.empty();
-    var $label = $("<a>").text(this.column.get("label"));
-    var sortable = Backgrid.callByNeed(this.column.sortable(), this.column, this.model);
+    var column = this.column;
+    var $label = $("<a>").text(column.get("label"));
+    var sortable = Backgrid.callByNeed(column.sortable(), column, this.model);
     if (sortable) $label.append("<b class='sort-caret'></b>");
     this.$el.append($label);
-    this.$el.addClass(this.column.get("name"));
+    this.$el.addClass(column.get("name"));
     this.delegateEvents();
+    this.direction(column.get("direction"));
     return this;
   }
 

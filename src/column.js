@@ -80,6 +80,11 @@ var Column = Backgrid.Column = Backbone.Model.extend({
      The function to use to extract a value from the model for comparison during
      sorting. If this value is a string, a method with the same name will be
      looked up from the column instance.
+
+     @cfg {"ascending"|"descending"|null} [defaults.direction=null] The initial
+     sorting direction for this column. The default is ordered by
+     Backbone.Model.cid, which usually means the collection is ordered by
+     insertion order.
   */
   defaults: {
     name: undefined,
@@ -90,9 +95,9 @@ var Column = Backgrid.Column = Backbone.Model.extend({
     formatter: undefined,
     sortType: "cycle",
     sortValue: undefined,
+    direction: null,
     cell: undefined,
-    headerCell: undefined,
-    direction: null
+    headerCell: undefined
   },
 
   /**
@@ -142,10 +147,7 @@ var Column = Backgrid.Column = Backbone.Model.extend({
 
     var cell = Backgrid.resolveNameToClass(this.get("cell"), "Cell");
 
-    this.set({
-      cell: cell,
-      headerCell: headerCell
-    }, { silent: true });
+    this.set({cell: cell, headerCell: headerCell}, { silent: true });
   },
 
   /**
