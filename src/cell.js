@@ -23,6 +23,8 @@ var CellEditor = Backgrid.CellEditor = Backbone.View.extend({
      @param {Backgrid.CellFormatter} options.formatter
      @param {Backgrid.Column} options.column
      @param {Backbone.Model} options.model
+     @param {boolean} options.autoConstructFormatter [options.autoConstructFormatter=true] If the formatter
+     is a constructor, this option specifies to automatically create an instance
 
      @throws {TypeError} If `formatter` is not a formatter instance, or when
      `model` or `column` are undefined.
@@ -32,6 +34,10 @@ var CellEditor = Backgrid.CellEditor = Backbone.View.extend({
     this.column = options.column;
     if (!(this.column instanceof Column)) {
       this.column = new Column(this.column);
+    }
+
+    if (_.isFunction(this.formatter) && (_.isUndefined(options.autoConstructFormatter) || options.autoConstructFormatter)) {
+      this.formatter = new this.formatter();
     }
 
     this.listenTo(this.model, "backgrid:editing", this.postRender);
@@ -209,6 +215,8 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
      @param {Object} options
      @param {Backbone.Model} options.model
      @param {Backgrid.Column} options.column
+     @param {boolean} options.autoConstructFormatter [options.autoConstructFormatter=true] If the formatter
+     is a constructor, this option specifies to automatically create an instance
 
      @throws {ReferenceError} If formatter is a string but a formatter class of
      said name cannot be found in the Backgrid module.
@@ -223,6 +231,10 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
 
     this.formatter = Backgrid.resolveNameToClass(column.get("formatter") ||
                                                  this.formatter, "Formatter");
+
+    if (_.isFunction(this.formatter) && (_.isUndefined(options.autoConstructFormatter) || options.autoConstructFormatter)) {
+      this.formatter = new this.formatter();
+    }
 
     this.editor = Backgrid.resolveNameToClass(this.editor, "CellEditor");
 
@@ -469,6 +481,7 @@ var NumberCell = Backgrid.NumberCell = Cell.extend({
      @param {Backgrid.Column} options.column
   */
   initialize: function (options) {
+    options.autoConstructFormatter = false;
     Cell.prototype.initialize.apply(this, arguments);
     if (!this.formatter.fromRaw && !this.formatter.toRaw) {
       this.formatter = new this.formatter({
@@ -545,6 +558,7 @@ var DatetimeCell = Backgrid.DatetimeCell = Cell.extend({
      @param {Backgrid.Column} options.column
   */
   initialize: function (options) {
+    options.autoConstructFormatter = false;
     Cell.prototype.initialize.apply(this, arguments);
     if (!this.formatter.fromRaw && !this.formatter.toRaw) {
       this.formatter = new this.formatter({
