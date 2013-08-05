@@ -459,7 +459,7 @@ var NumberCell = Backgrid.NumberCell = Cell.extend({
   orderSeparator: NumberFormatter.prototype.defaults.orderSeparator,
 
   /** @property {Backgrid.CellFormatter} [formatter=Backgrid.NumberFormatter] */
-  formatter: NumberFormatter,
+  formatter: new NumberFormatter(),
 
   /**
      Initializes this cell and the number formatter.
@@ -470,13 +470,10 @@ var NumberCell = Backgrid.NumberCell = Cell.extend({
   */
   initialize: function (options) {
     Cell.prototype.initialize.apply(this, arguments);
-    if (!this.formatter.fromRaw && !this.formatter.toRaw) {
-      this.formatter = new this.formatter({
-        decimals: this.decimals,
-        decimalSeparator: this.decimalSeparator,
-        orderSeparator: this.orderSeparator
-      });
-    }
+    var formatter = this.formatter;
+    formatter.decimals = this.decimals;
+    formatter.decimalSeparator = this.decimalSeparator;
+    formatter.orderSeparator = this.orderSeparator
   }
 
 });
@@ -535,7 +532,7 @@ var DatetimeCell = Backgrid.DatetimeCell = Cell.extend({
   includeMilli: DatetimeFormatter.prototype.defaults.includeMilli,
 
   /** @property {Backgrid.CellFormatter} [formatter=Backgrid.DatetimeFormatter] */
-  formatter: DatetimeFormatter,
+  formatter: new DatetimeFormatter(),
 
   /**
      Initializes this cell and the datetime formatter.
@@ -546,13 +543,10 @@ var DatetimeCell = Backgrid.DatetimeCell = Cell.extend({
   */
   initialize: function (options) {
     Cell.prototype.initialize.apply(this, arguments);
-    if (!this.formatter.fromRaw && !this.formatter.toRaw) {
-      this.formatter = new this.formatter({
-        includeDate: this.includeDate,
-        includeTime: this.includeTime,
-        includeMilli: this.includeMilli
-      });
-    }
+    var formatter = this.formatter;
+    formatter.includeDate = this.includeDate;
+    formatter.includeTime = this.includeTime;
+    formatter.includeMilli = this.includeMilli;
 
     var placeholder = this.includeDate ? "YYYY-MM-DD" : "";
     placeholder += (this.includeDate && this.includeTime) ? "T" : "";
