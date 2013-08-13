@@ -495,8 +495,10 @@ describe("A NumberCell", function () {
 
 describe("An IntegerCell", function () {
 
-  it("applies an integer-cell class to the cell", function () {
-    var cell = new Backgrid.IntegerCell({
+  var cell;
+
+  beforeEach(function () {
+    cell = new Backgrid.IntegerCell({
       model: new Backbone.Model({
         age: 1
       }),
@@ -505,8 +507,17 @@ describe("An IntegerCell", function () {
         cell: "integer"
       }
     });
+  });
+
+  it("applies an integer-cell class to the cell", function () {
     cell.render();
     expect(cell.$el.hasClass("integer-cell")).toBe(true);
+  });
+
+  it("will render a number with no trailing decimals numbers", function () {
+    cell.model.set("age", 1.1);
+    cell.render();
+    expect(cell.$el.text()).toBe("1");
   });
 
 });
@@ -615,8 +626,10 @@ describe("A DatetimeCell", function () {
 
 describe("A DateCell", function () {
 
-  it("applies a date-cell class to the cell", function () {
-    var cell = new Backgrid.DateCell({
+  var cell;
+
+  beforeEach(function () {
+    cell = new Backgrid.DateCell({
       model: new Backbone.Model({
         date: "2000-01-01"
       }),
@@ -625,15 +638,27 @@ describe("A DateCell", function () {
         cell: "date"
       }
     });
+  });
+
+  it("applies a date-cell class to the cell", function () {
     cell.render();
     expect(cell.$el.hasClass("date-cell")).toBe(true);
   });
+
+  it("will render a date with no time", function () {
+    cell.model.set("date", "2000-01-01T00:00:00.000Z");
+    cell.render();
+    expect(cell.$el.text()).toBe("2000-01-01");
+  });
+
 });
 
 describe("A TimeCell", function () {
 
-  it("applies a time-cell class to the cell", function () {
-    var cell = new Backgrid.TimeCell({
+  var cell;
+
+  beforeEach(function () {
+    cell = new Backgrid.TimeCell({
       model: new Backbone.Model({
         time: "00:00:00"
       }),
@@ -642,9 +667,19 @@ describe("A TimeCell", function () {
         cell: "time"
       }
     });
+  });
+
+  it("applies a time-cell class to the cell", function () {
     cell.render();
     expect(cell.$el.hasClass("time-cell")).toBe(true);
   });
+
+  it("will render a time with no date", function () {
+    cell.model.set("date", "2000-01-01T00:00:00.000Z");
+    cell.render();
+    expect(cell.$el.text()).toBe("00:00:00");
+  });
+
 });
 
 describe("A BooleanCell", function () {
