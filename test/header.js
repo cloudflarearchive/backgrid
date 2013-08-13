@@ -35,6 +35,14 @@ describe("A HeaderCell", function () {
     expect(cell.$el.find(".sort-caret").length).toBe(0);
   });
 
+  it("will rerender with the column name and/or label changes", function () {
+    cell.column.set("name", "name");
+    expect(cell.$el.hasClass("name"), true);
+    
+    cell.column.set("label", "Name");
+    expect(cell.$el.find("a").text(), "Name");
+  });
+
   it("will put a class indicating the sorting direction if `direction` is set in the column", function () {
     cell = new Backgrid.HeaderCell({
       column: {

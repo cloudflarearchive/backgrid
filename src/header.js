@@ -52,6 +52,8 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
                     }
                   });
 
+    this.listenTo(column, "change:name change:label", this.render);
+
     if (column.get("editable")) $el.addClass("editable");
     if (column.get("sortable")) $el.addClass("sortable");
     if (column.get("renderable")) $el.addClass("renderable");
