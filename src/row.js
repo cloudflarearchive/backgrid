@@ -20,15 +20,14 @@ var Row = Backgrid.Row = Backbone.View.extend({
   tagName: "tr",
 
   /**
-     Initializes a row view instance.
-
      @param {Object} options
      @param {Backbone.Collection.<Backgrid.Column>|Array.<Backgrid.Column>|Array.<Object>} options.columns Column metadata.
      @param {Backbone.Model} options.model The model instance to render.
 
      @throws {TypeError} If options.columns or options.model is undefined.
   */
-  initialize: function (options) {
+  constructor: function (options) {
+    Row.__super__.constructor.apply(this, arguments);
 
     var columns = this.columns = options.columns;
     if (!(columns instanceof Backbone.Collection)) {
@@ -130,13 +129,12 @@ var EmptyRow = Backgrid.EmptyRow = Backbone.View.extend({
   emptyText: null,
 
   /**
-     Initializer.
-
      @param {Object} options
      @param {string} options.emptyText
      @param {Backbone.Collection.<Backgrid.Column>|Array.<Backgrid.Column>|Array.<Object>} options.columns Column metadata.
    */
-  initialize: function (options) {
+  constructor: function (options) {
+    EmptyRow.__super__.constructor.apply(this, arguments);
     this.emptyText = options.emptyText;
     this.columns =  options.columns;
   },

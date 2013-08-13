@@ -25,14 +25,14 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
   },
 
   /**
-     Initializer.
-
      @param {Object} options
      @param {Backgrid.Column|Object} options.column
 
      @throws {TypeError} If options.column or options.collection is undefined.
    */
-  initialize: function (options) {
+  constructor: function (options) {
+    HeaderCell.__super__.constructor.apply(this, arguments);
+
     this.column = options.column;
     if (!(this.column instanceof Column)) {
       this.column = new Column(this.column);
@@ -149,8 +149,6 @@ var HeaderRow = Backgrid.HeaderRow = Backgrid.Row.extend({
   requiredOptions: ["columns", "collection"],
 
   /**
-     Initializer.
-
      @param {Object} options
      @param {Backbone.Collection.<Backgrid.Column>|Array.<Backgrid.Column>|Array.<Object>} options.columns
      @param {Backgrid.HeaderCell} [options.headerCell] Customized default
@@ -160,8 +158,8 @@ var HeaderRow = Backgrid.HeaderRow = Backgrid.Row.extend({
 
      @throws {TypeError} If options.columns or options.collection is undefined.
    */
-  initialize: function () {
-    Backgrid.Row.prototype.initialize.apply(this, arguments);
+  constructor: function () {
+    HeaderRow.__super__.constructor.apply(this, arguments);
   },
 
   makeCell: function (column, options) {
@@ -188,8 +186,7 @@ var Header = Backgrid.Header = Backbone.View.extend({
   tagName: "thead",
 
   /**
-     Initializer. Initializes this table head view to contain a single header
-     row view.
+     Initializes this table head view to contain a single header row view.
 
      @param {Object} options
      @param {Backbone.Collection.<Backgrid.Column>|Array.<Backgrid.Column>|Array.<Object>} options.columns Column metadata.
@@ -197,7 +194,9 @@ var Header = Backgrid.Header = Backbone.View.extend({
 
      @throws {TypeError} If options.columns or options.model is undefined.
    */
-  initialize: function (options) {
+  constructor: function (options) {
+    Header.__super__.constructor.apply(this, arguments);
+
     this.columns = options.columns;
     if (!(this.columns instanceof Backbone.Collection)) {
       this.columns = new Columns(this.columns);
