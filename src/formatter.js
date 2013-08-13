@@ -62,8 +62,7 @@ _.extend(CellFormatter.prototype, {
    @throws {RangeError} If decimals < 0 or > 20.
 */
 var NumberFormatter = Backgrid.NumberFormatter = function (options) {
-  options = options ? _.clone(options) : {};
-  _.extend(this, this.defaults, options);
+  _.extend(this, this.defaults, options || {});
 
   if (this.decimals < 0 || this.decimals > 20) {
     throw new RangeError("decimals must be between 0 and 20");
@@ -167,8 +166,7 @@ _.extend(NumberFormatter.prototype, {
    @throws {Error} If both `includeDate` and `includeTime` are false.
 */
 var DatetimeFormatter = Backgrid.DatetimeFormatter = function (options) {
-  options = options ? _.clone(options) : {};
-  _.extend(this, this.defaults, options);
+  _.extend(this, this.defaults, options || {});
 
   if (!this.includeDate && !this.includeTime) {
     throw new Error("Either includeDate or includeTime must be true");
