@@ -111,7 +111,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
     }
 
     var column = this.column;
-    var sortable = Backgrid.callByNeed(column.sortable(), column, this.model);
+    var sortable = Backgrid.callByNeed(column.sortable(), column, this.collection);
     if (sortable) {
       var sortType = column.get("sortType");
       if (sortType === "toggle") toggleSort(this, column);
@@ -127,7 +127,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
     this.$el.empty();
     var column = this.column;
     var $label = $("<a>").text(column.get("label"));
-    var sortable = Backgrid.callByNeed(column.sortable(), column, this.model);
+    var sortable = Backgrid.callByNeed(column.sortable(), column, this.collection);
     if (sortable) $label.append("<b class='sort-caret'></b>");
     this.$el.append($label);
     this.$el.addClass(column.get("name"));
