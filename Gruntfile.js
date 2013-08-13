@@ -21,14 +21,16 @@ module.exports = function (grunt) {
         force: true
       },
       lib: [
-        "lib/**/*"
+        "lib/*.js",
+        "lib/*.css"
       ],
       api: [
         "api/**/*"
       ],
       default: [
         "api/**/*",
-        "lib/**/*"
+        "lib/*.js",
+        "lib/*.css"
       ]
     },
     concat: {
