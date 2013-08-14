@@ -63,13 +63,14 @@ var Row = Backgrid.Row = Backbone.View.extend({
   },
 
   /**
-     Factory method for making a cell. Used by #initialize internally. Override
-     this to provide an appropriate cell instance for a custom Row subclass.
+     Factory method for making a cell. Used by the constructor
+     internally. Override this to provide an appropriate cell instance for a
+     custom Row subclass.
 
      @protected
 
      @param {Backgrid.Column} column
-     @param {Object} options The options passed to #initialize.
+     @param {Object} options The options passed to the constructor.
 
      @return {Backgrid.Cell}
   */
