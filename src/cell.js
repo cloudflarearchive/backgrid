@@ -86,7 +86,7 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
      @param {string} [options.placeholder]
   */
   initialize: function (options) {
-    CellEditor.prototype.initialize.apply(this, arguments);
+    InputCellEditor.__super__.initialize.apply(this, arguments);
 
     if (options.placeholder) {
       this.$el.attr("placeholder", options.placeholder);
@@ -185,9 +185,9 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
   tagName: "td",
 
   /**
-     @property {Backgrid.CellFormatter|Object|string} [formatter=new CellFormatter()]
+     @property {Backgrid.CellFormatter|Object|string} [formatter=CellFormatter]
   */
-  formatter: new CellFormatter(),
+  formatter: CellFormatter,
 
   /**
      @property {Backgrid.CellEditor} [editor=Backgrid.InputCellEditor] The
@@ -221,8 +221,14 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
 
     var column = this.column, model = this.model, $el = this.$el;
 
-    this.formatter = Backgrid.resolveNameToClass(column.get("formatter") ||
-                                                 this.formatter, "Formatter");
+    var formatter = Backgrid.resolveNameToClass(column.get("formatter") ||
+                                                this.formatter, "Formatter");
+
+    if (!_.isFunction(formatter.fromRaw) && !_.isFunction(formatter.toRaw)) {
+      formatter = new formatter();
+    }
+
+    this.formatter = formatter;
 
     this.editor = Backgrid.resolveNameToClass(this.editor, "CellEditor");
 
@@ -335,7 +341,7 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
       this.currentEditor.remove.apply(this.currentEditor, arguments);
       delete this.currentEditor;
     }
-    return Backbone.View.prototype.remove.apply(this, arguments);
+    return Cell.__super__.remove.apply(this, arguments);
   }
 
 });
@@ -351,7 +357,7 @@ var StringCell = Backgrid.StringCell = Cell.extend({
   /** @property */
   className: "string-cell",
 
-  formatter: new StringFormatter()
+  formatter: StringFormatter
 
 });
 
@@ -384,7 +390,7 @@ var UriCell = Backgrid.UriCell = Cell.extend({
   target: "_blank",
 
   initialize: function (options) {
-    Cell.prototype.initialize.apply(this, arguments);
+    UriCell.__super__.initialize.apply(this, arguments);
     this.title = options.title || this.title;
     this.target = options.target || this.target;
   },
@@ -418,7 +424,7 @@ var EmailCell = Backgrid.EmailCell = StringCell.extend({
   /** @property */
   className: "email-cell",
 
-  formatter: new EmailFormatter(),
+  formatter: EmailFormatter,
 
   render: function () {
     this.$el.empty();
@@ -459,7 +465,7 @@ var NumberCell = Backgrid.NumberCell = Cell.extend({
   orderSeparator: NumberFormatter.prototype.defaults.orderSeparator,
 
   /** @property {Backgrid.CellFormatter} [formatter=Backgrid.NumberFormatter] */
-  formatter: new NumberFormatter(),
+  formatter: NumberFormatter,
 
   /**
      Initializes this cell and the number formatter.
@@ -469,7 +475,7 @@ var NumberCell = Backgrid.NumberCell = Cell.extend({
      @param {Backgrid.Column} options.column
   */
   initialize: function (options) {
-    Cell.prototype.initialize.apply(this, arguments);
+    NumberCell.__super__.initialize.apply(this, arguments);
     var formatter = this.formatter;
     formatter.decimals = this.decimals;
     formatter.decimalSeparator = this.decimalSeparator;
@@ -532,7 +538,7 @@ var DatetimeCell = Backgrid.DatetimeCell = Cell.extend({
   includeMilli: DatetimeFormatter.prototype.defaults.includeMilli,
 
   /** @property {Backgrid.CellFormatter} [formatter=Backgrid.DatetimeFormatter] */
-  formatter: new DatetimeFormatter(),
+  formatter: DatetimeFormatter,
 
   /**
      Initializes this cell and the datetime formatter.
@@ -542,7 +548,7 @@ var DatetimeCell = Backgrid.DatetimeCell = Cell.extend({
      @param {Backgrid.Column} options.column
   */
   initialize: function (options) {
-    Cell.prototype.initialize.apply(this, arguments);
+    DatetimeCell.__super__.initialize.apply(this, arguments);
     var formatter = this.formatter;
     formatter.includeDate = this.includeDate;
     formatter.includeTime = this.includeTime;
@@ -893,7 +899,7 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
   multiple: false,
 
   /** @property */
-  formatter: new SelectFormatter(),
+  formatter: SelectFormatter,
 
   /**
      @property {Array.<Array>|Array.<{name: string, values: Array.<Array>}>} optionValues
@@ -913,7 +919,7 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
      @throws {TypeError} If `optionsValues` is undefined.
   */
   initialize: function (options) {
-    Cell.prototype.initialize.apply(this, arguments);
+    SelectCell.__super__.initialize.apply(this, arguments);
     this.listenTo(this.model, "backgrid:edit", function (model, column, cell, editor) {
       if (column.get("name") == this.column.get("name")) {
         editor.setOptionValues(this.optionValues);

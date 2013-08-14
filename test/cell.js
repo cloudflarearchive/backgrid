@@ -57,7 +57,7 @@ describe("An InputCellEditor", function () {
         name: "title",
         cell: Backgrid.StringCell
       }),
-      formatter: Backgrid.StringCell.prototype.formatter,
+      formatter: new Backgrid.StringCell.prototype.formatter(),
       placeholder: "put your text here"
     });
 
