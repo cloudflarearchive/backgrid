@@ -520,6 +520,26 @@ describe("An IntegerCell", function () {
     expect(cell.$el.text()).toBe("1");
   });
 
+  it("description", function () {
+
+    var PlainIntegerCell = Backgrid.IntegerCell.extend({
+      orderSeparator: ''
+    });
+
+    var cell = new PlainIntegerCell({
+      model: new Backbone.Model({
+        age: 1000
+      }),
+      column: {
+        name: "age",
+        cell: PlainIntegerCell
+      }
+    });
+
+    cell.render();
+    expect(cell.$el.text()).toBe("1000");
+  });
+
 });
 
 describe("A DatetimeCell", function () {

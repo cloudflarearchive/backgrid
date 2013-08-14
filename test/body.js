@@ -364,10 +364,30 @@ describe("A Body", function () {
 
     body.rows[0].cells[0].enterEditMode();
 
+    // Just making sure a cell has exited edit mode before the next cell goes
+    // into edit mode. Fixes #187.
+    var oldExitEditMode = body.rows[0].cells[0].exitEditMode;
+    var callOrders = [];
+    body.rows[0].cells[0].exitEditMode = function () {
+      callOrders.push("exit");
+      return oldExitEditMode.apply(this, arguments);
+    };
+
+    var oldEnterEditMode = body.rows[1].cells[0].enterEditMode;
+    body.rows[1].cells[0].enterEditMode = function () {
+      callOrders.push("enter");
+      return oldEnterEditMode.apply(this, arguments);
+    };
+
     // right
     people.trigger("backgrid:edited", people.at(0), columns.at(0), new Backgrid.Command({keyCode: 9}));
     expect(body.rows[0].cells[0].$el.hasClass("editor")).toBe(false);
     expect(body.rows[1].cells[0].$el.hasClass("editor")).toBe(true);
+
+    expect(callOrders[0]).toBe("exit");
+    expect(callOrders[1]).toBe("enter");
+    body.rows[0].cells[0].exitEditMode = oldExitEditMode;
+    body.rows[1].cells[0].enterEditMode = oldEnterEditMode;
 
     // left
     people.trigger("backgrid:edited", people.at(1), columns.at(0), new Backgrid.Command({keyCode: 9, shiftKey: true}));
