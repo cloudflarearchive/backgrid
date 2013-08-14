@@ -97,7 +97,9 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
     this.body = new this.body(passedThruOptions);
 
     this.header = options.header || this.header;
-    this.header = new this.header(passedThruOptions);
+    if (this.header) {
+      this.header = new this.header(passedThruOptions);
+    }
 
     this.footer = options.footer || this.footer;
     if (this.footer) {
@@ -105,7 +107,9 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
     }
 
     this.listenTo(this.columns, "reset", function () {
-      this.header = new (this.header.remove().constructor)(passedThruOptions);
+      if (this.header) {
+        this.header = new (this.header.remove().constructor)(passedThruOptions);
+      }
       this.body = new (this.body.remove().constructor)(passedThruOptions);
       if (this.footer) {
         this.footer = new (this.footer.remove().constructor)(passedThruOptions);
@@ -173,7 +177,9 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
   render: function () {
     this.$el.empty();
 
-    this.$el.append(this.header.render().$el);
+    if (this.header) {
+      this.$el.append(this.header.render().$el);
+    }
 
     if (this.footer) {
       this.$el.append(this.footer.render().$el);
@@ -194,7 +200,7 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
      @chainable
    */
   remove: function () {
-    this.header.remove.apply(this.header, arguments);
+    this.header && this.header.remove.apply(this.header, arguments);
     this.body.remove.apply(this.body, arguments);
     this.footer && this.footer.remove.apply(this.footer, arguments);
     return Backbone.View.prototype.remove.apply(this, arguments);
