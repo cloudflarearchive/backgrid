@@ -471,6 +471,20 @@ describe("A UriCell", function () {
     expect(cell.$el.find("a").attr("title")).toBe("http://backgridjs.com");
   });
 
+  it("uses the supplied displayText value", function () {
+    cell.render();
+    expect(cell.$el.find("a").attr("title")).toBe("http://www.example.com");
+
+    cell = new Backgrid.UriCell({
+      model: model,
+      column: column,
+      title: "http://backgridjs.com"
+      displayText: "Backgrid.js - a semantic Backbone grid UI widget"
+    });
+    cell.render();
+    expect(cell.$el.find("a").text().toBe("Backgrid.js - a semantic Backbone grid UI widget");
+  });
+
 });
 
 describe("An EmailCell", function () {
