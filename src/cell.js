@@ -466,7 +466,7 @@ var NumberCell = Backgrid.NumberCell = Cell.extend({
     var formatter = this.formatter;
     formatter.decimals = this.decimals;
     formatter.decimalSeparator = this.decimalSeparator;
-    formatter.orderSeparator = this.orderSeparator
+    formatter.orderSeparator = this.orderSeparator;
   }
 
 });
