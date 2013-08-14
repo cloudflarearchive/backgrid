@@ -81,9 +81,7 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
      @param {Backgrid.Row} [options.row=Backgrid.Row] An optional Row class to override the default.
      @param {Backgrid.Footer} [options.footer=Backgrid.Footer] An optional Footer class.
    */
-  constructor: function (options) {
-    Grid.__super__.constructor.apply(this, arguments);
-
+  initialize: function (options) {
     // Convert the list of column objects here first so the subviews don't have
     // to.
     if (!(options.columns instanceof Backbone.Collection)) {

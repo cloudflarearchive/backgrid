@@ -17,6 +17,8 @@
 var CellEditor = Backgrid.CellEditor = Backbone.View.extend({
 
   /**
+     Initializer.
+
      @param {Object} options
      @param {Backgrid.CellFormatter} options.formatter
      @param {Backgrid.Column} options.column
@@ -25,8 +27,7 @@ var CellEditor = Backgrid.CellEditor = Backbone.View.extend({
      @throws {TypeError} If `formatter` is not a formatter instance, or when
      `model` or `column` are undefined.
   */
-  constructor: function (options) {
-    CellEditor.__super__.constructor.apply(this, arguments);
+  initialize: function (options) {
     this.formatter = options.formatter;
     this.column = options.column;
     if (!(this.column instanceof Column)) {
@@ -75,14 +76,17 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
   },
 
   /**
+     Initializer. Removes this `el` from the DOM when a `done` event is
+     triggered.
+
      @param {Object} options
      @param {Backgrid.CellFormatter} options.formatter
      @param {Backgrid.Column} options.column
      @param {Backbone.Model} options.model
      @param {string} [options.placeholder]
   */
-  constructor: function (options) {
-    InputCellEditor.__super__.constructor.apply(this, arguments);
+  initialize: function (options) {
+    CellEditor.prototype.initialize.apply(this, arguments);
 
     if (options.placeholder) {
       this.$el.attr("placeholder", options.placeholder);
@@ -200,6 +204,8 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
   },
 
   /**
+     Initializer.
+
      @param {Object} options
      @param {Backbone.Model} options.model
      @param {Backgrid.Column} options.column
@@ -207,8 +213,7 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
      @throws {ReferenceError} If formatter is a string but a formatter class of
      said name cannot be found in the Backgrid module.
   */
-  constructor: function (options) {
-    Cell.__super__.constructor.apply(this, arguments);
+  initialize: function (options) {
     this.column = options.column;
     if (!(this.column instanceof Column)) {
       this.column = new Column(this.column);
@@ -378,8 +383,8 @@ var UriCell = Backgrid.UriCell = Cell.extend({
   */
   target: "_blank",
 
-  constructor: function (options) {
-    UriCell.__super__.constructor.apply(this, arguments);
+  initialize: function (options) {
+    Cell.prototype.initialize.apply(this, arguments);
     this.title = options.title || this.title;
     this.target = options.target || this.target;
   },
@@ -457,12 +462,14 @@ var NumberCell = Backgrid.NumberCell = Cell.extend({
   formatter: new NumberFormatter(),
 
   /**
+     Initializes this cell and the number formatter.
+
      @param {Object} options
      @param {Backbone.Model} options.model
      @param {Backgrid.Column} options.column
   */
-  constructor: function (options) {
-    NumberCell.__super__.constructor.apply(this, arguments);
+  initialize: function (options) {
+    Cell.prototype.initialize.apply(this, arguments);
     var formatter = this.formatter;
     formatter.decimals = this.decimals;
     formatter.decimalSeparator = this.decimalSeparator;
@@ -528,12 +535,14 @@ var DatetimeCell = Backgrid.DatetimeCell = Cell.extend({
   formatter: new DatetimeFormatter(),
 
   /**
+     Initializes this cell and the datetime formatter.
+
      @param {Object} options
      @param {Backbone.Model} options.model
      @param {Backgrid.Column} options.column
   */
-  constructor: function (options) {
-    DatetimeCell.__super__.constructor.apply(this, arguments);
+  initialize: function (options) {
+    Cell.prototype.initialize.apply(this, arguments);
     var formatter = this.formatter;
     formatter.includeDate = this.includeDate;
     formatter.includeTime = this.includeTime;
@@ -895,14 +904,16 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
   delimiter: ', ',
 
   /**
+     Initializer.
+
      @param {Object} options
      @param {Backbone.Model} options.model
      @param {Backgrid.Column} options.column
 
      @throws {TypeError} If `optionsValues` is undefined.
   */
-  constructor: function (options) {
-    SelectCell.__super__.constructor.apply(this, arguments);
+  initialize: function (options) {
+    Cell.prototype.initialize.apply(this, arguments);
     this.listenTo(this.model, "backgrid:edit", function (model, column, cell, editor) {
       if (column.get("name") == this.column.get("name")) {
         editor.setOptionValues(this.optionValues);

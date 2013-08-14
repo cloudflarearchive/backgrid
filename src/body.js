@@ -19,6 +19,8 @@ var Body = Backgrid.Body = Backbone.View.extend({
   tagName: "tbody",
 
   /**
+     Initializer.
+
      @param {Object} options
      @param {Backbone.Collection} options.collection
      @param {Backbone.Collection.<Backgrid.Column>|Array.<Backgrid.Column>|Array.<Object>} options.columns
@@ -30,8 +32,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
 
      See Backgrid.Row.
   */
-  constructor: function (options) {
-    Body.__super__.constructor.apply(this, arguments);
+  initialize: function (options) {
 
     this.columns = options.columns;
     if (!(this.columns instanceof Backbone.Collection)) {
