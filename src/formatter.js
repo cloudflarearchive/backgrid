@@ -27,9 +27,10 @@ _.extend(CellFormatter.prototype, {
 
      @member Backgrid.CellFormatter
      @param {*} rawData
+     @param {Backbone.Model} model Used for more complicated formatting
      @return {*}
   */
-  fromRaw: function (rawData) {
+  fromRaw: function (rawData, model) {
     return rawData;
   },
 
@@ -42,9 +43,10 @@ _.extend(CellFormatter.prototype, {
 
      @member Backgrid.CellFormatter
      @param {string} formattedData
+     @param {Backbone.Model} model Used for more complicated formatting
      @return {*|undefined}
   */
-  toRaw: function (formattedData) {
+  toRaw: function (formattedData, model) {
     return formattedData;
   }
 
@@ -60,8 +62,7 @@ _.extend(CellFormatter.prototype, {
    @throws {RangeError} If decimals < 0 or > 20.
 */
 var NumberFormatter = Backgrid.NumberFormatter = function (options) {
-  options = options ? _.clone(options) : {};
-  _.extend(this, this.defaults, options);
+  _.extend(this, this.defaults, options || {});
 
   if (this.decimals < 0 || this.decimals > 20) {
     throw new RangeError("decimals must be between 0 and 20");
@@ -98,9 +99,10 @@ _.extend(NumberFormatter.prototype, {
 
      @member Backgrid.NumberFormatter
      @param {number} number
+     @param {Backbone.Model} model Used for more complicated formatting
      @return {string}
   */
-  fromRaw: function (number) {
+  fromRaw: function (number, model) {
     if (_.isNull(number) || _.isUndefined(number)) return '';
 
     number = number.toFixed(~~this.decimals);
@@ -118,10 +120,11 @@ _.extend(NumberFormatter.prototype, {
 
      @member Backgrid.NumberFormatter
      @param {string} formattedData
+     @param {Backbone.Model} model Used for more complicated formatting
      @return {number|undefined} Undefined if the string cannot be converted to
      a number.
   */
-  toRaw: function (formattedData) {
+  toRaw: function (formattedData, model) {
     formattedData = formattedData.trim();
 
     if (formattedData === '') return null;
@@ -163,8 +166,7 @@ _.extend(NumberFormatter.prototype, {
    @throws {Error} If both `includeDate` and `includeTime` are false.
 */
 var DatetimeFormatter = Backgrid.DatetimeFormatter = function (options) {
-  options = options ? _.clone(options) : {};
-  _.extend(this, this.defaults, options);
+  _.extend(this, this.defaults, options || {});
 
   if (!this.includeDate && !this.includeTime) {
     throw new Error("Either includeDate or includeTime must be true");
@@ -258,10 +260,11 @@ _.extend(DatetimeFormatter.prototype, {
 
      @member Backgrid.DatetimeFormatter
      @param {string} rawData
+     @param {Backbone.Model} model Used for more complicated formatting
      @return {string|null|undefined} ISO-8601 string in UTC. Null and undefined
      values are returned as is.
   */
-  fromRaw: function (rawData) {
+  fromRaw: function (rawData, model) {
     if (_.isNull(rawData) || _.isUndefined(rawData)) return '';
     return this._convert(rawData);
   },
@@ -275,12 +278,13 @@ _.extend(DatetimeFormatter.prototype, {
 
      @member Backgrid.DatetimeFormatter
      @param {string} formattedData
+     @param {Backbone.Model} model Used for more complicated formatting
      @return {string|undefined} ISO-8601 string in UTC. Undefined if a date is
      found when `includeDate` is false, or a time is found when `includeTime` is
      false, or if `includeDate` is true and a date is not found, or if
      `includeTime` is true and a time is not found.
   */
-  toRaw: function (formattedData) {
+  toRaw: function (formattedData, model) {
     return this._convert(formattedData, true);
   }
 
@@ -303,9 +307,10 @@ _.extend(StringFormatter.prototype, {
 
      @member Backgrid.StringFormatter
      @param {*} rawValue
+     @param {Backbone.Model} model Used for more complicated formatting
      @return {string}
    */
-  fromRaw: function (rawValue) {
+  fromRaw: function (rawValue, model) {
     if (_.isUndefined(rawValue) || _.isNull(rawValue)) return '';
     return rawValue + '';
   }
@@ -328,9 +333,10 @@ _.extend(EmailFormatter.prototype, {
 
      @member Backgrid.EmailFormatter
      @param {*} formattedData
+     @param {Backbone.Model} model Used for more complicated formatting
      @return {string|undefined}
    */
-  toRaw: function (formattedData) {
+  toRaw: function (formattedData, model) {
     var parts = formattedData.trim().split("@");
     if (parts.length === 2 && _.all(parts)) {
       return formattedData;
@@ -354,9 +360,10 @@ _.extend(SelectFormatter.prototype, {
 
      @member Backgrid.SelectFormatter
      @param {*} rawValue
+     @param {Backbone.Model} model Used for more complicated formatting
      @return {Array.<*>}
   */
-  fromRaw: function (rawValue) {
+  fromRaw: function (rawValue, model) {
     return _.isArray(rawValue) ? rawValue : rawValue != null ? [rawValue] : [];
   }
 });

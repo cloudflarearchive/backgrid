@@ -45,15 +45,6 @@ var Backgrid = root.Backgrid = {
 
   Extension: {},
 
-  requireOptions: function (options, requireOptionKeys) {
-    for (var i = 0; i < requireOptionKeys.length; i++) {
-      var key = requireOptionKeys[i];
-      if (_.isUndefined(options[key])) {
-        throw new TypeError("'" + key  + "' is required");
-      }
-    }
-  },
-
   resolveNameToClass: function (name, suffix) {
     if (_.isString(name)) {
       var key = _.map(name.split('-'), function (e) {

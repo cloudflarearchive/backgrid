@@ -158,7 +158,7 @@
                   style with plain CSS like you would a normal HTML table.</li>
                 <li>Low learning curve. Works with plain old Backbone models and
                   collections. Easy things are easy, hards things possible.</li>
-                <li>Highly modular and customizable. Componenets are just simple
+                <li>Highly modular and customizable. Components are just simple
                   Backbone View classes, customization is easy if you already
                   know Backbone.</li>
                 <li>Lightweight. Extra features are separated
@@ -666,7 +666,7 @@
                 editor should fire a Backbone event <code>backgrid:error</code>
                 so that listeners&mdash;usually a cell instance&mdash;can
                 respond appropriately. When editing is done, a cell editor
-                should fire a Backbone <code>backgrid:done</code> event. A cell
+                should fire a Backbone <code>backgrid:edited</code> event. A cell
                 should be listening to this event so it can remove its editor
                 and re-render itsef in display mode.</p>
               <p class="label label-important">Truely Advanced Hacking</p>
@@ -831,12 +831,23 @@
                 define your own Row subclass and give it to the Grid constructor
                 as an option:</p>
               <textarea class="code-snippet" data-mode="javascript" data-eval="no">
-                var ZebraStrippingRow = Backgrid.Row.extend({
-                  // ...
+                // Suppose you want to highlight the entire row when an editable field is focused 
+                var FocusableRow = Backgrid.Row.extend({
+                  highlightColor: 'lightYellow',
+                  events: {
+                    focusin: 'rowFocused',
+                    focusout: 'rowLostFocus'
+                  },
+                  rowFocused: function() {
+                    this.$el.css('background-color', this.highlightColor);
+                  },
+                  rowLostFocus: function() {
+                    this.$el.removeAttr('style');
+                  }
                 });
 
                 var grid = new Backgrid.Grid({
-                  row: ZebraStrippingRow, // <-- Tell the new Body class to use ZebraStrippingRow to render rows.
+                  row: FocusableRow, // <-- Tell the Body class to use FocusableRow to render rows.
                   columns: [{
                     //...
                   }],
@@ -1549,7 +1560,12 @@
                        to your table header */
                     .backgrid th {
                       background-image: linear-gradient(#2F2727, #1a82f7);
-                    }</textarea>
+                    }
+                    /* Or maybe you enjoy zebra stripes */
+                    .backgrid tbody tr:nth-child(even) {
+                      background-color: #f9f9f9;
+                    }
+                  </textarea>
                 </div>
                 <div class="span6">
                   <h2>&nbsp;</h2>

@@ -81,8 +81,8 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
      @param {Backgrid.Row} [options.row=Backgrid.Row] An optional Row class to override the default.
      @param {Backgrid.Footer} [options.footer=Backgrid.Footer] An optional Footer class.
    */
-  initialize: function (options) {
-    Backgrid.requireOptions(options, ["columns", "collection"]);
+  constructor: function (options) {
+    Grid.__super__.constructor.apply(this, arguments);
 
     // Convert the list of column objects here first so the subviews don't have
     // to.
@@ -94,11 +94,12 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
     var passedThruOptions = _.omit(options, ["el", "id", "attributes",
                                              "className", "tagName", "events"]);
 
-    this.header = options.header || this.header;
-    this.header = new this.header(passedThruOptions);
-
+    // must construct body first so it listens to backgrid:sort first
     this.body = options.body || this.body;
     this.body = new this.body(passedThruOptions);
+
+    this.header = options.header || this.header;
+    this.header = new this.header(passedThruOptions);
 
     this.footer = options.footer || this.footer;
     if (this.footer) {
@@ -119,14 +120,16 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
      Delegates to Backgrid.Body#insertRow.
    */
   insertRow: function (model, collection, options) {
-    return this.body.insertRow(model, collection, options);
+    this.body.insertRow(model, collection, options);
+    return this;
   },
 
   /**
      Delegates to Backgrid.Body#removeRow.
    */
   removeRow: function (model, collection, options) {
-    return this.body.removeRow(model, collection, options);
+    this.body.removeRow(model, collection, options);
+    return this;
   },
 
   /**
@@ -137,8 +140,6 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
      @param {Object} [options] Options for `Backgrid.Columns#add`.
      @param {boolean} [options.render=true] Whether to render the column
      immediately after insertion.
-
-     @chainable
    */
   insertColumn: function (column, options) {
     options = options || {render: true};
@@ -152,11 +153,17 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
      needs to happen.
 
      @param {Object} [options] Options for `Backgrid.Columns#remove`.
-
-     @chainable
    */
   removeColumn: function (column, options) {
     this.columns.remove(column, options);
+    return this;
+  },
+
+  /**
+     Delegates to Backgrid.Body#sort.
+   */
+  sort: function () {
+    this.body.sort(arguments);
     return this;
   },
 

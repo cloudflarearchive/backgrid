@@ -19,8 +19,6 @@ var Body = Backgrid.Body = Backbone.View.extend({
   tagName: "tbody",
 
   /**
-     Initializer.
-
      @param {Object} options
      @param {Backbone.Collection} options.collection
      @param {Backbone.Collection.<Backgrid.Column>|Array.<Backgrid.Column>|Array.<Object>} options.columns
@@ -32,8 +30,8 @@ var Body = Backgrid.Body = Backbone.View.extend({
 
      See Backgrid.Row.
   */
-  initialize: function (options) {
-    Backgrid.requireOptions(options, ["columns", "collection"]);
+  constructor: function (options) {
+    Body.__super__.constructor.apply(this, arguments);
 
     this.columns = options.columns;
     if (!(this.columns instanceof Backbone.Collection)) {
@@ -58,6 +56,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
     this.listenTo(collection, "remove", this.removeRow);
     this.listenTo(collection, "sort", this.refresh);
     this.listenTo(collection, "reset", this.refresh);
+    this.listenTo(collection, "backgrid:sort", this.sort);
     this.listenTo(collection, "backgrid:edited", this.moveToNextCell);
   },
 
@@ -125,6 +124,8 @@ var Body = Backgrid.Body = Backbone.View.extend({
         $children.eq(index).before($rowEl);
       }
     }
+
+    return this;
   },
 
   /**
@@ -166,6 +167,8 @@ var Body = Backgrid.Body = Backbone.View.extend({
 
     this.rows.splice(options.index, 1);
     this._unshiftEmptyRowMayBe();
+
+    return this;
   },
 
   /**
@@ -230,6 +233,82 @@ var Body = Backgrid.Body = Backbone.View.extend({
   },
 
   /**
+     If the underlying collection is a Backbone.PageableCollection in
+     server-mode or infinite-mode, a page of models is fetched after sorting is
+     done on the server.
+
+     If the underlying collection is a Backbone.PageableCollection in
+     client-mode, or any
+     [Backbone.Collection](http://backbonejs.org/#Collection) instance, sorting
+     is done on the client side. If the collection is an instance of a
+     Backbone.PageableCollection, sorting will be done globally on all the pages
+     and the current page will then be returned.
+
+     Triggers a Backbone `backgrid:sort` event from the collection when done
+     with the column, direction, comparator and a reference to the collection.
+
+     @param {Backgrid.Column} column
+     @param {null|"ascending"|"descending"} direction
+
+     See [Backbone.Collection#comparator](http://backbonejs.org/#Collection-comparator)
+  */
+  sort: function (column, direction) {
+
+    if (_.isString(column)) column = this.columns.findWhere({name: column});
+
+    var collection = this.collection;
+
+    var order;
+    if (direction === "ascending") order = -1;
+    else if (direction === "descending") order = 1;
+    else order = null;
+
+    var comparator = this.makeComparator(column.get("name"), order,
+                                         order ?
+                                         column.sortValue() :
+                                         function (model) {
+                                           return model.cid;
+                                         });
+
+    if (Backbone.PageableCollection &&
+        collection instanceof Backbone.PageableCollection) {
+
+      collection.setSorting(order && column.get("name"), order,
+                            {sortValue: column.sortValue()});
+
+      if (collection.mode == "client") {
+        if (collection.fullCollection.comparator == null) {
+          collection.fullCollection.comparator = comparator;
+        }
+        collection.fullCollection.sort();
+      }
+      else collection.fetch({reset: true});
+    }
+    else {
+      collection.comparator = comparator;
+      collection.sort();
+    }
+
+    return this;
+  },
+
+  makeComparator: function (attr, order, func) {
+
+    return function (left, right) {
+      // extract the values from the models
+      var l = func(left, attr), r = func(right, attr), t;
+
+      // if descending order, swap left and right
+      if (order === 1) t = l, l = r, r = t;
+
+      // compare as usual
+      if (l === r) return 0;
+      else if (l < r) return -1;
+      return 1;
+    };
+  },
+
+  /**
      Moves focus to the next renderable and editable cell and return the
      currently editing cell to display mode.
 
@@ -276,5 +355,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
         }
       }
     }
+
+    return this;
   }
 });
