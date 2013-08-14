@@ -5,22 +5,6 @@
   Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
   Licensed under the MIT license.
 */
-describe("Backgrid#requireOptions", function () {
-
-  it("throws TypeError if a required option is not found", function () {
-    expect(function () {
-      Backgrid.requireOptions({}, ['foo']);
-    }).toThrow(new TypeError("'foo' is required"));
-  });
-
-  it("does not throw a TypeError if a required option is found", function () {
-    expect(function () {
-      Backgrid.requireOptions({foo: 1}, ['foo']);
-    }).not.toThrow(new TypeError("'foo' is required"));
-  });
-
-});
-
 describe("Backgrid#resolveNameToClass", function () {
 
   it("will return a reference to a Backgrid or a Backgrid.Extension object from a dasherized string and a suffix", function () {

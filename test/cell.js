@@ -7,38 +7,6 @@
 */
 describe("A CellEditor", function () {
 
-  it("throws TypeError if a formatter is not given", function () {
-    expect(function () {
-      new Backgrid.CellEditor({});
-    }).toThrow(new TypeError("'formatter' is required"));
-  });
-
-  it("throws TypeError if a column is not given", function () {
-    expect(function () {
-      new Backgrid.CellEditor({
-        formatter: {
-          fromRaw: function () {},
-          toRaw: function () {}
-        }
-      });
-    }).toThrow(new TypeError("'column' is required"));
-  });
-
-  it("throws TypeError if a model is not given", function () {
-    expect(function () {
-      new Backgrid.CellEditor({
-        formatter: {
-          fromRaw: function () {},
-          toRaw: function () {}
-        },
-        column: {
-          name: "name",
-          cell: "string"
-        }
-      });
-    }).toThrow(new TypeError("'model' is required"));
-  });
-
   it("calls postRender when model triggers 'backgrid:editing'", function () {
     var postRenderCalled = 0;
     var editor = new (Backgrid.CellEditor.extend({
@@ -161,7 +129,7 @@ describe("An InputCellEditor", function () {
     var enter = $.Event("keydown", { keyCode: 13 });
     editor.$el.trigger(enter);
     expect(editor.formatter.toRaw.calls.length).toBe(1);
-    expect(editor.formatter.toRaw).toHaveBeenCalledWith("invalid value");
+    expect(editor.formatter.toRaw).toHaveBeenCalledWith("invalid value", editor.model);
     expect(backgridErrorTriggerCount).toBe(1);
     expect(backgridErrorTriggerArgs[0]).toEqual(editor.model);
     expect(backgridErrorTriggerArgs[1]).toEqual(editor.column);
@@ -230,31 +198,6 @@ describe("A Cell", function () {
       model: book,
       column: column
     });
-  });
-
-  it("throws TypeError if model or cell is not given to the constructor", function () {
-    expect(function () {
-      new Backgrid.Cell({
-        column: column
-      });
-    }).toThrow(new TypeError("'model' is required"));
-
-    expect(function () {
-      new Backgrid.Cell({
-        model: book
-      });
-    }).toThrow(new TypeError("'column' is required"));
-  });
-
-  it("throws ReferenceError if a formatter cannot be found", function () {
-    expect(function () {
-      new (Backgrid.Cell.extend({
-        formatter: "nosuchformatter"
-      }))({
-        column: column,
-        model: book
-      });
-    }).toThrow(new ReferenceError("Class 'NosuchformatterFormatter' not found"));
   });
 
   it("uses the formatter from the column if one is given", function () {
@@ -566,8 +509,10 @@ describe("A NumberCell", function () {
 
 describe("An IntegerCell", function () {
 
-  it("applies an integer-cell class to the cell", function () {
-    var cell = new Backgrid.IntegerCell({
+  var cell;
+
+  beforeEach(function () {
+    cell = new Backgrid.IntegerCell({
       model: new Backbone.Model({
         age: 1
       }),
@@ -576,8 +521,17 @@ describe("An IntegerCell", function () {
         cell: "integer"
       }
     });
+  });
+
+  it("applies an integer-cell class to the cell", function () {
     cell.render();
     expect(cell.$el.hasClass("integer-cell")).toBe(true);
+  });
+
+  it("will render a number with no trailing decimals numbers", function () {
+    cell.model.set("age", 1.1);
+    cell.render();
+    expect(cell.$el.text()).toBe("1");
   });
 
 });
@@ -686,8 +640,10 @@ describe("A DatetimeCell", function () {
 
 describe("A DateCell", function () {
 
-  it("applies a date-cell class to the cell", function () {
-    var cell = new Backgrid.DateCell({
+  var cell;
+
+  beforeEach(function () {
+    cell = new Backgrid.DateCell({
       model: new Backbone.Model({
         date: "2000-01-01"
       }),
@@ -696,15 +652,27 @@ describe("A DateCell", function () {
         cell: "date"
       }
     });
+  });
+
+  it("applies a date-cell class to the cell", function () {
     cell.render();
     expect(cell.$el.hasClass("date-cell")).toBe(true);
   });
+
+  it("will render a date with no time", function () {
+    cell.model.set("date", "2000-01-01T00:00:00.000Z");
+    cell.render();
+    expect(cell.$el.text()).toBe("2000-01-01");
+  });
+
 });
 
 describe("A TimeCell", function () {
 
-  it("applies a time-cell class to the cell", function () {
-    var cell = new Backgrid.TimeCell({
+  var cell;
+
+  beforeEach(function () {
+    cell = new Backgrid.TimeCell({
       model: new Backbone.Model({
         time: "00:00:00"
       }),
@@ -713,9 +681,19 @@ describe("A TimeCell", function () {
         cell: "time"
       }
     });
+  });
+
+  it("applies a time-cell class to the cell", function () {
     cell.render();
     expect(cell.$el.hasClass("time-cell")).toBe(true);
   });
+
+  it("will render a time with no date", function () {
+    cell.model.set("date", "2000-01-01T00:00:00.000Z");
+    cell.render();
+    expect(cell.$el.text()).toBe("00:00:00");
+  });
+
 });
 
 describe("A BooleanCell", function () {
@@ -1189,7 +1167,7 @@ describe("A SelectCellEditor", function () {
     });
 
     editor.$el.val(1).change();
-    expect(editor.formatter.toRaw).toHaveBeenCalledWith("1");
+    expect(editor.formatter.toRaw).toHaveBeenCalledWith("1", editor.model);
     expect(editor.formatter.toRaw.calls.length).toBe(1);
     expect(editor.model.get(editor.column.get("name"))).toBe("1");
 
@@ -1225,7 +1203,7 @@ describe("A SelectCellEditor", function () {
     });
 
     editor.$el.val([1, 2]).change();
-    expect(editor.formatter.toRaw).toHaveBeenCalledWith(["1", "2"]);
+    expect(editor.formatter.toRaw).toHaveBeenCalledWith(["1", "2"], editor.model);
     expect(editor.formatter.toRaw.calls.length).toBe(1);
     expect(editor.model.get(editor.column.get("name"))).toEqual(["1", "2"]);
 
@@ -1236,7 +1214,7 @@ describe("A SelectCellEditor", function () {
 
     backgridEditedTriggerCount = 0;
     editor.$el.val(null).change();
-    expect(editor.formatter.toRaw).toHaveBeenCalledWith(null);
+    expect(editor.formatter.toRaw).toHaveBeenCalledWith(null, editor.model);
     expect(editor.formatter.toRaw.calls.length).toBe(2);
     expect(editor.model.get(editor.column.get("name"))).toBe(null);
 
@@ -1260,6 +1238,26 @@ describe("A SelectCellEditor", function () {
 
     editor.$el.blur();
     expect(editor.model.get(editor.column.get("name"))).toBe("1");
+  });
+
+  it("can accept optionValues that is a function", function () {
+    var editor = new Backgrid.SelectCellEditor({
+      formatter: new Backgrid.SelectFormatter(),
+      column: {
+        name: "gender",
+        cell: "select"
+      },
+      model: new Backbone.Model()
+    });
+    editor.setOptionValues(function () {
+      return [["Male", "M"], ["Female", "F"]];
+    });
+    editor.render();
+    expect(editor.$el.find("option").eq(0).val()).toBe("M");
+    expect(editor.$el.find("option").eq(0).text()).toBe("Male");
+    expect(editor.$el.find("option").eq(1).val()).toBe("F");
+    expect(editor.$el.find("option").eq(1).text()).toBe("Female");
+    expect(editor.el.tagName).toBe("SELECT");
   });
 
 });
@@ -1289,22 +1287,6 @@ describe("A SelectCell", function () {
         ["Maize", "m"]
       ]
     }];
-  });
-
-  it("throws TypeError is optionValues is undefined", function () {
-
-    expect(function () {
-      new Backgrid.SelectCell({
-        column: {
-          name: "gender",
-          cell: "select"
-        },
-        model: new Backbone.Model({
-          gender: "m"
-        })
-      });
-    }).toThrow(new TypeError("'optionValues' is required"));
-
   });
 
   it("applies a select-cell class to the cell", function () {
@@ -1390,24 +1372,20 @@ describe("A SelectCell", function () {
     expect(cell.$el.text()).toBe("Apple, Banana");
   });
 
-  it("throws TypeError when rendering a malformed option value list", function () {
-
-    expect(function () {
-      var cell = new (Backgrid.SelectCell.extend({
-        optionValues: []
-      }))({
-        column: {
-          name: "gender",
-          cell: "select"
-        },
-        model: new Backbone.Model({
-          gender: 2
-        })
-      });
-
-      cell.render();
-
-    }).toThrow(new TypeError("'optionValues' must be of type {Array.<Array>|Array.<{name: string, values: Array.<Array>}>}"));
+  it("can accept optionValues that is a function", function () {
+    var cell = new (Backgrid.SelectCell.extend({
+      optionValues: function () {
+        return [["Male", "m"], ["Female", "f"]];
+      }
+    }))({
+      column: {
+        name: "gender",
+        cell: "select"
+      },
+      model: new Backbone.Model({"gender": "m"})
+    });
+    cell.render();
+    expect(cell.$el.text()).toBe("Male");
   });
 
   describe("when the model value has changed", function () {

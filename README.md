@@ -100,6 +100,11 @@ Take a look [here](http://backgridjs.com/#examples).
 Are you kidding me? This is a README file. Go to the [documentation](http://backgridjs.com/
 "Backbone.js Documentation") to find out more :)
 
+## Commercial Support
+
+If there's a feature that you would like me to implement or a bug you'd like me
+to fix, you can contact me at this [email address](mailto:wyuenho@gmail.com).
+
 ## License
 Copyright (c) 2013 Jimmy Yuen Ho Wong  
 Licensed under the [MIT license](LICENSE-MIT "MIT License").

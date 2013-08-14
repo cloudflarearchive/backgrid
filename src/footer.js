@@ -7,8 +7,8 @@
 */
 
 /**
-   A Footer is a generic class that only defines a default tag `tfoot` and
-   number of required parameters in the initializer.
+   A Footer is a generic class that only serves as a starting point for
+   subclasses to extend.
 
    @abstract
    @class Backgrid.Footer
@@ -20,8 +20,6 @@ var Footer = Backgrid.Footer = Backbone.View.extend({
   tagName: "tfoot",
 
   /**
-     Initializer.
-
      @param {Object} options
      @param {Backbone.Collection.<Backgrid.Column>|Array.<Backgrid.Column>|Array.<Object>} options.columns
      Column metadata.
@@ -29,8 +27,9 @@ var Footer = Backgrid.Footer = Backbone.View.extend({
 
      @throws {TypeError} If options.columns or options.collection is undefined.
   */
-  initialize: function (options) {
-    Backgrid.requireOptions(options, ["columns", "collection"]);
+  constructor: function (options) {
+    Footer.__super__.constructor.apply(this, arguments);
+
     this.columns = options.columns;
     if (!(this.columns instanceof Backbone.Collection)) {
       this.columns = new Backgrid.Columns(this.columns);
