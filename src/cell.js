@@ -395,7 +395,7 @@ var UriCell = Backgrid.UriCell = Cell.extend({
     this.$el.empty();
     var rawValue = this.model.get(this.column.get("name"));
     var formattedValue = this.formatter.fromRaw(rawValue, this.model);
-    var anchorText = this.displayText;
+    var anchorText = this.model.get(this.displayText) || this.displayText;
     this.$el.append($("<a>", {
       tabIndex: -1,
       href: rawValue,

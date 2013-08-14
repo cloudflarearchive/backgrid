@@ -363,7 +363,8 @@ describe("A UriCell", function () {
 
   beforeEach(function () {
     model = new Backbone.Model({
-      url: "http://www.example.com"
+      url: "http://www.example.com",
+      name: "The leading example site"
     });
 
     column = {
@@ -426,6 +427,19 @@ describe("A UriCell", function () {
     });
     cell.render();
     expect(cell.$el.find("a").text().toBe("Backgrid.js - a semantic Backbone grid UI widget");
+  });
+
+  it("uses the supplied displayText value to get the model attribute", function () {
+    cell.render();
+    expect(cell.$el.find("a").attr("title")).toBe("http://www.example.com");
+
+    cell = new Backgrid.UriCell({
+      model: model,
+      column: column,
+      displayText: "name"
+    });
+    cell.render();
+    expect(cell.$el.find("a").text().toBe(model.get("name"));
   });
 
 });
