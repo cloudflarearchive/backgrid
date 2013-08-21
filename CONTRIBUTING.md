@@ -47,6 +47,7 @@ build:
 
 ```shell
 $ cd backgrid
+$ npm install
 # Recursively builds the core, extensions and put the output into lib
 $ grunt dist
 ```
