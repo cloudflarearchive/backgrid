@@ -99,7 +99,7 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
   */
   render: function () {
     var model = this.model
-    this.$el.val(this.formatter.fromRaw(model.get(this.column.get("name"))), model);
+    this.$el.val(this.formatter.fromRaw(model.get(this.column.get("name")), model));
     return this;
   },
 
