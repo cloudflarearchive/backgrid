@@ -23,7 +23,7 @@ describe("A HeaderCell", function () {
     cell.render();
   });
 
-  it("renders a table header cell with an anchor wrapping the label text and an optional sort caret", function () {
+  it("renders a table header cell with an anchor (sortable) or span (non-sortable) wrapping the label text and an optional sort caret", function () {
     expect(cell.el.tagName).toBe("TH");
     expect(cell.$el.find("a").text()).toBe("id");
     expect(cell.$el.find(".sort-caret").length).toBe(1);
@@ -31,7 +31,7 @@ describe("A HeaderCell", function () {
     cell.column.set("sortable", false);
     cell.render();
     expect(cell.el.tagName).toBe("TH");
-    expect(cell.$el.find("a").text()).toBe("id");
+    expect(cell.$el.find("span").text()).toBe("id");
     expect(cell.$el.find(".sort-caret").length).toBe(0);
   });
 

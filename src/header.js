@@ -126,8 +126,8 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
   render: function () {
     this.$el.empty();
     var column = this.column;
-    var $label = $("<a>").text(column.get("label"));
     var sortable = Backgrid.callByNeed(column.sortable(), column, this.collection);
+    var $label = $(sortable ? "<a>" : "<span>").text(column.get("label"));
     if (sortable) $label.append("<b class='sort-caret'></b>");
     this.$el.append($label);
     this.$el.addClass(column.get("name"));
