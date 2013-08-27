@@ -44,9 +44,11 @@ module.exports = function (grunt) {
             '(function (factory) {\n\n' +
             '  // CommonJS\n' +
             '  if (typeof exports == "object") {\n' +
-            '    module.exports = factory(module.exports,\n' +
-            '                             require("underscore"),\n' +
-            '                             require("backbone"));\n' +
+            '    var root = {};\n' +
+            '    factory(root,\n' +
+            '            require("underscore"),\n' +
+            '            require("backbone"));\n' +
+            '    module.exports = root.Backgrid;\n' +
             '  }\n' +
             '  // Browser\n' +
             '  else if (typeof _ !== "undefined" &&\n' +
