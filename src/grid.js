@@ -89,30 +89,30 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
     }
     this.columns = options.columns;
 
-    var passedThruOptions = _.omit(options, ["el", "id", "attributes",
-                                             "className", "tagName", "events"]);
+    var filteredOptions = _.omit(options, ["el", "id", "attributes",
+                                           "className", "tagName", "events"]);
 
     // must construct body first so it listens to backgrid:sort first
     this.body = options.body || this.body;
-    this.body = new this.body(passedThruOptions);
+    this.body = new this.body(filteredOptions);
 
     this.header = options.header || this.header;
     if (this.header) {
-      this.header = new this.header(passedThruOptions);
+      this.header = new this.header(filteredOptions);
     }
 
     this.footer = options.footer || this.footer;
     if (this.footer) {
-      this.footer = new this.footer(passedThruOptions);
+      this.footer = new this.footer(filteredOptions);
     }
 
     this.listenTo(this.columns, "reset", function () {
       if (this.header) {
-        this.header = new (this.header.remove().constructor)(passedThruOptions);
+        this.header = new (this.header.remove().constructor)(filteredOptions);
       }
-      this.body = new (this.body.remove().constructor)(passedThruOptions);
+      this.body = new (this.body.remove().constructor)(filteredOptions);
       if (this.footer) {
-        this.footer = new (this.footer.remove().constructor)(passedThruOptions);
+        this.footer = new (this.footer.remove().constructor)(filteredOptions);
       }
       this.render();
     });
@@ -207,4 +207,3 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
   }
 
 });
-
