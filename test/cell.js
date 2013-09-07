@@ -734,6 +734,16 @@ describe("A BooleanCell", function () {
     expect(cell.$el.find(":checkbox").prop("checked")).toBe(false);
   });
 
+  it("renders a disabled checkbox if not editable", function () {
+    cell.column.set("editable", false);
+    cell.render();
+    expect(cell.$el.find(":checkbox").prop("disabled")).toBe(true);
+
+    cell.column.set("editable", true);
+    cell.render();
+    expect(cell.$el.find(":checkbox").prop("disabled")).toBe(false);
+  });
+
   it("goes into edit mode after clicking the cell with the checkbox intact", function () {
     cell.render();
     cell.$el.click();
