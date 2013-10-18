@@ -54,7 +54,8 @@ module.exports = function (grunt) {
             '    factory(window, _, Backbone);\n' +
             '  }\n' +
             '}(function (root, _, Backbone) {\n\n  \"use strict\";\n',
-          footer: "}));"
+          footer: 'return Backgrid;\n' + 
+            '}));'
         },
         src: [
           "src/preamble.js",
