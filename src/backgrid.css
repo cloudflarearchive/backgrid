@@ -60,6 +60,10 @@
   background-color: #f9f9f9;
 }
 
+.backgrid thead th a {
+  display: block;
+}
+
 .backgrid.backgrid-striped tbody tr:nth-child(even) {
   background-color: #f9f9f9;
 }
