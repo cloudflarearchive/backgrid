@@ -74,7 +74,7 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
      Initializes a Grid instance.
 
      @param {Object} options
-     @param {Backbone.Collection.<Backgrid.Column>|Array.<Backgrid.Column>|Array.<Object>} options.columns Column metadata.
+     @param {Backbone.Collection.<Backgrid.Columns>|Array.<Backgrid.Column>|Array.<Object>} options.columns Column metadata.
      @param {Backbone.Collection} options.collection The collection of tabular model data to display.
      @param {Backgrid.Header} [options.header=Backgrid.Header] An optional Header class to override the default.
      @param {Backgrid.Body} [options.body=Backgrid.Body] An optional Body class to override the default.
