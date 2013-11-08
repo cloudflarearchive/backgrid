@@ -34,8 +34,9 @@ Basic Email etiquette is appreciated.
 Building
 ========
 
-Backgrid.js uses [Grunt](http://gruntjs.com/) and [JSDuck](https://github.com/senchalabs/jsduck) to
-generate its documentation.
+Backgrid.js uses [Grunt](http://gruntjs.com/) and
+[JSDuck <= 4.10.4](https://github.com/senchalabs/jsduck) to generate its
+documentation.
 
 ### Note:
 
@@ -50,6 +51,8 @@ $ cd backgrid
 $ npm install
 # Recursively builds the core, extensions and put the output into lib
 $ grunt dist
+# Builds everything, including the docs and runs the tests
+$ grunt
 ```
 
 Branching
