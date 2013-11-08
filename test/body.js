@@ -265,8 +265,9 @@ describe("A Body", function () {
       settings.success([{"total_entries": 3}, [{id: 2}, {id: 1}]]);
     };
 
-    var col = new Backbone.PageableCollection([{id: 1}, {id: 2}], {
-      url: "test-headercell",
+    var col = new (Backbone.PageableCollection.extend({
+      url: "test-headercell"
+    }))([{id: 1}, {id: 2}], {
       state: {
         pageSize: 3
       }
