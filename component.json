@@ -19,6 +19,7 @@
     "lib/backgrid.css"
   ],
   "dependencies": {
+    "jashkenas/underscore": "*",
     "jashkenas/backbone": "*"
   },
   "demo": "http://backgridjs.com",
