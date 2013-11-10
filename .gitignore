@@ -1,4 +1,3 @@
-lib/*
 api/*
 .grunt
 node_modules
