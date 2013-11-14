@@ -23,13 +23,13 @@
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/select2/3.3.2/select2.min.css" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/codemirror.min.css" />
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/ambiance.min.css" />
-    <link rel="stylesheet" href="lib/backgrid.min.css" />
-    <link rel="stylesheet" href="lib/extensions/paginator/backgrid-paginator.min.css" />
-    <link rel="stylesheet" href="lib/extensions/text-cell/backgrid-text-cell.min.css" />
-    <link rel="stylesheet" href="lib/extensions/moment-cell/backgrid-moment-cell.min.css" />
-    <link rel="stylesheet" href="lib/extensions/select2-cell/backgrid-select2-cell.min.css" />
-    <link rel="stylesheet" href="lib/extensions/select-all/backgrid-select-all.min.css" />
-    <link rel="stylesheet" href="lib/extensions/filter/backgrid-filter.min.css" />
+    <link rel="stylesheet" href="lib/backgrid.css" />
+    <link rel="stylesheet" href="lib/extensions/paginator/backgrid-paginator.css" />
+    <link rel="stylesheet" href="lib/extensions/text-cell/backgrid-text-cell.css" />
+    <link rel="stylesheet" href="lib/extensions/moment-cell/backgrid-moment-cell.css" />
+    <link rel="stylesheet" href="lib/extensions/select2-cell/backgrid-select2-cell.css" />
+    <link rel="stylesheet" href="lib/extensions/select-all/backgrid-select-all.css" />
+    <link rel="stylesheet" href="lib/extensions/filter/backgrid-filter.css" />
     <link rel="stylesheet" href="assets/css/doc.css" />
     <!--[if lt IE 9]>
         <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -100,9 +100,9 @@
                     </ul>
                   </li>
                   <li id="social-media">
-                    <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://backgridjs.com" data-counturl="wyuenho.github.com/backgrid" data-via="wong_jim" data-hashtags="backgridjs,backbone_js">Tweet</a>
+                    <a href="https://twitter.com/share" class="twitter-share-button" data-url="http://backgridjs.com" data-via="wong_jim" data-hashtags="backgridjs,backbone_js">Tweet</a>
                     <div class="g-plusone" data-size="medium"></div>
-                    <iframe src="http://ghbtns.com/github-btn.html?user=wyuenho&repo=backgrid&type=watch&count=true"
+                    <iframe src="http://ghbtns.com/github-btn.html?user=wyuenho&amp;repo=backgrid&amp;type=watch&amp;count=true"
                             allowtransparency="true" frameborder="0" scrolling="0" width="110" height="20"></iframe>
                     <a href="https://coderwall.com/wyuenho"><img alt="Endorse wyuenho on Coderwall" src="http://api.coderwall.com/wyuenho/endorsecount.png" /></a>
                     <iframe allowtransparency="true" frameborder="0" scrolling="no"
@@ -1117,7 +1117,7 @@
                   // Enable infinite paging
                   mode: "infinite",
 
-                  url: "https://api.github.com/repos/documentcloud/backbone/issues?state=closed",
+                  url: "https://api.github.com/repos/jashkenas/backbone/issues?state=closed",
 
                   // Initial pagination states
                   state: {
@@ -1603,6 +1603,23 @@
           </div>
           <div class="row-fluid">
             <div class="span12">
+              <h2>How do I add a column of computed values?</h2>
+              <p>The easiest way to do it is to extend your models from a
+                <code>Backbone.Model</code> subclass that supports computed
+                properties <i>and</i> accessing them via the same <i>get/set</i>
+                interface. There are a <a
+                href="https://github.com/gmac/backbone.epoxy"
+                title="backbone.epoxy">number</a> <a
+                href="https://github.com/rhysbrettbowen/Backbone.ModelMorph"
+                title="Backbone.ModelMorph">of</a> <a
+                href="https://github.com/alexanderbeletsky/backbone-computedfields"
+                title="backbone-computedfields">Backbone</a> <a
+                href="https://github.com/DreamTheater/Backbone.Schema"
+                title="Backbone.Schema">plugins</a> readily available for
+                this. Should all else failed, you can <a
+                href="http://kilon.org/blog/2012/02/backbone-calculated-fields/"
+                title="Backbone.js computed properties">roll your own</a> fairly
+                easily.</p>
               <h2>How do I add or remove a row?</h2>
               <p>You can either use <a
               href="http://backbonejs.org/#Collection-add"
@@ -1626,31 +1643,6 @@
                     });
                   }
                 });</textarea>
-              <h2>Why doesn&apos;t Backgrid.js support AMD (or NPM)?</h2>
-              <p>The same question can be asked for volo, bower, ender,
-                browserify and many other competing solutions. The number one
-                reason Backgrid.js does not support AMD is because of the
-                barrier it presents to writing extensions that require
-                third-party libraries that don&apos;t support AMD. In addition
-                to this, Underscore.js and Backbone.js also do not support AMD
-                at this time.</p>
-              <p>The problem with supporting any package manager is that
-                Backgrid.js is a highly modular project, and that deciding to
-                use any package manager presupposes all its submodules and
-                dependency is compatible with such a package manager and its
-                importing mechanism. The Javascript ecosystem has gotten so
-                diverse now that there is still not yet a clear packaging winner
-                that everybody uses and works well under most situations, it is
-                also not clear that ES Harmony&apos;s module system will be
-                backward compatible with AMD.</p>
-              <p>Having said that, Backgrid.js doesn&apos;t do anything to
-                prevent you from adding support to your favorite package
-                manager. You are encouraged to fork and maintain your own
-                Backgrid.js packages.</p>
-              <p>You are also more than welcomed to convince me
-                on <a href="https://github.com/wyuenho/backgrid/issues">Github</a>
-                as you may probably know more than I do about packaging
-                Javascripts.</p>
               <h2>Where do I go to ask questions?</h2>
               <p>Just ask away
                 on <a href="https://github.com/wyuenho/backgrid/issues">Github</a>.</p>
@@ -1703,6 +1695,31 @@
               <p><a href="https://github.com/wyuenho/backgrid/blob/gh-pages/CONTRIBUTING.md#building" title="Contributing">See Building.</a></p>
               <h2 id="contribute">How do I contribute?</h2>
               <p><a href="https://github.com/wyuenho/backgrid/blob/gh-pages/CONTRIBUTING.md" title="Contributing">See Contributing.</a></p>
+              <h2>Why doesn&apos;t Backgrid.js support AMD (or NPM)?</h2>
+              <p>The same question can be asked for volo, bower, ender,
+                browserify and many other competing solutions. The number one
+                reason Backgrid.js does not support AMD is because of the
+                barrier it presents to writing extensions that require
+                third-party libraries that don&apos;t support AMD. In addition
+                to this, Underscore.js and Backbone.js also do not support AMD
+                at this time.</p>
+              <p>The problem with supporting any package manager is that
+                Backgrid.js is a highly modular project, and that deciding to
+                use any package manager presupposes all its submodules and
+                dependency is compatible with such a package manager and its
+                importing mechanism. The Javascript ecosystem has gotten so
+                diverse now that there is still not yet a clear packaging winner
+                that everybody uses and works well under most situations, it is
+                also not clear that ES Harmony&apos;s module system will be
+                backward compatible with AMD.</p>
+              <p>Having said that, Backgrid.js doesn&apos;t do anything to
+                prevent you from adding support to your favorite package
+                manager. You are encouraged to fork and maintain your own
+                Backgrid.js packages.</p>
+              <p>You are also more than welcomed to convince me
+                on <a href="https://github.com/wyuenho/backgrid/issues">Github</a>
+                as you may probably know more than I do about packaging
+                Javascripts.</p>
             </div>
           </div>
         </section>
@@ -1731,20 +1748,20 @@
     </script>
     <script src="assets/js/scale.fix.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/backbone-pageable/1.2.2/backbone-pageable.min.js"></script>
+    <script src="assets/js/underscore.js"></script>
+    <script src="assets/js/backbone.js"></script>
+    <script src="assets/js/backbone-pageable.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.2.2/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/select2/3.3.2/select2.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.0.0/moment.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/lunr.js/0.3.0/lunr.min.js"></script>
-    <script src="lib/backgrid.min.js"></script>
-    <script src="lib/extensions/paginator/backgrid-paginator.min.js"></script>
-    <script src="lib/extensions/text-cell/backgrid-text-cell.min.js"></script>
-    <script src="lib/extensions/moment-cell/backgrid-moment-cell.min.js"></script>
+    <script src="lib/backgrid.js"></script>
+    <script src="lib/extensions/paginator/backgrid-paginator.js"></script>
+    <script src="lib/extensions/text-cell/backgrid-text-cell.js"></script>
+    <script src="lib/extensions/moment-cell/backgrid-moment-cell.js"></script>
     <script src="lib/extensions/select2-cell/backgrid-select2-cell.js"></script>
-    <script src="lib/extensions/select-all/backgrid-select-all.min.js"></script>
-    <script src="lib/extensions/filter/backgrid-filter.min.js"></script>
+    <script src="lib/extensions/select-all/backgrid-select-all.js"></script>
+    <script src="lib/extensions/filter/backgrid-filter.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/codemirror.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/formatting.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/codemirror/2.36.0/xml.min.js"></script>
