@@ -57,7 +57,7 @@ describe("An InputCellEditor", function () {
         name: "title",
         cell: Backgrid.StringCell
       }),
-      formatter: Backgrid.StringCell.prototype.formatter,
+      formatter: new Backgrid.StringCell.prototype.formatter(),
       placeholder: "put your text here"
     });
 
@@ -548,6 +548,26 @@ describe("An IntegerCell", function () {
     expect(cell.$el.text()).toBe("1");
   });
 
+  it("description", function () {
+
+    var PlainIntegerCell = Backgrid.IntegerCell.extend({
+      orderSeparator: ''
+    });
+
+    var cell = new PlainIntegerCell({
+      model: new Backbone.Model({
+        age: 1000
+      }),
+      column: {
+        name: "age",
+        cell: PlainIntegerCell
+      }
+    });
+
+    cell.render();
+    expect(cell.$el.text()).toBe("1000");
+  });
+
 });
 
 describe("A DatetimeCell", function () {
@@ -740,6 +760,16 @@ describe("A BooleanCell", function () {
     model.set("ate", false);
     cell.render();
     expect(cell.$el.find(":checkbox").prop("checked")).toBe(false);
+  });
+
+  it("renders a disabled checkbox if not editable", function () {
+    cell.column.set("editable", false);
+    cell.render();
+    expect(cell.$el.find(":checkbox").prop("disabled")).toBe(true);
+
+    cell.column.set("editable", true);
+    cell.render();
+    expect(cell.$el.find(":checkbox").prop("disabled")).toBe(false);
   });
 
   it("goes into edit mode after clicking the cell with the checkbox intact", function () {

@@ -212,8 +212,7 @@
           box-sizing: border-box;
 }
 
-.backgrid .select-cell.editor select[multiple]
-{
+.backgrid .select-cell.editor select[multiple] {
   height: auto;
 }
 
