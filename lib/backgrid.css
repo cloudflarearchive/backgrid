@@ -122,6 +122,10 @@
      -moz-appearance: none;
 }
 
+.backgrid td.editor input[type=text]::-ms-clear {
+  display: none;
+}
+
 .backgrid td.error,
 .backgrid tbody tr:nth-child(odd) td.error {
   background-color: rgba(255, 210, 77, 0.1);
