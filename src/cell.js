@@ -718,7 +718,7 @@ var BooleanCell = Backgrid.BooleanCell = Cell.extend({
     this.$el.append($("<input>", {
       tabIndex: -1,
       type: "checkbox",
-      checked: this.formatter.fromRaw(model.get(column.get("name")), model),
+      checked: !!this.formatter.fromRaw(model.get(column.get("name")), model),
       disabled: !editable
     }));
     this.delegateEvents();
