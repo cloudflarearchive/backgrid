@@ -285,8 +285,18 @@
                       cell: "date",
                     }, {
                       name: "url",
-                      label: "URL",
+                      label: "URL - original",
                       cell: "uri" // Renders the value in an HTML anchor element
+                    },{
+                      name: "url",
+                      label: "URL - model attr",
+                      //cell: "uri" // Renders the value in an HTML anchor element
+                      cell : Backgrid.UriCell.extend({"displayText" : "name" })
+                    },{
+                      name: "url",
+                      label: "URL - custom string",
+                      //cell: "uri" // Renders the value in an HTML anchor element
+                      cell : Backgrid.UriCell.extend({"displayText" : "Wiki Link" })
                     }];
 
                     // Initialize a new Grid instance
