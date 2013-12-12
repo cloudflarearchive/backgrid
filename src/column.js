@@ -198,6 +198,8 @@ _.each(["sortable", "renderable", "editable"], function (key) {
   Column.prototype[key] = function () {
     var value = this.get(key);
     if (_.isString(value)) return this[value];
+    else if (_.isFunction(value)) return value;
+
     return !!value;
   };
 });
