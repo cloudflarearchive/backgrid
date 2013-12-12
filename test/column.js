@@ -48,7 +48,7 @@ describe("A Column", function () {
     expect(col.sortValue()).toBe(mySortValue);
   });
 
-  it("sortable can be a string or a boolean", function () {
+  it("sortable can be a string or a boolean or a function", function () {
     var Col = Backgrid.Column.extend({
       mySortable: function () {}
     });
@@ -68,9 +68,17 @@ describe("A Column", function () {
     });
 
     expect(col.sortable()).toBe(false);
+
+    col = new Col({
+      name: "name",
+      cell: "string",
+      sortable: function () { return false; }
+    });
+
+    expect(col.sortable()).toBe(false);
   });
 
-  it("editable can be a string or a boolean", function () {
+  it("editable can be a string or a boolean or a function", function () {
     var Col = Backgrid.Column.extend({
       myEditable: function () {}
     });
@@ -90,9 +98,17 @@ describe("A Column", function () {
     });
 
     expect(col.editable()).toBe(false);
+
+    col = new Col({
+      name: "name",
+      cell: "string",
+      editable: function () { return false; }
+    });
+
+    expect(col.editable()).toBe(false);
   });
 
-  it("renderable can be a string or a boolean", function () {
+  it("renderable can be a string or a boolean or a function", function () {
     var Col = Backgrid.Column.extend({
       myRenderable: function () {}
     });
@@ -109,6 +125,14 @@ describe("A Column", function () {
       name: "name",
       cell: "string",
       renderable: false
+    });
+
+    expect(col.renderable()).toBe(false);
+
+    col = new Col({
+      name: "name",
+      cell: "string",
+      renderable: function () { return false; }
     });
 
     expect(col.renderable()).toBe(false);
