@@ -347,6 +347,11 @@ _.extend(EmailFormatter.prototype, {
 /**
    Formatter for SelectCell.
 
+   If the type of a model value is not a string, it is expected that a subclass
+   of this formatter is provided to the SelectCell, with #toRaw overridden to
+   convert the string value returned from the DOM back to whatever value is
+   expected in the model.
+
    @class Backgrid.SelectFormatter
    @extends Backgrid.CellFormatter
    @constructor
@@ -367,4 +372,3 @@ _.extend(SelectFormatter.prototype, {
     return _.isArray(rawValue) ? rawValue : rawValue != null ? [rawValue] : [];
   }
 });
-
