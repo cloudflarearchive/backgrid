@@ -75,7 +75,7 @@ describe("A Column", function () {
       sortable: function () { return false; }
     });
 
-    expect(col.sortable()).toBe(false);
+    expect(col.sortable()).toBe(col.get("sortable"));
   });
 
   it("editable can be a string or a boolean or a function", function () {
@@ -105,7 +105,7 @@ describe("A Column", function () {
       editable: function () { return false; }
     });
 
-    expect(col.editable()).toBe(false);
+    expect(col.editable()).toBe(col.get("editable"));
   });
 
   it("renderable can be a string or a boolean or a function", function () {
@@ -135,7 +135,7 @@ describe("A Column", function () {
       renderable: function () { return false; }
     });
 
-    expect(col.renderable()).toBe(false);
+    expect(col.renderable()).toBe(col.get("renderable"));
   });
 
 });
