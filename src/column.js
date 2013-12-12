@@ -138,7 +138,7 @@ var Column = Backgrid.Column = Backbone.Model.extend({
      - Backgrid.Cell
      - Backgrid.CellFormatter
    */
-  initialize: function (attrs) {
+  initialize: function () {
     if (!this.has("label")) {
       this.set({ label: this.get("name") }, { silent: true });
     }
