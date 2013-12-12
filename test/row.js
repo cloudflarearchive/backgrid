@@ -132,7 +132,7 @@ describe("A Empty Row", function () {
     expect($(row.el).find("td").text()).toEqual(" ");
   });
 
-  it("accepts an option for the text in the row", function() {
+  it("accepts a string option for the text in the row", function() {
     row = new Backgrid.EmptyRow({
       columns: [{
         name: "title"
@@ -140,6 +140,21 @@ describe("A Empty Row", function () {
         name: "author"
       }],
       emptyText: "No data"
+    });
+
+    row.render();
+
+    expect($(row.el).find("td").text()).toEqual("No data");
+  });
+
+  it("accepts a function option for the text in the row", function() {
+    row = new Backgrid.EmptyRow({
+      columns: [{
+        name: "title"
+      }, {
+        name: "author"
+      }],
+      emptyText: function() { return "No data"; }
     });
 
     row.render();

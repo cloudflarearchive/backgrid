@@ -126,14 +126,14 @@ var EmptyRow = Backgrid.EmptyRow = Backbone.View.extend({
   /** @property */
   tagName: "tr",
 
-  /** @property */
+  /** @property {string|function(): string} */
   emptyText: null,
 
   /**
      Initializer.
 
      @param {Object} options
-     @param {string} options.emptyText
+     @param {string|function(): string} options.emptyText
      @param {Backbone.Collection.<Backgrid.Column>|Array.<Backgrid.Column>|Array.<Object>} options.columns Column metadata.
    */
   initialize: function (options) {
@@ -149,7 +149,7 @@ var EmptyRow = Backgrid.EmptyRow = Backbone.View.extend({
 
     var td = document.createElement("td");
     td.setAttribute("colspan", this.columns.length);
-    td.textContent = this.emptyText;
+    td.textContent = _.result(this, "emptyText");
 
     this.el.setAttribute("class", "empty");
     this.el.appendChild(td);
