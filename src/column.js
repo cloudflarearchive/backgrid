@@ -51,23 +51,23 @@ var Column = Backgrid.Column = Backbone.Model.extend({
      @cfg {string|Backgrid.HeaderCell} [defaults.headerCell] The default header
      cell type.
 
-     @cfg {boolean|string} [defaults.sortable=true] Whether this column is
-     sortable. If the value is a string, a method will the same name will be
-     looked up from the column instance to determine whether the column should
-     be sortable. The method's signature must be `function (Backgrid.Column,
-     Backbone.Model): boolean`.
+     @cfg {boolean|string|function(): boolean} [defaults.sortable=true] Whether
+     this column is sortable. If the value is a string, a method will the same
+     name will be looked up from the column instance to determine whether the
+     column should be sortable. The method's signature must be `function
+     (Backgrid.Column, Backbone.Model): boolean`.
 
-     @cfg {boolean|string} [defaults.editable=true] Whether this column is
-     editable. If the value is a string, a method will the same name will be
-     looked up from the column instance to determine whether the column should
-     be editable. The method's signature must be `function (Backgrid.Column,
-     Backbone.Model): boolean`.
+     @cfg {boolean|string|function(): boolean} [defaults.editable=true] Whether
+     this column is editable. If the value is a string, a method will the same
+     name will be looked up from the column instance to determine whether the
+     column should be editable. The method's signature must be `function
+     (Backgrid.Column, Backbone.Model): boolean`.
 
-     @cfg {boolean|string} [defaults.renderable=true] Whether this column is
-     renderable. If the value is a string, a method will the same name will be
-     looked up from the column instance to determine whether the column should
-     be renderable. The method's signature must be `function (Backrid.Column,
-     Backbone.Model): boolean`.
+     @cfg {boolean|string|function(): boolean} [defaults.renderable=true]
+     Whether this column is renderable. If the value is a string, a method will
+     the same name will be looked up from the column instance to determine
+     whether the column should be renderable. The method's signature must be
+     `function (Backrid.Column, Backbone.Model): boolean`.
 
      @cfg {Backgrid.CellFormatter | Object | string} [defaults.formatter] The
      formatter to use to convert between raw model values and user input.
@@ -115,11 +115,11 @@ var Column = Backgrid.Column = Backbone.Model.extend({
 
      @param {string|Backgrid.HeaderCell} [attrs.headerCell]
 
-     @param {boolean|string} [attrs.sortable=true]
+     @param {boolean|string|function(): boolean} [attrs.sortable=true]
 
-     @param {boolean|string} [attrs.editable=true]
+     @param {boolean|string|function(): boolean} [attrs.editable=true]
 
-     @param {boolean|string} [attrs.renderable=true]
+     @param {boolean|string|function(): boolean} [attrs.renderable=true]
 
      @param {Backgrid.CellFormatter | Object | string} [attrs.formatter]
 
