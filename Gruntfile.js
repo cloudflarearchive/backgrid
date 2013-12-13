@@ -106,12 +106,12 @@ module.exports = function (grunt) {
               }
             }
           },
-          helpers: "assets/js/jasmine-html.js",
+          helpers: "vendor/js/jasmine-html.js",
           vendor: [
-            "assets/js/jquery.js",
-            "assets/js/underscore.js",
-            "assets/js/backbone.js",
-            "assets/js/backbone-pageable.js"
+            "test/vendor/js/jquery.js",
+            "test/vendor/js/underscore.js",
+            "test/vendor/js/backbone.js",
+            "test/vendor/js/backbone-pageable.js"
           ]
         }
       }
