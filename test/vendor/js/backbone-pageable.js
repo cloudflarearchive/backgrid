@@ -1,5 +1,5 @@
 /*
-  backbone-pageable 1.4.1
+  backbone-pageable 1.4.2
   http://github.com/wyuenho/backbone-pageable
 
   Copyright (c) 2013 Jimmy Yuen Ho Wong
@@ -425,7 +425,11 @@
               fullIndex;
           }
 
-          ++state.totalRecords;
+          if (!options.onRemove) {
+            ++state.totalRecords;
+            delete options.onRemove;
+          }
+
           pageCol.state = pageCol._checkState(state);
 
           if (colToAdd) {
@@ -436,9 +440,8 @@
               pageCol.at(pageSize) :
               null;
             if (modelToRemove) {
-              var popOptions = {onAdd: true};
               runOnceAtLastHandler(collection, event, function () {
-                pageCol.remove(modelToRemove, popOptions);
+                pageCol.remove(modelToRemove, {onAdd: true});
               });
             }
           }
@@ -463,16 +466,16 @@
             if (collection == pageCol) {
               if (nextModel = fullCol.at(pageEnd)) {
                 runOnceAtLastHandler(pageCol, event, function () {
-                  pageCol.push(nextModel);
+                  pageCol.push(nextModel, {onRemove: true});
                 });
               }
               fullCol.remove(model);
             }
             else if (removedIndex >= pageStart && removedIndex < pageEnd) {
               pageCol.remove(model);
-              var at = removedIndex + 1
+              var at = removedIndex + 1;
               nextModel = fullCol.at(at) || fullCol.last();
-              if (nextModel) pageCol.add(nextModel, {at: at});
+              if (nextModel) pageCol.add(nextModel, {at: at, onRemove: true});
             }
           }
           else delete options.onAdd;
