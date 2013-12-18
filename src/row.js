@@ -30,6 +30,7 @@ var Row = Backgrid.Row = Backbone.View.extend({
   */
   initialize: function (options) {
 
+    this.model = options.model;
     var columns = this.columns = options.columns;
     if (!(columns instanceof Backbone.Collection)) {
       columns = this.columns = new Columns(columns);
