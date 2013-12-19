@@ -1,5 +1,5 @@
 /*
-  backbone-pageable 1.4.2
+  backbone-pageable 1.4.3
   http://github.com/wyuenho/backbone-pageable
 
   Copyright (c) 2013 Jimmy Yuen Ho Wong
@@ -472,10 +472,12 @@
               fullCol.remove(model);
             }
             else if (removedIndex >= pageStart && removedIndex < pageEnd) {
+              if (nextModel = fullCol.at(pageEnd - 1)) {
+                runOnceAtLastHandler(pageCol, event, function() {
+                  pageCol.push(nextModel, {onRemove: true});
+                });
+              }
               pageCol.remove(model);
-              var at = removedIndex + 1;
-              nextModel = fullCol.at(at) || fullCol.last();
-              if (nextModel) pageCol.add(nextModel, {at: at, onRemove: true});
             }
           }
           else delete options.onAdd;
@@ -1135,7 +1137,7 @@
        then reset.
 
        The query string is constructed by translating the current pagination
-       state to your server API query parameter using #queryParams.  The current
+       state to your server API query parameter using #queryParams. The current
        page will reset after fetch.
 
        @param {Object} [options] Accepts all
@@ -1212,13 +1214,16 @@
 
           var models = col.models;
           if (mode == "client") fullCol.reset(models, opts);
-          else fullCol.add(models, _extend({at: fullCol.length}, opts));
+          else {
+            fullCol.add(models, _extend({at: fullCol.length}, opts));
+            self.trigger("reset", self, opts);
+          }
 
           if (success) success(col, resp, opts);
         };
 
         // silent the first reset from backbone
-        return BBColProto.fetch.call(self, _extend({}, options, {silent: true}));
+        return BBColProto.fetch.call(this, _extend({}, options, {silent: true}));
       }
 
       return BBColProto.fetch.call(this, options);
