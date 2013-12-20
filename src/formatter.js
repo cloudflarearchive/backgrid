@@ -160,7 +160,7 @@ PercentFormatter.prototype = new Backgrid.NumberFormatter(),
 
 _.extend(PercentFormatter.prototype, {
 
-  defaults: _.extend({}, NumberFormatter.prototype.default, {
+  defaults: _.extend({}, NumberFormatter.prototype.defaults, {
     multiplier: 1,
     symbol: "%"
   }),
