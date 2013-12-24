@@ -176,11 +176,13 @@
 .backgrid .datetime-cell,
 .backgrid .number-cell,
 .backgrid .integer-cell,
+.backgrid .percent-cell,
 .backgrid .date-cell.editor input[type=text],
 .backgrid .time-cell.editor input[type=text],
 .backgrid .datetime-cell.editor input[type=text],
 .backgrid .number-cell.editor input[type=text],
-.backgrid .integer-cell.editor input[type=text] {
+.backgrid .integer-cell.editor input[type=text],
+.backgrid .percent-cell.editor input[type=text] {
   text-align: right;
 }
 
