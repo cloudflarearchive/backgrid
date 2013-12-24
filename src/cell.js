@@ -885,10 +885,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
              command.moveUp() || command.moveDown() || e.type == "blur") {
       e.preventDefault();
       e.stopPropagation();
-      if (e.type == "blur" && this.$el.find("option").length === 1) {
-        model.set(column.get("name"), this.formatter.toRaw(this.$el.val(), model));
-      }
-      model.trigger("backgrid:edited", model, column, new Command(e));
+      this.save(e);
     }
   }
 
