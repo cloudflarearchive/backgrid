@@ -520,7 +520,7 @@ describe("An IntegerCell", function () {
     expect(cell.$el.text()).toBe("1");
   });
 
-  it("description", function () {
+  it("can be extended and it's defaults overidden", function () {
 
     var PlainIntegerCell = Backgrid.IntegerCell.extend({
       orderSeparator: ''
@@ -540,6 +540,56 @@ describe("An IntegerCell", function () {
     expect(cell.$el.text()).toBe("1000");
   });
 
+});
+
+describe("A PercentCell", function () {
+
+  var cell;
+
+  beforeEach(function () {
+    cell = new Backgrid.PercentCell({
+      model: new Backbone.Model({
+        rate: 99.8
+      }),
+      column: {
+        name: "rate",
+        cell: "percent"
+      }
+    });
+  });
+
+  it("applies an percent-cell class to the cell", function () {
+    cell.render();
+    expect(cell.$el.hasClass("percent-cell")).toBe(true);
+  });
+
+  it("will render a percentage string", function () {
+    cell.render();
+    expect(cell.$el.text()).toBe("99.80%");
+  });
+
+  it("can be extended and it's defaults overidden", function () {
+
+    var MyPercentCell = Backgrid.PercentCell.extend({
+      orderSeparator: '',
+      symbol: "pct",
+      multiplier: 100
+    });
+
+    var cell = new MyPercentCell({
+      model: new Backbone.Model({
+        rate: 10.99
+      }),
+      column: {
+        name: "rate",
+        cell: MyPercentCell
+      }
+    });
+
+    cell.render();
+    expect(cell.$el.text()).toBe("1099.00pct");
+  });
+  
 });
 
 describe("A DatetimeCell", function () {
