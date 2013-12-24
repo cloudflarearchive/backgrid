@@ -504,6 +504,43 @@ var IntegerCell = Backgrid.IntegerCell = NumberCell.extend({
 });
 
 /**
+   A PercentCell is another Backgrid.NumberCell that takes a floating number,
+   optionally multiplied by a multiplier and display it as a percentage.
+
+   @class Backgrid.PercentCell
+   @extends Backgrid.NumberCell
+ */
+var PercentCell = Backgrid.PercentCell = NumberCell.extend({
+
+  /** @property */
+  className: "percent-cell",
+
+  /** @property {number} [multiplier=1] */
+  multiplier: PercentFormatter.prototype.defaults.multiplier,
+
+  /** @property {string} [symbol='%'] */
+  symbol: PercentFormatter.prototype.defaults.symbol,
+
+  /** @property {Backgrid.CellFormatter} [formatter=Backgrid.PercentFormatter] */
+  formatter: PercentFormatter,
+
+  /**
+     Initializes this cell and the percent formatter.
+
+     @param {Object} options
+     @param {Backbone.Model} options.model
+     @param {Backgrid.Column} options.column
+  */
+  initialize: function () {
+    PercentCell.__super__.initialize.apply(this, arguments);
+    var formatter = this.formatter;
+    formatter.multiplier = this.multiplier;
+    formatter.symbol = this.symbol;
+  }
+
+});
+
+/**
    DatetimeCell is a basic cell that accepts datetime string values in RFC-2822
    or W3C's subset of ISO-8601 and displays them in ISO-8601 format. For a much
    more sophisticated date time cell with better datetime formatting, take a

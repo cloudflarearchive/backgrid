@@ -102,6 +102,39 @@ describe("A NumberFormatter", function () {
 
 });
 
+describe("A PercentFormatter", function () {
+
+  it(".fromRaw() converts a number to a string by multipling it by a multiplier and appending a symbol", function () {
+    var formatter = new Backgrid.PercentFormatter();
+    expect(formatter.fromRaw(99.8)).toBe("99.80%");
+
+    formatter.multiplier = 100;
+    expect(formatter.fromRaw(0.998)).toBe("99.80%");
+
+    formatter.symbol = "pct";
+    expect(formatter.fromRaw(0.998)).toBe("99.80pct");
+  });
+
+  it(".toRaw() converts a string to a number by removing the symbol and dividing it by the multiplier", function () {
+    var formatter = new Backgrid.PercentFormatter();
+    expect(formatter.toRaw("99.8%")).toBe(99.8);
+    expect(formatter.toRaw("99.8")).toBe(99.8);
+
+    formatter.multiplier = 100;
+    expect(formatter.toRaw("99.8%")).toBe(0.998);
+
+    formatter.symbol = "pct";
+    expect(formatter.toRaw("99.8pct")).toBe(0.998);
+  });
+
+  it(".toRaw() returns undefined for invalid number or percent strings", function () {
+    var formatter = new Backgrid.PercentFormatter();
+    expect(formatter.toRaw("abc")).toBeUndefined();
+    expect(formatter.toRaw("0.1pct")).toBeUndefined();
+  });
+
+});
+
 describe("A DatetimeFormatter", function () {
 
   it("throws Error if includeDate and includeTime are both false", function () {
