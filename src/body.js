@@ -26,7 +26,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
      @param {Backbone.Collection.<Backgrid.Column>|Array.<Backgrid.Column>|Array.<Object>} options.columns
      Column metadata.
      @param {Backgrid.Row} [options.row=Backgrid.Row] The Row class to use.
-     @param {string:function(): string} [options.emptyText] The text to display in the empty row.
+     @param {string|function(): string} [options.emptyText] The text to display in the empty row.
 
      @throws {TypeError} If options.columns or options.collection is undefined.
 

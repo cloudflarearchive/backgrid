@@ -11,6 +11,7 @@
           "Backgrid.TimeCell",
           "Backgrid.NumberCell",
           "Backgrid.IntegerCell",
+          "Backgrid.PercentCell",
           "Backgrid.StringCell",
           "Backgrid.UriCell",
           "Backgrid.EmailCell",
@@ -32,6 +33,7 @@
           "Backgrid.StringFormatter",
           "Backgrid.EmailFormatter",
           "Backgrid.NumberFormatter",
+          "Backgrid.PercentFormatter",
           "Backgrid.DatetimeFormatter",
           "Backgrid.SelectFormatter"
         ]
