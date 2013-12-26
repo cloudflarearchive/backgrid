@@ -38,9 +38,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
       this.column = new Column(this.column);
     }
 
-    this.listenTo(this.collection, "backgrid:sort", this._resetCellDirection);
-
-    var column = this.column, $el = this.$el;
+    var column = this.column, collection = this.collection, $el = this.$el;
 
     this.listenTo(column, "change:editable change:sortable change:renderable",
                   function (column) {
@@ -54,9 +52,11 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
 
     this.listenTo(column, "change:name change:label", this.render);
 
-    if (column.get("editable")) $el.addClass("editable");
-    if (column.get("sortable")) $el.addClass("sortable");
-    if (column.get("renderable")) $el.addClass("renderable");
+    if (Backgrid.callByNeed(column.editable(), column, collection)) $el.addClass("editable");
+    if (Backgrid.callByNeed(column.sortable(), column, collection)) $el.addClass("sortable");
+    if (Backgrid.callByNeed(column.renderable(), column, collection)) $el.addClass("renderable");
+
+    this.listenTo(collection, "backgrid:sort", this._resetCellDirection);
   },
 
   /**

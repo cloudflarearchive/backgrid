@@ -248,6 +248,69 @@ describe("A Cell", function () {
 
     cell.column.set("renderable", false);
     expect(cell.$el.hasClass("renderable")).toBe(false);
+
+    var TrueCol = Backgrid.Column.extend({
+      mySortable: function () { return true; },
+      myRenderable: function () { return true; },
+      myEditable: function () { return true; }
+    });
+
+    var FalseCol = Backgrid.Column.extend({
+      mySortable: function () { return false; },
+      myRenderable: function () { return false; },
+      myEditable: function () { return false; }
+    });
+
+    column = new TrueCol({
+      name: "title",
+      cell: "string",
+      sortable: "mySortable",
+      renderable: "myRenderable",
+      editable: "myEditable"
+    });
+
+    cell = new Backgrid.Cell({
+      model: book,
+      column: column
+    });
+
+    expect(cell.$el.hasClass("editable")).toBe(true);
+    expect(cell.$el.hasClass("sortable")).toBe(true);
+    expect(cell.$el.hasClass("renderable")).toBe(true);
+
+    column = new FalseCol({
+      name: "title",
+      cell: "string",
+      sortable: "mySortable",
+      renderable: "myRenderable",
+      editable: "myEditable"
+    });
+
+    cell = new Backgrid.Cell({
+      model: book,
+      column: column
+    });
+
+    expect(cell.$el.hasClass("editable")).toBe(false);
+    expect(cell.$el.hasClass("sortable")).toBe(false);
+    expect(cell.$el.hasClass("renderable")).toBe(false);
+
+    column = new Backgrid.Column({
+      name: "title",
+      cell: "string",
+      sortable: function () { return true; },
+      editable: function () { return true; },
+      renderable: function () { return true; }
+    });
+
+    cell = new Backgrid.Cell({
+      model: book,
+      column: column
+    });
+
+    expect(cell.$el.hasClass("editable")).toBe(true);
+    expect(cell.$el.hasClass("sortable")).toBe(true);
+    expect(cell.$el.hasClass("renderable")).toBe(true);
   });
 
   it("renders a td with the model value formatted for display", function () {
@@ -589,7 +652,7 @@ describe("A PercentCell", function () {
     cell.render();
     expect(cell.$el.text()).toBe("1099.00pct");
   });
-  
+
 });
 
 describe("A DatetimeCell", function () {
