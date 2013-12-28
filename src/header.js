@@ -131,7 +131,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
     if(sortable){
       label = $("<a>").text(column.get("label")).append("<b class='sort-caret'></b>");
     } else {
-      label = column.get("label");
+      label = document.createTextNode(column.get("label"));
     }
 
     this.$el.append(label);
