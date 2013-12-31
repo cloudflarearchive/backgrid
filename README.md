@@ -22,6 +22,7 @@ functionalities easy.
 - Highly modular and customizable. Components are just simple Backbone View classes, customization is easy if you already know Backbone.
 - Lightweight. Extra features are separated into extensions, which keeps the bloat away.
 - Good documentation.
+- Well tested. Comes with [100s of test cases](http://wyuenho.github.io/backgrid/test/).
 
 ## Supported browsers:
 
@@ -29,6 +30,7 @@ functionalities easy.
 - Chrome 4+
 - Safari 4+
 - Firefox 4+
+- Opera 9+
 
 ### Notes:
 
@@ -93,7 +95,7 @@ $("#example-1-result").append(grid.render().el);
 
 # Result:
 
-Take a look [here](http://backgridjs.com/#examples).
+Take a look [here](http://backgridjs.com/index.html#basic-example).
 
 ## More Examples
 
