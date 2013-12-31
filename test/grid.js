@@ -3,7 +3,7 @@
   http://github.com/wyuenho/backgrid
 
   Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
-  Licensed under the MIT @license.
+  Licensed under the MIT license.
 */
 describe("A Grid", function () {
 
@@ -36,27 +36,7 @@ describe("A Grid", function () {
     });
   });
 
-  it("throws TypeError if a list of column definition is not given", function () {
-    expect(function () {
-      new Backgrid.Grid({
-        collection: books
-      });
-    }).toThrow(new TypeError("'columns' is required"));
-  });
-
-  it("throws TypeError if a collection is not given", function () {
-    expect(function () {
-      new Backgrid.Grid({
-        columns: [{
-          name: "title",
-          cell: "string"
-        }]
-      });
-    }).toThrow(new TypeError("'collection' is required"));
-  });
-
-  it("renders a table with a header, body and an optional footer section", function () {
-
+  it("renders a table with a body, optional header, and an optional footer section", function () {
     spyOn(grid, "trigger");
     spyOn(grid.header, "render").andCallThrough();
     spyOn(grid.footer, "render").andCallThrough();
@@ -115,11 +95,11 @@ describe("A Grid", function () {
       name: "id",
       cell: "integer"
     }]);
-    expect(grid.el.innerHTML).toBe('<thead><tr><th><a>id<b class="sort-caret"></b></a></th></tr></thead>' +
+    expect(grid.el.innerHTML).toBe('<thead><tr><th class="editable sortable renderable id"><a>id<b class="sort-caret"></b></a></th></tr></thead>' +
                                    '<tfoot></tfoot>' +
-                                   '<tbody><tr><td class="integer-cell">1</td></tr>' +
-                                   '<tr><td class="integer-cell">2</td></tr>' +
-                                   '<tr><td class="integer-cell">3</td></tr></tbody>');
+                                   '<tbody><tr><td class="integer-cell editable sortable renderable">1</td></tr>' +
+                                   '<tr><td class="integer-cell editable sortable renderable">2</td></tr>' +
+                                   '<tr><td class="integer-cell editable sortable renderable">3</td></tr></tbody>');
   });
 
 });

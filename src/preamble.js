@@ -3,10 +3,8 @@
   http://github.com/wyuenho/backgrid
 
   Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
-  Licensed under the MIT @license.
+  Licensed under the MIT license.
 */
-
-var window = root;
 
 // Copyright 2009, 2010 Kristopher Michael Kowal
 // https://github.com/kriskowal/es5-shim
@@ -31,10 +29,6 @@ if (!String.prototype.trim || ws.trim()) {
   };
 }
 
-function capitalize(s) {
-  return String.fromCharCode(s.charCodeAt(0) - 32) + s.slice(1);
-}
-
 function lpad(str, length, padstr) {
   var paddingLen = length - (str + '').length;
   paddingLen =  paddingLen < 0 ? 0 : paddingLen;
@@ -45,24 +39,19 @@ function lpad(str, length, padstr) {
   return padding + str;
 }
 
+var $ = Backbone.$;
+
 var Backgrid = root.Backgrid = {
 
-  VERSION: "0.2.6",
+  VERSION: "0.3.0",
 
   Extension: {},
 
-  requireOptions: function (options, requireOptionKeys) {
-    for (var i = 0; i < requireOptionKeys.length; i++) {
-      var key = requireOptionKeys[i];
-      if (_.isUndefined(options[key])) {
-        throw new TypeError("'" + key  + "' is required");
-      }
-    }
-  },
-
   resolveNameToClass: function (name, suffix) {
     if (_.isString(name)) {
-      var key = _.map(name.split('-'), function (e) { return capitalize(e); }).join('') + suffix;
+      var key = _.map(name.split('-'), function (e) {
+        return e.slice(0, 1).toUpperCase() + e.slice(1);
+      }).join('') + suffix;
       var klass = Backgrid[key] || Backgrid.Extension[key];
       if (_.isUndefined(klass)) {
         throw new ReferenceError("Class '" + key + "' not found");
@@ -71,7 +60,17 @@ var Backgrid = root.Backgrid = {
     }
 
     return name;
+  },
+
+  callByNeed: function () {
+    var value = arguments[0];
+    if (!_.isFunction(value)) return value;
+
+    var context = arguments[1];
+    var args = [].slice.call(arguments, 2);
+    return value.apply(context, !!(args + '') ? args : void 0);
   }
+
 };
 _.extend(Backgrid, Backbone.Events);
 
@@ -89,7 +88,7 @@ _.extend(Backgrid, Backbone.Events);
 var Command = Backgrid.Command = function (evt) {
   _.extend(this, {
     altKey: !!evt.altKey,
-    char: evt.char,
+    "char": evt["char"],
     charCode: evt.charCode,
     ctrlKey: !!evt.ctrlKey,
     key: evt.key,

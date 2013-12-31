@@ -3,7 +3,7 @@
   http://github.com/wyuenho/backgrid
 
   Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
-  Licensed under the MIT @license.
+  Licensed under the MIT license.
 */
 
 /**
@@ -27,9 +27,10 @@ _.extend(CellFormatter.prototype, {
 
      @member Backgrid.CellFormatter
      @param {*} rawData
+     @param {Backbone.Model} model Used for more complicated formatting
      @return {*}
   */
-  fromRaw: function (rawData) {
+  fromRaw: function (rawData, model) {
     return rawData;
   },
 
@@ -42,16 +43,18 @@ _.extend(CellFormatter.prototype, {
 
      @member Backgrid.CellFormatter
      @param {string} formattedData
+     @param {Backbone.Model} model Used for more complicated formatting
      @return {*|undefined}
   */
-  toRaw: function (formattedData) {
+  toRaw: function (formattedData, model) {
     return formattedData;
   }
 
 });
 
 /**
-   A floating point number formatter. Doesn't understand notation at the moment.
+   A floating point number formatter. Doesn't understand scientific notation at
+   the moment.
 
    @class Backgrid.NumberFormatter
    @extends Backgrid.CellFormatter
@@ -59,8 +62,7 @@ _.extend(CellFormatter.prototype, {
    @throws {RangeError} If decimals < 0 or > 20.
 */
 var NumberFormatter = Backgrid.NumberFormatter = function (options) {
-  options = options ? _.clone(options) : {};
-  _.extend(this, this.defaults, options);
+  _.extend(this, this.defaults, options || {});
 
   if (this.decimals < 0 || this.decimals > 20) {
     throw new RangeError("decimals must be between 0 and 20");
@@ -97,9 +99,10 @@ _.extend(NumberFormatter.prototype, {
 
      @member Backgrid.NumberFormatter
      @param {number} number
+     @param {Backbone.Model} model Used for more complicated formatting
      @return {string}
   */
-  fromRaw: function (number) {
+  fromRaw: function (number, model) {
     if (_.isNull(number) || _.isUndefined(number)) return '';
 
     number = number.toFixed(~~this.decimals);
@@ -117,13 +120,18 @@ _.extend(NumberFormatter.prototype, {
 
      @member Backgrid.NumberFormatter
      @param {string} formattedData
+     @param {Backbone.Model} model Used for more complicated formatting
      @return {number|undefined} Undefined if the string cannot be converted to
      a number.
   */
-  toRaw: function (formattedData) {
+  toRaw: function (formattedData, model) {
+    formattedData = formattedData.trim();
+
+    if (formattedData === '') return null;
+
     var rawData = '';
 
-    var thousands = formattedData.trim().split(this.orderSeparator);
+    var thousands = formattedData.split(this.orderSeparator);
     for (var i = 0; i < thousands.length; i++) {
       rawData += thousands[i];
     }
@@ -145,6 +153,76 @@ _.extend(NumberFormatter.prototype, {
 });
 
 /**
+   A number formatter that converts a floating point number, optionally
+   multiplied by a multiplier, to a percentage string and vice versa.
+
+   @class Backgrid.PercentFormatter
+   @extends Backgrid.NumberFormatter
+   @constructor
+   @throws {RangeError} If decimals < 0 or > 20.
+ */
+var PercentFormatter = Backgrid.PercentFormatter = function () {
+  Backgrid.NumberFormatter.apply(this, arguments);
+};
+
+PercentFormatter.prototype = new Backgrid.NumberFormatter(),
+
+_.extend(PercentFormatter.prototype, {
+
+  /**
+     @member Backgrid.PercentFormatter
+     @cfg {Object} options
+
+     @cfg {number} [options.multiplier=1] The number used to multiply the model
+     value for display.
+
+     @cfg {string} [options.symbol='%'] The symbol to append to the percentage
+     string.
+   */
+  defaults: _.extend({}, NumberFormatter.prototype.defaults, {
+    multiplier: 1,
+    symbol: "%"
+  }),
+
+  /**
+     Takes a floating point number, where the number is first multiplied by
+     `multiplier`, then converted to a formatted string like
+     NumberFormatter#fromRaw, then finally append `symbol` to the end.
+
+     @member Backgrid.PercentFormatter
+     @param {number} rawValue
+     @param {Backbone.Model} model Used for more complicated formatting
+     @return {string}
+  */
+  fromRaw: function (number, model) {
+    var args = [].slice.call(arguments, 1);
+    args.unshift(number * this.multiplier);
+    return (NumberFormatter.prototype.fromRaw.apply(this, args) || "0") + this.symbol;
+  },
+
+  /**
+     Takes a string, possibly appended with `symbol` and/or `decimalSeparator`,
+     and convert it back to a number for the model like NumberFormatter#toRaw,
+     and then dividing it by `multiplier`.
+
+     @member Backgrid.PercentFormatter
+     @param {string} formattedData
+     @param {Backbone.Model} model Used for more complicated formatting
+     @return {number|undefined} Undefined if the string cannot be converted to
+     a number.
+  */
+  toRaw: function (formattedValue, model) {
+    var tokens = formattedValue.split(this.symbol);
+    if (tokens && tokens[0] && tokens[1] === "" || tokens[1] == null) {
+      var rawValue = NumberFormatter.prototype.toRaw.call(this, tokens[0]);
+      if (_.isUndefined(rawValue)) return rawValue;
+      return rawValue / this.multiplier;
+    }
+  }
+
+});
+
+/**
    Formatter to converts between various datetime formats.
 
    This class only understands ISO-8601 formatted datetime strings and UNIX
@@ -158,8 +236,7 @@ _.extend(NumberFormatter.prototype, {
    @throws {Error} If both `includeDate` and `includeTime` are false.
 */
 var DatetimeFormatter = Backgrid.DatetimeFormatter = function (options) {
-  options = options ? _.clone(options) : {};
-  _.extend(this, this.defaults, options);
+  _.extend(this, this.defaults, options || {});
 
   if (!this.includeDate && !this.includeTime) {
     throw new Error("Either includeDate or includeTime must be true");
@@ -193,6 +270,8 @@ _.extend(DatetimeFormatter.prototype, {
   ISO_SPLITTER_RE: /T|Z| +/,
 
   _convert: function (data, validate) {
+    if ((data + '').trim() === '') return null;
+
     var date, time = null;
     if (_.isNumber(data)) {
       var jsDate = new Date(data);
@@ -251,10 +330,11 @@ _.extend(DatetimeFormatter.prototype, {
 
      @member Backgrid.DatetimeFormatter
      @param {string} rawData
+     @param {Backbone.Model} model Used for more complicated formatting
      @return {string|null|undefined} ISO-8601 string in UTC. Null and undefined
      values are returned as is.
   */
-  fromRaw: function (rawData) {
+  fromRaw: function (rawData, model) {
     if (_.isNull(rawData) || _.isUndefined(rawData)) return '';
     return this._convert(rawData);
   },
@@ -268,12 +348,13 @@ _.extend(DatetimeFormatter.prototype, {
 
      @member Backgrid.DatetimeFormatter
      @param {string} formattedData
+     @param {Backbone.Model} model Used for more complicated formatting
      @return {string|undefined} ISO-8601 string in UTC. Undefined if a date is
      found when `includeDate` is false, or a time is found when `includeTime` is
      false, or if `includeDate` is true and a date is not found, or if
      `includeTime` is true and a time is not found.
   */
-  toRaw: function (formattedData) {
+  toRaw: function (formattedData, model) {
     return this._convert(formattedData, true);
   }
 
@@ -296,9 +377,10 @@ _.extend(StringFormatter.prototype, {
 
      @member Backgrid.StringFormatter
      @param {*} rawValue
+     @param {Backbone.Model} model Used for more complicated formatting
      @return {string}
    */
-  fromRaw: function (rawValue) {
+  fromRaw: function (rawValue, model) {
     if (_.isUndefined(rawValue) || _.isNull(rawValue)) return '';
     return rawValue + '';
   }
@@ -321,9 +403,10 @@ _.extend(EmailFormatter.prototype, {
 
      @member Backgrid.EmailFormatter
      @param {*} formattedData
+     @param {Backbone.Model} model Used for more complicated formatting
      @return {string|undefined}
    */
-  toRaw: function (formattedData) {
+  toRaw: function (formattedData, model) {
     var parts = formattedData.trim().split("@");
     if (parts.length === 2 && _.all(parts)) {
       return formattedData;
@@ -333,6 +416,11 @@ _.extend(EmailFormatter.prototype, {
 
 /**
    Formatter for SelectCell.
+
+   If the type of a model value is not a string, it is expected that a subclass
+   of this formatter is provided to the SelectCell, with #toRaw overridden to
+   convert the string value returned from the DOM back to whatever value is
+   expected in the model.
 
    @class Backgrid.SelectFormatter
    @extends Backgrid.CellFormatter
@@ -347,10 +435,10 @@ _.extend(SelectFormatter.prototype, {
 
      @member Backgrid.SelectFormatter
      @param {*} rawValue
+     @param {Backbone.Model} model Used for more complicated formatting
      @return {Array.<*>}
   */
-  fromRaw: function (rawValue) {
+  fromRaw: function (rawValue, model) {
     return _.isArray(rawValue) ? rawValue : rawValue != null ? [rawValue] : [];
   }
 });
-

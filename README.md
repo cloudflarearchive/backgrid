@@ -1,5 +1,7 @@
 # Backgrid.js
 
+[![Build Status](https://travis-ci.org/wyuenho/backgrid.png?branch=master)](https://travis-ci.org/wyuenho/backgrid)
+
 Backgrid.js is a set of components for building semantic and easily stylable
 data grid widgets. It offers a simple, intuitive programming interface that
 makes easy things easy, but hard things possible when dealing with tabular data.
@@ -20,6 +22,7 @@ functionalities easy.
 - Highly modular and customizable. Components are just simple Backbone View classes, customization is easy if you already know Backbone.
 - Lightweight. Extra features are separated into extensions, which keeps the bloat away.
 - Good documentation.
+- Well tested. Comes with [100s of test cases](http://wyuenho.github.io/backgrid/test/).
 
 ## Supported browsers:
 
@@ -92,12 +95,17 @@ $("#example-1-result").append(grid.render().el);
 
 # Result:
 
-Take a look [here](http://backgridjs.com/#examples).
+Take a look [here](http://backgridjs.com/index.html#basic-example).
 
 ## More Examples
 
 Are you kidding me? This is a README file. Go to the [documentation](http://backgridjs.com/
 "Backbone.js Documentation") to find out more :)
+
+## Commercial Support
+
+If there's a feature that you would like me to implement or a bug you'd like me
+to fix, you can contact me at this [email address](mailto:wyuenho@gmail.com).
 
 ## License
 Copyright (c) 2013 Jimmy Yuen Ho Wong  

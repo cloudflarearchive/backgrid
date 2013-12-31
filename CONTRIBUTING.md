@@ -34,44 +34,26 @@ Basic Email etiquette is appreciated.
 Building
 ========
 
-The Backgrid.js build system is designed to be used in a UNIX-like
-environment. Backgrid.js uses [gmake](http://www.gnu.org/software/make/),
-[uglifyjs](https://github.com/mishoo/UglifyJS2),
-[recess](https://github.com/twitter/recess) and
-[JSDuck](https://github.com/senchalabs/jsduck).
+Backgrid.js uses [Grunt](http://gruntjs.com/) and
+[JSDuck <= 4.10.4](https://github.com/senchalabs/jsduck) to generate its
+documentation.
 
 ### Note:
 
 You need to install [node.js and npm](http://nodejs.org) first before you can
-install uglifyjs and recess.
+install Grunt.
 
 Once you have everything installed, you can do this to trigger a distribution
 build:
 
 ```shell
 $ cd backgrid
+$ npm install
 # Recursively builds the core, extensions and put the output into lib
-$ make dist
+$ grunt dist
+# Builds everything, including the docs and runs the tests
+$ grunt
 ```
-
-If you are contributing a new extension, there's a convenient command for you:
-
-```shell
-$ make extension
-Please specify your extension name: google-earth-body
-```
-
-A directory named `src/extensions/google-earth-body` should have been created
-for you.
-
-Due to laziness, the current implementation of `make extension` only creates a
-blank directory filled with a bunch of blank files for you. You should take a
-look at other extensions to copy what you need. e.g. Makefile, .gitignore.
-
-When you are ready to make your awesome extension available to the world, don't
-forget to add your extension to the `SUBDIRS` variable in
-`src/extensions/Makefile`.
-
 
 Branching
 =========
@@ -99,25 +81,14 @@ code follows this coding style extremely closely, with 2 exceptions:
 - " is preferred over ' in string literals because the project owner is cursed
    by C.
 
-CSS
----
-
-Please make sure you use `recess` to lint your CSS files before you submit a
-pull request. There's a make rule put in every Makefile for this purpose.
-
-```shell
-$ make csslint
-```
-
 Testing
 =======
 
-Backbone.js uses [jasmine](http://pivotal.github.com/jasmine/) for testing. To
-facilitate console based testing, there's a make rule in the toplevel Makefile
-you can use:
+Backbone.js uses [jasmine](http://pivotal.github.com/jasmine/) for testing. You
+can invoke the following Grunt task to run the tests inside a terminal:
 
 ```shell
-$ make test
+$ grunt jasmine
 ```
 
 Commit Messages
@@ -143,11 +114,11 @@ If you make any changes to the documentation, since Backgrid.js uses
 and submit a pull request from that branch.
 
 If you change any Javascript comment documentation, you should rebuild the API
-document. There is also a make rule for this purpose, but make sure you have
+document. There is also a Grunt task for this purpose, but make sure you have
 installed [JSDuck](https://github.com/senchalabs/jsduck) first.
 
 ```shell
-$ make doc
+$ grunt doc
 ```
 
 Changes that come with tests are more equal than others.

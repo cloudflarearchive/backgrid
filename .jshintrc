@@ -11,8 +11,10 @@
   "undef": true,
   "unused": true,
   "eqnull": true,
+  "-W018": true,
 
   "browser": true,
+  "node": true,
   "devel": true,
   "jquery": true,
   "nonstandard": true,

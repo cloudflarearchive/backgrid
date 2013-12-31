@@ -3,7 +3,7 @@
   http://github.com/wyuenho/backgrid
 
   Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
-  Licensed under the MIT @license.
+  Licensed under the MIT license.
 */
 describe("A CellFormatter", function () {
 
@@ -68,6 +68,12 @@ describe("A NumberFormatter", function () {
     expect(formatter.fromRaw(undefined)).toBe('');
   });
 
+  it(".toRaw() converts a blank string to null", function () {
+    var formatter = new Backgrid.NumberFormatter();
+    expect(formatter.toRaw('')).toBe(null);
+    expect(formatter.toRaw(' ')).toBe(null);
+  });
+
   it(".toRaw() converts a number string with any number of decimals, with " +
      "1000s separated by ',' and the decimal part separated by '.' to a " +
      "number by default", function () {
@@ -89,10 +95,42 @@ describe("A NumberFormatter", function () {
     expect(formatter.toRaw("1.000.003,141592653589793238462")).toBe(1000003.142);
   });
 
-  it(".toRaw() returns undefined for empty strings or strings of whitespaces", function () {
+  it(".toRaw() returns undefined for invalid number strings", function () {
     var formatter = new Backgrid.NumberFormatter();
-    expect(formatter.toRaw('')).toBe(0);
-    expect(formatter.toRaw(' ')).toBe(0);
+    expect(formatter.toRaw('ads')).toBeUndefined();
+  });
+
+});
+
+describe("A PercentFormatter", function () {
+
+  it(".fromRaw() converts a number to a string by multipling it by a multiplier and appending a symbol", function () {
+    var formatter = new Backgrid.PercentFormatter();
+    expect(formatter.fromRaw(99.8)).toBe("99.80%");
+
+    formatter.multiplier = 100;
+    expect(formatter.fromRaw(0.998)).toBe("99.80%");
+
+    formatter.symbol = "pct";
+    expect(formatter.fromRaw(0.998)).toBe("99.80pct");
+  });
+
+  it(".toRaw() converts a string to a number by removing the symbol and dividing it by the multiplier", function () {
+    var formatter = new Backgrid.PercentFormatter();
+    expect(formatter.toRaw("99.8%")).toBe(99.8);
+    expect(formatter.toRaw("99.8")).toBe(99.8);
+
+    formatter.multiplier = 100;
+    expect(formatter.toRaw("99.8%")).toBe(0.998);
+
+    formatter.symbol = "pct";
+    expect(formatter.toRaw("99.8pct")).toBe(0.998);
+  });
+
+  it(".toRaw() returns undefined for invalid number or percent strings", function () {
+    var formatter = new Backgrid.PercentFormatter();
+    expect(formatter.toRaw("abc")).toBeUndefined();
+    expect(formatter.toRaw("0.1pct")).toBeUndefined();
   });
 
 });
@@ -195,6 +233,12 @@ describe("A DatetimeFormatter", function () {
     }).toThrow();
   });
 
+  it(".toRaw() returns null when a blank string is supplied", function () {
+    var formatter = new Backgrid.DatetimeFormatter();
+    expect(formatter.toRaw('')).toBe(null);
+    expect(formatter.toRaw(' ')).toBe(null);
+  });
+
   it(".toRaw() returns undefined when converting an ISO datetime string to an ISO date string", function () {
     var formatter = new Backgrid.DatetimeFormatter({
       includeTime: false
@@ -295,12 +339,6 @@ describe("A DatetimeFormatter", function () {
       includeMilli: true
     });
     expect(formatter.toRaw("05:30:29.123")).toBe("05:30:29.123");
-  });
-
-  it(".toRaw() returns undefined when converting an empty string or a string of whitespaces", function () {
-    var formatter = new Backgrid.DatetimeFormatter();
-    expect(formatter.toRaw('')).toBeUndefined();
-    expect(formatter.toRaw(' ')).toBeUndefined();
   });
 });
 
