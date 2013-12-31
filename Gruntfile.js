@@ -49,12 +49,9 @@ module.exports = function (grunt) {
             '                             require("backbone"));\n' +
             '  }\n' +
             '  // Browser\n' +
-            '  else if (typeof _ !== "undefined" &&\n' +
-            '    typeof Backbone !== "undefined") {\n' +
-            '    factory(window, _, Backbone);\n' +
-            '  }\n' +
+            '  else factory(this, this._, this.Backbone);\n' +
             '}(function (root, _, Backbone) {\n\n  \"use strict\";\n',
-          footer: 'return Backgrid;\n' + 
+          footer: 'return Backgrid;\n' +
             '}));'
         },
         src: [
