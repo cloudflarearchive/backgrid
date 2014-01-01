@@ -63,7 +63,8 @@ module.exports = function (grunt) {
           "src/header.js",
           "src/body.js",
           "src/footer.js",
-          "src/grid.js"
+          "src/grid.js",
+          "src/container.js"
         ],
         dest: "lib/backgrid.js"
       }
