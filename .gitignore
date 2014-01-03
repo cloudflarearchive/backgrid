@@ -1,4 +1,5 @@
 api
+bower_components
 components
 .grunt
 node_modules
