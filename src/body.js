@@ -313,15 +313,20 @@ var Body = Backgrid.Body = Backbone.View.extend({
      Moves focus to the next renderable and editable cell and return the
      currently editing cell to display mode.
 
+     Triggers a `backgrid:next` event on the model with the indices of the row
+     and column the user *intended* to move to, and whether the intended move
+     was going to go out of bounds. Note that *out of bound* always means an
+     attempt to go past the end of the last row.
+
      @param {Backbone.Model} model The originating model
      @param {Backgrid.Column} column The originating model column
      @param {Backgrid.Command} command The Command object constructed from a DOM
-     Event
+     event
   */
   moveToNextCell: function (model, column, command) {
     var i = this.collection.indexOf(model);
     var j = this.columns.indexOf(column);
-    var cell, renderable, editable;
+    var cell, renderable, editable, m, n;
 
     this.rows[i].cells[j].exitEditMode();
 
@@ -331,28 +336,36 @@ var Body = Backgrid.Body = Backbone.View.extend({
       var maxOffset = l * this.collection.length;
 
       if (command.moveUp() || command.moveDown()) {
-        var row = this.rows[i + (command.moveUp() ? -1 : 1)];
+        m = i + (command.moveUp() ? -1 : 1);
+        var row = this.rows[m];
         if (row) {
           cell = row.cells[j];
           if (Backgrid.callByNeed(cell.column.editable(), cell.column, model)) {
             cell.enterEditMode();
+            model.trigger("backgrid:next", m, j, false);
           }
         }
+        else model.trigger("backgrid:next", m, j, true);
       }
       else if (command.moveLeft() || command.moveRight()) {
         var right = command.moveRight();
         for (var offset = i * l + j + (right ? 1 : -1);
              offset >= 0 && offset < maxOffset;
              right ? offset++ : offset--) {
-          var m = ~~(offset / l);
-          var n = offset - m * l;
+          m = ~~(offset / l);
+          n = offset - m * l;
           cell = this.rows[m].cells[n];
           renderable = Backgrid.callByNeed(cell.column.renderable(), cell.column, cell.model);
           editable = Backgrid.callByNeed(cell.column.editable(), cell.column, model);
           if (renderable && editable) {
             cell.enterEditMode();
+            model.trigger("backgrid:next", m, n, false);
             break;
           }
+        }
+
+        if (offset == maxOffset) {
+          model.trigger("backgrid:next", ~~(offset / l), offset - m * l, true);
         }
       }
     }
