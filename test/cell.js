@@ -1286,24 +1286,11 @@ describe("A SelectCellEditor", function () {
     editor.render();
 
     spyOn(editor.formatter, "toRaw").andCallThrough();
-    spyOn(editor, "trigger").andCallThrough();
-
-    var backgridEditedTriggerCount = 0;
-    var backgridEditedTriggerArgs;
-    editor.model.on("backgrid:edited", function () {
-      backgridEditedTriggerCount++;
-      backgridEditedTriggerArgs = [].slice.call(arguments);
-    });
 
     editor.$el.val(1).change();
     expect(editor.formatter.toRaw).toHaveBeenCalledWith("1", editor.model);
     expect(editor.formatter.toRaw.calls.length).toBe(1);
     expect(editor.model.get(editor.column.get("name"))).toBe("1");
-
-    expect(backgridEditedTriggerCount).toBe(1);
-    expect(backgridEditedTriggerArgs[0]).toEqual(editor.model);
-    expect(backgridEditedTriggerArgs[1]).toEqual(editor.column);
-    expect(backgridEditedTriggerArgs[2].passThru()).toBe(true);
 
     // multiple selection
     var editor = new Backgrid.SelectCellEditor({
@@ -1322,35 +1309,16 @@ describe("A SelectCellEditor", function () {
     editor.render();
 
     spyOn(editor.formatter, "toRaw").andCallThrough();
-    spyOn(editor, "trigger").andCallThrough();
-
-    var backgridEditedTriggerCount = 0;
-    var backgridEditedTriggerArgs;
-    editor.model.on("backgrid:edited", function () {
-      backgridEditedTriggerCount++;
-      backgridEditedTriggerArgs = [].slice.call(arguments);
-    });
 
     editor.$el.val([1, 2]).change();
     expect(editor.formatter.toRaw).toHaveBeenCalledWith(["1", "2"], editor.model);
     expect(editor.formatter.toRaw.calls.length).toBe(1);
     expect(editor.model.get(editor.column.get("name"))).toEqual(["1", "2"]);
 
-    expect(backgridEditedTriggerCount).toBe(1);
-    expect(backgridEditedTriggerArgs[0]).toEqual(editor.model);
-    expect(backgridEditedTriggerArgs[1]).toEqual(editor.column);
-    expect(backgridEditedTriggerArgs[2].passThru()).toBe(true);
-
-    backgridEditedTriggerCount = 0;
     editor.$el.val(null).change();
     expect(editor.formatter.toRaw).toHaveBeenCalledWith(null, editor.model);
     expect(editor.formatter.toRaw.calls.length).toBe(2);
     expect(editor.model.get(editor.column.get("name"))).toBe(null);
-
-    expect(backgridEditedTriggerCount).toBe(1);
-    expect(backgridEditedTriggerArgs[0]).toEqual(editor.model);
-    expect(backgridEditedTriggerArgs[1]).toEqual(editor.column);
-    expect(backgridEditedTriggerArgs[2].passThru()).toBe(true);
   });
 
   it("saves the value to the model on blur if there's only one option", function () {

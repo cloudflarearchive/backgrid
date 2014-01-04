@@ -866,7 +866,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
     var model = this.model;
     var column = this.column;
     model.set(column.get("name"), this.formatter.toRaw(this.$el.val(), model));
-    model.trigger("backgrid:edited", model, column, new Command(e));
+    // model.trigger("backgrid:edited", model, column, new Command(e));
   },
 
   /**
@@ -886,6 +886,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
       e.preventDefault();
       e.stopPropagation();
       this.save(e);
+      model.trigger("backgrid:edited", model, column, new Command(e));
     }
   }
 
