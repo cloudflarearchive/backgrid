@@ -859,14 +859,12 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
   },
 
   /**
-     Saves the value of the selected option to the model attribute. Triggers a
-     `backgrid:edited` Backbone event from the model.
+     Saves the value of the selected option to the model attribute.
   */
   save: function (e) {
     var model = this.model;
     var column = this.column;
     model.set(column.get("name"), this.formatter.toRaw(this.$el.val(), model));
-    // model.trigger("backgrid:edited", model, column, new Command(e));
   },
 
   /**
