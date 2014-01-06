@@ -48,6 +48,7 @@
 
 .backgrid th {
   font-weight: bold;
+  text-align: center;
 }
 
 .backgrid th.sortable a {
@@ -218,8 +219,7 @@
           box-sizing: border-box;
 }
 
-.backgrid .select-cell.editor select[multiple]
-{
+.backgrid .select-cell.editor select[multiple] {
   height: auto;
 }
 
