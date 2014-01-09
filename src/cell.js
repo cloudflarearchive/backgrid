@@ -403,7 +403,7 @@ var UriCell = Backgrid.UriCell = Cell.extend({
       tabIndex: -1,
       href: rawValue,
       title: this.title || formattedValue,
-      target: this.target,
+      target: this.target
     }).text(formattedValue));
     this.delegateEvents();
     return this;
