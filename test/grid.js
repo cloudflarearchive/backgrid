@@ -89,6 +89,29 @@ describe("A Grid", function () {
     expect(grid.remove().constructor).toBe(Backgrid.Grid);
   });
 
+  it("will delegate insertRow, removeRow and sort to the body", function () {
+    spyOn(grid.body, "insertRow").andCallThrough();
+    spyOn(grid.body, "removeRow").andCallThrough();
+    spyOn(grid.body, "sort").andCallThrough();
+    grid.insertRow({});
+    expect(grid.body.insertRow).toHaveBeenCalledWith({});
+    var last = grid.collection.last();
+    grid.removeRow(last);
+    expect(grid.body.removeRow).toHaveBeenCalledWith(last);
+    grid.sort("title", "descending");
+    expect(grid.body.sort).toHaveBeenCalledWith("title", "descending");
+  });
+
+  it("will delegate to columns.add and columns.remove from insertColumn and removeColumn", function () {
+    spyOn(grid.columns, "add").andCallThrough();
+    spyOn(grid.columns, "remove").andCallThrough();
+    grid.insertColumn({name: "id", cell: "integer"});
+    expect(grid.columns.add).toHaveBeenCalledWith({name: "id", cell: "integer"});
+    var col = grid.columns.last();
+    grid.removeColumn(col);
+    expect(grid.columns.remove).toHaveBeenCalledWith(col);
+  });
+
   it("will refresh on columns reset", function () {
     grid.render();
     grid.columns.reset([{

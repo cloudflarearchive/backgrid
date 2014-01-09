@@ -103,8 +103,6 @@ var Body = Backgrid.Body = Backbone.View.extend({
       return;
     }
 
-    options = _.extend({render: true}, options || {});
-
     var row = new this.row({
       columns: this.columns,
       model: model
@@ -117,13 +115,11 @@ var Body = Backgrid.Body = Backbone.View.extend({
     var $children = $el.children();
     var $rowEl = row.render().$el;
 
-    if (options.render) {
-      if (index >= $children.length) {
-        $el.append($rowEl);
-      }
-      else {
-        $children.eq(index).before($rowEl);
-      }
+    if (index >= $children.length) {
+      $el.append($rowEl);
+    }
+    else {
+      $children.eq(index).before($rowEl);
     }
 
     return this;
@@ -277,7 +273,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
       collection.setSorting(order && column.get("name"), order,
                             {sortValue: column.sortValue()});
 
-      if (collection.mode == "client") {
+      if (collection.fullCollection) {
         if (collection.fullCollection.comparator == null) {
           collection.fullCollection.comparator = comparator;
         }
@@ -289,6 +285,8 @@ var Body = Backgrid.Body = Backbone.View.extend({
       collection.comparator = comparator;
       collection.sort();
     }
+
+    column.set("direction", direction);
 
     return this;
   },

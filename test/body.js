@@ -239,7 +239,7 @@ describe("A Body", function () {
     expect(body.$el.find("tr.empty").length).toBe(0);
   });
 
-  it("sorts the underlying collection using a custom value extractor on `backgrid:sort`", function () {
+  it("can sort the underlying collection using a custom value extractor on `backgrid:sort`", function () {
 
     var sortValue = function (model, attr) {
       return 3 - model.get(attr);
@@ -256,6 +256,7 @@ describe("A Body", function () {
 
     body.collection.trigger("backgrid:sort", body.columns.at(0), "ascending");
     expect(body.collection.toJSON()).toEqual([{id: 3}, {id: 2}, {id: 1}]);
+    expect(body.columns.at(0).get("direction"), "ascending");
   });
 
   it("can sort on a server-mode Backbone.PageableCollection", function () {
@@ -290,6 +291,7 @@ describe("A Body", function () {
 
     expect(body.collection.at(0).get("id")).toBe(2);
     expect(body.collection.at(1).get("id")).toBe(1);
+    expect(body.columns.at(0).get("direction"), "descending");
 
     $.ajax = oldAjax;
   });
@@ -319,6 +321,7 @@ describe("A Body", function () {
     col.trigger("backgrid:sort", body.columns.at(0), "ascending");
 
     expect(body.collection.toJSON()).toEqual([{id: 3}]);
+    expect(body.columns.at(0).get("direction"), "ascending");
 
     body.collection.getPage(2);
 
@@ -331,10 +334,12 @@ describe("A Body", function () {
     body.collection.getFirstPage();
 
     col.trigger("backgrid:sort", body.columns.at(0), "descending");
+    expect(body.columns.at(0).get("direction"), "descending");
 
     expect(body.collection.toJSON()).toEqual([{id: 1}]);
 
     col.trigger("backgrid:sort", body.columns.at(0), null);
+    expect(body.columns.at(0).get("direction"), null);
 
     expect(body.collection.toJSON()).toEqual([{id: 2}]);
 

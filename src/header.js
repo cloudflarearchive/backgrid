@@ -49,44 +49,21 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
                       }
                     }
                   });
-
+    this.listenTo(column, "change:direction", this.resetCellDirection);
     this.listenTo(column, "change:name change:label", this.render);
 
     if (Backgrid.callByNeed(column.editable(), column, collection)) $el.addClass("editable");
     if (Backgrid.callByNeed(column.sortable(), column, collection)) $el.addClass("sortable");
     if (Backgrid.callByNeed(column.renderable(), column, collection)) $el.addClass("renderable");
-
-    this.listenTo(collection, "backgrid:sort", this._resetCellDirection);
   },
 
   /**
-     Gets or sets the direction of this cell. If called directly without
-     parameters, returns the current direction of this cell, otherwise sets
-     it. If a `null` is given, sets this cell back to the default order.
-
-     @param {null|"ascending"|"descending"} dir
-     @return {null|string} The current direction or the changed direction.
-   */
-  direction: function (dir) {
-    if (arguments.length) {
-      var direction = this.column.get('direction');
-      if (direction) this.$el.removeClass(direction);
-      if (dir) this.$el.addClass(dir);
-      this.column.set('direction', dir);
-    }
-
-    return this.column.get('direction');
-  },
-
-  /**
-     Event handler for the Backbone `backgrid:sort` event. Resets this cell's
+     Event handler for the column's `change:direction` event. Resets this cell's
      direction to default if sorting is being done on another column.
-
-     @private
    */
-  _resetCellDirection: function (columnToSort, direction) {
-    if (columnToSort !== this.column) this.direction(null);
-    else this.direction(direction);
+  resetCellDirection: function (columnToSort, direction) {
+    this.$el.removeClass("ascending").removeClass("descending");
+    if (columnToSort.cid == this.column.cid) this.$el.addClass(direction);
   },
 
   /**
@@ -97,20 +74,21 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
   onClick: function (e) {
     e.preventDefault();
 
-    var collection = this.collection, event = "backgrid:sort";
+    var column = this.column;
+    var collection = this.collection;
+    var event = "backgrid:sort";
 
     function cycleSort(header, col) {
-      if (header.direction() === "ascending") collection.trigger(event, col, "descending");
-      else if (header.direction() === "descending") collection.trigger(event, col, null);
+      if (column.get("direction") === "ascending") collection.trigger(event, col, "descending");
+      else if (column.get("direction") === "descending") collection.trigger(event, col, null);
       else collection.trigger(event, col, "ascending");
     }
 
     function toggleSort(header, col) {
-      if (header.direction() === "ascending") collection.trigger(event, col, "descending");
+      if (column.get("direction") === "ascending") collection.trigger(event, col, "descending");
       else collection.trigger(event, col, "ascending");
     }
 
-    var column = this.column;
     var sortable = Backgrid.callByNeed(column.sortable(), column, this.collection);
     if (sortable) {
       var sortType = column.get("sortType");
@@ -136,8 +114,8 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
 
     this.$el.append(label);
     this.$el.addClass(column.get("name"));
+    this.$el.addClass(column.get("direction"));
     this.delegateEvents();
-    this.direction(column.get("direction"));
     return this;
   }
 

@@ -154,7 +154,7 @@ describe("A HeaderCell", function () {
     expect(cell.$el.hasClass("descending")).toBe(true);
   });
 
-  it("triggers `backgrid:sort` with the column and direction set to \"ascending\" upon clicking the sort caret once", function () {
+  it("triggers `backgrid:sort` with the column and direction set to 'ascending' if the column's direction is not set", function () {
     var column, direction;
     cell.collection.on("backgrid:sort", function (col, dir) { column = col; direction = dir; });
     cell.$el.find("a").click();
@@ -162,23 +162,35 @@ describe("A HeaderCell", function () {
     expect(direction).toBe("ascending");
   });
 
-  it("triggers `backgrid:sort` with the column and direction set to \"descending\" upon clicking the sort caret twice", function () {
+  it("triggers `backgrid:sort` with the column and direction set to 'descending' if the column's direction is set to 'ascending'", function () {
     var column, direction;
     cell.collection.on("backgrid:sort", function (col, dir) { column = col; direction = dir; });
-    cell.$el.find("a").click().click();
+    cell.column.set("direction", "ascending");
+    cell.$el.find("a").click();
     expect(column).toBe(cell.column);
     expect(direction).toBe("descending");
   });
 
-  it("triggers `backgrid:sort` with the column and direction set to `null` upon clicking the sort caret thrice", function () {
+  it("triggers `backgrid:sort` with the column and direction set to `null` if the column's direction is set to 'descending'", function () {
     var column, direction;
     cell.collection.on("backgrid:sort", function (col, dir) { column = col; direction = dir; });
-    cell.$el.find("a").click().click().click();
+    cell.column.set("direction", "descending");
+    cell.$el.find("a").click();
     expect(column).toBe(cell.column);
     expect(direction).toBeNull();
   });
 
-  it("with `sortType` set to `toggle`, triggers `backgrid:sort` with the column and direction set to \"ascending\" upon clicking the sort caret once", function () {
+  it("will set the column to the correct direction when `change:direction` is triggered from the column", function () {
+    cell.column.set("direction", "ascending");
+    expect(cell.$el.hasClass("ascending")).toBe(true);
+    cell.column.set("direction", "descending");
+    expect(cell.$el.hasClass("descending")).toBe(true);
+    cell.column.set("direction", null);
+    expect(cell.$el.hasClass("ascending")).toBe(false);
+    expect(cell.$el.hasClass("descending")).toBe(false);
+  });
+
+  it("with `sortType` set to `toggle`, triggers `backgrid:sort` with the column and direction set to 'ascending' if the column's direction is not set", function () {
     var column, direction;
     cell.column.set("sortType", "toggle");
     cell.collection.on("backgrid:sort", function (col, dir) { column = col; direction = dir; });
@@ -187,20 +199,22 @@ describe("A HeaderCell", function () {
     expect(direction).toBe("ascending");
   });
 
-  it("with `sortType` set to `toggle`, triggers `backgrid:sort` with the column and direction set to \"descending\" upon clicking the sort caret once", function () {
+  it("with `sortType` set to `toggle`, triggers `backgrid:sort` with the column and direction set to 'descending' if the column's direction is set to 'ascending'", function () {
     var column, direction;
     cell.column.set("sortType", "toggle");
+    cell.column.set("direction", "ascending");
     cell.collection.on("backgrid:sort", function (col, dir) { column = col; direction = dir; });
-    cell.$el.find("a").click().click();
+    cell.$el.find("a").click();
     expect(column).toBe(cell.column);
     expect(direction).toBe("descending");
   });
 
-  it("with `sortType` set to `toggle`, triggers `backgrid:sort` with the column and direction set to \"ascending\" upon clicking the sort caret thrice", function () {
+  it("with `sortType` set to `toggle`, triggers `backgrid:sort` with the column and direction set to 'ascending' if the column's direction is set to 'descending'", function () {
     var column, direction;
     cell.column.set("sortType", "toggle");
+    cell.column.set("direction", "descending");
     cell.collection.on("backgrid:sort", function (col, dir) { column = col; direction = dir; });
-    cell.$el.find("a").click().click().click();
+    cell.$el.find("a").click();
     expect(column).toBe(cell.column);
     expect(direction).toBe("ascending");
   });
