@@ -801,7 +801,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
       options = options + this.template({
         text: nvps[i][0],
         value: nvps[i][1],
-        selected: selectedValues.indexOf(nvps[i][1]) > -1
+        selected: _.indexOf(selectedValues, nvps[i][1]) > -1
       });
     }
     return options;
@@ -845,7 +845,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
       else if (_.isObject(optionValue)) {
         optgroupName = optionValue.name;
         optgroup = $("<optgroup></optgroup>", { label: optgroupName });
-        optgroup.append(this._renderOptions(optionValue.values, selectedValues));
+        optgroup.append(this._renderOptions.call(this, optionValue.values, selectedValues));
         this.$el.append(optgroup);
       }
       else {
