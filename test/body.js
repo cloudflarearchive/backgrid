@@ -239,6 +239,31 @@ describe("A Body", function () {
     expect(body.$el.find("tr.empty").length).toBe(0);
   });
 
+  it("can sort the underlying collection using the default comparator", function () {
+    body = new Backgrid.Body({
+      collection: col,
+      columns: [{
+        name: "id",
+        cell: "integer"
+      }],
+    }).render();
+
+    body.collection.trigger("backgrid:sort", body.columns.at(0), "ascending");
+    expect(body.collection.toJSON()).toEqual([{id: 1}, {id: 2}, {id: 3}]);
+    expect(body.columns.at(0).get("direction"), "ascending");
+    
+    body.collection.trigger("backgrid:sort", body.columns.at(0), "descending");
+    expect(body.collection.toJSON()).toEqual([{id: 3}, {id: 2}, {id: 1}]);
+    expect(body.columns.at(0).get("direction"), "descending");
+    
+    col.at(0).cid = "c100";
+    col.at(1).cid = "c1";
+    col.at(2).cid = "c10";
+    body.collection.trigger("backgrid:sort", body.columns.at(0), null);
+    expect(body.collection.toJSON()).toEqual([{id: 2}, {id: 1}, {id: 3}]);
+    expect(body.columns.at(0).get("direction"), null);
+  });
+
   it("can sort the underlying collection using a custom value extractor on `backgrid:sort`", function () {
 
     var sortValue = function (model, attr) {
