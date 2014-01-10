@@ -24,9 +24,10 @@ functionalities easy.
 - Good documentation.
 - Well tested. Comes with [100s of test cases](http://wyuenho.github.io/backgrid/test/).
 
-## Supported browsers:
+## Supported browsers [[1]](#note-1):
 
-- Internet Explorer 8+ [[1]](#note-1)
+- Internet Explorer 8 [[2]](#note-2)
+- Internet Exploror 9+
 - Chrome 4+
 - Safari 4+
 - Firefox 4+
@@ -34,7 +35,8 @@ functionalities easy.
 
 ### Notes:
 
-<span id="note-1">[1]</span>: Both the desktop and mobile versions of the above browsers are supported.
+- <span id="note-1">[1]</span>: Both the desktop and mobile versions of the above browsers are supported.
+- <span id="note-2">[2]</span>: With the exception of the Filter extension's search icon CSS.
 
 ## Example
 
