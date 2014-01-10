@@ -49,19 +49,35 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
                       }
                     }
                   });
-    this.listenTo(column, "change:direction", this.resetCellDirection);
+    this.listenTo(column, "change:direction", this.setCellDirectionMaybe);
     this.listenTo(column, "change:name change:label", this.render);
 
     if (Backgrid.callByNeed(column.editable(), column, collection)) $el.addClass("editable");
     if (Backgrid.callByNeed(column.sortable(), column, collection)) $el.addClass("sortable");
     if (Backgrid.callByNeed(column.renderable(), column, collection)) $el.addClass("renderable");
+
+    this.listenTo(collection, "backgrid:sort", this.removeCellDirectionMaybe);
   },
 
   /**
-     Event handler for the column's `change:direction` event. Resets this cell's
-     direction to default if sorting is being done on another column.
+     Event handler for the collection's `backgrid:sort` event. Removes all the
+     CSS direction classes if the column being sorted on is not the same as this
+     header cell's.
    */
-  resetCellDirection: function (columnToSort, direction) {
+  removeCellDirectionMaybe: function (columnToSort) {
+    if (columnToSort.cid != this.column.cid) {
+      this.$el.removeClass("ascending").removeClass("descending");
+      this.column.set("direction", null);
+    }
+  },
+
+  /**
+     Event handler for the column's `change:direction` event. If this
+     HeaderCell's column is being sorted on, it applies the direction given as a
+     CSS class to the header cell. Removes all the CSS direction classes
+     otherwise.
+   */
+  setCellDirectionMaybe: function (columnToSort, direction) {
     this.$el.removeClass("ascending").removeClass("descending");
     if (columnToSort.cid == this.column.cid) this.$el.addClass(direction);
   },
