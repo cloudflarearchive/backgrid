@@ -239,6 +239,20 @@ describe("A Body", function () {
     expect(body.$el.find("tr.empty").length).toBe(0);
   });
 
+  it("#sort will throw a RangeError is direction is not ascending, descending or null", function () {
+    body = new Backgrid.Body({
+      collection: col,
+      columns: [{
+        name: "id",
+        cell: "integer"
+      }],
+    }).render();
+
+    expect(function () {
+      body.sort("id", "wat");
+    }).toThrow();
+  });
+
   it("can sort the underlying collection using the default comparator", function () {
     body = new Backgrid.Body({
       collection: col,

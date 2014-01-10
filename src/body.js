@@ -251,6 +251,10 @@ var Body = Backgrid.Body = Backbone.View.extend({
   */
   sort: function (column, direction) {
 
+    if (!_.contains(["ascending", "descending", null], direction)) {
+      throw new RangeError('direction must be one of "ascending", "descending" or `null`');
+    }
+
     if (_.isString(column)) column = this.columns.findWhere({name: column});
 
     var collection = this.collection;
