@@ -43,8 +43,6 @@ var $ = Backbone.$;
 
 var Backgrid = root.Backgrid = {
 
-  VERSION: "0.3.0",
-
   Extension: {},
 
   resolveNameToClass: function (name, suffix) {
@@ -148,4 +146,3 @@ _.extend(Command.prototype, {
              this.moveRight() || this.save() || this.cancel());
   }
 });
-
