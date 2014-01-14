@@ -53,28 +53,25 @@ var HeaderCell = Backgrid.HeaderCell = Backgrid.View.extend({
                       }
                     }
                   });
-    this.listenTo(column, "change:direction", this.setCellDirectionMaybe);
+    this.listenTo(column, "change:direction", this.setCellDirection);
     this.listenTo(column, "change:name change:label", this.render);
 
     if (Backgrid.callByNeed(column.editable(), column, collection)) classes.add("editable");
     if (Backgrid.callByNeed(column.sortable(), column, collection)) classes.add("sortable");
     if (Backgrid.callByNeed(column.renderable(), column, collection)) classes.add("renderable");
 
-    this.listenTo(collection, "backgrid:sort", this.removeCellDirectionMaybe);
+    this.listenTo(collection, "sort", this.removeCellDirection);
   },
 
   /**
-     Event handler for the collection's `backgrid:sort` event. Removes all the
-     CSS direction classes if the column being sorted on is not the same as this
-     header cell's.
+     Event handler for the collection's `sort` event. Removes all the CSS
+     direction classes.
    */
-  removeCellDirectionMaybe: function (columnToSort) {
-    if (columnToSort.cid != this.column.cid) {
-      var classes = this.el.classList;
-      classes.remove("ascending");
-      classes.remove("descending");
-      this.column.set("direction", null);
-    }
+  removeCellDirection: function () {
+    var classes = this.el.classList;
+    classes.remove("ascending");
+    classes.remove("descending");
+    this.column.set("direction", null);
   },
 
   /**
@@ -83,11 +80,11 @@ var HeaderCell = Backgrid.HeaderCell = Backgrid.View.extend({
      CSS class to the header cell. Removes all the CSS direction classes
      otherwise.
    */
-  setCellDirectionMaybe: function (columnToSort, direction) {
+  setCellDirection: function (column, direction) {
     var classes = this.el.classList;
     classes.remove("ascending");
     classes.remove("descending");
-    if (columnToSort.cid == this.column.cid && direction) classes.add(direction);
+    if (column.cid == this.column.cid) classes.add(direction);
   },
 
   /**
