@@ -190,12 +190,10 @@ describe("A HeaderCell", function () {
     expect(cell.$el.hasClass("descending")).toBe(false);
   });
 
-  it("will remove its direction CSS class if `backgrid:sort` is triggered with a different column", function () {
+  it("will remove its direction CSS class if `sort` is triggered", function () {
     cell.column.set("direction", "ascending");
-    cell.collection.trigger("backgrid:sort", new Backgrid.Column({
-      name: "name",
-      cell: "string"
-    }), "descending");
+    cell.collection.comparator = "id";
+    cell.collection.sort();
     expect(cell.$el.hasClass("ascending")).toBe(false);
     expect(cell.$el.hasClass("descending")).toBe(false);
   });
