@@ -170,13 +170,10 @@ var Body = Backgrid.Body = Backgrid.View.extend({
      instance as its sole parameter when done.
   */
   refresh: function () {
-    console.time("removing rows");
     for (var i = 0; i < this.rows.length; i++) {
       this.rows[i].remove();
     }
-    console.timeEnd("removing rows");
 
-    console.time("making rows");
     this.rows = this.collection.map(function (model) {
       var row = new this.row({
         columns: this.columns,
@@ -185,13 +182,10 @@ var Body = Backgrid.Body = Backgrid.View.extend({
 
       return row;
     }, this);
-    console.timeEnd("making rows");
 
     this._unshiftEmptyRowMayBe();
 
-    console.time("rendering rows");
     this.render();
-    console.timeEnd("rendering rows");
 
     this.collection.trigger("backgrid:refresh", this);
 
