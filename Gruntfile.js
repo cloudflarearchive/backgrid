@@ -51,7 +51,7 @@ module.exports = function (grunt) {
             '  }\n' +
             '  // Browser\n' +
             '  else factory(this, this._, this.Backbone);\n' +
-            '}(function (root, _, Backbone) {\n\n  ',
+            '}(function (root, _, Backbone) {\n\n  "use strict";\n\n',
           footer: 'return Backgrid;\n' +
             '}));'
         },
