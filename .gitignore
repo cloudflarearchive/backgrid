@@ -1,6 +1,3 @@
-api
-lib/*.min.*
-test/coverage
 bower_components
 components
 .grunt
