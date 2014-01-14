@@ -3,10 +3,8 @@
   http://github.com/wyuenho/backgrid
 
   Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
-  Licensed under the MIT @license.
+  Licensed under the MIT license.
 */
-
-var window = root;
 
 // Copyright 2009, 2010 Kristopher Michael Kowal
 // https://github.com/kriskowal/es5-shim
@@ -31,10 +29,6 @@ if (!String.prototype.trim || ws.trim()) {
   };
 }
 
-function capitalize(s) {
-  return String.fromCharCode(s.charCodeAt(0) - 32) + s.slice(1);
-}
-
 function lpad(str, length, padstr) {
   var paddingLen = length - (str + '').length;
   paddingLen =  paddingLen < 0 ? 0 : paddingLen;
@@ -45,24 +39,17 @@ function lpad(str, length, padstr) {
   return padding + str;
 }
 
-var Backgrid = root.Backgrid = {
+var $ = Backbone.$;
 
-  VERSION: "0.2.6",
+var Backgrid = root.Backgrid = {
 
   Extension: {},
 
-  requireOptions: function (options, requireOptionKeys) {
-    for (var i = 0; i < requireOptionKeys.length; i++) {
-      var key = requireOptionKeys[i];
-      if (_.isUndefined(options[key])) {
-        throw new TypeError("'" + key  + "' is required");
-      }
-    }
-  },
-
   resolveNameToClass: function (name, suffix) {
     if (_.isString(name)) {
-      var key = _.map(name.split('-'), function (e) { return capitalize(e); }).join('') + suffix;
+      var key = _.map(name.split('-'), function (e) {
+        return e.slice(0, 1).toUpperCase() + e.slice(1);
+      }).join('') + suffix;
       var klass = Backgrid[key] || Backgrid.Extension[key];
       if (_.isUndefined(klass)) {
         throw new ReferenceError("Class '" + key + "' not found");
@@ -71,7 +58,17 @@ var Backgrid = root.Backgrid = {
     }
 
     return name;
+  },
+
+  callByNeed: function () {
+    var value = arguments[0];
+    if (!_.isFunction(value)) return value;
+
+    var context = arguments[1];
+    var args = [].slice.call(arguments, 2);
+    return value.apply(context, !!(args + '') ? args : void 0);
   }
+
 };
 _.extend(Backgrid, Backbone.Events);
 
@@ -89,7 +86,7 @@ _.extend(Backgrid, Backbone.Events);
 var Command = Backgrid.Command = function (evt) {
   _.extend(this, {
     altKey: !!evt.altKey,
-    char: evt.char,
+    "char": evt["char"],
     charCode: evt.charCode,
     ctrlKey: !!evt.ctrlKey,
     key: evt.key,
@@ -150,41 +147,56 @@ _.extend(Command.prototype, {
   }
 });
 
-var viewOptions = ['model', 'collection', 'el', 'id', 'attributes', 'className', 'tagName', 'events', 'use$'];
-
-/**
-   @class Backgrid.View
-   @constructor
- */
-var View = Backgrid.View = function(options) {
-  this.cid = _.uniqueId('view');
-  options = options || {};
-  _.extend(this, _.pick(options, viewOptions));
-  this._ensureElement(options);
-  this.initialize.apply(this, arguments);
-  this.delegateEvents();
+Backgrid.mount = function (childView, parentView, options) {
+  var el = parentView.el, children = el.childNodes;
+  options = _.defaults(options || {}, {at: children.length});
+  childView.preRender();
+  if (options.at >= children.length) el.appendChild(childView.render().el);
+  else el.insertBefore(childView, children[options.at]);
+  parentView.delegateEvents();
+  childView.postRender();
 };
+
+var matchesSelector = (function () {
+  var matches = Element.prototype.matches;
+  if (!matches) {
+    var prefixes = ["webkit", "moz", "ms", "o"];
+    for (var i = 0, l = prefixes.length; i < l; i++) {
+      var method = Element.prototype[prefixes[i] + "MatchesSelector"];
+      if (method) {
+        matches = method;
+        break;
+      }
+    }
+  }
+
+  return matches;
+}());
 
 var delegateEventSplitter = /^(\S+)\s*(.*)$/;
 
-_.extend(Backgrid.View.prototype, Backbone.Events, {
+var View = Backgrid.View = Backbone.View.extend({
 
-  use$: true,
+  useNative: true,
 
-  tagName: 'div',
+  _domEventListeners: {},
 
-  $: function(selector) {
-    return this.$el ? this.$el.find(selector) : this.el.querySelectorAll(selector);
+  $: function (selector) {
+    return this.useNative ?
+        this.el.querySelectorAll(selector) :
+        View.__super__.$.apply(this, arguments);
   },
 
-  initialize: function(){},
+  preRender: function () {
+    return this;
+  },
 
-  render: function() {
+  postRender: function () {
     return this;
   },
 
   show: function () {
-    this.el.style.display = '';
+    delete this.el.style.display;
     return this;
   },
 
@@ -194,128 +206,123 @@ _.extend(Backgrid.View.prototype, Backbone.Events, {
   },
 
   empty: function () {
+    if (this.useNative) {
+      var el = this.el;
+      while (el.firstChild) el.removeChild(el.firstChild);
+    }
+    else this.$el.empty();
+    return this;
+  },
+
+  remove: function () {
+    if (this.useNative) {
+      this.undelegateEvents();
+      var el = this.el;
+      var parentNode = el.parentNode;
+      if (parentNode) parentNode.removeChild(el);
+      this.stopListening();
+    }
+    else return View.__super__.remove.apply(this, arguments);
+    return this;
+  },
+
+  setElement: function(element, delegate) {
+    if (this.useNative) {
+      if (this.el) this.undelegateEvents();
+      if (typeof element == 'string') {
+        if (element.trim()[0] == '<') {
+          var el = document.createElement("div");
+          el.innerHTML = element;
+          this.el = el.firstChild;
+        }
+        else this.el = document.querySelector(element.trim());
+      }
+      else this.el = element;
+      if (delegate !== false) this.delegateEvents();
+    } else View.__super__.setElement.apply(this, arguments);
+    return this;
+  },
+
+  delegateEvents: function (events) {
+    if (this.useNative) {
+      if (!(events || (events = _.result(this, 'events')))) return this;
+      this.undelegateEvents();
+      var eventSelectorMethodMap = {};
+      for (var key in events) {
+        var method = events[key];
+        if (!_.isFunction(method)) method = this[events[key]];
+        if (!method) continue;
+
+        var match = key.match(delegateEventSplitter);
+        var eventName = match[1], selector = match[2];
+        method = _.bind(method, this);
+
+        var selectors = eventSelectorMethodMap[eventName];
+        if (!selectors) selectors = eventSelectorMethodMap[eventName] = {};
+
+        var methods = selectors[selector];
+        if (!methods) methods = selectors[selector] = [];
+
+        methods.push(method);
+      }
+
+      var el = this.el, domEventListeners = this._domEventListeners;
+
+      for (var eventName in eventSelectorMethodMap) {
+        var listener = domEventListeners[eventName] = (function (eventName) {
+          return function (e) {
+            var target = e.target;
+            if (target) {
+              for (var selector in eventSelectorMethodMap[eventName]) {
+                if (selector === '' || matchesSelector.call(target, selector)) {
+                  var methods = eventSelectorMethodMap[eventName][selector];
+                  for (var i = 0, l = methods.length; i < l; i++) {
+                    var result = methods[i].apply(this, arguments);
+                    if (result === false) {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }
+                  }
+                }
+              }
+            }
+          };
+        }(eventName));
+
+        el.addEventListener(eventName, listener, false);
+      }
+
+    }
+    else View.__super__.delegateEvents.apply(this, arguments);
+    return this;
+  },
+
+  undelegateEvents: function () {
     var el = this.el;
-    while (el.firstChild) el.removeChild(el.firstChild);
-    return this;
-  },
-
-  remove: function() {
-    if (this.$el) this.$el.remove();
-    else if (this.el) {
-      var parentNode = this.el.parentNode;
-      if (parentNode) parentNode.removeChild(this.el);
-    }
-    this.stopListening();
-    return this;
-  },
-
-  setElement: function(element, options) {
-    options = _.extend({use$: Backbone.$ && this.use$, delegate: true}, options || {});
-    var delegate = options.delegate;
-    if (this.$el) this.undelegateEvents();
-    if (options.use$) {
-      this.$el = element instanceof Backbone.$ ? element : Backbone.$(element);
-      this.el = this.$el[0];
-    }
-    else if (typeof element == 'string') {
-      if (element[0] == '<') {
-        var el = window.document.createElement("div");
-        el.innerHTML = element;
-        this.el = el.firstChild;
+    if (el && this.useNative) {
+      var domEventListeners = this._domEventListeners;
+      for (var eventName in domEventListeners) {
+        el.removeEventListener(eventName, domEventListeners[eventName], false);
       }
-      else this.el = window.document.querySelector(element);
+      this._domEventListeners = {};
     }
-    else this.el = element;
-    if (delegate !== false) this.delegateEvents();
+    else View.__super__.undelegateEvents.apply(this, arguments);
     return this;
   },
 
-  _processEvents: function(events, func) {
-    for (var key in events) {
-      var method = events[key];
-      if (!_.isFunction(method)) method = this[events[key]];
-      if (!method) continue;
-
-      method = _.bind(method, this);
-      var match = key.match(delegateEventSplitter);
-      func(match[1], match[2], method);
-    }
-  },
-
-  delegateEvents: function(events) {
-    if (!(events || (events = _.result(this, 'events')))) return this;
-    this.undelegateEvents();
-    var el = this.el, $el = this.$el, cid = this.cid;
-    this._processEvents(events, function (eventName, selector, method) {
-      var namespacedEventName = eventName + '.delegateEvents' + cid;
-      if (selector === '') {
-        if ($el) $el.on(namespacedEventName, method);
-        else if (el) {
-          if (el.addEventListener) el.addEventListener(eventName, method);
-          else if (el.attachEvent) el.attachEvent('on' + eventName, method);
-        }
-      } else {
-        if ($el) $el.on(namespacedEventName, selector, method);
-        else if (el) {
-          var descendants = el.querySelectorAll(selector);
-          for (var i = 0, l = descendants.length; i < l; i++) {
-            var descendant = descendants[i];
-            if (el.addEventListener) {
-              descendant.addEventListener(eventName, method);
-            }
-            else if (el.attachEvent) {
-              descendant.attachEvent('on' + eventName, method);
-            }
-          }
-        }
-      }
-    });
-    return this;
-  },
-
-  undelegateEvents: function() {
-    var el = this.el, $el = this.$el;
-    if ($el) this.$el.off('.delegateEvents' + this.cid);
-    else if (el) {
-      var events = _.result(this, 'events');
-      if (!events) return this;
-      this._processEvents(events, function (eventName, selector, method) {
-        if (selector === '') {
-          if (el.removeEventListener) el.removeEventListener(eventName, method);
-          else if (el.detachEvent) el.detachEvent('on' + eventName, method);
-        } else {
-          var descendants = el.querySelectorAll(selector);
-          for (var i = 0, l = descendants.length; i < l; i++) {
-            var descendant = descendants[i];
-            if (el.removeEventListener) {
-              descendant.removeEventListener(eventName, method);
-            }
-            else if (el.detachEvent) {
-              descendant.detachEvent('on' + eventName, method);
-            }
-          }
-        }
-      });
-    }
-    return this;
-  },
-
-  _ensureElement: function(options) {
-    options = _.extend(options, {delegate: false});
+  _ensureElement: function () {
     if (!this.el) {
-      var el = this.el = window.document.createElement(_.result(this, 'tagName'));
+      var el = this.el = document.createElement(_.result(this, 'tagName'));
       var attrs = _.extend({}, _.result(this, 'attributes'));
       if (this.id) attrs.id = _.result(this, 'id');
       if (this.className) attrs['class'] = _.result(this, 'className');
       for (var k in attrs) {
         el.setAttribute(k, attrs[k]);
       }
-      this.setElement(el, options);
+      this.setElement(el, false);
     } else {
-      this.setElement(_.result(this, 'el'), options);
+      this.setElement(_.result(this, 'el'), false);
     }
   }
 
 });
-
-View.extend = Backbone.View.extend;

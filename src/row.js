@@ -3,7 +3,7 @@
   http://github.com/wyuenho/backgrid
 
   Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
-  Licensed under the MIT @license.
+  Licensed under the MIT license.
 */
 
 /**
@@ -19,8 +19,6 @@ var Row = Backgrid.Row = Backgrid.View.extend({
   /** @property */
   tagName: "tr",
 
-  requiredOptions: ["columns", "model"],
-
   /**
      Initializes a row view instance.
 
@@ -32,8 +30,6 @@ var Row = Backgrid.Row = Backgrid.View.extend({
   */
   initialize: function (options) {
 
-    Backgrid.requireOptions(options, this.requiredOptions);
-
     var columns = this.columns = options.columns;
     if (!(columns instanceof Backbone.Collection)) {
       columns = this.columns = new Columns(columns);
@@ -44,21 +40,10 @@ var Row = Backgrid.Row = Backgrid.View.extend({
       cells.push(this.makeCell(columns.at(i), options));
     }
 
-    this.listenTo(columns, "change:renderable", function (column, renderable) {
-      for (var i = 0; i < cells.length; i++) {
-        var cell = cells[i];
-        if (cell.column.get("name") == column.get("name")) {
-          if (renderable) cell.show(); else cell.hide();
-        }
-      }
-    });
-
     this.listenTo(columns, "add", function (column, columns) {
       var i = columns.indexOf(column);
       var cell = this.makeCell(column, options);
       cells.splice(i, 0, cell);
-
-      if (!cell.column.get("renderable")) cell.hide();
 
       var el = this.el, children = el.childNodes;
       if (i === 0) {
@@ -103,11 +88,8 @@ var Row = Backgrid.Row = Backgrid.View.extend({
     this.empty();
 
     var fragment = document.createDocumentFragment();
-
     for (var i = 0; i < this.cells.length; i++) {
-      var cell = this.cells[i];
-      fragment.appendChild(cell.render().el);
-      if (!cell.column.get("renderable")) cell.hide();
+      fragment.appendChild(this.cells[i].render().el);
     }
 
     this.el.appendChild(fragment);
@@ -127,7 +109,7 @@ var Row = Backgrid.Row = Backgrid.View.extend({
       var cell = this.cells[i];
       cell.remove.apply(cell, arguments);
     }
-    return Backgrid.View.prototype.remove.apply(this, arguments);
+    return Row.__super__.remove.apply(this, arguments);
   }
 
 });
@@ -144,19 +126,17 @@ var EmptyRow = Backgrid.EmptyRow = Backgrid.View.extend({
   /** @property */
   tagName: "tr",
 
-  /** @property */
+  /** @property {string|function(): string} */
   emptyText: null,
 
   /**
      Initializer.
 
      @param {Object} options
-     @param {string} options.emptyText
+     @param {string|function(): string} options.emptyText
      @param {Backbone.Collection.<Backgrid.Column>|Array.<Backgrid.Column>|Array.<Object>} options.columns Column metadata.
    */
   initialize: function (options) {
-    Backgrid.requireOptions(options, ["emptyText", "columns"]);
-
     this.emptyText = options.emptyText;
     this.columns =  options.columns;
   },
@@ -169,7 +149,7 @@ var EmptyRow = Backgrid.EmptyRow = Backgrid.View.extend({
 
     var td = document.createElement("td");
     td.setAttribute("colspan", this.columns.length);
-    td.textContent = this.emptyText;
+    td.textContent = _.result(this, "emptyText");
 
     this.el.setAttribute("class", "empty");
     this.el.appendChild(td);

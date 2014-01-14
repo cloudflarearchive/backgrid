@@ -3,29 +3,15 @@
   http://github.com/wyuenho/backgrid
 
   Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
-  Licensed under the MIT @license.
+  Licensed under the MIT license.
 */
-describe("Backgrid#requireOptions", function () {
-
-  it("throws TypeError if a required option is not found", function () {
-    expect(function () {
-      Backgrid.requireOptions({}, ['foo']);
-    }).toThrow(new TypeError("'foo' is required"));
-  });
-
-  it("does not throw a TypeError if a required option is found", function () {
-    expect(function () {
-      Backgrid.requireOptions({foo: 1}, ['foo']);
-    }).not.toThrow(new TypeError("'foo' is required"));
-  });
-
-});
-
 describe("Backgrid#resolveNameToClass", function () {
 
   it("will return a reference to a Backgrid or a Backgrid.Extension object from a dasherized string and a suffix", function () {
+    Backgrid.SelectRowCell = {};
     expect(Backgrid.resolveNameToClass("select-row", "Cell")).toBeDefined();
     expect(Backgrid.resolveNameToClass("select", "Cell")).toBeDefined();
+    delete Backgrid.SelectRowCell;
   });
 
   it("will return the `name` object if it is not a string", function () {
@@ -36,6 +22,26 @@ describe("Backgrid#resolveNameToClass", function () {
     expect(function () {
       Backgrid.resolveNameToClass("snoopy", "Cell");
     }).toThrow(new ReferenceError("Class 'SnoopyCell' not found"));
+  });
+
+});
+
+describe("Backgrid#callByNeed", function () {
+
+  it("will return the first argument if it is not a function", function () {
+    expect(Backgrid.callByNeed(1)).toBe(1);
+  });
+
+  it("will return the value of the first argument after evaluating it as a function if it is a function", function () {
+    expect(Backgrid.callByNeed(function () { return 1; })).toBe(1);
+  });
+
+  it("will use the second parameter as the context when evaluation the first parameter as a function", function () {
+    expect(Backgrid.callByNeed(function () { return this[0]; }, [1,2,3])).toBe(1);
+  });
+
+  it("will use the third parameter and beyond as arguments to the first argument when evaluating it as a function", function () {
+    expect(Backgrid.callByNeed(function (a) { return this[0] + a; }, [1,2,3], 1)).toBe(2);
   });
 
 });

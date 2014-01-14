@@ -1,0 +1,30 @@
+{
+  "name": "backgrid",
+  "version": "0.3.2",
+  "homepage": "https://github.com/wyuenho/backgrid",
+  "description": "Backgrid.js is a set of components for building semantic and easily stylable data grid widgets with Backbone.",
+  "authors": [
+    "Jimmy Yuen Ho Wong <wyuenho@gmail.com>"
+  ],
+  "keywords": [
+    "backgrid",
+    "backbone"
+  ],
+  "main": [
+    "lib/backgrid.js",
+    "lib/backgrid.css"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "underscore": "~1.5.2",
+    "backbone": "~1.1.0",
+    "jquery": "~2.0.3"
+  }
+}

@@ -3,7 +3,7 @@
   http://github.com/wyuenho/backgrid
 
   Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
-  Licensed under the MIT @license.
+  Licensed under the MIT license.
 */
 
 /**
@@ -28,7 +28,6 @@ var CellEditor = Backgrid.CellEditor = Backgrid.View.extend({
      `model` or `column` are undefined.
   */
   initialize: function (options) {
-    Backgrid.requireOptions(options, ["formatter", "column", "model"]);
     this.formatter = options.formatter;
     this.column = options.column;
     if (!(this.column instanceof Column)) {
@@ -87,10 +86,10 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
      @param {string} [options.placeholder]
   */
   initialize: function (options) {
-    CellEditor.prototype.initialize.apply(this, arguments);
+    InputCellEditor.__super__.initialize.apply(this, arguments);
 
     if (options.placeholder) {
-      this.el.setAttribute("placeholder", options.placeholder);
+      this.el.placeholder = options.placeholder;
     }
   },
 
@@ -99,7 +98,8 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
      exists.
   */
   render: function () {
-    this.el.value = this.formatter.fromRaw(this.model.get(this.column.get("name")));
+    var model = this.model;
+    this.el.defaultValue = this.formatter.fromRaw(model.get(this.column.get("name")), model);
     return this;
   },
 
@@ -121,7 +121,6 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
      @param {Event} e
   */
   saveOrCancel: function (e) {
-
     var formatter = this.formatter;
     var model = this.model;
     var column = this.column;
@@ -129,14 +128,14 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
     var command = new Command(e);
     var blurred = e.type === "blur";
 
-    if (command.moveUp() || command.moveDown() || command.moveLeft() || command.moveRight() ||
-        command.save() || blurred) {
+    if (command.moveUp() || command.moveDown() || command.moveLeft() ||
+        command.moveRight() || command.save() || blurred) {
 
       e.preventDefault();
       e.stopPropagation();
 
       var val = this.el.value;
-      var newValue = formatter.toRaw(val);
+      var newValue = formatter.toRaw(val, model);
       if (_.isUndefined(newValue)) {
         model.trigger("backgrid:error", model, column, val);
       }
@@ -192,9 +191,9 @@ var Cell = Backgrid.Cell = Backgrid.View.extend({
   tagName: "td",
 
   /**
-     @property {Backgrid.CellFormatter|Object|string} [formatter=new CellFormatter()]
+     @property {Backgrid.CellFormatter|Object|string} [formatter=CellFormatter]
   */
-  formatter: new CellFormatter(),
+  formatter: CellFormatter,
 
   /**
      @property {Backgrid.CellEditor} [editor=Backgrid.InputCellEditor] The
@@ -221,17 +220,43 @@ var Cell = Backgrid.Cell = Backgrid.View.extend({
      said name cannot be found in the Backgrid module.
   */
   initialize: function (options) {
-    Backgrid.requireOptions(options, ["model", "column"]);
     this.column = options.column;
     if (!(this.column instanceof Column)) {
       this.column = new Column(this.column);
     }
-    this.formatter = Backgrid.resolveNameToClass(this.column.get("formatter") || this.formatter, "Formatter");
+
+    var column = this.column, model = this.model, classes = this.el.classList;
+
+    var formatter = Backgrid.resolveNameToClass(column.get("formatter") ||
+                                                this.formatter, "Formatter");
+
+    if (!_.isFunction(formatter.fromRaw) && !_.isFunction(formatter.toRaw)) {
+      formatter = new formatter();
+    }
+
+    this.formatter = formatter;
+
     this.editor = Backgrid.resolveNameToClass(this.editor, "CellEditor");
-    this.listenTo(this.model, "change:" + this.column.get("name"), function () {
-      if (!this.el.classList.contains("editor")) this.render();
+    this.listenTo(model, "change:" + column.get("name"), function () {
+      if (!classes.contains("editor")) this.render();
     });
-    this.listenTo(this.model, "backgrid:error", this.renderError);
+
+    this.listenTo(model, "backgrid:error", this.renderError);
+
+    this.listenTo(column, "change:editable change:sortable change:renderable",
+                  function (column) {
+                    var changed = column.changedAttributes();
+                    for (var key in changed) {
+                      if (changed.hasOwnProperty(key)) {
+                        if (changed[key]) classes.add(key);
+                        else classes.remove(key);
+                      }
+                    }
+                  });
+
+    if (Backgrid.callByNeed(column.editable(), column, model)) classes.add("editable");
+    if (Backgrid.callByNeed(column.sortable(), column, model)) classes.add("sortable");
+    if (Backgrid.callByNeed(column.renderable(), column, model)) classes.add("renderable");
   },
 
   /**
@@ -240,8 +265,9 @@ var Cell = Backgrid.Cell = Backgrid.View.extend({
   */
   render: function () {
     this.empty();
-    this.el.appendChild(window.document.createTextNode(
-      this.formatter.fromRaw(this.model.get(this.column.get("name")))));
+    var model = this.model;
+    this.el.appendChild(document.createTextNode(
+      this.formatter.fromRaw(model.get(this.column.get("name")), model)));
     this.delegateEvents();
     return this;
   },
@@ -269,7 +295,8 @@ var Cell = Backgrid.Cell = Backgrid.View.extend({
     var model = this.model;
     var column = this.column;
 
-    if (column.get("editable")) {
+    var editable = Backgrid.callByNeed(column.editable(), column, model);
+    if (editable) {
 
       this.currentEditor = new this.editor({
         column: this.column,
@@ -321,7 +348,7 @@ var Cell = Backgrid.Cell = Backgrid.View.extend({
       this.currentEditor.remove.apply(this.currentEditor, arguments);
       delete this.currentEditor;
     }
-    return Backgrid.View.prototype.remove.apply(this, arguments);
+    return Cell.__super__.remove.apply(this, arguments);
   }
 
 });
@@ -337,7 +364,7 @@ var StringCell = Backgrid.StringCell = Cell.extend({
   /** @property */
   className: "string-cell",
 
-  formatter: new StringFormatter()
+  formatter: StringFormatter
 
 });
 
@@ -357,16 +384,35 @@ var UriCell = Backgrid.UriCell = Cell.extend({
   /** @property */
   className: "uri-cell",
 
+  /**
+     @property {string} [title] The title attribute of the generated anchor. It
+     uses the display value formatted by the `formatter.fromRaw` by default.
+  */
+  title: null,
+
+  /**
+     @property {string} [target="_blank"] The target attribute of the generated
+     anchor.
+  */
+  target: "_blank",
+
+  initialize: function (options) {
+    UriCell.__super__.initialize.apply(this, arguments);
+    this.title = options.title || this.title;
+    this.target = options.target || this.target;
+  },
+
   render: function () {
     this.empty();
-    var formattedValue = this.formatter.fromRaw(this.model.get(this.column.get("name")));
-    var doc = window.document;
-    var a = doc.createElement("a");
+    var model = this.model;
+    var rawValue = model.get(this.column.get("name"));
+    var formattedValue = this.formatter.fromRaw(rawValue, model);
+    var a = document.createElement("a");
     a.tabIndex = -1;
-    a.href = formattedValue;
-    a.title = formattedValue;
-    a.target = "_blank";
-    a.appendChild(doc.createTextNode(formattedValue));
+    a.href = rawValue;
+    a.title = this.title || formattedValue;
+    a.target = this.target;
+    a.appendChild(document.createTextNode(formattedValue));
     this.el.appendChild(a);
     this.delegateEvents();
     return this;
@@ -387,17 +433,18 @@ var EmailCell = Backgrid.EmailCell = StringCell.extend({
   /** @property */
   className: "email-cell",
 
-  formatter: new EmailFormatter(),
+  formatter: EmailFormatter,
 
   render: function () {
     this.empty();
-    var formattedValue = this.formatter.fromRaw(this.model.get(this.column.get("name")));
-    var doc = window.document;
-    var a = doc.createElement("a");
+    var model = this.model;
+    var rawValue = model.get(this.column.get("name"));
+    var formattedValue = this.formatter.fromRaw(rawValue, model);
+    var a = document.createElement("a");
     a.tabIndex = -1;
-    a.href = "mailto:" + formattedValue;
+    a.href = "mailto:" + rawValue;
     a.title = formattedValue;
-    a.appendChild(doc.createTextNode(formattedValue));
+    a.appendChild(document.createTextNode(formattedValue));
     this.el.appendChild(a);
     this.delegateEvents();
     return this;
@@ -439,12 +486,11 @@ var NumberCell = Backgrid.NumberCell = Cell.extend({
      @param {Backgrid.Column} options.column
   */
   initialize: function (options) {
-    Cell.prototype.initialize.apply(this, arguments);
-    this.formatter = new this.formatter({
-      decimals: this.decimals,
-      decimalSeparator: this.decimalSeparator,
-      orderSeparator: this.orderSeparator
-    });
+    NumberCell.__super__.initialize.apply(this, arguments);
+    var formatter = this.formatter;
+    formatter.decimals = this.decimals;
+    formatter.decimalSeparator = this.decimalSeparator;
+    formatter.orderSeparator = this.orderSeparator;
   }
 
 });
@@ -466,6 +512,43 @@ var IntegerCell = Backgrid.IntegerCell = NumberCell.extend({
      @property {number} decimals Must be an integer.
   */
   decimals: 0
+});
+
+/**
+   A PercentCell is another Backgrid.NumberCell that takes a floating number,
+   optionally multiplied by a multiplier and display it as a percentage.
+
+   @class Backgrid.PercentCell
+   @extends Backgrid.NumberCell
+ */
+var PercentCell = Backgrid.PercentCell = NumberCell.extend({
+
+  /** @property */
+  className: "percent-cell",
+
+  /** @property {number} [multiplier=1] */
+  multiplier: PercentFormatter.prototype.defaults.multiplier,
+
+  /** @property {string} [symbol='%'] */
+  symbol: PercentFormatter.prototype.defaults.symbol,
+
+  /** @property {Backgrid.CellFormatter} [formatter=Backgrid.PercentFormatter] */
+  formatter: PercentFormatter,
+
+  /**
+     Initializes this cell and the percent formatter.
+
+     @param {Object} options
+     @param {Backbone.Model} options.model
+     @param {Backgrid.Column} options.column
+  */
+  initialize: function () {
+    PercentCell.__super__.initialize.apply(this, arguments);
+    var formatter = this.formatter;
+    formatter.multiplier = this.multiplier;
+    formatter.symbol = this.symbol;
+  }
+
 });
 
 /**
@@ -513,12 +596,11 @@ var DatetimeCell = Backgrid.DatetimeCell = Cell.extend({
      @param {Backgrid.Column} options.column
   */
   initialize: function (options) {
-    Cell.prototype.initialize.apply(this, arguments);
-    this.formatter = new this.formatter({
-      includeDate: this.includeDate,
-      includeTime: this.includeTime,
-      includeMilli: this.includeMilli
-    });
+    DatetimeCell.__super__.initialize.apply(this, arguments);
+    var formatter = this.formatter;
+    formatter.includeDate = this.includeDate;
+    formatter.includeTime = this.includeTime;
+    formatter.includeMilli = this.includeMilli;
 
     var placeholder = this.includeDate ? "YYYY-MM-DD" : "";
     placeholder += (this.includeDate && this.includeTime) ? "T" : "";
@@ -601,8 +683,9 @@ var BooleanCellEditor = Backgrid.BooleanCellEditor = CellEditor.extend({
      uncheck otherwise.
   */
   render: function () {
-    var val = this.formatter.fromRaw(this.model.get(this.column.get("name")));
-    this.el.checked = val;
+    var model = this.model;
+    var val = this.formatter.fromRaw(model.get(this.column.get("name")), model);
+    this.el.defaultChecked = val;
     return this;
   },
 
@@ -639,12 +722,12 @@ var BooleanCellEditor = Backgrid.BooleanCellEditor = CellEditor.extend({
         command.moveDown()) {
       e.preventDefault();
       e.stopPropagation();
-      var val = formatter.toRaw(el.checked);
+      var val = formatter.toRaw(el.checked, model);
       model.set(column.get("name"), val);
       model.trigger("backgrid:edited", model, column, command);
     }
     else if (e.type == "change") {
-      var val = formatter.toRaw(el.checked);
+      var val = formatter.toRaw(el.checked, model);
       model.set(column.get("name"), val);
       el.focus();
     }
@@ -678,10 +761,13 @@ var BooleanCell = Backgrid.BooleanCell = Cell.extend({
   */
   render: function () {
     this.empty();
-    var input = window.document.createElement("input");
+    var model = this.model, column = this.column;
+    var editable = Backgrid.callByNeed(column.editable(), column, model);
+    var input = document.createElement("input");
     input.tabIndex = -1;
     input.type = "checkbox";
-    input.checked = this.formatter.fromRaw(this.model.get(this.column.get("name")));
+    input.checked = this.formatter.fromRaw(model.get(this.column.get("name")), model);
+    input.disabled = !editable;
     this.el.appendChild(input);
     this.delegateEvents();
     return this;
@@ -708,13 +794,15 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
   },
 
   /** @property {function(Object, ?Object=): string} template */
-  template: _.template('<option value="<%- value %>" <%= selected ? \'selected="selected"\' : "" %>><%- text %></option>'),
+  template: _.template('<option value="<%- value %>" <%= selected ? \'selected="selected"\' : "" %>><%- text %></option>', null, {variable: null}),
 
   setOptionValues: function (optionValues) {
     this.optionValues = optionValues;
+    this.optionValues = _.result(this, "optionValues");
   },
 
   setMultiple: function (multiple) {
+    this.multiple = multiple;
     this.el.multiple = multiple;
   },
 
@@ -723,9 +811,9 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
     for (var i = 0; i < nvps.length; i++) {
       var nvp = nvps[i];
       options = options + this.template({
-        text: nvp[0],
-        value: nvp[1],
-        selected: selectedValues.indexOf(nvp[1]) > -1
+        text: nvps[i][0],
+        value: nvps[i][1],
+        selected: _.indexOf(selectedValues, nvps[i][1]) > -1
       });
     }
     return options;
@@ -742,9 +830,10 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
     this.empty();
 
     var optionValues = _.result(this, "optionValues");
-    var selectedValues = this.formatter.fromRaw(this.model.get(this.column.get("name")));
+    var model = this.model;
+    var selectedValues = this.formatter.fromRaw(model.get(this.column.get("name")), model);
 
-    if (!_.isArray(optionValues)) throw TypeError("optionValues must be an array");
+    if (!_.isArray(optionValues)) throw new TypeError("optionValues must be an array");
 
     var optionValue = null;
     var optionText = null;
@@ -767,13 +856,13 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
       }
       else if (_.isObject(optionValue)) {
         optgroupName = optionValue.name;
-        var optgroup = window.document.createElement("optgroup");
+        var optgroup = document.createElement("optgroup");
         optgroup.label = optgroupName;
-        optgroup.innerHTML = this._renderOptions(optionValue.values, selectedValues);
+        optgroup.innerHTML = this._renderOptions.call(this, optionValue.values, selectedValues);
         children.push(optgroup.outerHTML);
       }
       else {
-        throw TypeError("optionValues elements must be a name-value pair or an object hash of { name: 'optgroup label', value: [option name-value pairs] }");
+        throw new TypeError("optionValues elements must be a name-value pair or an object hash of { name: 'optgroup label', value: [option name-value pairs] }");
       }
     }
 
@@ -785,27 +874,25 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
   },
 
   /**
-     Saves the value of the selected option to the model attribute. Triggers a
-     `backgrid:edited` Backbone event from the model.
+     Saves the value of the selected option to the model attribute.
   */
   save: function (e) {
     var model = this.model;
     var column = this.column;
 
-    var values;
-    if (!this.el.multiple) values = this.el.value;
-    else if (this.el.multiple) {
+    var values = null;
+    var options = this.el.options, option;
+    if (!this.multiple) values = this.el.value || null;
+    else if (this.multiple) {
       values = [];
-      var selectedOptions = this.el.querySelectorAll("option");
-      for (var i = 0, l = selectedOptions.length; i < l; i++) {
-        var option = selectedOptions[i];
+      for (var i = 0, l = options.length; i < l; i++) {
+        option = options[i];
         if (option.selected) values.push(option.value);
       }
       if (values.length === 0) values = null;
     }
 
-    model.set(column.get("name"), this.formatter.toRaw(values));
-    model.trigger("backgrid:edited", model, column, new Command(e));
+    model.set(column.get("name"), this.formatter.toRaw(values, model));
   },
 
   /**
@@ -824,9 +911,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
              command.moveUp() || command.moveDown() || e.type == "blur") {
       e.preventDefault();
       e.stopPropagation();
-      if (e.type == "blur" && this.el.querySelectorAll("option").length === 1) {
-        model.set(column.get("name"), this.formatter.toRaw(this.el.value));
-      }
+      this.save(e);
       model.trigger("backgrid:edited", model, column, new Command(e));
     }
   }
@@ -877,7 +962,7 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
   multiple: false,
 
   /** @property */
-  formatter: new SelectFormatter(),
+  formatter: SelectFormatter,
 
   /**
      @property {Array.<Array>|Array.<{name: string, values: Array.<Array>}>} optionValues
@@ -896,9 +981,8 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
 
      @throws {TypeError} If `optionsValues` is undefined.
   */
-  initialize: function () {
-    Cell.prototype.initialize.apply(this, arguments);
-    Backgrid.requireOptions(this, ["optionValues"]);
+  initialize: function (options) {
+    SelectCell.__super__.initialize.apply(this, arguments);
     this.listenTo(this.model, "backgrid:edit", function (model, column, cell, editor) {
       if (column.get("name") == this.column.get("name")) {
         editor.setOptionValues(this.optionValues);
@@ -915,8 +999,9 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
   render: function () {
     this.empty();
 
-    var optionValues = this.optionValues;
-    var rawData = this.formatter.fromRaw(this.model.get(this.column.get("name")));
+    var optionValues = _.result(this, "optionValues");
+    var model = this.model;
+    var rawData = this.formatter.fromRaw(model.get(this.column.get("name")), model);
 
     var selectedText = [];
 
@@ -955,7 +1040,7 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
     }
     catch (ex) {
       if (ex instanceof TypeError) {
-        throw TypeError("'optionValues' must be of type {Array.<Array>|Array.<{name: string, values: Array.<Array>}>}");
+        throw new TypeError("'optionValues' must be of type {Array.<Array>|Array.<{name: string, values: Array.<Array>}>}");
       }
       throw ex;
     }

@@ -3,28 +3,9 @@
   http://github.com/wyuenho/backgrid
 
   Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
-  Licensed under the MIT @license.
+  Licensed under the MIT license.
 */
 describe("A Row", function () {
-
-  it("throws TypeError if a model is not given", function () {
-    expect(function () {
-      new Backgrid.Row({
-        columns: [{
-          name: "name",
-          cell: "string"
-        }]
-      });
-    }).toThrow(new TypeError("'model' is required"));
-  });
-
-  it("throws TypeError if a list of column definitions is not given", function () {
-    expect(function () {
-      new Backgrid.Row({
-        model: new Backbone.Model()
-      });
-    }).toThrow(new TypeError("'columns' is required"));
-  });
 
   it("renders a row of cells using a model's values and a list of column definitions", function () {
     var row = new Backgrid.Row({
@@ -66,17 +47,17 @@ describe("A Row", function () {
 
     var $tds = $(row.el).children();
     expect($tds.eq(0).text()).toBe("name");
-    expect($tds.eq(0).css("display")).not.toBe("none");
+    expect($tds.eq(0).hasClass("renderable")).toBe(true);
 
     row.columns.at(0).set("renderable", false);
     $tds = $(row.el).children();
     expect($tds.eq(0).text()).toBe("name");
-    expect($tds.eq(0).css("display")).toBe("none");
+    expect($tds.eq(0).hasClass("renderable")).toBe(false);
 
     row.columns.at(0).set("renderable", true);
     $tds = $(row.el).children();
     expect($tds.eq(0).text()).toBe("name");
-    expect($tds.eq(0).css("display")).not.toBe("none");
+    expect($tds.eq(0).hasClass("renderable")).toBe(true);
   });
 
   it("inserts or removes a cell if a column is added or removed", function () {
@@ -151,7 +132,7 @@ describe("A Empty Row", function () {
     expect($(row.el).find("td").text()).toEqual(" ");
   });
 
-  it("accepts an option for the text in the row", function() {
+  it("accepts a string option for the text in the row", function() {
     row = new Backgrid.EmptyRow({
       columns: [{
         name: "title"
@@ -159,6 +140,21 @@ describe("A Empty Row", function () {
         name: "author"
       }],
       emptyText: "No data"
+    });
+
+    row.render();
+
+    expect($(row.el).find("td").text()).toEqual("No data");
+  });
+
+  it("accepts a function option for the text in the row", function() {
+    row = new Backgrid.EmptyRow({
+      columns: [{
+        name: "title"
+      }, {
+        name: "author"
+      }],
+      emptyText: function() { return "No data"; }
     });
 
     row.render();
