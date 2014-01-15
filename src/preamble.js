@@ -157,35 +157,51 @@ Backgrid.mount = function (childView, parentView, options) {
   childView.postRender();
 };
 
-var matchesSelector = (function () {
-  var matches = Element.prototype.matches;
-  if (!matches) {
-    var prefixes = ["webkit", "moz", "ms", "o"];
-    for (var i = 0, l = prefixes.length; i < l; i++) {
-      var method = Element.prototype[prefixes[i] + "MatchesSelector"];
-      if (method) {
-        matches = method;
-        break;
-      }
+// Caches a local reference to `Element.prototype` for faster access.
+var ElementProto = Element.prototype;
+
+// IE8 `addEventListener` polyfill.
+var addEventListener = ElementProto.addEventListener ||
+    function(eventName, listener) {
+      this.attachEvent('on' + eventName, listener);
+    };
+
+// IE8 `removeEventListener` polyfill.
+var removeEventListener = ElementProto.removeEventListener ||
+    function(eventName, listener) {
+      this.detachEvent('on' + eventName, listener);
+    };
+
+// Find the right `Element#matches` for IE>=9 and modern browsers.
+var matchesSelector = (function() {
+  var matches = ElementProto.matches ||
+      ElementProto[_.find(['webkit', 'moz', 'ms', 'o'], function(prefix) {
+        return !!ElementProto[prefix + 'MatchesSelector'];
+      })];
+
+  // Make our own `Element#matches` for IE8
+  matches = matches || function(selector) {
+    // We'll use querySelectorAll to find all element matching the selector,
+    // then check if the given element is included in that list.
+    // Executing the query on the parentNode reduces the resulting nodeList,
+    // document doesn't have a parentNode, though.
+    var nodeList = (this.parentNode || document).querySelectorAll(selector) || [];
+    for (var i = 0, l = nodeList.length; i < l; i++) {
+      if (nodeList[i] == this) return true;
     }
-  }
+    return false;
+  };
 
   return matches;
 }());
 
+// Cached regex to split keys for `delegate`.
 var delegateEventSplitter = /^(\S+)\s*(.*)$/;
 
 var View = Backgrid.View = Backbone.View.extend({
 
-  useNative: true,
-
-  _domEventListeners: {},
-
-  $: function (selector) {
-    return this.useNative ?
-        this.el.querySelectorAll(selector) :
-        View.__super__.$.apply(this, arguments);
-  },
+  // Private list to hold all the DOM event delegation listeners.
+  _domEvents: [],
 
   preRender: function () {
     return this;
@@ -206,111 +222,133 @@ var View = Backgrid.View = Backbone.View.extend({
   },
 
   empty: function () {
-    if (this.useNative) {
-      var el = this.el;
-      while (el.firstChild) el.removeChild(el.firstChild);
-    }
-    else this.$el.empty();
-    return this;
-  },
-
-  remove: function () {
-    if (this.useNative) {
-      this.undelegateEvents();
-      var el = this.el;
-      var parentNode = el.parentNode;
-      if (parentNode) parentNode.removeChild(el);
-      this.stopListening();
-    }
-    else return View.__super__.remove.apply(this, arguments);
-    return this;
-  },
-
-  setElement: function(element, delegate) {
-    if (this.useNative) {
-      if (this.el) this.undelegateEvents();
-      if (typeof element == 'string') {
-        if (element.trim()[0] == '<') {
-          var el = document.createElement("div");
-          el.innerHTML = element;
-          this.el = el.firstChild;
-        }
-        else this.el = document.querySelector(element.trim());
-      }
-      else this.el = element;
-      if (delegate !== false) this.delegateEvents();
-    } else View.__super__.setElement.apply(this, arguments);
-    return this;
-  },
-
-  delegateEvents: function (events) {
-    if (this.useNative) {
-      if (!(events || (events = _.result(this, 'events')))) return this;
-      this.undelegateEvents();
-      var eventSelectorMethodMap = {};
-      for (var key in events) {
-        var method = events[key];
-        if (!_.isFunction(method)) method = this[events[key]];
-        if (!method) continue;
-
-        var match = key.match(delegateEventSplitter);
-        var eventName = match[1], selector = match[2];
-        method = _.bind(method, this);
-
-        var selectors = eventSelectorMethodMap[eventName];
-        if (!selectors) selectors = eventSelectorMethodMap[eventName] = {};
-
-        var methods = selectors[selector];
-        if (!methods) methods = selectors[selector] = [];
-
-        methods.push(method);
-      }
-
-      var el = this.el, domEventListeners = this._domEventListeners;
-
-      for (var eventName in eventSelectorMethodMap) {
-        var listener = domEventListeners[eventName] = (function (eventName) {
-          return function (e) {
-            var target = e.target;
-            if (target) {
-              for (var selector in eventSelectorMethodMap[eventName]) {
-                if (selector === '' || matchesSelector.call(target, selector)) {
-                  var methods = eventSelectorMethodMap[eventName][selector];
-                  for (var i = 0, l = methods.length; i < l; i++) {
-                    var result = methods[i].apply(this, arguments);
-                    if (result === false) {
-                      e.preventDefault();
-                      e.stopPropagation();
-                    }
-                  }
-                }
-              }
-            }
-          };
-        }(eventName));
-
-        el.addEventListener(eventName, listener, false);
-      }
-
-    }
-    else View.__super__.delegateEvents.apply(this, arguments);
-    return this;
-  },
-
-  undelegateEvents: function () {
     var el = this.el;
-    if (el && this.useNative) {
-      var domEventListeners = this._domEventListeners;
-      for (var eventName in domEventListeners) {
-        el.removeEventListener(eventName, domEventListeners[eventName], false);
-      }
-      this._domEventListeners = {};
-    }
-    else View.__super__.undelegateEvents.apply(this, arguments);
+    while (el.firstChild) el.removeChild(el.firstChild);
     return this;
   },
 
-  _ensureElement: function () {
+  // Remove this view by taking the element out of the DOM, remove all the DOM
+  // event listeners attached to it, and remove any applicable Backbone.Events
+  // listeners.
+  remove: function() {
+    this.undelegateEvents();
+    var el = this.el;
+    var parentNode = el.parentNode;
+    if (parentNode) parentNode.removeChild(el);
+    this.stopListening();
+    return this;
+  },
+
+  // Change the view's element (`this.el` property), including event
+  // re-delegation. If element is string, create or find that element and
+  // change this view's element to it. Otherwise, assume it is a DOM element
+  // and change this view's element to it.
+  setElement: function(element, delegate) {
+    if (this.el) this.undelegateEvents();
+    if (typeof element == 'string') {
+      if (element[0].trim() == '<') {
+        var el = document.createElement('div');
+        el.innerHTML = element;
+        this.el = el.firstChild;
+      }
+      else this.el = document.querySelector(element);
+    }
+    else this.el = element;
+    if (delegate !== false) this.delegateEvents();
+    return this;
+  },
+
+  // Set callbacks, where `this.events` is a hash of
+  //
+  // *{"event selector": "callback"}*
+  //
+  //     {
+  //       'mousedown .title':  'edit',
+  //       'click .button':     'save',
+  //       'click .open':       function(e) { ... }
+  //     }
+  //
+  // pairs. Callbacks will be bound to the view, with `this` set properly.
+  // Uses event delegation for efficiency.
+  // Omitting the selector binds the event to `this.el`.
+  // This only works for delegate-able events: not `focus`, `blur`, not
+  // `change`, `submit`, and `reset` in Internet Explorer, not `focusin` and
+  // `focusout` in Firefox, and not `mouseenter` and `mouseleave` for Chrome <
+  // 30 and Safari.
+  //
+  // Pass the event name, selector and the bound method to `_delegateEvents`
+  // for each mapping in `events`.
+  delegateEvents: function(events) {
+    if (!(events || (events = _.result(this, 'events')))) return this;
+    this.undelegateEvents();
+    var _delegateEvents = this._delegateEvents;
+    for (var key in events) {
+      var method = events[key];
+      if (typeof method != 'function') method = this[events[key]];
+      if (!method) continue;
+
+      var match = key.match(delegateEventSplitter);
+      var eventName = match[1], selector = match[2];
+      method = method.bind && method.bind(this) || _.bind(method, this);
+      _delegateEvents.call(this, eventName, selector, method);
+    }
+
+    return this;
+  },
+
+  // Make a event delegation handler for the given `eventName` and `selector`
+  // and attach it to `this.el`.
+  // If selector is empty, the method will be bound to `this.el`. If not, a
+  // new handler that will recursively traverse up the event target's DOM
+  // hierarchy looking for a node that matches the selector. If one is found,
+  // the event's `delegateTarget` property is set to it and the return the
+  // result of calling bound `method` with the parameters given to the
+  // handler.
+  _delegateEvents: function(eventName, selector, method) {
+    var root = this.el, domEvents = this._domEvents, handler, node;
+    if (!selector) handler = method;
+    else handler = function (e) {
+      node = e.target || e.srcElement;
+      for (; node && node != root; node = node.parentNode) {
+        if (matchesSelector.call(node, selector)) {
+          e.delegateTarget = node;
+          return method.apply(this, arguments);
+        }
+      }
+    };
+
+    addEventListener.call(root, eventName, handler, false);
+    domEvents.push({eventName: eventName, handler: handler});
+  },
+
+  // Delegates to `_undelegateEvents` so `BaseView` subclasses can override
+  // the default event undelegation routine.
+  undelegateEvents: function() {
+    this._undelegateEvents();
+    return this;
+  },
+
+  // Clears all callbacks previously bound to the view with `delegateEvents`.
+  // You usually don't need to use this, but may wish to if you have multiple
+  // Backbone views attached to the same DOM element.
+  _undelegateEvents: function() {
+    var el = this.el, domEvents = this._domEvents, i, item;
+    if (el) {
+      for (i = 0; i < domEvents.length; i++) {
+        item = domEvents[i];
+        removeEventListener.call(el, item.eventName, item.handler, false);
+      }
+      this._domEvents = [];
+    }
+  },
+
+  // Ensure that the View has a DOM element to render into. If `this.el`
+  // exists, it must be a string, a function or a DOM element. If it is a
+  // string or a DOM element, pass it through `setElement`. If it is a
+  // function, pass its result to `setElement`. Otherwise, create an element
+  // from the `id`, `className`, `tagName` and `attributes` properties, and
+  // pass it to `setElement`.
+  _ensureElement: function() {
     if (!this.el) {
       var el = this.el = document.createElement(_.result(this, 'tagName'));
       var attrs = _.extend({}, _.result(this, 'attributes'));
