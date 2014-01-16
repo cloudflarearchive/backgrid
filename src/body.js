@@ -170,9 +170,16 @@ var Body = Backgrid.Body = Backgrid.View.extend({
      instance as its sole parameter when done.
   */
   refresh: function () {
-    for (var i = 0; i < this.rows.length; i++) {
-      this.rows[i].remove();
-    }
+    var parent = this.el.parentNode;
+    if (parent) parent.removeChild(this.el);
+
+    // GC the damn rows in the background
+    var oldRows = [].slice.apply(this.rows);
+    setTimeout(function () {
+      for (var i = 0; i < oldRows.length; i++) {
+        oldRows[i].remove();
+      }
+    }, 0);
 
     this.rows = this.collection.map(function (model) {
       var row = new this.row({
@@ -186,6 +193,8 @@ var Body = Backgrid.Body = Backgrid.View.extend({
     this._unshiftEmptyRowMayBe();
 
     this.render();
+
+    if (parent) parent.appendChild(this.el);
 
     this.collection.trigger("backgrid:refresh", this);
 
