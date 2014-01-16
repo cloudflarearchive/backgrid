@@ -195,10 +195,28 @@ describe("A HeaderCell", function () {
     expect($(cell.el).hasClass("descending")).toBe(false);
   });
 
-  it("will remove its direction CSS class if `sort` is triggered", function () {
+  it("will remove its direction CSS class if `sort` is triggered from the collection or pageableCollection#fullCollection", function () {
     cell.column.set("direction", "ascending");
     cell.collection.comparator = "id";
     cell.collection.sort();
+    expect($(cell.el).hasClass("ascending")).toBe(false);
+    expect($(cell.el).hasClass("descending")).toBe(false);
+
+    col = new Backbone.PageableCollection(col.toJSON(), {
+      mode: "client"
+    });
+    col.setSorting("id", 1);
+    cell = new Backgrid.HeaderCell({
+      column: {
+        name: "id",
+        cell: "integer"
+      },
+      collection: col
+    });
+
+    cell.column.set("direction", "ascending");
+    cell.collection.fullCollection.comparator = "id";
+    cell.collection.fullCollection.sort();
     expect($(cell.el).hasClass("ascending")).toBe(false);
     expect($(cell.el).hasClass("descending")).toBe(false);
   });

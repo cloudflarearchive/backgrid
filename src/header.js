@@ -60,7 +60,7 @@ var HeaderCell = Backgrid.HeaderCell = Backgrid.View.extend({
     if (Backgrid.callByNeed(column.sortable(), column, collection)) classes.add("sortable");
     if (Backgrid.callByNeed(column.renderable(), column, collection)) classes.add("renderable");
 
-    this.listenTo(collection, "sort", this.removeCellDirection);
+    this.listenTo(collection.fullCollection || collection, "sort", this.removeCellDirection);
   },
 
   /**
