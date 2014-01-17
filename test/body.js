@@ -28,9 +28,10 @@ describe("A Body", function () {
     expect(body.el.tagName).toBe("TBODY");
     var $trs = $(body.el).children();
     expect($trs.length).toBe(3);
-    expect(body.el.innerHTML).toBe('<tr><td class="integer-cell editable sortable renderable">2</td></tr>' +
-                                   '<tr><td class="integer-cell editable sortable renderable">1</td></tr>' +
-                                   '<tr><td class="integer-cell editable sortable renderable">3</td></tr>');
+    expect($(body.el).html().toLowerCase().replace(/\s*</g, '<'))
+        .toBe('<tr><td class="integer-cell editable sortable renderable">2</td></tr>' +
+              '<tr><td class="integer-cell editable sortable renderable">1</td></tr>' +
+              '<tr><td class="integer-cell editable sortable renderable">3</td></tr>');
   });
 
   it("will render a new row if a new model is added to its collection", function () {
@@ -39,14 +40,16 @@ describe("A Body", function () {
     });
     var $trs = $(body.el).children();
     expect($trs.length).toBe(4);
-    expect($trs[3].outerHTML).toBe('<tr><td class="integer-cell editable sortable renderable">4</td></tr>');
+    expect($("<div>").append($trs.eq(3).clone()).html().toLowerCase().replace(/\s*</g, '<'))
+        .toBe('<tr><td class="integer-cell editable sortable renderable">4</td></tr>');
 
     body.collection.add({
       id: 5
     }, {at: 1});
     $trs = $(body.el).children();
     expect($trs.length).toBe(5);
-    expect($trs[1].outerHTML).toBe('<tr><td class="integer-cell editable sortable renderable">5</td></tr>');
+    expect($("<div>").append($trs.eq(1).clone()).html().toLowerCase().replace(/\s*</g, '<'))
+        .toBe('<tr><td class="integer-cell editable sortable renderable">5</td></tr>');
   });
 
   it("will render a new row by calling insertRow directly with a new model", function () {
@@ -67,14 +70,16 @@ describe("A Body", function () {
 
     var $trs = $(body.el).children();
     expect($trs.length).toBe(1);
-    expect($trs[0].outerHTML).toBe('<tr><td class="integer-cell editable sortable renderable">4</td></tr>');
+    expect($("<div>").append($trs.eq(0).clone()).html().toLowerCase().replace(/\s*</g, '<'))
+        .toBe('<tr><td class="integer-cell editable sortable renderable">4</td></tr>');
 
     body.insertRow({
       id: 5
     }, {at: 0});
     $trs = $(body.el).children();
     expect($trs.length).toBe(2);
-    expect($trs[0].outerHTML).toBe('<tr><td class="integer-cell editable sortable renderable">5</td></tr>');
+    expect($("<div>").append($trs.eq(0).clone()).html().toLowerCase().replace(/\s*</g, '<'))
+        .toBe('<tr><td class="integer-cell editable sortable renderable">5</td></tr>');
   });
 
   it("will remove a row from the DOM if a model is removed from its collection", function () {
@@ -82,8 +87,9 @@ describe("A Body", function () {
     body.collection.remove(m1);
     var $trs = $(body.el).children();
     expect($trs.length).toBe(2);
-    expect(body.el.innerHTML).toBe('<tr><td class="integer-cell editable sortable renderable">2</td></tr>' +
-                                   '<tr><td class="integer-cell editable sortable renderable">3</td></tr>');
+    expect($(body.el).html().toLowerCase().replace(/\s+</g, '<'))
+        .toBe('<tr><td class="integer-cell editable sortable renderable">2</td></tr>' +
+              '<tr><td class="integer-cell editable sortable renderable">3</td></tr>');
   });
 
   it("will remove a row from the DOM is removeRow is called directly with a model", function () {
@@ -91,8 +97,9 @@ describe("A Body", function () {
     body.removeRow(m1);
     var $trs = $(body.el).children();
     expect($trs.length).toBe(2);
-    expect(body.el.innerHTML).toBe('<tr><td class="integer-cell editable sortable renderable">2</td></tr>' +
-                                   '<tr><td class="integer-cell editable sortable renderable">3</td></tr>');
+    expect($(body.el).html().toLowerCase().replace(/\s+</g, '<'))
+        .toBe('<tr><td class="integer-cell editable sortable renderable">2</td></tr>' +
+              '<tr><td class="integer-cell editable sortable renderable">3</td></tr>');
   });
 
   it("will refresh if its collection is reset", function () {
@@ -108,7 +115,8 @@ describe("A Body", function () {
     expect(eventFired).toBe(true);
     var $trs = $(body.el).children();
     expect($trs.length).toBe(1);
-    expect(body.el.innerHTML).toBe('<tr><td class="integer-cell editable sortable renderable">6</td></tr>');
+    expect($(body.el).html().toLowerCase().replace(/\s+</g, '<'))
+        .toBe('<tr><td class="integer-cell editable sortable renderable">6</td></tr>');
   });
 
   it("will render rows using the Row class supplied in the constructor options", function () {

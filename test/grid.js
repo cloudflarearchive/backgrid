@@ -118,11 +118,26 @@ describe("A Grid", function () {
       name: "id",
       cell: "integer"
     }]);
-    expect(grid.el.innerHTML).toBe('<thead><tr><th class="editable sortable renderable id"><a>id<b class="sort-caret"></b></a></th></tr></thead>' +
-                                   '<tfoot></tfoot>' +
-                                   '<tbody><tr><td class="integer-cell editable sortable renderable">1</td></tr>' +
-                                   '<tr><td class="integer-cell editable sortable renderable">2</td></tr>' +
-                                   '<tr><td class="integer-cell editable sortable renderable">3</td></tr></tbody>');
+
+    var thead = grid.el.childNodes[0];
+    expect(thead.tagName == "THEAD").toBe(true);
+    expect($(thead).find("tr").length).toBe(1);
+    expect($(thead).find("tr > th.editable.sortable.renderable.id > a > b.sort-caret").length).toBe(1);
+    expect($(thead).find("tr > th.editable.sortable.renderable.id > a").text()).toBe("id");
+
+    var tfoot = grid.el.childNodes[1];
+    expect(tfoot.tagName == "TFOOT").toBe(true);
+    expect(tfoot.childNodes.length).toBe(0);
+
+    var tbody = grid.el.lastChild;
+    expect(tbody.tagName == "TBODY").toBe(true);
+    expect($(tbody).find("tr").length).toBe(3);
+    expect($(tbody).find("tr:nth-child(1) > td.integer-cell.editable.sortable.renderable").length).toBe(1);
+    expect($(tbody).find("tr:nth-child(1) > td.integer-cell.editable.sortable.renderable").text()).toBe("1");
+    expect($(tbody).find("tr:nth-child(2) > td.integer-cell.editable.sortable.renderable").length).toBe(1);
+    expect($(tbody).find("tr:nth-child(2) > td.integer-cell.editable.sortable.renderable").text()).toBe("2");
+    expect($(tbody).find("tr:nth-child(3) > td.integer-cell.editable.sortable.renderable").length).toBe(1);
+    expect($(tbody).find("tr:nth-child(3) > td.integer-cell.editable.sortable.renderable").text()).toBe("3");
   });
 
 });

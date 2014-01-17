@@ -66,7 +66,7 @@ var Backgrid = root.Backgrid = {
 
     var context = arguments[1];
     var args = [].slice.call(arguments, 2);
-    return value.apply(context, !!(args + '') ? args : void 0);
+    return value.apply(context, !!(args + '') ? args : []);
   }
 
 };

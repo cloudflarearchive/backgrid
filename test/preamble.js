@@ -36,7 +36,7 @@ describe("Backgrid#callByNeed", function () {
     expect(Backgrid.callByNeed(function () { return 1; })).toBe(1);
   });
 
-  it("will use the second parameter as the context when evaluation the first parameter as a function", function () {
+  it("will use the second parameter as the context when evaluating the first parameter as a function", function () {
     expect(Backgrid.callByNeed(function () { return this[0]; }, [1,2,3])).toBe(1);
   });
 
