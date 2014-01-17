@@ -839,7 +839,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
         this.$el.append(this.template({
           text: optionText,
           value: optionValue,
-          selected: selectedValues.indexOf(optionValue) > -1
+          selected: _.indexOf(selectedValues, optionValue) > -1
         }));
       }
       else if (_.isObject(optionValue)) {
