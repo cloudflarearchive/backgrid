@@ -287,8 +287,21 @@ describe("A HeaderRow", function () {
 
   it("renders a row of header cells", function () {
     expect(row.$el[0].tagName).toBe("TR");
-    expect(row.$el[0].innerHTML).toBe('<th class="editable sortable renderable name"><a>name<b class="sort-caret"></b></a></th>' +
-                                      '<th class="editable sortable renderable year"><a>year<b class="sort-caret"></b></a></th>');
+    var th1 = $(row.el.childNodes[0]);
+    expect(th1.hasClass("editable")).toBe(true);
+    expect(th1.hasClass("sortable")).toBe(true);
+    expect(th1.hasClass("renderable")).toBe(true);
+    expect(th1.hasClass("name")).toBe(true);
+    expect(th1.find("a").text()).toBe("name");
+    expect(th1.find("a").eq(1).is($("b", {className: "sort-caret"})));
+
+    var th2 = $(row.el.childNodes[1]);
+    expect(th2.hasClass("editable")).toBe(true);
+    expect(th2.hasClass("sortable")).toBe(true);
+    expect(th2.hasClass("renderable")).toBe(true);
+    expect(th2.hasClass("year")).toBe(true);
+    expect(th2.find("a").text()).toBe("year");
+    expect(th2.find("a > b:last-child").eq(0).hasClass("sort-caret")).toBe(true);
   });
 
   it("resets the carets of the non-sorting columns", function () {
@@ -301,7 +314,13 @@ describe("A HeaderRow", function () {
   it("inserts or removes a cell if a column is added or removed", function () {
     row.columns.add({name: "price", cell: "number"});
     expect(row.$el.children().length).toBe(3);
-    expect(row.$el.children().last()[0].outerHTML).toBe('<th class="editable sortable renderable price"><a>price<b class="sort-caret"></b></a></th>');
+    var lastTh = $(row.el.lastChild);
+    expect(lastTh.hasClass("editable")).toBe(true);
+    expect(lastTh.hasClass("sortable")).toBe(true);
+    expect(lastTh.hasClass("renderable")).toBe(true);
+    expect(lastTh.hasClass("price")).toBe(true);
+    expect(lastTh.find("a").text()).toBe("price");
+    expect(lastTh.find("a > b:last-child").eq(0).hasClass("sort-caret")).toBe(true);
 
     row.columns.add({name: "publisher", cell: "string", renderable: false});
     expect(row.$el.children().length).toBe(4);
@@ -310,7 +329,13 @@ describe("A HeaderRow", function () {
 
     row.columns.remove(row.columns.first());
     expect(row.$el.children().length).toBe(3);
-    expect(row.$el.children().first()[0].outerHTML).toBe('<th class="editable sortable renderable year"><a>year<b class="sort-caret"></b></a></th>');
+    var firstTh = $(row.el.firstChild);
+    expect(firstTh.hasClass("editable")).toBe(true);
+    expect(firstTh.hasClass("sortable")).toBe(true);
+    expect(firstTh.hasClass("renderable")).toBe(true);
+    expect(firstTh.hasClass("year")).toBe(true);
+    expect(firstTh.find("a").text()).toBe("year");
+    expect(firstTh.find("a > b:last-child").eq(0).hasClass("sort-caret")).toBe(true);
   });
 
 });
@@ -355,8 +380,22 @@ describe("A Header", function () {
 
   it("renders a header with a row of header cells", function () {
     expect(head.$el[0].tagName).toBe("THEAD");
-    expect(head.$el[0].innerHTML).toBe('<tr><th class="editable sortable renderable name"><a>name<b class="sort-caret"></b></a></th>' +
-                                      '<th class="editable sortable renderable year"><a>year<b class="sort-caret"></b></a></th></tr>');
+
+    var th1 = $(head.row.el.childNodes[0]);
+    expect(th1.hasClass("editable")).toBe(true);
+    expect(th1.hasClass("sortable")).toBe(true);
+    expect(th1.hasClass("renderable")).toBe(true);
+    expect(th1.hasClass("name")).toBe(true);
+    expect(th1.find("a").text()).toBe("name");
+    expect(th1.find("a").eq(1).is($("b", {className: "sort-caret"})));
+
+    var th2 = $(head.row.el.childNodes[1]);
+    expect(th2.hasClass("editable")).toBe(true);
+    expect(th2.hasClass("sortable")).toBe(true);
+    expect(th2.hasClass("renderable")).toBe(true);
+    expect(th2.hasClass("year")).toBe(true);
+    expect(th2.find("a").text()).toBe("year");
+    expect(th2.find("a > b:last-child").eq(0).hasClass("sort-caret")).toBe(true);
   });
 
 });
