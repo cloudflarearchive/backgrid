@@ -76,6 +76,7 @@
 }
 
 .backgrid tbody tr.empty td {
+  display: inherit;
   text-align: center;
 }
 
