@@ -334,11 +334,19 @@ describe("A Body", function () {
     expect(body.collection.at(0).get("id")).toBe(1);
     expect(body.collection.at(1).get("id")).toBe(2);
 
+    var onBackgridSortedCallArgs = [];
+    col.on("backgrid:sorted", function () {
+      onBackgridSortedCallArgs.push([].slice.apply(arguments));
+    });
+
     body.collection.trigger("backgrid:sort", body.columns.at(0), "descending");
 
     expect(body.collection.at(0).get("id")).toBe(2);
     expect(body.collection.at(1).get("id")).toBe(1);
     expect(body.columns.at(0).get("direction"), "descending");
+    expect(onBackgridSortedCallArgs.length).toBe(1);
+    expect(onBackgridSortedCallArgs[0][0]).toBe(body.columns.at(0));
+    expect(onBackgridSortedCallArgs[0][1]).toBe("descending");
 
     $.ajax = oldAjax;
   });
@@ -365,31 +373,42 @@ describe("A Body", function () {
 
     body.render();
 
-    col.trigger("backgrid:sort", body.columns.at(0), "ascending");
+    var onBackgridSortedCallArgs = [];
+    col.on("backgrid:sorted", function () {
+      onBackgridSortedCallArgs.push([].slice.apply(arguments));
+    });
 
+    col.trigger("backgrid:sort", body.columns.at(0), "ascending");
     expect(body.collection.toJSON()).toEqual([{id: 3}]);
     expect(body.columns.at(0).get("direction"), "ascending");
+    expect(onBackgridSortedCallArgs.length).toBe(1);
+    expect(onBackgridSortedCallArgs[0][0]).toBe(body.columns.at(0));
+    expect(onBackgridSortedCallArgs[0][1]).toBe("ascending");
+    expect(onBackgridSortedCallArgs[0][2]).toBe(col);
 
     body.collection.getPage(2);
-
     expect(body.collection.toJSON()).toEqual([{id: 2}]);
 
     body.collection.getPage(3);
-
     expect(body.collection.toJSON()).toEqual([{id: 1}]);
 
     body.collection.getFirstPage();
 
     col.trigger("backgrid:sort", body.columns.at(0), "descending");
     expect(body.columns.at(0).get("direction"), "descending");
-
     expect(body.collection.toJSON()).toEqual([{id: 1}]);
+    expect(onBackgridSortedCallArgs.length).toBe(2);
+    expect(onBackgridSortedCallArgs[1][0]).toBe(body.columns.at(0));
+    expect(onBackgridSortedCallArgs[1][1]).toBe("descending");
+    expect(onBackgridSortedCallArgs[1][2]).toBe(col);
 
     col.trigger("backgrid:sort", body.columns.at(0), null);
     expect(body.columns.at(0).get("direction"), null);
-
     expect(body.collection.toJSON()).toEqual([{id: 2}]);
-
+    expect(onBackgridSortedCallArgs.length).toBe(3);
+    expect(onBackgridSortedCallArgs[2][0]).toBe(body.columns.at(0));
+    expect(onBackgridSortedCallArgs[2][1]).toBe(null);
+    expect(onBackgridSortedCallArgs[2][2]).toBe(col);
   });
 
   it("will put the next editable and renderable cell in edit mode when a save or one of the navigation commands is triggered via backgrid:edited from the collection", function () {
