@@ -2,7 +2,7 @@
   "name": "backgrid",
   "repo": "wyuenho/backgrid",
   "description": "Backgrid.js is a set of components for building semantic and easily stylable data grid widgets.",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "keywords": [
     "backbone",
     "grid",
