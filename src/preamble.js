@@ -147,28 +147,6 @@ _.extend(Command.prototype, {
   }
 });
 
-Backgrid.mount = function (childView, parentView, options) {
-  var el = parentView.el, children = el.childNodes;
-  options = _.defaults(options || {}, {at: children.length});
-  childView.preRender();
-  if (options.at >= children.length) el.appendChild(childView.render().el);
-  else el.insertBefore(childView, children[options.at]);
-  parentView.delegateEvents();
-  childView.postRender();
-};
-
-// Cross-platform `addEventListener`.
-var addEventListener = function(obj, eventName, listener, useCapture) {
-  if (obj.addEventListener) return obj.addEventListener(eventName, listener, useCapture);
-  else return obj.attachEvent('on' + eventName, listener);
-};
-
-// Cross-platform `removeEventListener`.
-var removeEventListener = function(obj, eventName, listener, useCapture) {
-  if (obj.removeEventListener) return obj.removeEventListener(eventName, listener, useCapture);
-  else return obj.detachEvent('on' + eventName, listener);
-};
-
 // Caches a local reference to `Element.prototype` for faster access.
 var ElementProto = typeof Element != 'undefined' && Element.prototype;
 
@@ -176,27 +154,16 @@ var ElementProto = typeof Element != 'undefined' && Element.prototype;
 var matchesSelector = ElementProto && ElementProto.matches ||
     ElementProto[_.find(['webkit', 'moz', 'ms', 'o'], function(prefix) {
       return !!ElementProto[prefix + 'MatchesSelector'];
-    }) + 'MatchesSelector'] ||
-    // Make our own `Element#matches` for IE8
-    function(selector) {
-      // We'll use querySelectorAll to find all element matching the selector,
-      // then check if the given element is included in that list.
-      // Executing the query on the parentNode reduces the resulting nodeList,
-      // document doesn't have a parentNode, though.
-      var nodeList = (this.parentNode || document).querySelectorAll(selector) || [];
-      for (var i = 0, l = nodeList.length; i < l; i++) {
-        if (nodeList[i] == this) return true;
-      }
-      return false;
-    };
+    }) + 'MatchesSelector'];
 
 // Cached regex to split keys for `delegate`.
 var delegateEventSplitter = /^(\S+)\s*(.*)$/;
 
-var View = Backgrid.View = Backbone.View.extend({
+// Cached regex to match an opening '<' of an HTML tag, possibly left-padded
+// with whitespace.
+var paddedLt = /^\s*</;
 
-  // Private list to hold all the DOM event delegation listeners.
-  _domEvents: [],
+var View = Backgrid.View = Backbone.View.extend({
 
   preRender: function () {
     return this;
@@ -222,6 +189,16 @@ var View = Backgrid.View = Backbone.View.extend({
     return this;
   },
 
+  // Private list to hold all the DOM event delegation listeners.
+  _domEvents: [],
+
+  // Delegate to `querySelectorAll` for element lookup, scoped to DOM elements
+  // within the current view. This should be preferred to global lookups where
+  // possible.
+  $: function(selector) {
+    return this.el.querySelectorAll(selector);
+  },
+
   // Remove this view by taking the element out of the DOM, remove all the DOM
   // event listeners attached to it, and remove any applicable Backbone.Events
   // listeners.
@@ -241,7 +218,7 @@ var View = Backgrid.View = Backbone.View.extend({
   setElement: function(element, delegate) {
     if (this.el) this.undelegateEvents();
     if (typeof element == 'string') {
-      if (element[0].trim() == '<') {
+      if (paddedLt.test(element)) {
         var el = document.createElement('div');
         el.innerHTML = element;
         this.el = el.firstChild;
@@ -312,7 +289,7 @@ var View = Backgrid.View = Backbone.View.extend({
       }
     };
 
-    addEventListener(root, eventName, handler, false);
+    root.addEventListener(eventName, handler, false);
     domEvents.push({eventName: eventName, handler: handler});
   },
 
@@ -331,7 +308,7 @@ var View = Backgrid.View = Backbone.View.extend({
     if (el) {
       for (i = 0, l = domEvents.length; i < l; i++) {
         item = domEvents[i];
-        removeEventListener(el, item.eventName, item.handler, false);
+        el.removeEventListener(item.eventName, item.handler, false);
       }
       this._domEvents = [];
     }
