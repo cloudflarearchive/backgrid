@@ -1,6 +1,6 @@
 /*
-  backbone-pageable 1.4.4
-  http://github.com/wyuenho/backbone-pageable
+  backbone-pageable 1.4.5
+  http://github.com/backbone-paginator/backbone-pageable
 
   Copyright (c) 2013 Jimmy Yuen Ho Wong
   Licensed under the MIT @license.
@@ -944,16 +944,10 @@
        links from them for infinite paging.
 
        This default implementation parses the RFC 5988 `Link` header and extract
-       3 links from it - `first`, `prev`, `next`. If a `previous` link is found,
-       it will be found in the `prev` key in the returned object hash. Any
-       subclasses overriding this method __must__ return an object hash having
-       only the keys above. If `first` is missing, the collection's default URL
-       is assumed to be the `first` URL. If `prev` or `next` is missing, it is
-       assumed to be `null`. An empty object hash must be returned if there are
-       no links found. If either the response or the header contains information
-       pertaining to the total number of records on the server, #state.totalRecords
-       must be set to that number. The default implementation uses the `last`
-       link from the header to calculate it.
+       3 links from it - `first`, `prev`, `next`. Any subclasses overriding this
+       method __must__ return an object hash having only the keys
+       above. However, simply returning a `next` link or an empty hash if there
+       are no more links should be enough for most implementations.
 
        @param {*} resp The deserialized response body.
        @param {Object} [options]
@@ -965,7 +959,7 @@
       var links = {};
       var linkHeader = options.xhr.getResponseHeader("Link");
       if (linkHeader) {
-        var relations = ["first", "prev", "previous", "next", "last"];
+        var relations = ["first", "prev", "next"];
         _each(linkHeader.split(","), function (linkValue) {
           var linkParts = linkValue.split(";");
           var url = linkParts[0].replace(URL_TRIM_RE, '');
@@ -974,39 +968,10 @@
             var paramParts = param.split("=");
             var key = paramParts[0].replace(PARAM_TRIM_RE, '');
             var value = paramParts[1].replace(PARAM_TRIM_RE, '');
-            if (key == "rel" && _contains(relations, value)) {
-              if (value == "previous") links.prev = url;
-              else links[value] = url;
-            }
+            if (key == "rel" && _contains(relations, value)) links[value] = url;
           });
         });
-
-        var last = links.last || '', qsi, qs;
-        if (qs = (qsi = last.indexOf('?')) ? last.slice(qsi + 1) : '') {
-          var params = queryStringToParams(qs);
-
-          var state = _clone(this.state);
-          var queryParams = this.queryParams;
-          var pageSize = state.pageSize;
-
-          var totalRecords = params[queryParams.totalRecords] * 1;
-          var pageNum = params[queryParams.currentPage] * 1;
-          var totalPages = params[queryParams.totalPages];
-
-          if (!totalRecords) {
-            if (pageNum) totalRecords = (state.firstPage === 0 ?
-                                         pageNum + 1 :
-                                         pageNum) * pageSize;
-            else if (totalPages) totalRecords = totalPages * pageSize;
-          }
-
-          if (totalRecords) state.totalRecords = totalRecords;
-
-          this.state = this._checkState(state);
-        }
       }
-
-      delete links.last;
 
       return links;
     },
@@ -1051,7 +1016,8 @@
     },
 
     /**
-       Parse server response for server pagination state updates.
+       Parse server response for server pagination state updates. Not applicable
+       under infinite mode.
 
        This default implementation first checks whether the response has any
        state object as documented in #parse. If it exists, a state object is
