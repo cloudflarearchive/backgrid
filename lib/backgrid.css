@@ -147,6 +147,7 @@
   margin-left: 0.3em;
   border: 0;
   content: "";
+  border: 4px solid transparent;
 }
 
 .backgrid .ascending .sort-caret {
