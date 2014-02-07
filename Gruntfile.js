@@ -49,6 +49,10 @@ module.exports = function (grunt) {
             '                             require("underscore"),\n' +
             '                             require("backbone"));\n' +
             '  }\n' +
+            '  // AMD\n' +
+            '  else if (typeof define == "function" && define.amd) {\n' +
+            '   define(["exports", "underscore", "backbone"], factory);\n' +
+            '  }\n' +
             '  // Browser\n' +
             '  else factory(this, this._, this.Backbone);\n' +
             '}(function (root, _, Backbone) {\n\n  "use strict";\n\n',
