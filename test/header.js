@@ -5,6 +5,16 @@
   Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
   Licensed under the MIT license.
 */
+
+function emit(element, event) {
+  if (element.dispatchEvent) {
+    element.dispatchEvent(event);
+  }
+  else if (element.fireEvent) {
+    element.fireEvent("on" + event.type, event);
+  }
+}
+
 describe("A HeaderCell", function () {
 
   var col;
@@ -162,7 +172,7 @@ describe("A HeaderCell", function () {
   it("triggers `backgrid:sort` with the column and direction set to 'ascending' if the column's direction is not set", function () {
     var column, direction;
     cell.collection.on("backgrid:sort", function (col, dir) { column = col; direction = dir; });
-    $(cell.el).find("a")[0].dispatchEvent(SyntheticEvent("click", {bubbles: true}));
+    emit($(cell.el).find("a")[0], SyntheticEvent("click", {bubbles: true}));
     expect(column).toBe(cell.column);
     expect(direction).toBe("ascending");
   });
@@ -171,7 +181,7 @@ describe("A HeaderCell", function () {
     var column, direction;
     cell.collection.on("backgrid:sort", function (col, dir) { column = col; direction = dir; });
     cell.column.set("direction", "ascending");
-    $(cell.el).find("a")[0].dispatchEvent(SyntheticEvent("click", {bubbles: true}));
+    emit($(cell.el).find("a")[0], SyntheticEvent("click", {bubbles: true}));
     expect(column).toBe(cell.column);
     expect(direction).toBe("descending");
   });
@@ -180,7 +190,7 @@ describe("A HeaderCell", function () {
     var column, direction;
     cell.collection.on("backgrid:sort", function (col, dir) { column = col; direction = dir; });
     cell.column.set("direction", "descending");
-    $(cell.el).find("a")[0].dispatchEvent(SyntheticEvent("click", {bubbles: true}));
+    emit($(cell.el).find("a")[0], SyntheticEvent("click", {bubbles: true}));
     expect(column).toBe(cell.column);
     expect(direction).toBeNull();
   });
@@ -227,7 +237,7 @@ describe("A HeaderCell", function () {
     var column, direction;
     cell.column.set("sortType", "toggle");
     cell.collection.on("backgrid:sort", function (col, dir) { column = col; direction = dir; });
-    $(cell.el).find("a")[0].dispatchEvent(SyntheticEvent("click", {bubbles: true}));
+    emit($(cell.el).find("a")[0], SyntheticEvent("click", {bubbles: true}));
     expect(column).toBe(cell.column);
     expect(direction).toBe("ascending");
   });
@@ -237,7 +247,7 @@ describe("A HeaderCell", function () {
     cell.column.set("sortType", "toggle");
     cell.column.set("direction", "ascending");
     cell.collection.on("backgrid:sort", function (col, dir) { column = col; direction = dir; });
-    $(cell.el).find("a")[0].dispatchEvent(SyntheticEvent("click", {bubbles: true}));
+    emit($(cell.el).find("a")[0], SyntheticEvent("click", {bubbles: true}));
     expect(column).toBe(cell.column);
     expect(direction).toBe("descending");
   });
@@ -247,7 +257,7 @@ describe("A HeaderCell", function () {
     cell.column.set("sortType", "toggle");
     cell.column.set("direction", "descending");
     cell.collection.on("backgrid:sort", function (col, dir) { column = col; direction = dir; });
-    $(cell.el).find("a")[0].dispatchEvent(SyntheticEvent("click", {bubbles: true}));
+    emit($(cell.el).find("a")[0], SyntheticEvent("click", {bubbles: true}));
     expect(column).toBe(cell.column);
     expect(direction).toBe("ascending");
   });

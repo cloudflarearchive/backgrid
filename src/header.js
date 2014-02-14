@@ -93,8 +93,6 @@ var HeaderCell = Backgrid.HeaderCell = Backgrid.View.extend({
      `ascending`, `descending`, and default.
    */
   onClick: function (e) {
-    e.preventDefault();
-
     var column = this.column;
     var collection = this.collection;
     var event = "backgrid:sort";
@@ -116,6 +114,8 @@ var HeaderCell = Backgrid.HeaderCell = Backgrid.View.extend({
       if (sortType === "toggle") toggleSort(this, column);
       else cycleSort(this, column);
     }
+
+    e.preventDefault();
   },
 
   /**
