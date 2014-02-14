@@ -99,7 +99,7 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
   */
   render: function () {
     var model = this.model;
-    this.el.defaultValue = this.formatter.fromRaw(model.get(this.column.get("name")), model);
+    this.el.setAttribute("value", this.formatter.fromRaw(model.get(this.column.get("name")), model));
     return this;
   },
 
@@ -131,9 +131,6 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
     if (command.moveUp() || command.moveDown() || command.moveLeft() ||
         command.moveRight() || command.save() || blurred) {
 
-      e.preventDefault();
-      e.stopPropagation();
-
       var val = this.el.value;
       var newValue = formatter.toRaw(val, model);
       if (_.isUndefined(newValue)) {
@@ -143,12 +140,15 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
         model.set(column.get("name"), newValue);
         model.trigger("backgrid:edited", model, column, command);
       }
+
+      e.preventDefault();
+      e.stopPropagation();
     }
     // esc
     else if (command.cancel()) {
+      model.trigger("backgrid:edited", model, column, command);
       // undo
       e.stopPropagation();
-      model.trigger("backgrid:edited", model, column, command);
     }
   },
 
@@ -713,18 +713,18 @@ var BooleanCellEditor = Backgrid.BooleanCellEditor = CellEditor.extend({
     // skip ahead to `change` when space is pressed
     if (command.passThru() && e.type != "change") return true;
     if (command.cancel()) {
-      e.stopPropagation();
       model.trigger("backgrid:edited", model, column, command);
+      e.stopPropagation();
     }
 
     var el = this.el;
     if (command.save() || command.moveLeft() || command.moveRight() || command.moveUp() ||
         command.moveDown()) {
-      e.preventDefault();
-      e.stopPropagation();
       var val = formatter.toRaw(el.checked, model);
       model.set(column.get("name"), val);
       model.trigger("backgrid:edited", model, column, command);
+      e.preventDefault();
+      e.stopPropagation();
     }
     else if (e.type == "change") {
       var val = formatter.toRaw(el.checked, model);
@@ -904,15 +904,15 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
     var column = this.column;
     var command = new Command(e);
     if (command.cancel()) {
-      e.stopPropagation();
       model.trigger("backgrid:edited", model, column, new Command(e));
+      e.stopPropagation();
     }
     else if (command.save() || command.moveLeft() || command.moveRight() ||
              command.moveUp() || command.moveDown() || e.type == "blur") {
-      e.preventDefault();
-      e.stopPropagation();
       this.save(e);
       model.trigger("backgrid:edited", model, column, new Command(e));
+      e.preventDefault();
+      e.stopPropagation();
     }
   }
 

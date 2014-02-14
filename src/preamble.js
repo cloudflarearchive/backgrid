@@ -193,6 +193,11 @@ var paddedLt = /^\s*</;
 
 var View = Backgrid.View = Backbone.View.extend({
 
+  constructor: function () {
+    this._domEvents = [];
+    View.__super__.constructor.apply(this, arguments);
+  },
+
   preRender: function () {
     return this;
   },
@@ -216,9 +221,6 @@ var View = Backgrid.View = Backbone.View.extend({
     this.el.innerHTML = '';
     return this;
   },
-
-  // Private list to hold all the DOM event delegation listeners.
-  _domEvents: [],
 
   // Delegate to `querySelectorAll` for element lookup, scoped to DOM elements
   // within the current view. This should be preferred to global lookups where
@@ -317,7 +319,7 @@ var View = Backgrid.View = Backbone.View.extend({
       }
     };
 
-    root.addEventListener(eventName, handler, false);
+    elementAddEventListener.call(root, eventName, handler, false);
     domEvents.push({eventName: eventName, handler: handler});
   },
 
@@ -336,7 +338,7 @@ var View = Backgrid.View = Backbone.View.extend({
     if (el) {
       for (i = 0, l = domEvents.length; i < l; i++) {
         item = domEvents[i];
-        el.removeEventListener(item.eventName, item.handler, false);
+        elementRemoveEventListener.call(el, item.eventName, item.handler, false);
       }
       this._domEvents = [];
     }
@@ -356,6 +358,7 @@ var View = Backgrid.View = Backbone.View.extend({
       if (this.className) attrs['class'] = _.result(this, 'className');
       for (var k in attrs) {
         el.setAttribute(k, attrs[k]);
+        el[k] = attrs[k];
       }
       this.setElement(el, false);
     } else {

@@ -5,6 +5,16 @@
   Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
   Licensed under the MIT license.
 */
+
+function emit(element, event) {
+  if (element.dispatchEvent) {
+    element.dispatchEvent(event);
+  }
+  else if (element.fireEvent) {
+    element.fireEvent("on" + event.type, event);
+  }
+}
+
 describe("A CellEditor", function () {
 
   it("calls postRender when model triggers 'backgrid:editing'", function () {
@@ -96,23 +106,28 @@ describe("An InputCellEditor", function () {
   it("saves a formatted value in the input box to the model and triggers 'backgrid:edited' from the model when tab is pressed", function () {
     editor.render();
     $(editor.el).val("another title");
-    editor.el.dispatchEvent(SyntheticEvent("keydown", {keyCode: 9, bubbles: true, cancelable: true}));
+
+    document.body.appendChild(editor.el);
+    emit(editor.el, SyntheticEvent("keydown", {keyCode: 9, bubbles: true, cancelable: true}));
     expect(editor.model.get(editor.column.get("name"))).toBe("another title");
     expect(backgridEditedTriggerCount).toBe(1);
     expect(backgridEditedTriggerArgs[0]).toEqual(editor.model);
     expect(backgridEditedTriggerArgs[1]).toEqual(editor.column);
     expect(backgridEditedTriggerArgs[2].moveRight()).toBe(true);
+    document.body.removeChild(editor.el);
   });
 
   it("saves a formatted value in the input box to the model and triggers 'backgrid:edited' from the model when enter is pressed", function () {
     editor.render();
     $(editor.el).val("another title");
-    editor.el.dispatchEvent(SyntheticEvent("keydown", {keyCode: 13, bubbles: true, cancelable: true}));
+    document.body.appendChild(editor.el);
+    emit(editor.el, SyntheticEvent("keydown", {keyCode: 13, bubbles: true, cancelable: true}));
     expect(editor.model.get(editor.column.get("name"))).toBe("another title");
     expect(backgridEditedTriggerCount).toBe(1);
     expect(backgridEditedTriggerArgs[0]).toEqual(editor.model);
     expect(backgridEditedTriggerArgs[1]).toEqual(editor.column);
     expect(backgridEditedTriggerArgs[2].save()).toBe(true);
+    document.body.removeChild(editor.el);
   });
 
   it("triggers 'backgrid:error' from the model when trying to save an invalid value", function () {
@@ -124,52 +139,62 @@ describe("An InputCellEditor", function () {
     };
     editor.render();
     $(editor.el).val("invalid value");
-    editor.el.dispatchEvent(SyntheticEvent("keydown", {keyCode: 13, bubbles: true, cancelable: true}));
+    document.body.appendChild(editor.el);
+    emit(editor.el, SyntheticEvent("keydown", {keyCode: 13, bubbles: true, cancelable: true}));
     expect(editor.formatter.toRaw.calls.length).toBe(1);
     expect(editor.formatter.toRaw).toHaveBeenCalledWith("invalid value", editor.model);
     expect(backgridErrorTriggerCount).toBe(1);
     expect(backgridErrorTriggerArgs[0]).toEqual(editor.model);
     expect(backgridErrorTriggerArgs[1]).toEqual(editor.column);
     expect(backgridErrorTriggerArgs[2]).toEqual("invalid value");
+    document.body.removeChild(editor.el);
 
     editor.formatter.toRaw.reset();
-    editor.el.dispatchEvent(SyntheticEvent("blur"));
+    document.body.appendChild(editor.el);
+    emit(editor.el, SyntheticEvent("blur"));
     expect(backgridErrorTriggerCount).toBe(2);
     expect(backgridErrorTriggerArgs[0]).toEqual(editor.model);
     expect(backgridErrorTriggerArgs[1]).toEqual(editor.column);
     expect(backgridErrorTriggerArgs[2]).toEqual("invalid value");
+    document.body.removeChild(editor.el);
   });
 
   it("discards changes and triggers 'backgrid:edited' from the model when esc is pressed'", function () {
     editor.render();
     $(editor.el).val("new value");
-    editor.el.dispatchEvent(SyntheticEvent("keydown", {keyCode: 27, bubbles: true, cancelable: true}));
+    document.body.appendChild(editor.el);
+    emit(editor.el, SyntheticEvent("keydown", {keyCode: 27, bubbles: true, cancelable: true}));
     expect(backgridEditedTriggerCount).toBe(1);
     expect(backgridEditedTriggerArgs[0]).toEqual(editor.model);
     expect(backgridEditedTriggerArgs[1]).toEqual(editor.column);
     expect(backgridEditedTriggerArgs[2].cancel()).toBe(true);
     expect(editor.model.get(editor.column.get("name"))).toBe("title");
+    document.body.removeChild(editor.el);
   });
 
   it("triggers 'backgrid:edited' from the model when value hasn't changed and focus is lost", function () {
     editor.render();
-    editor.el.dispatchEvent(SyntheticEvent("blur"));
+    document.body.appendChild(editor.el);
+    emit(editor.el, SyntheticEvent("blur"));
     expect(backgridEditedTriggerCount).toBe(1);
     expect(backgridEditedTriggerArgs[0]).toEqual(editor.model);
     expect(backgridEditedTriggerArgs[1]).toEqual(editor.column);
     expect(backgridEditedTriggerArgs[2].passThru()).toBe(true);
     expect(editor.model.get(editor.column.get("name"))).toBe("title");
+    document.body.removeChild(editor.el);
   });
 
   it("saves the value if the value is valid when going out of focus", function () {
     editor.render();
     $(editor.el).val("another title");
-    editor.el.dispatchEvent(SyntheticEvent("blur"));
+    document.body.appendChild(editor.el);
+    emit(editor.el, SyntheticEvent("blur"));
     expect(backgridEditedTriggerCount).toBe(1);
     expect(backgridEditedTriggerArgs[0]).toEqual(editor.model);
     expect(backgridEditedTriggerArgs[1]).toEqual(editor.column);
     expect(backgridEditedTriggerArgs[2].passThru()).toBe(true);
     expect(editor.model.get(editor.column.get("name"))).toBe("another title");
+    document.body.removeChild(editor.el);
   });
 
 });
@@ -316,7 +341,7 @@ describe("A Cell", function () {
 
   it("goes into edit mode on click", function () {
     cell.render();
-    cell.el.dispatchEvent(SyntheticEvent("click", {bubbles: true}));
+    emit(cell.el, SyntheticEvent("click", {bubbles: true}));
     expect($(cell.el).hasClass("editor")).toBe(true);
   });
 
@@ -329,7 +354,7 @@ describe("A Cell", function () {
   it("goes back into display mode when `exitEditMode` is called", function () {
     cell.render();
 
-    cell.el.dispatchEvent(SyntheticEvent("click", {bubbles: true}));
+    emit(cell.el, SyntheticEvent("click", {bubbles: true}));
     cell.exitEditMode();
     expect($(cell.el).hasClass("editor")).toBe(false);
     expect($(cell.el).text()).toBe("title");
@@ -343,12 +368,12 @@ describe("A Cell", function () {
     };
 
     cell.render();
-    cell.el.dispatchEvent(SyntheticEvent("click", {bubbles: true}));
+    emit(cell.el, SyntheticEvent("click", {bubbles: true}));
 
     var editor = cell.currentEditor;
     $(editor.el).val(undefined);
 
-    editor.el.dispatchEvent(SyntheticEvent("keydown", {keyCode: 13, bubbles: true, cancelable: true}));
+    emit(editor.el, SyntheticEvent("keydown", {keyCode: 13, bubbles: true, cancelable: true}));
 
     expect($(cell.el).hasClass("error")).toBe(true);
     expect($(cell.el).hasClass("editor")).toBe(true);
@@ -356,7 +381,7 @@ describe("A Cell", function () {
 
   it("removes the editor correctly when removing the cell", function() {
     cell.render();
-    cell.el.dispatchEvent(SyntheticEvent("click", {bubbles: true}));
+    emit(cell.el, SyntheticEvent("click", {bubbles: true}));
 
     var editor = cell.currentEditor;
 
@@ -382,7 +407,7 @@ describe("A Cell", function () {
 
     it("does not refresh during edit mode", function () {
       cell.render();
-      cell.el.dispatchEvent(SyntheticEvent("click", {bubbles: true}));
+      emit(cell.el, SyntheticEvent("click", {bubbles: true}));
       book.set("title", "another title");
       expect($(cell.el).find("input[type=text]").val(), "title");
     });
@@ -854,7 +879,7 @@ describe("A BooleanCell", function () {
 
   it("goes into edit mode after clicking the cell with the checkbox intact", function () {
     cell.render();
-    cell.el.dispatchEvent(SyntheticEvent("click", {bubbles: true}));
+    emit(cell.el, SyntheticEvent("click", {bubbles: true}));
     expect($(cell.el).hasClass("editor")).toBe(true);
     expect($(cell.el).find(":checkbox").length).toBe(1);
   });
@@ -883,8 +908,8 @@ describe("A BooleanCell", function () {
     });
 
     cell.render();
-    cell.el.dispatchEvent(SyntheticEvent("click", {bubbles: true}));
-    $(cell.el).find(":checkbox")[0].dispatchEvent(SyntheticEvent("blur"));
+    emit(cell.el, SyntheticEvent("click", {bubbles: true}));
+    emit($(cell.el).find(":checkbox")[0], SyntheticEvent("blur"));
     expect(backgridEditedTriggerCount).toBe(1);
     expect(backgridEditedTriggerArgs[0]).toBe(cell.model);
     expect(backgridEditedTriggerArgs[1]).toBe(cell.column);
@@ -892,7 +917,7 @@ describe("A BooleanCell", function () {
     expect($(cell.el).find(":checkbox").prop("checked")).toBe(true);
 
     cell.render();
-    cell.el.dispatchEvent(SyntheticEvent("click", {bubbles: true}));
+    emit(cell.el, SyntheticEvent("click", {bubbles: true}));
     $(cell.currentEditor.el).mousedown();
     $(cell.el).find(":checkbox").blur();
     expect(backgridEditedTriggerCount).toBe(1);
@@ -902,7 +927,7 @@ describe("A BooleanCell", function () {
     cell.render();
     cell.enterEditMode();
     $(cell.el).find(":checkbox")[0].checked = false;
-    $(cell.el).find(":checkbox")[0].dispatchEvent(SyntheticEvent("change"));
+    emit($(cell.el).find(":checkbox")[0], SyntheticEvent("change"));
     expect(cell.model.get(cell.column.get("name"))).toBe(false);
   });
 
@@ -926,7 +951,7 @@ describe("A BooleanCell", function () {
 
     it("does not refresh during edit mode", function () {
       cell.render();
-      cell.el.dispatchEvent(SyntheticEvent("click", {bubbles: true}));
+      emit(cell.el, SyntheticEvent("click", {bubbles: true}));
       model.set("ate", false);
       expect($(cell.el).find(":checkbox").prop("checked")).toBe(true);
     });
@@ -1285,7 +1310,7 @@ describe("A SelectCellEditor", function () {
 
     spyOn(editor.formatter, "toRaw").andCallThrough();
 
-    $(editor.el).val(1)[0].dispatchEvent(SyntheticEvent("blur"));
+    emit($(editor.el).val(1)[0], SyntheticEvent("blur"));
     expect(editor.formatter.toRaw).toHaveBeenCalledWith("1", editor.model);
     expect(editor.formatter.toRaw.calls.length).toBe(1);
     expect(editor.model.get(editor.column.get("name"))).toBe("1");
@@ -1308,12 +1333,12 @@ describe("A SelectCellEditor", function () {
 
     spyOn(editor.formatter, "toRaw").andCallThrough();
 
-    $(editor.el).val([1, 2])[0].dispatchEvent(SyntheticEvent("blur"));
+    emit($(editor.el).val([1, 2])[0], SyntheticEvent("blur"));
     expect(editor.formatter.toRaw).toHaveBeenCalledWith(["1", "2"], editor.model);
     expect(editor.formatter.toRaw.calls.length).toBe(1);
     expect(editor.model.get(editor.column.get("name"))).toEqual(["1", "2"]);
 
-    $(editor.el).val(null)[0].dispatchEvent(SyntheticEvent("blur"));
+    emit($(editor.el).val(null)[0], SyntheticEvent("blur"));
     expect(editor.formatter.toRaw).toHaveBeenCalledWith(null, editor.model);
     expect(editor.formatter.toRaw.calls.length).toBe(2);
     expect(editor.model.get(editor.column.get("name"))).toBe(null);
@@ -1331,7 +1356,7 @@ describe("A SelectCellEditor", function () {
     editor.setOptionValues([["Boy", "1"]]);
     editor.render();
 
-    editor.el.dispatchEvent(SyntheticEvent("blur"));
+    emit(editor.el, SyntheticEvent("blur"));
     expect(editor.model.get(editor.column.get("name"))).toBe("1");
   });
 
@@ -1523,7 +1548,7 @@ describe("A SelectCell", function () {
 
     it("does not refresh during edit mode", function () {
       cell.render();
-      cell.el.dispatchEvent(SyntheticEvent("click", {bubbles: true}));
+      emit(cell.el, SyntheticEvent("click", {bubbles: true}));
       model.set("gender", 1);
       expect($(cell.el).find("option[selected]").val()).toBe("2");
       expect($(cell.el).find("option[selected]").text()).toBe("Girl");
