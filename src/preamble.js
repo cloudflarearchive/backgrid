@@ -39,8 +39,6 @@ function lpad(str, length, padstr) {
   return padding + str;
 }
 
-var $ = Backbone.$;
-
 var Backgrid = root.Backgrid = {
 
   Extension: {},
