@@ -275,7 +275,8 @@ var View = Backgrid.View = Backbone.View.extend({
   // This only works for delegate-able events: not `focus`, `blur`, not
   // `change`, `submit`, and `reset` in Internet Explorer, not `focusin` and
   // `focusout` in Firefox, and not `mouseenter` and `mouseleave` for Chrome <
-  // 30 and Safari.
+  // 30 and Safari. You should use `Backbone.View` if a greater cross-browser
+  // compatibility is desired.
   //
   // Pass the event name, selector and the bound method to `_delegateEvents`
   // for each mapping in `events`.
@@ -306,7 +307,7 @@ var View = Backgrid.View = Backbone.View.extend({
   // result of calling bound `method` with the parameters given to the
   // handler.
   _delegateEvents: function(eventName, selector, method) {
-    var root = this.el, domEvents = this._domEvents, handler;
+    var root = this.el, handler;
     if (!selector) handler = method;
     else handler = function (e) {
       var node = e.target || e.srcElement;
@@ -319,7 +320,7 @@ var View = Backgrid.View = Backbone.View.extend({
     };
 
     elementAddEventListener.call(root, eventName, handler, false);
-    domEvents.push({eventName: eventName, handler: handler});
+    this._domEvents.push({eventName: eventName, handler: handler});
   },
 
   // Delegates to `_undelegateEvents` so `BaseView` subclasses can override
