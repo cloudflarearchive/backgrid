@@ -12,7 +12,7 @@
    By default, a Grid treats each model in a collection as a row, and each
    attribute in a model as a column. To render a grid you must provide a list of
    column metadata and a collection to the Grid constructor. Just like any
-   Backbone.View class, the grid is rendered as a DOM node fragment when you
+   Backgrid.View class, the grid is rendered as a DOM node fragment when you
    call render().
 
        var grid = Backgrid.Grid({
@@ -43,7 +43,7 @@
    Row class.
 
    @class Backgrid.Grid
-   @extends Backbone.View
+   @extends Backgrid.View
 
    See:
 
@@ -53,7 +53,7 @@
    - Backgrid.Row
    - Backgrid.Footer
 */
-var Grid = Backgrid.Grid = Backbone.View.extend({
+var Grid = Backgrid.Grid = Backgrid.View.extend({
 
   /** @property */
   tagName: "table",
@@ -172,17 +172,17 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
      the it has successfully been rendered.
    */
   render: function () {
-    this.$el.empty();
+    this.empty();
 
     if (this.header) {
-      this.$el.append(this.header.render().$el);
+      this.el.appendChild(this.header.render().el);
     }
 
     if (this.footer) {
-      this.$el.append(this.footer.render().$el);
+      this.el.appendChild(this.footer.render().el);
     }
 
-    this.$el.append(this.body.render().$el);
+    this.el.appendChild(this.body.render().el);
 
     this.delegateEvents();
 
@@ -200,7 +200,7 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
     this.header && this.header.remove.apply(this.header, arguments);
     this.body.remove.apply(this.body, arguments);
     this.footer && this.footer.remove.apply(this.footer, arguments);
-    return Backbone.View.prototype.remove.apply(this, arguments);
+    return Grid.__super__.remove.apply(this, arguments);
   }
 
 });

@@ -30,6 +30,8 @@
     "waitsFor": false,
     "Backbone": false,
     "Backgrid": false,
+    "jasmine": false,
+    "SyntheticEvent": false,
     "_": false
   }
 }

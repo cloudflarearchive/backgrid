@@ -11,9 +11,9 @@
    responsible for refreshing the rows after sorting, insertion and removal.
 
    @class Backgrid.Body
-   @extends Backbone.View
+   @extends Backgrid.View
 */
-var Body = Backgrid.Body = Backbone.View.extend({
+var Body = Backgrid.Body = Backgrid.View.extend({
 
   /** @property */
   tagName: "tbody",
@@ -111,16 +111,12 @@ var Body = Backgrid.Body = Backbone.View.extend({
     var index = collection.indexOf(model);
     this.rows.splice(index, 0, row);
 
-    var $el = this.$el;
-    var $children = $el.children();
-    var $rowEl = row.render().$el;
+    var el = this.el;
+    var children = el.childNodes;
+    var rowEl = row.render().el;
 
-    if (index >= $children.length) {
-      $el.append($rowEl);
-    }
-    else {
-      $children.eq(index).before($rowEl);
-    }
+    if (index >= children.length) el.appendChild(rowEl);
+    else el.insertBefore(rowEl, children[index]);
 
     return this;
   },
@@ -174,9 +170,16 @@ var Body = Backgrid.Body = Backbone.View.extend({
      instance as its sole parameter when done.
   */
   refresh: function () {
-    for (var i = 0; i < this.rows.length; i++) {
-      this.rows[i].remove();
-    }
+    var parent = this.el.parentNode;
+    if (parent) parent.removeChild(this.el);
+
+    // GC the damn rows in the background
+    var oldRows = [].slice.apply(this.rows);
+    setTimeout(function () {
+      for (var i = 0; i < oldRows.length; i++) {
+        oldRows[i].remove();
+      }
+    }, 0);
 
     this.rows = this.collection.map(function (model) {
       var row = new this.row({
@@ -186,9 +189,12 @@ var Body = Backgrid.Body = Backbone.View.extend({
 
       return row;
     }, this);
+
     this._unshiftEmptyRowMayBe();
 
     this.render();
+
+    if (parent) parent.appendChild(this.el);
 
     this.collection.trigger("backgrid:refresh", this);
 
@@ -201,7 +207,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
      row is rendered, otherwise no row is rendered.
   */
   render: function () {
-    this.$el.empty();
+    this.empty();
 
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < this.rows.length; i++) {
@@ -226,7 +232,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
       var row = this.rows[i];
       row.remove.apply(row, arguments);
     }
-    return Backbone.View.prototype.remove.apply(this, arguments);
+    return Body.__super__.remove.apply(this, arguments);
   },
 
   /**

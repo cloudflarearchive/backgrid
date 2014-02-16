@@ -108,6 +108,7 @@ module.exports = function (grunt) {
           },
           helpers: "vendor/js/jasmine-html.js",
           vendor: [
+            "test/vendor/js/synthetic-dom-events.js",
             "test/vendor/js/jquery.js",
             "test/vendor/js/underscore.js",
             "test/vendor/js/backbone.js",

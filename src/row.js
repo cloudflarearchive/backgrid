@@ -12,9 +12,9 @@
    rendered, and apply the appropriate cell to each attribute.
 
    @class Backgrid.Row
-   @extends Backbone.View
+   @extends Backgrid.View
 */
-var Row = Backgrid.Row = Backbone.View.extend({
+var Row = Backgrid.Row = Backgrid.View.extend({
 
   /** @property */
   tagName: "tr",
@@ -45,15 +45,15 @@ var Row = Backgrid.Row = Backbone.View.extend({
       var cell = this.makeCell(column, options);
       cells.splice(i, 0, cell);
 
-      var $el = this.$el;
+      var el = this.el, children = el.childNodes;
       if (i === 0) {
-        $el.prepend(cell.render().$el);
+        el.insertBefore(cell.render().el, el.firstChild);
       }
       else if (i === columns.length - 1) {
-        $el.append(cell.render().$el);
+        el.appendChild(cell.render().el);
       }
       else {
-        $el.children().eq(i).before(cell.render().$el);
+        el.insertBefore(cell.render().el, children[i]);
       }
     });
 
@@ -85,7 +85,7 @@ var Row = Backgrid.Row = Backbone.View.extend({
      Renders a row of cells for this row's model.
   */
   render: function () {
-    this.$el.empty();
+    this.empty();
 
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < this.cells.length; i++) {
@@ -109,7 +109,7 @@ var Row = Backgrid.Row = Backbone.View.extend({
       var cell = this.cells[i];
       cell.remove.apply(cell, arguments);
     }
-    return Backbone.View.prototype.remove.apply(this, arguments);
+    return Row.__super__.remove.apply(this, arguments);
   }
 
 });
@@ -119,9 +119,9 @@ var Row = Backgrid.Row = Backbone.View.extend({
    row with a single column.
 
    @class Backgrid.EmptyRow
-   @extends Backbone.View
+   @extends Backgrid.View
 */
-var EmptyRow = Backgrid.EmptyRow = Backbone.View.extend({
+var EmptyRow = Backgrid.EmptyRow = Backgrid.View.extend({
 
   /** @property */
   tagName: "tr",
@@ -145,7 +145,7 @@ var EmptyRow = Backgrid.EmptyRow = Backbone.View.extend({
      Renders an empty row.
   */
   render: function () {
-    this.$el.empty();
+    this.empty();
 
     var td = document.createElement("td");
     td.setAttribute("colspan", this.columns.length);

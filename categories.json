@@ -52,6 +52,7 @@
       }, {
         "name": "Others",
         "classes": [
+          "Backgrid.View",
           "Backgrid.Command",
           "Backgrid.Grid",
           "Backgrid.Body",

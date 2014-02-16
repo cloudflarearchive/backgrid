@@ -26,7 +26,7 @@ describe("A Row", function () {
 
     expect(row.el.tagName).toBe("TR");
 
-    var $tds = row.$el.children();
+    var $tds = $(row.el).children();
     expect($tds.eq(0).text()).toBe("name");
     expect($tds.eq(1).text()).toBe("18");
   });
@@ -45,17 +45,17 @@ describe("A Row", function () {
 
     row.render();
 
-    var $tds = row.$el.children();
+    var $tds = $(row.el).children();
     expect($tds.eq(0).text()).toBe("name");
     expect($tds.eq(0).hasClass("renderable")).toBe(true);
 
     row.columns.at(0).set("renderable", false);
-    $tds = row.$el.children();
+    $tds = $(row.el).children();
     expect($tds.eq(0).text()).toBe("name");
     expect($tds.eq(0).hasClass("renderable")).toBe(false);
 
     row.columns.at(0).set("renderable", true);
-    $tds = row.$el.children();
+    $tds = $(row.el).children();
     expect($tds.eq(0).text()).toBe("name");
     expect($tds.eq(0).hasClass("renderable")).toBe(true);
   });
@@ -76,17 +76,17 @@ describe("A Row", function () {
     row.render();
 
     row.columns.add({name: "age", cell: "integer"});
-    var $tds = row.$el.children();
+    var $tds = $(row.el).children();
     expect($tds.length).toBe(2);
     expect($tds.eq(1).text()).toBe("18");
 
     row.columns.add({name: "birthday", cell: "date", renderable: false});
-    $tds = row.$el.children();
+    $tds = $(row.el).children();
     expect($tds.length).toBe(3);
     expect($tds.last().text()).toBe("1987-06-05");
 
     row.columns.remove(row.columns.first());
-    $tds = row.$el.children();
+    $tds = $(row.el).children();
     expect($tds.length).toBe(2);
     expect($tds.first().text()).toBe("18");
     expect($tds.last().text()).toBe("1987-06-05");

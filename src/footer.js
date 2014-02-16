@@ -12,9 +12,9 @@
 
    @abstract
    @class Backgrid.Footer
-   @extends Backbone.View
+   @extends Backgrid.View
  */
-var Footer = Backgrid.Footer = Backbone.View.extend({
+var Footer = Backgrid.Footer = Backgrid.View.extend({
 
   /** @property */
   tagName: "tfoot",

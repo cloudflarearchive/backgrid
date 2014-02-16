@@ -12,9 +12,9 @@
    refresh after sorting.
 
    @class Backgrid.HeaderCell
-   @extends Backbone.View
+   @extends Backgrid.View
  */
-var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
+var HeaderCell = Backgrid.HeaderCell = Backgrid.View.extend({
 
   /** @property */
   tagName: "th",
@@ -38,23 +38,27 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
       this.column = new Column(this.column);
     }
 
-    var column = this.column, collection = this.collection, $el = this.$el;
+    var column = this.column
+    var collection = this.collection
+    var el = this.el;
+    var classes = el.classList;
 
     this.listenTo(column, "change:editable change:sortable change:renderable",
                   function (column) {
                     var changed = column.changedAttributes();
                     for (var key in changed) {
                       if (changed.hasOwnProperty(key)) {
-                        $el.toggleClass(key, changed[key]);
+                        if (changed[key]) classes.add(key);
+                        else classes.remove(key);
                       }
                     }
                   });
     this.listenTo(column, "change:direction", this.setCellDirection);
     this.listenTo(column, "change:name change:label", this.render);
 
-    if (Backgrid.callByNeed(column.editable(), column, collection)) $el.addClass("editable");
-    if (Backgrid.callByNeed(column.sortable(), column, collection)) $el.addClass("sortable");
-    if (Backgrid.callByNeed(column.renderable(), column, collection)) $el.addClass("renderable");
+    if (Backgrid.callByNeed(column.editable(), column, collection)) classes.add("editable");
+    if (Backgrid.callByNeed(column.sortable(), column, collection)) classes.add("sortable");
+    if (Backgrid.callByNeed(column.renderable(), column, collection)) classes.add("renderable");
 
     this.listenTo(collection.fullCollection || collection, "sort", this.removeCellDirection);
   },
@@ -64,7 +68,9 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
      direction classes.
    */
   removeCellDirection: function () {
-    this.$el.removeClass("ascending").removeClass("descending");
+    var classes = this.el.classList;
+    classes.remove("ascending");
+    classes.remove("descending");
     this.column.set("direction", null);
   },
 
@@ -75,8 +81,10 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
      otherwise.
    */
   setCellDirection: function (column, direction) {
-    this.$el.removeClass("ascending").removeClass("descending");
-    if (column.cid == this.column.cid) this.$el.addClass(direction);
+    var classes = this.el.classList;
+    classes.remove("ascending");
+    classes.remove("descending");
+    if (column.cid == this.column.cid) classes.add(direction);
   },
 
   /**
@@ -85,8 +93,6 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
      `ascending`, `descending`, and default.
    */
   onClick: function (e) {
-    e.preventDefault();
-
     var column = this.column;
     var collection = this.collection;
     var event = "backgrid:sort";
@@ -108,6 +114,8 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
       if (sortType === "toggle") toggleSort(this, column);
       else cycleSort(this, column);
     }
+
+    e.preventDefault();
   },
 
   /**
@@ -115,19 +123,29 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
      column.
    */
   render: function () {
-    this.$el.empty();
+    this.empty();
+
+    var label;
+
     var column = this.column;
     var sortable = Backgrid.callByNeed(column.sortable(), column, this.collection);
-    var label;
-    if(sortable){
-      label = $("<a>").text(column.get("label")).append("<b class='sort-caret'></b>");
-    } else {
-      label = document.createTextNode(column.get("label"));
-    }
 
-    this.$el.append(label);
-    this.$el.addClass(column.get("name"));
-    this.$el.addClass(column.get("direction"));
+    if (sortable) {
+      label = document.createElement("a");
+      label.appendChild(document.createTextNode(this.column.get("label")));
+      var caret = document.createElement("b");
+      caret.className = "sort-caret";
+      label.appendChild(caret);
+    }
+    else label = document.createTextNode(column.get("label"));
+    this.el.appendChild(label);
+
+    var classes = this.el.classList;
+    classes.add(column.get("name"));
+
+    var direction = column.get("direction");
+    if (direction) classes.add(direction);
+
     this.delegateEvents();
     return this;
   }
@@ -157,7 +175,7 @@ var HeaderRow = Backgrid.HeaderRow = Backgrid.Row.extend({
      @throws {TypeError} If options.columns or options.collection is undefined.
    */
   initialize: function () {
-    Backgrid.Row.prototype.initialize.apply(this, arguments);
+    HeaderRow.__super__.initialize.apply(this, arguments);
   },
 
   makeCell: function (column, options) {
@@ -176,9 +194,9 @@ var HeaderRow = Backgrid.HeaderRow = Backgrid.Row.extend({
    single row of header cells.
 
    @class Backgrid.Header
-   @extends Backbone.View
+   @extends Backgrid.View
  */
-var Header = Backgrid.Header = Backbone.View.extend({
+var Header = Backgrid.Header = Backgrid.View.extend({
 
   /** @property */
   tagName: "thead",
@@ -209,7 +227,7 @@ var Header = Backgrid.Header = Backbone.View.extend({
      Renders this table head with a single row of header cells.
    */
   render: function () {
-    this.$el.append(this.row.render().$el);
+    this.el.appendChild(this.row.render().el);
     this.delegateEvents();
     return this;
   },
@@ -221,7 +239,7 @@ var Header = Backgrid.Header = Backbone.View.extend({
    */
   remove: function () {
     this.row.remove.apply(this.row, arguments);
-    return Backbone.View.prototype.remove.apply(this, arguments);
+    return Header.__super__.remove.apply(this, arguments);
   }
 
 });

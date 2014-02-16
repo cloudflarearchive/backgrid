@@ -12,9 +12,9 @@
 
    @abstract
    @class Backgrid.CellEditor
-   @extends Backbone.View
+   @extends Backgrid.View
 */
-var CellEditor = Backgrid.CellEditor = Backbone.View.extend({
+var CellEditor = Backgrid.CellEditor = Backgrid.View.extend({
 
   /**
      Initializer.
@@ -44,7 +44,7 @@ var CellEditor = Backgrid.CellEditor = Backbone.View.extend({
   */
   postRender: function (model, column) {
     if (column == null || column.get("name") == this.column.get("name")) {
-      this.$el.focus();
+      this.el.focus();
     }
     return this;
   }
@@ -89,7 +89,7 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
     InputCellEditor.__super__.initialize.apply(this, arguments);
 
     if (options.placeholder) {
-      this.$el.attr("placeholder", options.placeholder);
+      this.el.setAttribute("placeholder", options.placeholder);
     }
   },
 
@@ -99,7 +99,7 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
   */
   render: function () {
     var model = this.model;
-    this.$el.val(this.formatter.fromRaw(model.get(this.column.get("name")), model));
+    this.el.setAttribute("value", this.formatter.fromRaw(model.get(this.column.get("name")), model));
     return this;
   },
 
@@ -121,7 +121,6 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
      @param {Event} e
   */
   saveOrCancel: function (e) {
-
     var formatter = this.formatter;
     var model = this.model;
     var column = this.column;
@@ -129,13 +128,10 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
     var command = new Command(e);
     var blurred = e.type === "blur";
 
-    if (command.moveUp() || command.moveDown() || command.moveLeft() || command.moveRight() ||
-        command.save() || blurred) {
+    if (command.moveUp() || command.moveDown() || command.moveLeft() ||
+        command.moveRight() || command.save() || blurred) {
 
-      e.preventDefault();
-      e.stopPropagation();
-
-      var val = this.$el.val();
+      var val = this.el.value;
       var newValue = formatter.toRaw(val, model);
       if (_.isUndefined(newValue)) {
         model.trigger("backgrid:error", model, column, val);
@@ -144,23 +140,33 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
         model.set(column.get("name"), newValue);
         model.trigger("backgrid:edited", model, column, command);
       }
+
+      e.preventDefault();
+      e.stopPropagation();
     }
     // esc
     else if (command.cancel()) {
+      model.trigger("backgrid:edited", model, column, command);
       // undo
       e.stopPropagation();
-      model.trigger("backgrid:edited", model, column, command);
     }
   },
 
   postRender: function (model, column) {
     if (column == null || column.get("name") == this.column.get("name")) {
       // move the cursor to the end on firefox if text is right aligned
-      if (this.$el.css("text-align") === "right") {
-        var val = this.$el.val();
-        this.$el.focus().val(null).val(val);
+      var el = this.el, textAlign;
+      if (window.getComputedStyle) {
+        textAlign = window.getComputedStyle(el).textAlign;
       }
-      else this.$el.focus();
+      else if (el.currentStyle) textAlign = el.currentStyle.textAlign;
+      if (textAlign === "right") {
+        var value = el.value;
+        el.focus();
+        el.value = null;
+        el.value = value;
+      }
+      else el.focus();
     }
     return this;
   }
@@ -177,9 +183,9 @@ var InputCellEditor = Backgrid.InputCellEditor = CellEditor.extend({
 
    @abstract
    @class Backgrid.Cell
-   @extends Backbone.View
+   @extends Backgrid.View
 */
-var Cell = Backgrid.Cell = Backbone.View.extend({
+var Cell = Backgrid.Cell = Backgrid.View.extend({
 
   /** @property */
   tagName: "td",
@@ -219,7 +225,7 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
       this.column = new Column(this.column);
     }
 
-    var column = this.column, model = this.model, $el = this.$el;
+    var column = this.column, model = this.model, classes = this.el.classList;
 
     var formatter = Backgrid.resolveNameToClass(column.get("formatter") ||
                                                 this.formatter, "Formatter");
@@ -231,9 +237,8 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
     this.formatter = formatter;
 
     this.editor = Backgrid.resolveNameToClass(this.editor, "CellEditor");
-
     this.listenTo(model, "change:" + column.get("name"), function () {
-      if (!$el.hasClass("editor")) this.render();
+      if (!classes.contains("editor")) this.render();
     });
 
     this.listenTo(model, "backgrid:error", this.renderError);
@@ -243,14 +248,15 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
                     var changed = column.changedAttributes();
                     for (var key in changed) {
                       if (changed.hasOwnProperty(key)) {
-                        $el.toggleClass(key, changed[key]);
+                        if (changed[key]) classes.add(key);
+                        else classes.remove(key);
                       }
                     }
                   });
 
-    if (Backgrid.callByNeed(column.editable(), column, model)) $el.addClass("editable");
-    if (Backgrid.callByNeed(column.sortable(), column, model)) $el.addClass("sortable");
-    if (Backgrid.callByNeed(column.renderable(), column, model)) $el.addClass("renderable");
+    if (Backgrid.callByNeed(column.editable(), column, model)) classes.add("editable");
+    if (Backgrid.callByNeed(column.sortable(), column, model)) classes.add("sortable");
+    if (Backgrid.callByNeed(column.renderable(), column, model)) classes.add("renderable");
   },
 
   /**
@@ -258,9 +264,10 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
      model's raw value for this cell's column.
   */
   render: function () {
-    this.$el.empty();
+    this.empty();
     var model = this.model;
-    this.$el.text(this.formatter.fromRaw(model.get(this.column.get("name")), model));
+    this.el.appendChild(document.createTextNode(
+      this.formatter.fromRaw(model.get(this.column.get("name")), model)));
     this.delegateEvents();
     return this;
   },
@@ -301,10 +308,10 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
 
       // Need to redundantly undelegate events for Firefox
       this.undelegateEvents();
-      this.$el.empty();
-      this.$el.append(this.currentEditor.$el);
+      this.empty();
+      this.el.appendChild(this.currentEditor.el);
       this.currentEditor.render();
-      this.$el.addClass("editor");
+      this.el.classList.add("editor");
 
       model.trigger("backgrid:editing", model, column, this, this.currentEditor);
     }
@@ -315,7 +322,7 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
   */
   renderError: function (model, column) {
     if (column == null || column.get("name") == this.column.get("name")) {
-      this.$el.addClass("error");
+      this.el.classList.add("error");
     }
   },
 
@@ -323,11 +330,11 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
      Removes the editor and re-render in display mode.
   */
   exitEditMode: function () {
-    this.$el.removeClass("error");
+    this.el.classList.remove("error");
     this.currentEditor.remove();
     this.stopListening(this.currentEditor);
     delete this.currentEditor;
-    this.$el.removeClass("editor");
+    this.el.classList.remove("editor");
     this.render();
   },
 
@@ -396,15 +403,17 @@ var UriCell = Backgrid.UriCell = Cell.extend({
   },
 
   render: function () {
-    this.$el.empty();
-    var rawValue = this.model.get(this.column.get("name"));
-    var formattedValue = this.formatter.fromRaw(rawValue, this.model);
-    this.$el.append($("<a>", {
-      tabIndex: -1,
-      href: rawValue,
-      title: this.title || formattedValue,
-      target: this.target
-    }).text(formattedValue));
+    this.empty();
+    var model = this.model;
+    var rawValue = model.get(this.column.get("name"));
+    var formattedValue = this.formatter.fromRaw(rawValue, model);
+    var a = document.createElement("a");
+    a.tabIndex = -1;
+    a.href = rawValue;
+    a.title = this.title || formattedValue;
+    a.target = this.target;
+    a.appendChild(document.createTextNode(formattedValue));
+    this.el.appendChild(a);
     this.delegateEvents();
     return this;
   }
@@ -427,14 +436,16 @@ var EmailCell = Backgrid.EmailCell = StringCell.extend({
   formatter: EmailFormatter,
 
   render: function () {
-    this.$el.empty();
+    this.empty();
     var model = this.model;
-    var formattedValue = this.formatter.fromRaw(model.get(this.column.get("name")), model);
-    this.$el.append($("<a>", {
-      tabIndex: -1,
-      href: "mailto:" + formattedValue,
-      title: formattedValue
-    }).text(formattedValue));
+    var rawValue = model.get(this.column.get("name"));
+    var formattedValue = this.formatter.fromRaw(rawValue, model);
+    var a = document.createElement("a");
+    a.tabIndex = -1;
+    a.href = "mailto:" + rawValue;
+    a.title = formattedValue;
+    a.appendChild(document.createTextNode(formattedValue));
+    this.el.appendChild(a);
     this.delegateEvents();
     return this;
   }
@@ -674,7 +685,7 @@ var BooleanCellEditor = Backgrid.BooleanCellEditor = CellEditor.extend({
   render: function () {
     var model = this.model;
     var val = this.formatter.fromRaw(model.get(this.column.get("name")), model);
-    this.$el.prop("checked", val);
+    this.el.defaultChecked = val;
     return this;
   },
 
@@ -702,23 +713,23 @@ var BooleanCellEditor = Backgrid.BooleanCellEditor = CellEditor.extend({
     // skip ahead to `change` when space is pressed
     if (command.passThru() && e.type != "change") return true;
     if (command.cancel()) {
-      e.stopPropagation();
       model.trigger("backgrid:edited", model, column, command);
+      e.stopPropagation();
     }
 
-    var $el = this.$el;
+    var el = this.el;
     if (command.save() || command.moveLeft() || command.moveRight() || command.moveUp() ||
         command.moveDown()) {
-      e.preventDefault();
-      e.stopPropagation();
-      var val = formatter.toRaw($el.prop("checked"), model);
+      var val = formatter.toRaw(el.checked, model);
       model.set(column.get("name"), val);
       model.trigger("backgrid:edited", model, column, command);
+      e.preventDefault();
+      e.stopPropagation();
     }
     else if (e.type == "change") {
-      var val = formatter.toRaw($el.prop("checked"), model);
+      var val = formatter.toRaw(el.checked, model);
       model.set(column.get("name"), val);
-      $el.focus();
+      el.focus();
     }
   }
 
@@ -749,15 +760,15 @@ var BooleanCell = Backgrid.BooleanCell = Cell.extend({
      uncheck otherwise.
   */
   render: function () {
-    this.$el.empty();
+    this.empty();
     var model = this.model, column = this.column;
     var editable = Backgrid.callByNeed(column.editable(), column, model);
-    this.$el.append($("<input>", {
-      tabIndex: -1,
-      type: "checkbox",
-      checked: this.formatter.fromRaw(model.get(column.get("name")), model),
-      disabled: !editable
-    }));
+    var input = document.createElement("input");
+    input.tabIndex = -1;
+    input.type = "checkbox";
+    input.checked = this.formatter.fromRaw(model.get(this.column.get("name")), model);
+    input.disabled = !editable;
+    this.el.appendChild(input);
     this.delegateEvents();
     return this;
   }
@@ -782,9 +793,6 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
     "keydown": "close"
   },
 
-  /** @property {function(Object, ?Object=): string} template */
-  template: _.template('<option value="<%- value %>" <%= selected ? \'selected="selected"\' : "" %>><%- text %></option>', null, {variable: null}),
-
   setOptionValues: function (optionValues) {
     this.optionValues = optionValues;
     this.optionValues = _.result(this, "optionValues");
@@ -792,17 +800,21 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
 
   setMultiple: function (multiple) {
     this.multiple = multiple;
-    this.$el.prop("multiple", multiple);
+    this.el.multiple = multiple;
   },
 
   _renderOptions: function (nvps, selectedValues) {
-    var options = '';
+    var options = [];
     for (var i = 0; i < nvps.length; i++) {
-      options = options + this.template({
-        text: nvps[i][0],
-        value: nvps[i][1],
-        selected: _.indexOf(selectedValues, nvps[i][1]) > -1
-      });
+      var nvp = nvps[i];
+      var name = nvps[i][0];
+      var value = nvps[i][1];
+      var option = document.createElement("option");
+      option.value = value;
+      option.defaultSelected = _.indexOf(selectedValues, value) > -1;
+      option.selected = option.defaultSelected;
+      option.appendChild(document.createTextNode(name));
+      options.push(option);
     }
     return options;
   },
@@ -815,7 +827,7 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
      parameter.
   */
   render: function () {
-    this.$el.empty();
+    this.empty();
 
     var optionValues = _.result(this, "optionValues");
     var model = this.model;
@@ -825,32 +837,40 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
 
     var optionValue = null;
     var optionText = null;
-    var optionValue = null;
     var optgroupName = null;
-    var optgroup = null;
+    var children = [];
 
-    for (var i = 0; i < optionValues.length; i++) {
-      var optionValue = optionValues[i];
+    for (var i = 0; i < optionValues.length; ++i) {
+      optionValue = optionValues[i];
 
       if (_.isArray(optionValue)) {
         optionText  = optionValue[0];
         optionValue = optionValue[1];
 
-        this.$el.append(this.template({
-          text: optionText,
-          value: optionValue,
-          selected: _.indexOf(selectedValues, optionValue) > -1
-        }));
+        var option = document.createElement("option");
+        option.value = optionValue;
+        option.defaultSelected = _.indexOf(selectedValues, optionValue) > -1;
+        option.selected = option.defaultSelected;
+        option.appendChild(document.createTextNode(optionText));
+        children.push(option);
       }
       else if (_.isObject(optionValue)) {
         optgroupName = optionValue.name;
-        optgroup = $("<optgroup></optgroup>", { label: optgroupName });
-        optgroup.append(this._renderOptions.call(this, optionValue.values, selectedValues));
-        this.$el.append(optgroup);
+        var optgroup = document.createElement("optgroup");
+        optgroup.label = optgroupName;
+        var options = this._renderOptions(optionValue.values, selectedValues);
+        for (var j = 0; j < options.length; j++) {
+          optgroup.appendChild(options[j]);
+        }
+        children.push(optgroup);
       }
       else {
         throw new TypeError("optionValues elements must be a name-value pair or an object hash of { name: 'optgroup label', value: [option name-value pairs] }");
       }
+    }
+
+    for (var i = 0; i < children.length; ++i) {
+      this.el.appendChild(children[i]);
     }
 
     this.delegateEvents();
@@ -864,7 +884,20 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
   save: function (e) {
     var model = this.model;
     var column = this.column;
-    model.set(column.get("name"), this.formatter.toRaw(this.$el.val(), model));
+
+    var values = null;
+    var options = this.el.options, option;
+    if (!this.multiple) values = this.el.value || null;
+    else if (this.multiple) {
+      values = [];
+      for (var i = 0, l = options.length; i < l; i++) {
+        option = options[i];
+        if (option.selected) values.push(option.value);
+      }
+      if (values.length === 0) values = null;
+    }
+
+    model.set(column.get("name"), this.formatter.toRaw(values, model));
   },
 
   /**
@@ -876,15 +909,15 @@ var SelectCellEditor = Backgrid.SelectCellEditor = CellEditor.extend({
     var column = this.column;
     var command = new Command(e);
     if (command.cancel()) {
-      e.stopPropagation();
       model.trigger("backgrid:edited", model, column, new Command(e));
+      e.stopPropagation();
     }
     else if (command.save() || command.moveLeft() || command.moveRight() ||
              command.moveUp() || command.moveDown() || e.type == "blur") {
-      e.preventDefault();
-      e.stopPropagation();
       this.save(e);
       model.trigger("backgrid:edited", model, column, new Command(e));
+      e.preventDefault();
+      e.stopPropagation();
     }
   }
 
@@ -969,7 +1002,7 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
      @throws {TypeError} If `optionValues` is malformed.
   */
   render: function () {
-    this.$el.empty();
+    this.empty();
 
     var optionValues = _.result(this, "optionValues");
     var model = this.model;
@@ -988,7 +1021,7 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
 
           if (_.isArray(optionValue)) {
             var optionText  = optionValue[0];
-            var optionValue = optionValue[1];
+            optionValue = optionValue[1];
 
             if (optionValue == rawDatum) selectedText.push(optionText);
           }
@@ -1008,7 +1041,7 @@ var SelectCell = Backgrid.SelectCell = Cell.extend({
         }
       }
 
-      this.$el.append(selectedText.join(this.delimiter));
+      this.el.appendChild(window.document.createTextNode(selectedText.join(this.delimiter)));
     }
     catch (ex) {
       if (ex instanceof TypeError) {
