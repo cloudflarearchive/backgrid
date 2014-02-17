@@ -14,6 +14,8 @@ describe("A Grid", function () {
 
   var books;
   var grid;
+  var extendedGrid;
+
   beforeEach(function () {
     books = new Books([{
       id: 1,
@@ -34,6 +36,20 @@ describe("A Grid", function () {
       collection: books,
       footer: Backgrid.Footer
     });
+
+    extendedGrid = Backgrid.Grid.extend({
+      columns: [
+        {
+          name: 'title',
+          cell: 'string'
+        },
+        {
+          name: 'id',
+          cell: 'integer'
+        }
+      ]
+    });
+
   });
 
   it("renders a table with a body, optional header, and an optional footer section", function () {
@@ -138,6 +154,26 @@ describe("A Grid", function () {
     expect($(tbody).find("tr:nth-child(2) > td.integer-cell.editable.sortable.renderable").text()).toBe("2");
     expect($(tbody).find("tr:nth-child(3) > td.integer-cell.editable.sortable.renderable").length).toBe(1);
     expect($(tbody).find("tr:nth-child(3) > td.integer-cell.editable.sortable.renderable").text()).toBe("3");
+  });
+
+  it("will intantiate with extended columns", function(){
+    
+    var theGrid = new extendedGrid({ collection: books });
+
+    expect(theGrid.columns.length).toBe(2);
+
+  });
+
+  it('extended grid columns will reset', function(){
+    var theGrid = new extendedGrid({collection: books});
+    theGrid.columns.reset([
+      {
+        name: 'id',
+        cell: 'integer'
+      }
+    ]);
+
+    expect(theGrid.columns.length).toBe(1);
   });
 
 });
