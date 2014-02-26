@@ -42,17 +42,21 @@ module.exports = function (grunt) {
             '  Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author %>\n' +
             '  Licensed under the MIT license.\n' +
             '*/\n\n' +
-            '(function (factory) {\n\n' +
-            '  // CommonJS\n' +
-            '  if (typeof exports == "object") {\n' +
-            '    module.exports = factory(module.exports,\n' +
-            '                             require("underscore"),\n' +
-            '                             require("backbone"));\n' +
-            '  }\n' +
-            '  // Browser\n' +
-            '  else factory(this, this._, this.Backbone);\n' +
-            '}(function (root, _, Backbone) {\n\n  "use strict";\n\n',
-          footer: 'return Backgrid;\n' +
+            '(function (root, factory) {\n\n' +
+            '  if (typeof define === "function" && define.amd) {\n' +
+            '    // AMD (+ global for extensions)\n' +
+            '    define(["underscore", "backbone"], function (_, Backbone) {\n' +
+            '      return (root.Backgrid = factory(_, Backbone));\n' +
+            '    });\n' +
+            '  } else if (typeof exports === "object") {\n' +
+            '    // CommonJS\n' +
+            '    module.exports = factory(require("underscore"), require("backbone"));\n' +
+            '  } else {\n' +
+            '    // Browser\n' +
+            '    root.Backgrid = factory(root._, root.Backbone);\n' +
+            '  }' +
+            '}(this, function (_, Backbone) {\n\n  "use strict";\n\n',
+          footer: '  return Backgrid;\n' +
             '}));'
         },
         src: [
