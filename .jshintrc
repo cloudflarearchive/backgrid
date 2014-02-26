@@ -22,6 +22,7 @@
   "globals": {
     "Backgrid": false,
     "Backbone": false,
+    "define": false,
     "_": false
   }
 }
