@@ -244,7 +244,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
      Triggers a Backbone `backgrid:sorted` event from the collection when done
      with the column, direction and a reference to the collection.
 
-     @param {Backgrid.Column} column
+     @param {Backgrid.Column|string} column
      @param {null|"ascending"|"descending"} direction
 
      See [Backbone.Collection#comparator](http://backbonejs.org/#Collection-comparator)
