@@ -37,7 +37,7 @@ module.exports = function (grunt) {
     concat: {
       backgrid: {
         options: {
-          banner: '/*!\n  <%= pkg.name %>\n' +
+          banner: '/*!\n  <%= pkg.name %> <%= pkg.version %>\n' +
             '  <%= pkg.repository.url %>\n\n' +
             '  Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author %>\n' +
             '  Licensed under the MIT license.\n' +
