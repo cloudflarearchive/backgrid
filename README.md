@@ -61,7 +61,7 @@ var columns = [{
   // Defines a cell type, and ID is displayed as an integer without the ',' separating 1000s.
   cell: Backgrid.IntegerCell.extend({
     orderSeparator: ''
-  }1)
+  })
 }, {
   name: "name",
   label: "Name",
