@@ -247,6 +247,29 @@ describe("A Body", function () {
     expect(body.$el.find("tr.empty").length).toBe(0);
   });
 
+  it("will show the empty row if all rows are removed from the collection", function () {
+    col.reset({id: 4});
+    body = new Backgrid.Body({
+      emptyText: " ",
+      columns: [{
+        name: "id",
+        cell: "integer"
+      }],
+      collection: col
+    });
+    body.render();
+    expect(body.$el.find("tr.empty").length).toBe(0);
+
+    col.remove(col.at(0));
+    expect(body.$el.find("tr.empty").length).toBe(1);
+
+    body.insertRow({id: 5});
+    expect(body.$el.find("tr.empty").length).toBe(0);
+
+    body.removeRow(col.at(0));
+    expect(body.$el.find("tr.empty").length).toBe(1);
+  });
+
   it("#sort will throw a RangeError is direction is not ascending, descending or null", function () {
     body = new Backgrid.Body({
       collection: col,
