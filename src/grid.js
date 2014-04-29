@@ -85,7 +85,7 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
     // Convert the list of column objects here first so the subviews don't have
     // to.
     if (!(options.columns instanceof Backbone.Collection)) {
-      options.columns = new Columns(options.columns);
+      options.columns = new Columns(options.columns || this.columns);
     }
     this.columns = options.columns;
 

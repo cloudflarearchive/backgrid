@@ -140,4 +140,20 @@ describe("A Grid", function () {
     expect($(tbody).find("tr:nth-child(3) > td.integer-cell.editable.sortable.renderable").text()).toBe("3");
   });
 
+  it("will inherit the constructor's columns", function () {
+    var columns = [{
+      name: "title",
+      cell: "string"
+    }];
+
+    var CustomGrid = Backgrid.Grid.extend({
+      columns: columns
+      , className: 'backgrid customBackgrid'
+    });
+
+    var customGrid = new CustomGrid({collection: books});
+
+    expect(customGrid.columns.models.length).toBe(1);
+    expect(customGrid.columns.at(0).get("name")).toBe("title");
+  });
 });
