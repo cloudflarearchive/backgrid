@@ -287,9 +287,14 @@ var Body = Backgrid.Body = Backbone.View.extend({
         collection.fullCollection.sort();
         collection.trigger("backgrid:sorted", column, direction, collection);
       }
-      else collection.fetch({reset: true, success: function () {
-        collection.trigger("backgrid:sorted", column, direction, collection);
-      }});
+      else {
+        // Trigger a sort event on the collection, which currently does not
+        // trigger this event for server-side collections.
+        collection.trigger("sort");
+        collection.fetch({reset: true, success: function () {
+          collection.trigger("backgrid:sorted", column, direction, collection);
+        }});
+      }
     }
     else {
       collection.comparator = comparator;
