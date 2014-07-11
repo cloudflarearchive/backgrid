@@ -117,13 +117,13 @@ _.extend(Command.prototype, {
 
      @member Backgrid.Command
    */
-  moveLeft: function () { return this.shiftKey && this.keyCode === 9; },
+  moveLeft: function () { return (this.shiftKey && this.keyCode === 9 || this.shiftKey && this.keyCode === 37); },
   /**
      Tab
 
      @member Backgrid.Command
    */
-  moveRight: function () { return !this.shiftKey && this.keyCode === 9; },
+  moveRight: function () { return (!this.shiftKey && this.keyCode === 9 || this.shiftKey && this.keyCode === 39); },
   /**
      Enter
 
