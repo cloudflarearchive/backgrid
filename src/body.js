@@ -341,7 +341,10 @@ var Body = Backgrid.Body = Backbone.View.extend({
     var i = this.collection.indexOf(model);
     var j = this.columns.indexOf(column);
     var cell, renderable, editable, m, n;
-
+    
+    // return if model being edited in a different grid
+    if (j === -1) return this;
+    
     this.rows[i].cells[j].exitEditMode();
 
     if (command.moveUp() || command.moveDown() || command.moveLeft() ||
