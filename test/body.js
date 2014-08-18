@@ -511,7 +511,6 @@ describe("A Body", function () {
     expect(body.rows[1].cells[0].$el.hasClass("editor")).toBe(false);
   });
 
-  // test fix for #507
   it("will not throw an exception when backgrid:edited is fired on a shared model", function () {
     var people = new Backbone.Collection([
       {name: "alice", age: 28, married: false},
@@ -547,7 +546,7 @@ describe("A Body", function () {
 
     body.rows[0].cells[0].enterEditMode();
     var testTrigger = function() {
-      people.trigger("backgrid:edited", people.at(0), columns.at(0), new Backgrid.Command({keyCode: 9}));			
+      people.trigger("backgrid:edited", people.at(0), columns.at(0), new Backgrid.Command({keyCode: 9}));
     };
     expect(testTrigger).not.toThrow();
   });
