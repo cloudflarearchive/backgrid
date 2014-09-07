@@ -148,11 +148,6 @@ var Column = Backgrid.Column = Backbone.Model.extend({
 
     var cell = Backgrid.resolveNameToClass(this.get("cell"), "Cell");
 
-    var customClassName = this.get('className');
-    if (customClassName) {
-        cell.prototype.className += " " + customClassName;
-    }
-
     this.set({cell: cell, headerCell: headerCell}, { silent: true });
   },
 
