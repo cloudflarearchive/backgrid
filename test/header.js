@@ -374,7 +374,7 @@ describe("A Header", function () {
     }]);
   });
 
-  it('creates a header row on initialization', function() {
+  it("creates a header row on initialization", function() {
     spyOn(Backgrid.Header.prototype, "createHeaderRow");
 
     head = new Backgrid.Header({
@@ -390,7 +390,7 @@ describe("A Header", function () {
     expect(head.createHeaderRow.callCount).toEqual(1);
   });
 
-  it('renders again when sort is triggered on the column collection', function() {
+  it("renders again when sort is triggered on the column collection", function() {
     head = new Backgrid.Header({
       columns: [{
         name: "name",
