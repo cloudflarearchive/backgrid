@@ -258,9 +258,11 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
      model's raw value for this cell's column.
   */
   render: function () {
-    this.$el.empty();
     var model = this.model;
-    this.$el.text(this.formatter.fromRaw(model.get(this.column.get("name")), model));
+    this.$el
+      .empty()
+      .text(this.formatter.fromRaw(model.get(this.column.get("name")), model))
+      .addClass(this.column.get('name')+'-attr-cell');
     this.delegateEvents();
     return this;
   },
