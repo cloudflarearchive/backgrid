@@ -127,7 +127,11 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
 
     this.$el.append(label);
     this.$el.addClass(column.get("name"));
+    this.$el.attr("data-column-cid", column.cid);
     this.$el.addClass(column.get("direction"));
+    if (column.get("attributes")) {
+      this.$el.attr(column.get("attributes"));
+    }
     this.delegateEvents();
     return this;
   }
@@ -196,7 +200,18 @@ var Header = Backgrid.Header = Backbone.View.extend({
     if (!(this.columns instanceof Backbone.Collection)) {
       this.columns = new Columns(this.columns);
     }
+    this.createHeaderRow();
 
+    this.listenTo(this.columns, "sort", _.bind(function() {
+      this.createHeaderRow();
+      this.render();
+    }, this));
+  },
+
+  /**
+   Sets up a new headerRow and attaches it to the view
+   */
+  createHeaderRow: function() {
     this.row = new Backgrid.HeaderRow({
       columns: this.columns,
       collection: this.collection
@@ -204,11 +219,13 @@ var Header = Backgrid.Header = Backbone.View.extend({
   },
 
   /**
-     Renders this table head with a single row of header cells.
+   Renders this table head with a single row of header cells.
    */
   render: function () {
+    this.$el.empty();
     this.$el.append(this.row.render().$el);
     this.delegateEvents();
+    this.trigger("backgrid:header:rendered", this);
     return this;
   },
 
