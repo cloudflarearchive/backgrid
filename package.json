@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/wyuenho/backgrid"
+    "url": "https://github.com/kirill-zhirnov/backgrid"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
