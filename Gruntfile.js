@@ -50,7 +50,8 @@ module.exports = function (grunt) {
             '    });\n' +
             '  } else if (typeof exports === "object") {\n' +
             '    // CommonJS\n' +
-            '    module.exports = factory(require("underscore"), require("backbone"));\n' +
+            '    Backbone.$ = Backbone.$ || require("jquery");\n' +
+            '    module.exports = factory(require("underscore"), Backbone);\n' +
             '  } else {\n' +
             '    // Browser\n' +
             '    root.Backgrid = factory(root._, root.Backbone);\n' +
