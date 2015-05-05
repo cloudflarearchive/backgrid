@@ -50,6 +50,7 @@ module.exports = function (grunt) {
             '    });\n' +
             '  } else if (typeof exports === "object") {\n' +
             '    // CommonJS\n' +
+            '    var Backbone = require("backbone");\n' +
             '    Backbone.$ = Backbone.$ || require("jquery");\n' +
             '    module.exports = factory(require("underscore"), Backbone);\n' +
             '  } else {\n' +
