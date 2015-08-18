@@ -45,17 +45,17 @@ module.exports = function (grunt) {
             '(function (root, factory) {\n\n' +
             '  if (typeof define === "function" && define.amd) {\n' +
             '    // AMD (+ global for extensions)\n' +
-            '    define(["underscore", "backbone"], function (_, Backbone) {\n' +
-            '      return (root.Backgrid = factory(_, Backbone));\n' +
+            '    define(["underscore", "backbone", "jquery"], function (_, Backbone, jQuery) {\n' +
+            '      return (root.Backgrid = factory(_, Backbone, jQuery));\n' +
             '    });\n' +
             '  } else if (typeof exports === "object") {\n' +
             '    // CommonJS\n' +
-            '    module.exports = factory(require("underscore"), require("backbone"));\n' +
+            '    module.exports = factory(require("underscore"), require("backbone"), require("jquery"));\n' +
             '  } else {\n' +
             '    // Browser\n' +
-            '    root.Backgrid = factory(root._, root.Backbone);\n' +
+            '    root.Backgrid = factory(root._, root.Backbone, root.jQuery);\n' +
             '  }' +
-            '}(this, function (_, Backbone) {\n\n  "use strict";\n\n',
+            '}(this, function (_, Backbone, jQuery) {\n\n  "use strict";\n\n',
           footer: '  return Backgrid;\n' +
             '}));'
         },
