@@ -20,7 +20,8 @@
   ],
   "dependencies": {
     "jashkenas/underscore": "*",
-    "jashkenas/backbone": "*"
+    "jashkenas/backbone": "*",
+    "components/jquery": "*"
   },
   "demo": "http://backgridjs.com",
   "license": "MIT"

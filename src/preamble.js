@@ -39,7 +39,7 @@ function lpad(str, length, padstr) {
   return padding + str;
 }
 
-var $ = Backbone.$;
+var $ = Backbone.$ = jQuery;
 
 var Backgrid = {
 
