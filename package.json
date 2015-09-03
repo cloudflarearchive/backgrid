@@ -36,7 +36,7 @@
   "private": true,
   "dependencies": {
     "backbone": "^1.1.2",
-    "jquery": "^2.1.4",
+    "jquery": "*",
     "underscore": "^1.8.3"
   }
 }
