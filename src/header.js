@@ -56,6 +56,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
     if (Backgrid.callByNeed(column.sortable(), column, collection)) $el.addClass("sortable");
     if (Backgrid.callByNeed(column.renderable(), column, collection)) $el.addClass("renderable");
 
+    this.listenTo(collection, 'backgrid:beforeSort', this.removeCellDirection)
     this.listenTo(collection.fullCollection || collection, "sort", this.removeCellDirection);
   },
 

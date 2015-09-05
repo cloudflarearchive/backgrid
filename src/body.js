@@ -276,6 +276,8 @@ var Body = Backgrid.Body = Backbone.View.extend({
                                            return model.cid.replace('c', '') * 1;
                                          });
 
+    collection.trigger("backgrid:beforeSort", column, direction);
+
     if (Backbone.PageableCollection &&
         collection instanceof Backbone.PageableCollection) {
 
