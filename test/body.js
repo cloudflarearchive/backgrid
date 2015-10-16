@@ -224,6 +224,23 @@ describe("A Body", function () {
     expect(body.$el.find("tr.empty > td").attr("colspan")).toBe("1");
   });
 
+  it("will update the colspan of the empty row as columns are changed", function () {
+    col.reset();
+    body = new Backgrid.Body({
+      emptyText: " ",
+      columns: [{
+        name: "id",
+        cell: "integer"
+      }],
+      collection: col
+    });
+    body.render();
+
+    expect(body.$el.find("tr.empty > td").attr("colspan")).toBe("1");
+    body.columns.push({name: "age", cell: "integer"});
+    expect(body.$el.find("tr.empty > td").attr("colspan")).toBe("2");
+  });
+
   it("will clear the empty row if a new model is added to an empty collection", function () {
     col.reset();
     body = new Backgrid.Body({
@@ -268,6 +285,13 @@ describe("A Body", function () {
 
     body.removeRow(col.at(0));
     expect(body.$el.find("tr.empty").length).toBe(1);
+  });
+
+  it("won't call render from updateEmptyRow if there is no emptyView", function () {
+    var pushColumn = function () {
+      body.columns.push({name: "age", cell: "integer"});
+    };
+    expect(pushColumn).not.toThrow();
   });
 
   it("#sort will throw a RangeError is direction is not ascending, descending or null", function () {

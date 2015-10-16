@@ -59,6 +59,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
     this.listenTo(collection, "reset", this.refresh);
     this.listenTo(collection, "backgrid:sort", this.sort);
     this.listenTo(collection, "backgrid:edited", this.moveToNextCell);
+
     this.listenTo(this.columns, "add remove", this.updateEmptyRow);
   },
 
