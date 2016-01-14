@@ -27,7 +27,7 @@ functionalities easy.
 ## Supported browsers [[1]](#note-1):
 
 - Internet Explorer 8 [[2]](#note-2)
-- Internet Exploror 9+
+- Internet Explorer 9+
 - Chrome 4+
 - Safari 4+
 - Firefox 4+
