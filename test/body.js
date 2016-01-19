@@ -373,6 +373,50 @@ describe("A Body", function () {
 
     $.ajax = oldAjax;
   });
+  
+  it("sorting on a server-mode Backbone.PageableCollection clears other sort columns", function () {
+
+    var oldAjax = $.ajax;
+    $.ajax = function (settings) {
+      settings.success([{"total_entries": 3}, [{id: 2, col2: 'b'}, {id: 1, col2: 'a'}]]);
+    };
+
+    var col = new (Backbone.PageableCollection.extend({
+      url: "test-headercell"
+    }))([{id: 1, col2: 'a'}, {id: 2, col2: 'b'}], {
+      state: {
+        pageSize: 3
+      }
+    });
+
+    grid = new Backgrid.Grid({
+      columns: [{
+        name: "id",
+        cell: "integer"
+      },{
+        name: "col2",
+        cell: "string"
+      }],
+      collection: col
+    });
+
+    grid.render();
+
+    expect(grid.collection.at(0).get("id")).toBe(1);
+    expect(grid.collection.at(1).get("id")).toBe(2);
+
+    grid.sort("id", "descending");
+    grid.sort("col2", "descending");
+
+    expect(grid.collection.at(0).get("id")).toBe(2);
+    expect(grid.collection.at(1).get("id")).toBe(1);
+    
+    // first column sort should be cleared!
+    expect(grid.columns.at(0).get("direction")).toBe(null);
+    expect(grid.columns.at(1).get("direction")).toBe("descending");
+
+    $.ajax = oldAjax;
+  });
 
   it("can sort on a client-mode Backbone.PageableCollection", function () {
 
