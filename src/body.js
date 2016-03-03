@@ -291,18 +291,19 @@ var Body = Backgrid.Body = Backbone.View.extend({
         }
         collection.fullCollection.sort();
         collection.trigger("backgrid:sorted", column, direction, collection);
+        column.set("direction", direction);
       }
       else collection.fetch({reset: true, success: function () {
         collection.trigger("backgrid:sorted", column, direction, collection);
+        column.set("direction", direction);
       }});
     }
     else {
       collection.comparator = comparator;
       collection.sort();
       collection.trigger("backgrid:sorted", column, direction, collection);
+      column.set("direction", direction);
     }
-
-    column.set("direction", direction);
 
     return this;
   },
