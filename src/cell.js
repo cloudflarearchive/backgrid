@@ -261,6 +261,11 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
     this.$el.empty();
     var model = this.model;
     this.$el.text(this.formatter.fromRaw(model.get(this.column.get("name")), model));
+
+    this.$el.toggleClass("editable", Backgrid.callByNeed(this.column.editable(), this.column, this.model));
+    this.$el.toggleClass("sortable", Backgrid.callByNeed(this.column.sortable(), this.column, this.model));
+    this.$el.toggleClass("renderable", Backgrid.callByNeed(this.column.renderable(), this.column, this.model));
+
     this.delegateEvents();
     return this;
   },
