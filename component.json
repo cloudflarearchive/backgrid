@@ -19,8 +19,8 @@
     "lib/backgrid.css"
   ],
   "dependencies": {
-    "jashkenas/underscore": "*",
-    "jashkenas/backbone": "*"
+    "components/underscore": "*",
+    "components/backbone": "*"
   },
   "demo": "http://backgridjs.com",
   "license": "MIT"
