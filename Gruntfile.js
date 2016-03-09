@@ -84,42 +84,12 @@ module.exports = function (grunt) {
       }
     },
 
-    jasmine: {
-      test: {
-        version: "1.3.1",
-        src: [
-          "lib/backgrid.js",
-        ],
-        options: {
-          specs: [
-            "test/preamble.js",
-            "test/column.js",
-            "test/formatter.js",
-            "test/cell.js",
-            "test/row.js",
-            "test/body.js",
-            "test/header.js",
-            "test/footer.js",
-            "test/grid.js"
-          ],
-          template: require("grunt-template-jasmine-istanbul"),
-          templateOptions: {
-            coverage: "test/coverage/coverage.json",
-            report: {
-              type: "html",
-              options: {
-                dir: "test/coverage"
-              }
-            }
-          },
-          helpers: "vendor/js/jasmine-html.js",
-          vendor: [
-            "test/vendor/js/jquery.js",
-            "test/vendor/js/underscore.js",
-            "test/vendor/js/backbone.js",
-            "test/vendor/js/backbone-pageable.js"
-          ]
-        }
+    karma: {
+      unit: {
+        configFile: 'karma.conf.js',
+        background: true,
+        singleRun: true,
+        reporter: 'dots'
       }
     },
 
@@ -196,11 +166,11 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks("grunt-contrib-watch");
   grunt.loadNpmTasks("grunt-recess");
   grunt.loadNpmTasks("grunt-jsduck");
-  grunt.loadNpmTasks("grunt-contrib-jasmine");
   grunt.loadNpmTasks("grunt-contrib-connect");
+  grunt.loadNpmTasks("grunt-karma");
 
   grunt.registerTask("doc", ["clean:api", "jsduck"]);
   grunt.registerTask("dist", ["concat", "uglify", "recess"]);
-  grunt.registerTask("test", ["concat", "jasmine"]);
-  grunt.registerTask("default", ["clean", "doc", "dist", "jasmine"]);
+  grunt.registerTask("test", ["concat", "karma"]);
+  grunt.registerTask("default", ["clean", "doc", "dist", "karma"]);
 };

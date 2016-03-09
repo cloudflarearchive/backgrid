@@ -1,6 +1,6 @@
 {
   "name": "backgrid",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "author": "Jimmy Yuen Ho Wong and contributors <wyuenho@gmail.com>",
   "description": "Backgrid.js is a set of components for building semantic and easily stylable data grid widgets with Backbone.",
   "homepage": "http://backgridjs.com/",
@@ -10,7 +10,7 @@
   ],
   "main": "./lib/backgrid.js",
   "scripts": {
-    "test": "grunt test",
+    "test": "karma start --single-run --browsers Chrome,Firefox",
     "prepublish": "grunt dist"
   },
   "repository": {
@@ -27,17 +27,21 @@
     "grunt-contrib-uglify": "~1.0.0",
     "grunt-contrib-watch": "~0.6.1",
     "grunt-jsduck": "~1.0.1",
+    "grunt-karma": "^0.12.1",
     "grunt-recess": "~1.0.1",
-    "grunt-template-jasmine-istanbul": "~0.4.0"
+    "grunt-template-jasmine-istanbul": "~0.4.0",
+    "karma": "^0.13.22",
+    "karma-chrome-launcher": "^0.2.2",
+    "karma-firefox-launcher": "^0.1.7",
+    "karma-jasmine": "^0.1.6",
+    "karma-safari-launcher": "^0.1.1"
   },
   "license": "MIT",
   "engines": {
     "node": ">=0.10"
   },
-  "private": true,
   "dependencies": {
     "backbone": "~1.1.2",
-    "jquery": ">= 1.7.0",
     "underscore": "~1.8.3"
   }
 }
