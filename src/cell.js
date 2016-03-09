@@ -268,7 +268,9 @@ var Cell = Backgrid.Cell = Backbone.View.extend({
     var $el = this.$el;
     $el.empty();
     var model = this.model;
-    $el.text(this.formatter.fromRaw(model.get(this.column.get("name")), model));
+    var columnName = this.column.get("name");
+    $el.text(this.formatter.fromRaw(model.get(columnName), model));
+    $el.addClass(columnName);
     this.updateStateClassesMaybe();
     this.delegateEvents();
     return this;
