@@ -318,6 +318,44 @@ describe("A Cell", function () {
     expect(cell.$el.text()).toBe("title");
   });
 
+  it("#472 updates editable, sortable, and renderable when rerendering", function () {
+
+    function starable (model) {
+      return model.get("title") == "Alice in Wonderland";
+    }
+
+    var TestCol = Backgrid.Column.extend({
+      mySortable: starable,
+      myRenderable: starable,
+      mySortable: starable
+    });
+
+    column = new TestCol({
+      name: "title",
+      cell: "string",
+      editable: "myEditable",
+      renderable: "myRenderable",
+      sortable: "mySortable"
+    });
+
+    cell = new Backgrid.Cell({
+      model: book,
+      column: column
+    });
+
+    cell.render();
+
+    book.set("title", "Alice in Wonderland");
+    expect(cell.$el.hasClass("editable")).toBe(true);
+    expect(cell.$el.hasClass("sortable")).toBe(true);
+    expect(cell.$el.hasClass("renderable")).toBe(true);
+
+    book.set("title", "Oliver Twist");
+    expect(cell.$el.hasClass("editable")).toBe(false);
+    expect(cell.$el.hasClass("sortable")).toBe(false);
+    expect(cell.$el.hasClass("renderable")).toBe(false);
+  });
+
   it("goes into edit mode on click", function () {
     cell.render();
     cell.$el.click();
