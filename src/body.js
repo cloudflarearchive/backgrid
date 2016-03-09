@@ -59,15 +59,19 @@ var Body = Backgrid.Body = Backbone.View.extend({
     this.listenTo(collection, "reset", this.refresh);
     this.listenTo(collection, "backgrid:sort", this.sort);
     this.listenTo(collection, "backgrid:edited", this.moveToNextCell);
+
+    this.listenTo(this.columns, "add remove", this.updateEmptyRow);
   },
 
   _unshiftEmptyRowMayBe: function () {
     if (this.rows.length === 0 && this.emptyText != null) {
-      this.rows.unshift(new EmptyRow({
+      this.emptyRow = new EmptyRow({
         emptyText: this.emptyText,
         columns: this.columns
-      }));
-      return true;
+      });
+      
+      this.rows.unshift(this.emptyRow);
+      return true
     }
   },
 
@@ -171,6 +175,17 @@ var Body = Backgrid.Body = Backbone.View.extend({
     }
 
     return this;
+  },
+
+  /**
+     Rerender the EmptyRow which empties the DOM element, creates the td with the
+     updated colspan, and appends it back into the DOM
+  */
+
+  updateEmptyRow: function () {
+    if (this.emptyRow != null) {
+      this.emptyRow.render();
+    }
   },
 
   /**
