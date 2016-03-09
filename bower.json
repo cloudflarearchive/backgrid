@@ -19,7 +19,8 @@
     "node_modules",
     "bower_components",
     "test",
-    "tests"
+    "tests",
+    "api"
   ],
   "dependencies": {
     "backbone": "^1.1.2",
