@@ -1,6 +1,5 @@
 lib/*.min.*
 bower_components
-components
 .grunt
 node_modules
 .rbenv-gemsets
