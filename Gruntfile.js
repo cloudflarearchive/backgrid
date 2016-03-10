@@ -88,8 +88,7 @@ module.exports = function (grunt) {
       unit: {
         configFile: 'karma.conf.js',
         background: true,
-        singleRun: true,
-        reporter: 'dots'
+        singleRun: true
       }
     },
 
