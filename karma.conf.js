@@ -15,10 +15,10 @@ module.exports = function(config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'test/vendor/js/jquery.js',
-      'test/vendor/js/underscore.js',
-      'test/vendor/js/backbone.js',
-      'test/vendor/js/backbone-pageable.js',
+      'node_modules/jquery/dist/jquery.js',
+      'node_modules/underscore/underscore.js',
+      'node_modules/backbone/backbone.js',
+      'node_modules/backbone.paginator/lib/backbone.paginator.js',
       'lib/backgrid.js',
       'test/preamble.js',
       'test/column.js',
@@ -39,7 +39,7 @@ module.exports = function(config) {
     // preprocess matching files before serving them to the browser
     // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
     preprocessors: {
-      
+
     },
 
 
