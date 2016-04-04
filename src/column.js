@@ -55,19 +55,20 @@ var Column = Backgrid.Column = Backbone.Model.extend({
      this column is sortable. If the value is a string, a method will the same
      name will be looked up from the column instance to determine whether the
      column should be sortable. The method's signature must be `function
-     (Backgrid.Column, Backbone.Model): boolean`.
+     (Backbone.Model): boolean`. The function's context is the column instance.
 
      @cfg {boolean|string|function(): boolean} [defaults.editable=true] Whether
      this column is editable. If the value is a string, a method will the same
      name will be looked up from the column instance to determine whether the
      column should be editable. The method's signature must be `function
-     (Backgrid.Column, Backbone.Model): boolean`.
+     (Backbone.Model): boolean`. The function's context is the column instance.
 
      @cfg {boolean|string|function(): boolean} [defaults.renderable=true]
      Whether this column is renderable. If the value is a string, a method will
      the same name will be looked up from the column instance to determine
      whether the column should be renderable. The method's signature must be
-     `function (Backrid.Column, Backbone.Model): boolean`.
+     `function (Backbone.Model): boolean`. The function's context is the column
+     instance.
 
      @cfg {Backgrid.CellFormatter | Object | string} [defaults.formatter] The
      formatter to use to convert between raw model values and user input.
@@ -173,24 +174,33 @@ var Column = Backgrid.Column = Backbone.Model.extend({
   }
 
   /**
+     If you cannot always determine whether a column should be sortable before
+     the grid get initialized, you can override this method.
+
      @member Backgrid.Column
      @protected
      @method sortable
-     @return {function(Backgrid.Column, Backbone.Model): boolean | boolean}
+     @return {function(Backbone.Model): boolean | boolean}
   */
 
   /**
+     If you cannot always determine whether a column should be editable before
+     the grid get initialized, you can override this method.
+
      @member Backgrid.Column
      @protected
      @method editable
-     @return {function(Backgrid.Column, Backbone.Model): boolean | boolean}
+     @return {function(Backbone.Model): boolean | boolean}
   */
 
   /**
+     If you cannot always determine whether a column should be renderable before
+     the grid get initialized, you can override this method.
+
      @member Backgrid.Column
      @protected
      @method renderable
-     @return {function(Backgrid.Column, Backbone.Model): boolean | boolean}
+     @return {function(Backbone.Model): boolean | boolean}
   */
 });
 
