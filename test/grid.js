@@ -38,17 +38,17 @@ describe("A Grid", function () {
 
   it("renders a table with a body, optional header, and an optional footer section", function () {
     spyOn(grid, "trigger");
-    spyOn(grid.header, "render").andCallThrough();
-    spyOn(grid.footer, "render").andCallThrough();
-    spyOn(grid.body, "render").andCallThrough();
+    spyOn(grid.header, "render").and.callThrough();
+    spyOn(grid.footer, "render").and.callThrough();
+    spyOn(grid.body, "render").and.callThrough();
 
     grid.render();
 
     expect(grid.el.tagName).toBe("TABLE");
-    expect(grid.header.render.calls.length).toBe(1);
-    expect(grid.footer.render.calls.length).toBe(1);
-    expect(grid.body.render.calls.length).toBe(1);
-    expect(grid.trigger.calls.length).toBe(1);
+    expect(grid.header.render.calls.count()).toBe(1);
+    expect(grid.footer.render.calls.count()).toBe(1);
+    expect(grid.body.render.calls.count()).toBe(1);
+    expect(grid.trigger.calls.count()).toBe(1);
     expect(grid.trigger).toHaveBeenCalledWith("backgrid:rendered", grid);
   });
 
@@ -90,9 +90,9 @@ describe("A Grid", function () {
   });
 
   it("will delegate insertRow, removeRow and sort to the body", function () {
-    spyOn(grid.body, "insertRow").andCallThrough();
-    spyOn(grid.body, "removeRow").andCallThrough();
-    spyOn(grid.body, "sort").andCallThrough();
+    spyOn(grid.body, "insertRow").and.callThrough();
+    spyOn(grid.body, "removeRow").and.callThrough();
+    spyOn(grid.body, "sort").and.callThrough();
     grid.insertRow({});
     expect(grid.body.insertRow).toHaveBeenCalledWith({});
     var last = grid.collection.last();
@@ -103,8 +103,8 @@ describe("A Grid", function () {
   });
 
   it("will delegate to columns.add and columns.remove from insertColumn and removeColumn", function () {
-    spyOn(grid.columns, "add").andCallThrough();
-    spyOn(grid.columns, "remove").andCallThrough();
+    spyOn(grid.columns, "add").and.callThrough();
+    spyOn(grid.columns, "remove").and.callThrough();
     grid.insertColumn({name: "id", cell: "integer"});
     expect(grid.columns.add).toHaveBeenCalledWith({name: "id", cell: "integer"});
     var col = grid.columns.last();

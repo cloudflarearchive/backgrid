@@ -123,7 +123,7 @@ describe("A Body", function () {
 
     var CustomRow = Backgrid.Row.extend({});
 
-    spyOn(CustomRow.prototype, "render").andCallThrough();
+    spyOn(CustomRow.prototype, "render").and.callThrough();
 
     body = new Backgrid.Body({
       columns: [{
