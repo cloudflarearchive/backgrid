@@ -84,11 +84,12 @@ code follows this coding style extremely closely, with 2 exceptions:
 Testing
 =======
 
-Backbone.js uses [jasmine](http://pivotal.github.com/jasmine/) for testing. You
-can invoke the following Grunt task to run the tests inside a terminal:
+Backbone.js uses [karma](https://karma-runner.github.io/0.13/index.html) and
+[jasmine](http://jasmine.github.io/2.4/introduction.html) for testing. You can
+invoke the following Grunt task to run the tests inside a terminal:
 
 ```shell
-$ grunt jasmine
+$ grunt karma
 ```
 
 Commit Messages
