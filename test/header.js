@@ -190,10 +190,12 @@ describe("A HeaderCell", function () {
     expect(cell.$el.hasClass("descending")).toBe(false);
   });
 
-  it("will remove its direction CSS class if `sort` is triggered from the collection or pageableCollection#fullCollection", function () {
+  it("will remove its direction CSS class if `backgrid:sorted` is triggered from the collection or pageableCollection#fullCollection", function () {
     cell.column.set("direction", "ascending");
+    expect(cell.$el.hasClass("ascending")).toBe(true);
     cell.collection.comparator = "id";
     cell.collection.sort();
+    cell.collection.trigger("backgrid:sorted");
     expect(cell.$el.hasClass("ascending")).toBe(false);
     expect(cell.$el.hasClass("descending")).toBe(false);
 
@@ -210,8 +212,10 @@ describe("A HeaderCell", function () {
     });
 
     cell.column.set("direction", "ascending");
+    expect(cell.$el.hasClass("ascending")).toBe(true);
     cell.collection.fullCollection.comparator = "id";
     cell.collection.fullCollection.sort();
+    cell.collection.fullCollection.trigger("backgrid:sorted");
     expect(cell.$el.hasClass("ascending")).toBe(false);
     expect(cell.$el.hasClass("descending")).toBe(false);
   });

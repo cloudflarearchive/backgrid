@@ -56,12 +56,12 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
     if (Backgrid.callByNeed(column.sortable(), column, collection)) $el.addClass("sortable");
     if (Backgrid.callByNeed(column.renderable(), column, collection)) $el.addClass("renderable");
 
-    this.listenTo(collection.fullCollection || collection, "sort", this.removeCellDirection);
+    this.listenTo(collection.fullCollection || collection, "backgrid:sorted", this.removeCellDirection);
   },
 
   /**
-     Event handler for the collection's `sort` event. Removes all the CSS
-     direction classes.
+     Event handler for the collection's `backgrid:sorted` event. Removes
+     all the CSS direction classes.
    */
   removeCellDirection: function () {
     this.$el.removeClass("ascending").removeClass("descending");
