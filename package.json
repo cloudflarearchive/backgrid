@@ -9,6 +9,7 @@
     "backbone"
   ],
   "main": "./lib/backgrid.js",
+  "style": "./lib/backgrid.css",
   "scripts": {
     "test": "karma start --single-run --browsers Chrome,Firefox",
     "prepublish": "grunt dist"
