@@ -74,14 +74,6 @@ module.exports = function (grunt) {
       }
     },
 
-    connect: {
-      server: {
-        options: {
-          keepalive: true
-        }
-      }
-    },
-
     karma: {
       unit: {
         configFile: 'karma.conf.js',
@@ -98,7 +90,6 @@ module.exports = function (grunt) {
           "title": "Backgrid.js",
           "no-source": true,
           "categories": "categories.json",
-          "warnings": "-no_doc",
           "pretty-json": true,
           "body-html": '<script type="text/javascript">\n' +
             '  var _gaq = _gaq || [];\n' +
@@ -146,23 +137,14 @@ module.exports = function (grunt) {
           "lib/backgrid.min.js": ["./lib/backgrid.js"]
         }
       }
-    },
-
-    watch: {
-      default: {
-        files: ["src/**/*.*"],
-        tasks: ["dist"]
-      }
     }
   });
 
   grunt.loadNpmTasks("grunt-contrib-clean");
   grunt.loadNpmTasks("grunt-contrib-concat");
   grunt.loadNpmTasks("grunt-contrib-uglify");
-  grunt.loadNpmTasks("grunt-contrib-watch");
   grunt.loadNpmTasks("grunt-recess");
   grunt.loadNpmTasks("grunt-jsduck");
-  grunt.loadNpmTasks("grunt-contrib-connect");
   grunt.loadNpmTasks("grunt-karma");
 
   grunt.registerTask("doc", ["clean:api", "jsduck"]);
