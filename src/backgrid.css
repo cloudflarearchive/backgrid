@@ -62,8 +62,11 @@
   background-color: #f9f9f9;
 }
 
-.backgrid thead th a {
+.backgrid thead th button {
   display: block;
+  border: none;
+  background: none;
+  padding: 0;
 }
 
 .backgrid.backgrid-striped tbody tr:nth-child(even) {

@@ -84,6 +84,23 @@ describe("A Grid", function () {
     expect(grid.body.rows[0].className).not.toBe("class-name");
     expect(grid.footer.className).not.toBe("class-name");
   });
+  
+  it("will render a table with a caption element", function () {
+    var caption = "Table of data"
+    grid = new Backgrid.Grid({
+      columns: [{
+        name: "title",
+        cell: "string"
+      }],
+      collection: books,
+      caption: caption,
+    });
+    
+    grid.render();
+    
+    expect($(grid.el).find("caption"));
+    expect($(grid.el).find("caption").text()).toBe(caption);
+  });
 
   it("will clean up all its decendant views when remove is called", function () {
     expect(grid.remove().constructor).toBe(Backgrid.Grid);
@@ -122,8 +139,8 @@ describe("A Grid", function () {
     var thead = grid.el.childNodes[0];
     expect(thead.tagName == "THEAD").toBe(true);
     expect($(thead).find("tr").length).toBe(1);
-    expect($(thead).find("tr > th.editable.sortable.renderable.id > a > b.sort-caret").length).toBe(1);
-    expect($(thead).find("tr > th.editable.sortable.renderable.id > a").text()).toBe("id");
+    expect($(thead).find("tr > th.editable.sortable.renderable.id > button > span.sort-caret").length).toBe(1);
+    expect($(thead).find("tr > th.editable.sortable.renderable.id > button").text()).toBe("id");
 
     var tfoot = grid.el.childNodes[1];
     expect(tfoot.tagName == "TFOOT").toBe(true);
