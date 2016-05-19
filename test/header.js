@@ -1,10 +1,10 @@
 /*
-  backgrid
-  http://github.com/wyuenho/backgrid
+ backgrid
+ http://github.com/wyuenho/backgrid
 
-  Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
-  Licensed under the MIT license.
-*/
+ Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
+ Licensed under the MIT license.
+ */
 describe("A HeaderCell", function () {
 
   var col;
@@ -278,10 +278,16 @@ describe("A HeaderRow", function () {
     row = new Backgrid.HeaderRow({
       columns: [{
         name: "name",
-        cell: "string"
+        cell: "string",
+        attributes: {
+          colspan: "1"
+        }
       }, {
         name: "year",
-        cell: "integer"
+        cell: "integer",
+        attributes: {
+          colspan: "2"
+        }
       }],
       collection: books
     });
@@ -296,6 +302,8 @@ describe("A HeaderRow", function () {
     expect(th1.hasClass("sortable")).toBe(true);
     expect(th1.hasClass("renderable")).toBe(true);
     expect(th1.hasClass("name")).toBe(true);
+    expect(th1.data("column-cid")).toBe(row.columns.at(0).cid);
+    expect(th1.attr("colspan")).toBe("1");
     expect(th1.find("a").text()).toBe("name");
     expect(th1.find("a").eq(1).is($("b", {className: "sort-caret"})));
 
@@ -304,6 +312,8 @@ describe("A HeaderRow", function () {
     expect(th2.hasClass("sortable")).toBe(true);
     expect(th2.hasClass("renderable")).toBe(true);
     expect(th2.hasClass("year")).toBe(true);
+    expect(th2.data("column-cid")).toBe(row.columns.at(1).cid);
+    expect(th2.attr("colspan")).toBe("2");
     expect(th2.find("a").text()).toBe("year");
     expect(th2.find("a > b:last-child").eq(0).hasClass("sort-caret")).toBe(true);
   });
@@ -356,7 +366,6 @@ describe("A Header", function () {
   var head;
 
   beforeEach(function () {
-
     books = new Books([{
       title: "Alice's Adventures in Wonderland",
       year: 1865
@@ -367,6 +376,10 @@ describe("A Header", function () {
       title: "The Catcher in the Rye",
       year: 1951
     }]);
+  });
+
+  it("creates a header row on initialization", function() {
+    spyOn(Backgrid.Header.prototype, "createHeaderRow");
 
     head = new Backgrid.Header({
       columns: [{
@@ -378,18 +391,53 @@ describe("A Header", function () {
       }],
       collection: books
     });
+    expect(head.createHeaderRow.callCount).toEqual(1);
+  });
 
-    head.render();
+  it("renders again when sort is triggered on the column collection", function() {
+    head = new Backgrid.Header({
+      columns: [{
+        name: "name",
+        cell: "string"
+      }, {
+        name: "year",
+        cell: "integer"
+      }],
+      collection: books
+    });
+
+    spyOn(head, "createHeaderRow");
+    spyOn(head, "render");
+
+    head.columns.trigger("sort");
+
+    expect(head.createHeaderRow).toHaveBeenCalled();
+    expect(head.render).toHaveBeenCalled();
   });
 
   it("renders a header with a row of header cells", function () {
+    head = new Backgrid.Header({
+      columns: [{
+        name: "name",
+        cell: "string"
+      }, {
+        name: "year",
+        cell: "integer"
+      }],
+      collection: books
+    });
+
+    spyOn(head, "trigger");
+
+    head.render();
+
     expect(head.$el[0].tagName).toBe("THEAD");
 
     var th1 = $(head.row.el.childNodes[0]);
     expect(th1.hasClass("editable")).toBe(true);
     expect(th1.hasClass("sortable")).toBe(true);
     expect(th1.hasClass("renderable")).toBe(true);
-    expect(th1.hasClass("name")).toBe(true);
+    expect(th1.data("column-cid")).toBe(head.columns.at(0).cid);
     expect(th1.find("a").text()).toBe("name");
     expect(th1.find("a").eq(1).is($("b", {className: "sort-caret"})));
 
@@ -397,9 +445,12 @@ describe("A Header", function () {
     expect(th2.hasClass("editable")).toBe(true);
     expect(th2.hasClass("sortable")).toBe(true);
     expect(th2.hasClass("renderable")).toBe(true);
-    expect(th2.hasClass("year")).toBe(true);
+    expect(th2.data("column-cid")).toBe(head.columns.at(1).cid);
     expect(th2.find("a").text()).toBe("year");
     expect(th2.find("a > b:last-child").eq(0).hasClass("sort-caret")).toBe(true);
+
+    expect(head.trigger.calls.length).toBe(1);
+    expect(head.trigger).toHaveBeenCalledWith("backgrid:header:rendered", head);
   });
 
 });
