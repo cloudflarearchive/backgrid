@@ -29,7 +29,7 @@
     "grunt-karma": "^0.12.2",
     "grunt-recess": "^1.0.1",
     "jasmine-core": "^2.4.1",
-    "jquery": "2.1.0",
+    "jquery": "2.2.4",
     "karma": "^0.13.22",
     "karma-chrome-launcher": "^1.0.1",
     "karma-coverage": "^0.5.5",
