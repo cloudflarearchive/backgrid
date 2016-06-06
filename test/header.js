@@ -25,8 +25,9 @@ describe("A HeaderCell", function () {
 
   it("renders a table header cell with the label text and an optional anchor with sort-caret", function () {
     expect(cell.el.tagName).toBe("TH");
-    expect(cell.$el.find("a").text()).toBe("id");
+    expect(cell.$el.find("button").text()).toBe("id");
     expect(cell.$el.find(".sort-caret").length).toBe(1);
+    expect(cell.$el.find(".sort-caret").attr("aria-hidden")).toEqual("true");
 
     cell.column.set("sortable", false);
     cell.render();
@@ -124,7 +125,7 @@ describe("A HeaderCell", function () {
   });
 
   it("will rerender with the column name and/or label changes", function () {
-    expect(cell.$el.find("a").text(), "id");
+    expect(cell.$el.find("button").text(), "id");
     expect(cell.$el.hasClass("id"), true);
 
     cell.column.set("name", "name");
@@ -132,7 +133,7 @@ describe("A HeaderCell", function () {
     expect(cell.$el.hasClass("name"), true);
 
     cell.column.set("label", "Name");
-    expect(cell.$el.find("a").text(), "Name");
+    expect(cell.$el.find("button").text(), "Name");
     expect(cell.$el.hasClass("Name"), true);
   });
 
@@ -149,7 +150,7 @@ describe("A HeaderCell", function () {
     cell.render();
 
     expect(cell.el.tagName).toBe("TH");
-    expect(cell.$el.find("a").text()).toBe("id");
+    expect(cell.$el.find("button").text()).toBe("id");
     expect(cell.$el.find(".sort-caret").length).toBe(1);
     expect(cell.$el.hasClass("descending")).toBe(true);
   });
@@ -157,7 +158,7 @@ describe("A HeaderCell", function () {
   it("triggers `backgrid:sort` with the column and direction set to 'ascending' if the column's direction is not set", function () {
     var column, direction;
     cell.collection.on("backgrid:sort", function (col, dir) { column = col; direction = dir; });
-    cell.$el.find("a").click();
+    cell.$el.find("button").click();
     expect(column).toBe(cell.column);
     expect(direction).toBe("ascending");
   });
@@ -166,7 +167,7 @@ describe("A HeaderCell", function () {
     var column, direction;
     cell.collection.on("backgrid:sort", function (col, dir) { column = col; direction = dir; });
     cell.column.set("direction", "ascending");
-    cell.$el.find("a").click();
+    cell.$el.find("button").click();
     expect(column).toBe(cell.column);
     expect(direction).toBe("descending");
   });
@@ -175,7 +176,7 @@ describe("A HeaderCell", function () {
     var column, direction;
     cell.collection.on("backgrid:sort", function (col, dir) { column = col; direction = dir; });
     cell.column.set("direction", "descending");
-    cell.$el.find("a").click();
+    cell.$el.find("button").click();
     expect(column).toBe(cell.column);
     expect(direction).toBeNull();
   });
@@ -224,7 +225,7 @@ describe("A HeaderCell", function () {
     var column, direction;
     cell.column.set("sortType", "toggle");
     cell.collection.on("backgrid:sort", function (col, dir) { column = col; direction = dir; });
-    cell.$el.find("a").click();
+    cell.$el.find("button").click();
     expect(column).toBe(cell.column);
     expect(direction).toBe("ascending");
   });
@@ -234,7 +235,7 @@ describe("A HeaderCell", function () {
     cell.column.set("sortType", "toggle");
     cell.column.set("direction", "ascending");
     cell.collection.on("backgrid:sort", function (col, dir) { column = col; direction = dir; });
-    cell.$el.find("a").click();
+    cell.$el.find("button").click();
     expect(column).toBe(cell.column);
     expect(direction).toBe("descending");
   });
@@ -244,7 +245,7 @@ describe("A HeaderCell", function () {
     cell.column.set("sortType", "toggle");
     cell.column.set("direction", "descending");
     cell.collection.on("backgrid:sort", function (col, dir) { column = col; direction = dir; });
-    cell.$el.find("a").click();
+    cell.$el.find("button").click();
     expect(column).toBe(cell.column);
     expect(direction).toBe("ascending");
   });
@@ -296,23 +297,23 @@ describe("A HeaderRow", function () {
     expect(th1.hasClass("sortable")).toBe(true);
     expect(th1.hasClass("renderable")).toBe(true);
     expect(th1.hasClass("name")).toBe(true);
-    expect(th1.find("a").text()).toBe("name");
-    expect(th1.find("a").eq(1).is($("b", {className: "sort-caret"})));
+    expect(th1.find("button").text()).toBe("name");
+    expect(th1.find("button").eq(1).is($("b", {className: "sort-caret"})));
 
     var th2 = $(row.el.childNodes[1]);
     expect(th2.hasClass("editable")).toBe(true);
     expect(th2.hasClass("sortable")).toBe(true);
     expect(th2.hasClass("renderable")).toBe(true);
     expect(th2.hasClass("year")).toBe(true);
-    expect(th2.find("a").text()).toBe("year");
-    expect(th2.find("a > b:last-child").eq(0).hasClass("sort-caret")).toBe(true);
+    expect(th2.find("button").text()).toBe("year");
+    expect(th2.find("button > span:last-child").eq(0).hasClass("sort-caret")).toBe(true);
   });
 
   it("resets the carets of the non-sorting columns", function () {
-    row.$el.find("a").eq(0).click(); // ascending
-    row.$el.find("a").eq(1).click(); // ascending, resets the previous
-    expect(row.$el.find("a").eq(0).hasClass("ascending")).toBe(false);
-    expect(row.$el.find("a").eq(1).hasClass("ascending")).toBe(false);
+    row.$el.find("button").eq(0).click(); // ascending
+    row.$el.find("button").eq(1).click(); // ascending, resets the previous
+    expect(row.$el.find("button").eq(0).hasClass("ascending")).toBe(false);
+    expect(row.$el.find("button").eq(1).hasClass("ascending")).toBe(false);
   });
 
   it("inserts or removes a cell if a column is added or removed", function () {
@@ -323,12 +324,12 @@ describe("A HeaderRow", function () {
     expect(lastTh.hasClass("sortable")).toBe(true);
     expect(lastTh.hasClass("renderable")).toBe(true);
     expect(lastTh.hasClass("price")).toBe(true);
-    expect(lastTh.find("a").text()).toBe("price");
-    expect(lastTh.find("a > b:last-child").eq(0).hasClass("sort-caret")).toBe(true);
+    expect(lastTh.find("button").text()).toBe("price");
+    expect(lastTh.find("button > span:last-child").eq(0).hasClass("sort-caret")).toBe(true);
 
     row.columns.add({name: "publisher", cell: "string", renderable: false});
     expect(row.$el.children().length).toBe(4);
-    expect(row.$el.children().last().find("a").text()).toBe("publisher");
+    expect(row.$el.children().last().find("button").text()).toBe("publisher");
     expect(row.$el.children().last().hasClass("renderable")).toBe(false);
 
     row.columns.remove(row.columns.first());
@@ -338,8 +339,8 @@ describe("A HeaderRow", function () {
     expect(firstTh.hasClass("sortable")).toBe(true);
     expect(firstTh.hasClass("renderable")).toBe(true);
     expect(firstTh.hasClass("year")).toBe(true);
-    expect(firstTh.find("a").text()).toBe("year");
-    expect(firstTh.find("a > b:last-child").eq(0).hasClass("sort-caret")).toBe(true);
+    expect(firstTh.find("button").text()).toBe("year");
+    expect(firstTh.find("button > span:last-child").eq(0).hasClass("sort-caret")).toBe(true);
   });
 
 });
@@ -390,16 +391,16 @@ describe("A Header", function () {
     expect(th1.hasClass("sortable")).toBe(true);
     expect(th1.hasClass("renderable")).toBe(true);
     expect(th1.hasClass("name")).toBe(true);
-    expect(th1.find("a").text()).toBe("name");
-    expect(th1.find("a").eq(1).is($("b", {className: "sort-caret"})));
+    expect(th1.find("button").text()).toBe("name");
+    expect(th1.find("button").eq(1).is($("b", {className: "sort-caret"})));
 
     var th2 = $(head.row.el.childNodes[1]);
     expect(th2.hasClass("editable")).toBe(true);
     expect(th2.hasClass("sortable")).toBe(true);
     expect(th2.hasClass("renderable")).toBe(true);
     expect(th2.hasClass("year")).toBe(true);
-    expect(th2.find("a").text()).toBe("year");
-    expect(th2.find("a > b:last-child").eq(0).hasClass("sort-caret")).toBe(true);
+    expect(th2.find("button").text()).toBe("year");
+    expect(th2.find("button > span:last-child").eq(0).hasClass("sort-caret")).toBe(true);
   });
 
 });

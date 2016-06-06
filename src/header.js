@@ -21,7 +21,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
 
   /** @property */
   events: {
-    "click a": "onClick"
+    "click button": "onClick"
   },
 
   /**
@@ -120,7 +120,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
     var sortable = Backgrid.callByNeed(column.sortable(), column, this.collection);
     var label;
     if(sortable){
-      label = $("<a>").text(column.get("label")).append("<b class='sort-caret'></b>");
+      label = $("<button>").text(column.get("label")).append("<span class='sort-caret' aria-hidden='true'></span>");
     } else {
       label = document.createTextNode(column.get("label"));
     }

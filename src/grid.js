@@ -76,6 +76,7 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
      @param {Object} options
      @param {Backbone.Collection.<Backgrid.Columns>|Array.<Backgrid.Column>|Array.<Object>} options.columns Column metadata.
      @param {Backbone.Collection} options.collection The collection of tabular model data to display.
+     @param {string} [options.caption=string] An optional caption to be added to the table.
      @param {Backgrid.Header} [options.header=Backgrid.Header] An optional Header class to override the default.
      @param {Backgrid.Body} [options.body=Backgrid.Body] An optional Body class to override the default.
      @param {Backgrid.Row} [options.row=Backgrid.Row] An optional Row class to override the default.
@@ -88,6 +89,8 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
       options.columns = new Columns(options.columns || this.columns);
     }
     this.columns = options.columns;
+    
+    this.caption = options.caption;
 
     var filteredOptions = _.omit(options, ["el", "id", "attributes",
                                            "className", "tagName", "events"]);
@@ -167,12 +170,16 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
   },
 
   /**
-     Renders the grid's header, then footer, then finally the body. Triggers a
+     Renders the grid's caption, then header, then footer, then finally the body. Triggers a
      Backbone `backgrid:rendered` event along with a reference to the grid when
      the it has successfully been rendered.
    */
   render: function () {
     this.$el.empty();
+    
+    if (this.caption) {
+      this.$el.append($("<caption>").text(this.caption));
+    }
 
     if (this.header) {
       this.$el.append(this.header.render().$el);
