@@ -60,7 +60,7 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
   },
 
   /**
-     Event handler for the collection's `sort` event. Refreshes the CSS
+     Event handler for the collection's `backgrid:sorted` event. Refreshes the CSS
      direction classes.
    */
   refreshCellDirection: function (collection) {
