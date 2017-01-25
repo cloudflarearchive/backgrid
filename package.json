@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/wyuenho/backgrid"
+    "url": "http://github.com/cloudflare/backgrid"
   },
   "devDependencies": {
     "backbone.paginator": "^2.0.0",
