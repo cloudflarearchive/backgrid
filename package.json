@@ -1,7 +1,7 @@
 {
   "name": "backgrid",
   "version": "0.3.7",
-  "author": "Jimmy Yuen Ho Wong and contributors <wyuenho@gmail.com>",
+  "author": "Cloudflare, Inc. and contributors <jwong@cloudflare.com>",
   "description": "Backgrid.js is a set of components for building semantic and easily stylable data grid widgets with Backbone.",
   "homepage": "http://backgridjs.com/",
   "keywords": [
