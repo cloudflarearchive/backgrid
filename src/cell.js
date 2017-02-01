@@ -1,6 +1,6 @@
 /*
   backgrid
-  http://github.com/wyuenho/backgrid
+  http://github.com/cloudflare/backgrid
 
   Copyright (c) 2013 Jimmy Yuen Ho Wong and contributors
   Licensed under the MIT license.
