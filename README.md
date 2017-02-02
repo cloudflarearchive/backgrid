@@ -99,6 +99,40 @@ $("#example-1-result").append(grid.render().el);
 
 Take a look [here](http://backgridjs.com/index.html#basic-example).
 
+
+# Data validation
+
+Backgrid tries to check if a change to a model attribute would be valid by calling your model.valiate() function (which you must define)
+
+This is called after "blurring" focus from any currently edited cell.  In short, validating each attribute change, rather than trying to validate all attribute changes at the same time.
+
+# Persisting Changes
+
+Although backgrid does not automatically persist changes to your server, here are a few things to note:
+
+* Backbone does not have a save() call for a collection
+* So if you simply iterate through each model in your collection, you can persist the models you wish to save.  For example
+
+```
+_.each(collection.models, function(model, index, list) {
+    if (model.shouldSave()) {
+        model.save();
+    }
+}
+```
+
+# Adding rows
+
+Adding rows to your grid is a simple matter of adding a new model to your collection.  For example:
+
+```
+collection.add(new Model());
+```
+
+Backgrid will automatically add a new row to the html table.
+
+
+
 ## More Examples
 
 Are you kidding me? This is a README file. Go to the [documentation](http://backgridjs.com/
