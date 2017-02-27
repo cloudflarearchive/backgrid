@@ -301,9 +301,7 @@ var Body = Backgrid.Body = Backbone.View.extend({
         // If order is null, pageable will remove the comparator on both sides,
         // in this case the default insertion order comparator needs to be
         // attached to get back to the order before sorting.
-        if (collection.fullCollection.comparator == null) {
-          collection.fullCollection.comparator = comparator;
-        }
+        collection.fullCollection.comparator = comparator;
         collection.fullCollection.sort();
         collection.trigger("backgrid:sorted", column, direction, collection);
         column.set("direction", direction);
