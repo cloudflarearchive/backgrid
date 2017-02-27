@@ -297,6 +297,12 @@ var Body = Backgrid.Body = Backbone.View.extend({
       collection.setSorting(order && column.get("name"), order,
                             {sortValue: column.sortValue()});
 
+      this.columns.each(function(model, index) {
+        if (model.get('name') !== column.get('name')) {
+          model.set('direction', null);
+        }
+      });
+
       if (collection.fullCollection) {
         // If order is null, pageable will remove the comparator on both sides,
         // in this case the default insertion order comparator needs to be

@@ -56,16 +56,31 @@ var HeaderCell = Backgrid.HeaderCell = Backbone.View.extend({
     if (Backgrid.callByNeed(column.sortable(), column, collection)) $el.addClass("sortable");
     if (Backgrid.callByNeed(column.renderable(), column, collection)) $el.addClass("renderable");
 
-    this.listenTo(collection.fullCollection || collection, "backgrid:sorted", this.removeCellDirection);
+    this.listenTo(collection.fullCollection || collection, "backgrid:sorted", this.refreshCellDirection);
   },
 
   /**
-     Event handler for the collection's `backgrid:sorted` event. Removes
-     all the CSS direction classes.
+     Event handler for the collection's `backgrid:sorted` event. Refreshes the CSS
+     direction classes.
    */
-  removeCellDirection: function () {
-    this.$el.removeClass("ascending").removeClass("descending");
-    this.column.set("direction", null);
+  refreshCellDirection: function (collection) {
+    // If this is a pageable collection and is in an active sort state,
+    // preserve the existing sort classes on related headers
+    if (Backbone.PageableCollection &&
+        collection instanceof Backbone.PageableCollection &&
+        this.$el.hasClass(collection.state.sortKey) &&
+        collection.state.order !== 0) {
+        if (collection.state.order > 0) {
+            this.$el.removeClass("ascending").addClass("descending");
+            this.column.set("direction", "descending");
+        } else {
+            this.$el.removeClass("descending").addClass("ascending");
+            this.column.set("direction", "ascending");
+        }
+    } else {
+        this.$el.removeClass("ascending").removeClass("descending");
+        this.column.set("direction", null);
+    }
   },
 
   /**
