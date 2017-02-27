@@ -75,7 +75,7 @@ var Row = Backgrid.Row = Backbone.View.extend({
      @return {Backgrid.Cell}
   */
   makeCell: function (column) {
-    return new (column.get("cell"))({
+    return new (this.getCell(column))({
       column: column,
       model: this.model
     });
@@ -110,8 +110,37 @@ var Row = Backgrid.Row = Backbone.View.extend({
       cell.remove.apply(cell, arguments);
     }
     return Backbone.View.prototype.remove.apply(this, arguments);
-  }
+  },
 
+  /**
+     Factory method for getting a cell. Used by #makecell internally. Override
+     this to provide an appropriate cell class for a custom Row subclass.
+
+     @protected
+
+     @param {Backgrid.Column} column
+     @param {Object} options The options passed to #initialize.
+
+     @return {Backgrid.Cell}
+  */
+  getCell: function (column) {
+    var cf = column.get("cellFunction");
+    if (_.isFunction(cf)){
+      var cell = cf.apply(column, [this.model]);
+      try {
+        return Backgrid.resolveNameToClass(cell, "Cell");
+      } catch (e) {
+        if (e instanceof ReferenceError) {
+          // Fallback to column cell.
+          return column.get("cell");
+        } else {
+          throw e; // let other exceptions bubble up
+        }
+      }
+    } else {
+      return column.get("cell");
+    }
+  }
 });
 
 /**

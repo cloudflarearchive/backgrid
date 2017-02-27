@@ -98,7 +98,8 @@ var Column = Backgrid.Column = Backbone.Model.extend({
     sortValue: undefined,
     direction: null,
     cell: undefined,
-    headerCell: undefined
+    headerCell: undefined,
+    cellFunction: undefined
   },
 
   /**
