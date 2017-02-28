@@ -188,6 +188,7 @@ var Header = Backgrid.Header = Backbone.View.extend({
      @param {Object} options
      @param {Backbone.Collection.<Backgrid.Column>|Array.<Backgrid.Column>|Array.<Object>} options.columns Column metadata.
      @param {Backbone.Model} options.model The model instance to render.
+     @param {Backgrid.HeaderCell} [options.headerCell] An optional HeaderCell to override the default.
 
      @throws {TypeError} If options.columns or options.model is undefined.
    */
@@ -199,7 +200,8 @@ var Header = Backgrid.Header = Backbone.View.extend({
 
     this.row = new Backgrid.HeaderRow({
       columns: this.columns,
-      collection: this.collection
+      collection: this.collection,
+      headerCell: options.headerCell
     });
   },
 
