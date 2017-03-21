@@ -776,6 +776,53 @@ var BooleanCell = Backgrid.BooleanCell = Cell.extend({
 });
 
 /**
+   ButtonCell renders a button during display mode and edit mode.
+
+   @class Backgrid.ButtonCell
+   @extends Backgrid.Cell
+*/
+    var ButtonCell = Backgrid.ButtonCell = Cell.extend({
+
+        /** @property */
+        title: "",
+        /** @property */
+        btnClassName: "",
+
+        /** @property */
+        className: "button-cell",
+
+        /** @property */
+        events: {
+            "click a": "clickAElement"
+        },
+  
+        clickAElement: function(e) {
+            e.preventDefault();
+      
+            var model = this.model;
+            var column = this.column;
+            var command = new Command(e);
+    
+            column.trigger("backgrid:click", model, column, command);
+        },
+
+        /**
+     Renders a button.
+  */
+        render: function () {
+            this.$el.empty();
+            this.$el.append($("<a>", {
+                href: 'javascript:;',
+                'class': 'btn ' + this.btnClassName,
+                text: this.title
+            }));
+            this.delegateEvents();
+            return this;
+        }
+
+    });
+
+/**
    SelectCellEditor renders an HTML `<select>` fragment as the editor.
 
    @class Backgrid.SelectCellEditor
