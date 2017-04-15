@@ -459,6 +459,38 @@ describe("A StringCell", function () {
 
 });
 
+describe("A HtmlCell", function () {
+  var book;
+  var column;
+  var cell;
+
+
+  beforeEach(function () {
+    book = new Backbone.Model({
+      title: "<title>"
+    });
+
+    column = {
+      name: "title",
+      cell: "html"
+    };
+
+    cell = new Backgrid.HtmlCell({
+      model: book,
+      column: column
+    });
+  });
+  
+  it("applies a html-cell class to the cell", function () {
+    cell.render();
+    expect(cell.$el.hasClass("html-cell")).toBe(true);
+  });
+  it("renders the model value as html", function () {
+    cell.render();
+    expect(cell.$el.html()).toBe('<title></title>');
+  });
+});
+
 describe("A UriCell", function () {
 
   var model;
