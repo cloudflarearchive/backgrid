@@ -18,6 +18,8 @@
 */
 var Column = Backgrid.Column = Backbone.Model.extend({
 
+  idAttribute: 'name',
+
   /**
      @cfg {Object} defaults Column defaults. To override any of these default
      values, you can either change the prototype directly to override
