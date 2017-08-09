@@ -67,6 +67,8 @@
   border: none;
   background: none;
   padding: 0;
+  font-size: inherit;
+  font-weight: inherit;
 }
 
 .backgrid.backgrid-striped tbody tr:nth-child(even) {
